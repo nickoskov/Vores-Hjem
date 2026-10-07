@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+
+<!-- Forbinder tidligt til de eksterne tjenester sporingen bruger, saa selve
+     handshaket (DNS+TLS) er overstaaet, naar scriptet faktisk skal hente dem. -->
+<link rel="preconnect" href="https://cdn.iubenda.com">
+<link rel="preconnect" href="https://embeds.iubenda.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="preconnect" href="https://connect.facebook.net">
+<link rel="preconnect" href="https://bzrcdn.openai.com" crossorigin>
+<link rel="preconnect" href="https://voreshjem-bot.netlify.app">
+
+<!-- ══ SPORING ══ Skal ligge oeverst i <head> paa alle sider.
+     Alt startes fra ét script, som foerst tjekker, om siden vises for sig selv.
+     Inde i en ramme starter INTET, saa der aldrig staar to cookiebannere oven paa
+     hinanden. Raekkefoelgen er ikke tilfaeldig: samtykketilstanden saettes,
+     FOER noget andet loader.
+     16. sept. 2026: Google Tag Manager fjernet (containeren var tom og kostede
+     115 KB). Meta og OpenAI starter foerst, naar den besoegende siger ja til
+     markedsfoering i cookiebanneret. -->
+<script>
+(function () {
+  var iRamme = false;
+  try { iRamme = window.self !== window.top; } catch (e) { iRamme = true; }
+  if (iRamme) return;
+
+  /* 1. Samtykketilstand. Alt er afvist, indtil brugeren siger ja. */
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function () { dataLayer.push(arguments); };
+  gtag('consent', 'default', {
+    'ad_storage': 'denied', 'ad_user_data': 'denied', 'ad_personalization': 'denied',
+    'analytics_storage': 'denied', 'functionality_storage': 'granted', 'security_storage': 'granted',
+    'wait_for_update': 500
+  });
+  gtag('set', 'ads_data_redaction', true);
+  gtag('set', 'url_passthrough', true);
+
+  /* scripts indsaettes i raekkefoelge, ét ad gangen */
+  function hent(src, valg) {
+    var s = document.createElement('script'); s.src = src; s.async = false;
+    if (valg && valg.charset) s.charset = valg.charset;
+    document.head.appendChild(s); return s;
+  }
+
+  /* 2. Cookiebanner, iubenda. siteId 4517758, cookiePolicyId 85951957. */
+  hent('https://embeds.iubenda.com/widgets/c4881ab1-9037-47e2-b5ce-d1950889d637.js');
+  hent('https://cdn.iubenda.com/cs/gpp/stub.js');
+  hent('https://cdn.iubenda.com/cs/iubenda_cs.js', { charset: 'UTF-8' });
+
+  /* 3. Google Analytics 4. Maaler kun, naar samtykket er givet. */
+  hent('https://www.googletagmanager.com/gtag/js?id=G-ZFW1KE91LV');
+  gtag('js', new Date());
+  gtag('config', 'G-ZFW1KE91LV');
+
+  /* 3b. Google Ads. Der er ingen Ads-kode endnu. Naar I opretter en konvertering
+         i Google Ads, faar I et id som AW-123456789. Saet det ind og fjern //
+     gtag('config', 'AW-XXXXXXXXX'); */
+
+  /* 4. Markedsfoering: Meta-pixel og OpenAI. Hentes foerst, naar cookiebanneret
+        melder ja til markedsfoering (ad_storage granted). Siger den besoegende nej,
+        hentes de slet ikke. Har den besoegende sagt ja tidligere, melder banneret
+        det med det samme, og de starter straks. */
+  var reklameStartet = false;
+  function startReklame() {
+    if (reklameStartet) return; reklameStartet = true;
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '697476623339056');
+    fbq('track', 'PageView');
+
+    !function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};
+    q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;
+    var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}
+    (window,document,'script','https://bzrcdn.openai.com/sdk/oaiq.min.js');
+    oaiq('init', { pixelId: 'QZwgYr1hiBh3USt1vsSytt', debug: false });
+  }
+  /* Banneret skriver sit svar i dataLayer. Vi kigger kun paa nye linjer. */
+  var set = 0, vagt = setInterval(function () {
+    for (; set < dataLayer.length; set++) {
+      var a = dataLayer[set];
+      if (a && a[0] === 'consent' && a[2] && a[2].ad_storage === 'granted') {
+        startReklame(); clearInterval(vagt); return;
+      }
+    }
+  }, 400);
+
+  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>,
+     saa de venter til siden er laest faerdig. Hent-knappens script taeller ogsaa
+     besoeget til backenden, uden cookies. */
+  function naarKlar(fn) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
+  naarKlar(function () {
+    hent('https://voreshjem-bot.netlify.app/widget.js');
+    hent('https://voreshjem-bot.netlify.app/hentknap.js');
+  });
+})();
+</script>
+<!-- ══ SPORING SLUT ══ -->
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hvordan bruger jeg appen? | Vores Hjem</title>
+<link rel="canonical" href="https://www.voreshjem.dk/hvordan-bruger-jeg-appen">
+<meta name="description" content="En komplet guide til Vores Hjem-appen. Lær hvordan du bruger kalender, opgaver, madplan, indkøbsliste og indstillinger.">
+<link rel="preload" href="/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>@font-face{font-family:'Plus Jakarta Sans';font-style:normal;font-weight:200 800;font-display:swap;src:url(/fonts/plus-jakarta-sans-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}</style>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --purple: #6C47FF;
+  --gradient: linear-gradient(135deg, #6C47FF 0%, #3B82F6 55%, #EC4899 100%);
+  --bg: #FFFFFF;
+  --bg-subtle: #F8F7FF;
+  --text: #0F0E1A;
+  --text-secondary: #5E5A7A;
+  --border: #E8E5FF;
+  --font: 'Plus Jakarta Sans', sans-serif;
+}
+
+html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100%; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+
+/* ─── NAV ─── */
+nav {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(255,255,255,0.85);
+  border-bottom: 1px solid rgba(108,71,255,0.08);
+}
+/* Chrome-fix: blur på lag BAG indholdet (Chromium-bug: børn af backdrop-filter renderes tilfældigt ikke) */
+nav::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+}
+.nav-logo img { transform: translateZ(0); }
+
+.nav-inner { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+.nav-logo { display: flex; align-items: center; gap: 10px; }
+.logo-text { font-size: 17px; font-weight: 800; color: var(--text); }
+.logo-text span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.back-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 14px; font-weight: 600; color: var(--text-secondary);
+  transition: color 0.2s;
+}
+.back-link:hover { color: var(--purple); }
+.back-link svg { width: 15px; height: 15px; }
+
+/* ─── HERO ─── */
+.hero {
+  background: linear-gradient(160deg, #F8F7FF 0%, #EEF0FF 50%, #F5F0FF 100%);
+  padding: 100px 0 80px;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -200px; right: -150px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(108,71,255,0.12), transparent 65%);
+  pointer-events: none;
+}
+.hero::after {
+  content: ''; position: absolute; bottom: -150px; left: -150px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(236,72,153,0.08), transparent 65%);
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 16px;
+  background: rgba(108,71,255,0.08); border: 1px solid rgba(108,71,255,0.15);
+  border-radius: 100px; font-size: 13px; font-weight: 600; color: var(--purple);
+  margin-bottom: 28px; position: relative; z-index: 1;
+}
+.hero h1 {
+  font-size: clamp(40px, 6vw, 72px); font-weight: 800;
+  letter-spacing: -2.5px; line-height: 1.08;
+  background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 20px; position: relative; z-index: 1;
+}
+.hero p {
+  font-size: 18px; color: var(--text-secondary);
+  max-width: 480px; margin: 0 auto; line-height: 1.7;
+  position: relative; z-index: 1;
+}
+
+/* ─── FEATURE TABS ─── */
+.tabs-wrap {
+  position: sticky; top: 68px; z-index: 190;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.tabs {
+  display: flex; overflow-x: auto;
+  scrollbar-width: none; -ms-overflow-style: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  padding: 0 22px; height: 50px;
+  font-size: 14px; font-weight: 600; color: var(--text-secondary);
+  border: none; background: transparent; cursor: pointer;
+  border-bottom: 2px solid transparent; white-space: nowrap;
+  transition: color 0.2s, border-color 0.2s;
+  font-family: var(--font);
+}
+.tab:hover { color: var(--purple); }
+.tab.active { color: var(--purple); border-bottom-color: var(--purple); }
+
+/* ─── SECTION ─── */
+.section {
+  padding: 96px 0;
+  border-bottom: 1px solid var(--border);
+}
+.section:last-of-type { border-bottom: none; }
+.section.alt { background: var(--bg-subtle); }
+
+.section-eyebrow {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--purple);
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 14px;
+}
+.section-eyebrow::before {
+  content: ''; width: 20px; height: 2px;
+  background: var(--gradient); border-radius: 2px;
+}
+.section-title {
+  font-size: clamp(30px, 3.5vw, 46px); font-weight: 800;
+  letter-spacing: -1.5px; line-height: 1.1;
+  color: var(--text); margin-bottom: 14px;
+}
+.section-sub {
+  font-size: 17px; color: var(--text-secondary);
+  max-width: 540px; line-height: 1.7;
+}
+
+/* ─── FEATURE ROW ─── */
+.feature-row {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 80px;
+  align-items: center;
+  margin-top: 60px;
+}
+.feature-row.flip { grid-template-columns: 1fr 260px; }
+.feature-row.flip .phone-col { order: 2; }
+.feature-row.flip .content-col { order: 1; }
+
+/* ─── PHONE ─── */
+.phone-col { display: flex; justify-content: center; }
+.phone-shot {
+  width: 240px;
+  border-radius: 36px;
+  box-shadow:
+    0 2px 4px rgba(0,0,0,0.04),
+    0 8px 16px rgba(0,0,0,0.08),
+    0 24px 48px rgba(0,0,0,0.12),
+    0 40px 80px rgba(108,71,255,0.10);
+  display: block;
+}
+
+/* ─── FEATURE CONTENT ─── */
+.feature-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--purple);
+  margin-bottom: 10px;
+}
+.feature-title {
+  font-size: 26px; font-weight: 800; letter-spacing: -0.5px;
+  color: var(--text); margin-bottom: 10px; line-height: 1.2;
+}
+.feature-desc {
+  font-size: 15px; color: var(--text-secondary);
+  line-height: 1.7; margin-bottom: 28px;
+}
+.feature-items { display: flex; flex-direction: column; gap: 14px; }
+.feature-item {
+  display: flex; gap: 14px; align-items: flex-start;
+}
+.fi-dot {
+  width: 20px; height: 20px; flex-shrink: 0;
+  border-radius: 6px; background: rgba(108,71,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 2px;
+}
+.fi-dot svg { width: 10px; height: 10px; color: var(--purple); }
+.fi-text { font-size: 15px; color: var(--text-secondary); line-height: 1.55; }
+.fi-text strong { color: var(--text); font-weight: 600; }
+
+/* ─── TIP ─── */
+.tip {
+  display: flex; gap: 12px; align-items: flex-start;
+  background: rgba(108,71,255,0.05);
+  border-left: 3px solid var(--purple);
+  border-radius: 0 12px 12px 0;
+  padding: 14px 18px;
+  margin-top: 24px;
+}
+.tip svg { width: 16px; height: 16px; color: var(--purple); flex-shrink: 0; margin-top: 2px; }
+.tip p { font-size: 14px; color: var(--text-secondary); line-height: 1.55; }
+.tip p strong { color: var(--purple); }
+
+/* ─── KOM I GANG, 3 trin ─── */
+.onboarding-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 56px;
+  margin-top: 60px;
+  align-items: start;
+}
+.step { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.step-num {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--gradient);
+  font-size: 13px; font-weight: 800; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 28px; flex-shrink: 0;
+}
+.step-shot {
+  width: 200px;
+  border-radius: 30px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.08), 0 24px 48px rgba(0,0,0,0.12), 0 32px 64px rgba(108,71,255,0.10);
+  display: block;
+  margin-bottom: 28px;
+}
+.step h3 { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.step p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+
+/* ─── INDSTILLINGER GRID ─── */
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 60px;
+}
+.s-card {
+  padding: 28px 28px 28px 24px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  display: flex; gap: 18px; align-items: flex-start;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.s-card:hover { box-shadow: 0 8px 32px rgba(108,71,255,0.10); border-color: rgba(108,71,255,0.25); }
+.s-icon {
+  width: 42px; height: 42px; flex-shrink: 0;
+  border-radius: 12px; background: rgba(108,71,255,0.08);
+  display: flex; align-items: center; justify-content: center;
+}
+.s-icon svg { width: 18px; height: 18px; color: var(--purple); }
+.s-card h3 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+.s-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.55; }
+
+/* ─── FAQ ─── */
+.faq-wrap { max-width: 760px; margin: 56px auto 0; }
+.faq-item {
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+.faq-item:first-child { border-top: 1px solid var(--border); }
+.faq-btn {
+  width: 100%; text-align: left;
+  padding: 22px 0;
+  display: flex; justify-content: space-between; align-items: center; gap: 20px;
+  font-size: 16px; font-weight: 700; color: var(--text);
+  background: none; border: none; cursor: pointer; font-family: var(--font);
+}
+.faq-btn svg { flex-shrink: 0; width: 18px; height: 18px; color: var(--purple); transition: transform 0.25s; }
+.faq-item.open .faq-btn svg { transform: rotate(180deg); }
+.faq-ans {
+  max-height: 0; overflow: hidden;
+  font-size: 15px; color: var(--text-secondary); line-height: 1.7;
+  transition: max-height 0.3s ease, padding 0.25s;
+}
+.faq-item.open .faq-ans { max-height: 300px; padding-bottom: 20px; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .feature-row { grid-template-columns: 1fr; gap: 40px; }
+  .feature-row.flip { grid-template-columns: 1fr; }
+  .feature-row.flip .phone-col, .feature-row.flip .content-col { order: unset; }
+  .onboarding-steps { grid-template-columns: 1fr; gap: 56px; }
+  .step { flex-direction: row; text-align: left; align-items: flex-start; gap: 24px; }
+  .step-shot { width: 160px; flex-shrink: 0; margin-bottom: 0; }
+  .step > div { padding-top: 4px; }
+  .settings-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .container { padding: 0 24px; }
+  .section { padding: 64px 0; }
+  .phone-shot { width: 200px; }
+  .step-shot { width: 130px; }
+  .step { gap: 16px; }
+}
+@media (max-width: 700px) { .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 32px !important; } }
+@media (max-width: 420px) { .footer-grid { grid-template-columns: 1fr !important; gap: 28px !important; } }
+/* ─── CONTACT MODAL ─── */
+#contact-modal-overlay {
+  position: fixed; inset: 0; z-index: 1100;
+  background: rgba(10,8,30,0.55);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+  opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+}
+#contact-modal-overlay.open { opacity: 1; pointer-events: auto; }
+.contact-modal {
+  background: #fff; border-radius: 24px; padding: 44px 40px 36px;
+  max-width: 480px; width: 100%;
+  box-shadow: 0 40px 120px rgba(108,71,255,0.22), 0 8px 32px rgba(0,0,0,0.12);
+  position: relative;
+  transform: scale(0.92) translateY(16px);
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+#contact-modal-overlay.open .contact-modal { transform: scale(1) translateY(0); }
+.contact-modal-close {
+  position: absolute; top: 16px; right: 16px;
+  width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer;
+  background: #F1F0FA; color: #5E5A7A;
+  display: flex; align-items: center; justify-content: center; transition: background 0.2s;
+}
+.contact-modal-close:hover { background: #E8E5FF; }
+.contact-modal-close svg { width: 16px; height: 16px; }
+.contact-modal h3 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
+.contact-modal > p { font-size: 14px; color: #5E5A7A; margin-bottom: 24px; }
+.contact-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.contact-field label { font-size: 13px; font-weight: 700; color: #0F0E1A; }
+.contact-field input, .contact-field textarea {
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px;
+  border: 1.5px solid #E8E5FF; border-radius: 12px; padding: 12px 14px;
+  background: #F8F7FF; color: #0F0E1A; outline: none; transition: border-color 0.2s; resize: none;
+}
+.contact-field input:focus, .contact-field textarea:focus { border-color: #6C47FF; background: #fff; }
+.contact-submit {
+  width: 100%; padding: 14px; border-radius: 14px; border: none;
+  background: linear-gradient(135deg, #6C47FF 0%, #3B82F6 55%, #EC4899 100%);
+  color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 700;
+  cursor: pointer; margin-top: 8px;
+  box-shadow: 0 4px 24px rgba(108,71,255,0.35); transition: transform 0.2s, box-shadow 0.2s;
+}
+.contact-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(108,71,255,0.45); }
+.contact-submit:disabled { opacity: 0.6; cursor: default; transform: none; }
+.contact-error { display: none; color: #E84040; font-size: 13px; font-weight: 600; margin-top: 4px; }
+.contact-success {
+  text-align: center; padding: 16px 0 8px;
+  display: none; flex-direction: column; align-items: center; gap: 12px;
+}
+.contact-success-icon { width: 56px; height: 56px; background: rgba(16,185,129,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.contact-success-icon svg { width: 28px; height: 28px; color: #10B981; }
+.contact-success h4 { font-size: 18px; font-weight: 800; }
+.contact-success p { font-size: 14px; color: #5E5A7A; margin: 0; }
+@media (max-width: 600px) { .contact-modal { padding: 32px 24px 28px; } }
+</style>
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Vores Hjem">
+  <meta property="og:locale" content="da_DK">
+  <meta property="og:title" content="Hvordan bruger jeg appen? | Vores Hjem">
+  <meta property="og:description" content="En komplet guide til Vores Hjem-appen. Lær hvordan du bruger kalender, opgaver, madplan, indkøbsliste og indstillinger.">
+  <meta property="og:url" content="https://www.voreshjem.dk/hvordan-bruger-jeg-appen">
+  <link rel="image_src" href="https://www.voreshjem.dk/images/og.jpg">
+  <meta property="og:image" content="https://www.voreshjem.dk/images/og.jpg">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "url": "https://www.voreshjem.dk/hvordan-bruger-jeg-appen", "name": "Hvordan bruger jeg appen? | Vores Hjem", "inLanguage": "da", "primaryImageOfPage": {"@type": "ImageObject", "url": "https://www.voreshjem.dk/images/og.jpg", "width": 1200, "height": 630}}</script>
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Hvordan bruger jeg appen? | Vores Hjem">
+  <meta name="twitter:description" content="En komplet guide til Vores Hjem-appen. Lær hvordan du bruger kalender, opgaver, madplan, indkøbsliste og indstillinger.">
+  <meta name="twitter:image" content="https://www.voreshjem.dk/images/og.jpg">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "name": "Hvordan bruger jeg appen? | Vores Hjem", "description": "En komplet guide til Vores Hjem-appen. Lær hvordan du bruger kalender, opgaver, madplan, indkøbsliste og indstillinger.", "url": "https://www.voreshjem.dk/hvordan-bruger-jeg-appen", "isPartOf": {"@type": "WebSite", "name": "Vores Hjem", "url": "https://www.voreshjem.dk"}}</script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="container">
+    <div class="nav-inner">
+      <a href="https://www.voreshjem.dk" target="_top" class="nav-logo">
+        <img src="/images/logo-nav.webp?v=2" alt="Vores Hjem" style="height:58px;width:auto;display:block;">
+      </a>
+      <a href="https://www.voreshjem.dk" target="_top" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Tilbage til forsiden
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      Brugervejledning
+    </div>
+    <h1>Sådan bruger du<br>Vores Hjem</h1>
+    <p>Alt du behøver at vide, fra oprettelse af konto til daglig brug af alle funktioner.</p>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="container">
+    <div class="tabs" id="tabs">
+      <button class="tab active" onclick="goTo('kom-i-gang',this)">Kom i gang</button>
+      <button class="tab" onclick="goTo('kalender',this)">Kalender</button>
+      <button class="tab" onclick="goTo('opgaver',this)">Opgaver</button>
+      <button class="tab" onclick="goTo('madplan',this)">Madplan</button>
+      <button class="tab" onclick="goTo('indkob',this)">Indkøb</button>
+      <button class="tab" onclick="goTo('indstillinger',this)">Indstillinger</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ KOM I GANG ══════════════════════════ -->
+<section class="section" id="kom-i-gang">
+  <div class="container">
+    <div class="section-eyebrow">Trin 1</div>
+    <h2 class="section-title">Kom i gang på 2 minutter</h2>
+    <p class="section-sub">Opret din konto, log ind eller log ind med en familiekode, hvis en i familien allerede har oprettet en husstand.</p>
+
+    <div class="onboarding-steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <img src="screen-login.webp?v=2" alt="Opret konto" class="step-shot">
+        <div>
+          <h3>Opret konto</h3>
+          <p>Er du ny? Vælg <strong>Opret din konto</strong> og skriv din email og adgangskode. Du får 14 dages gratis prøveperiode automatisk, ingen binding.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <img src="screen-login.jpg" alt="Log ind" class="step-shot">
+        <div>
+          <h3>Log ind</h3>
+          <p>Har du allerede en konto? Skriv din email og adgangskode og tryk <strong>Log Ind</strong>. Glemt din adgangskode? Tryk på <em>Glemt adgangskode?</em></p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <img src="/images/indstil_1.webp" alt="Log ind med familiekode" class="step-shot">
+        <div>
+          <h3>Log ind med familiekode</h3>
+          <p>Er du inviteret af en i familien? Skriv dit navn og familiekoden, fx <em>AA-123456</em>. Koden finder du under Indstillinger hos den der oprettede kontoen.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ KALENDER ══════════════════════════ -->
+<section class="section alt" id="kalender">
+  <div class="container">
+    <div class="section-eyebrow">Kalender</div>
+    <h2 class="section-title">Hold styr på alle aftaler</h2>
+    <p class="section-sub">Tilføj begivenheder med typer, gentagelse og påmindelser, og hold hele familien opdateret.</p>
+
+    <div class="feature-row">
+      <div class="phone-col">
+        <img src="screen-kalender.jpg" alt="Tilføj begivenhed" class="phone-shot">
+      </div>
+      <div class="content-col">
+        <div class="feature-label">Tilføj begivenhed</div>
+        <h3 class="feature-title">Alt hvad du har brug for på ét sted</h3>
+        <p class="feature-desc">Tryk på <strong>+</strong> i kalender-fanen for at oprette en ny begivenhed. Udfyld felterne og tryk <em>Tilføj Begivenhed</em>.</p>
+        <div class="feature-items">
+          <div class="feature-item">
+            <span class="fi-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p class="fi-text"><strong>Titel</strong>: beskriv begivenheden, fx "Fodbold" eller "Tandlæge".</p>
+          </div>
+          <div class="feature-item">
+            <span class="fi-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p class="fi-text"><strong>Fra/til dato</strong>, vælg start og evt. slutdato. Lad til-dato stå, hvis det kun er én dag.</p>
+          </div>
+          <div class="feature-item">
+            <span class="fi-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p class="fi-text"><strong>Type</strong>: vælg Møde, Fødselsdag, Aftale, Ferie eller Andet. Giver begivenheden en farve i kalenderen.</p>
+          </div>
+          <div class="feature-item">
+            <span class="fi-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p class="fi-text"><strong>Gentagelse</strong>: ugentlig, månedlig eller årlig, og begivenheden oprettes automatisk fremover.</p>
+          </div>
+          <div class="feature-item">
+            <span class="fi-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p class="fi-text"><strong>Påmindelse</strong>, modtag en notifikation 3 timer inden begivenheden starter.</p>
+          </div>
+        </div>
+        <div class="tip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <p>Påmindelser kræver at notifikationer er slået til på din telefon, og at du har angivet et <strong>starttidspunkt</strong> på begivenheden.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ OPGAVER ══════════════════════════ -->
+<section class="section" id="opgaver">
+  <div class="container">
+    <div class="section-eyebrow">Opgaver</div>
+    <h2 class="section-title">Fordel husarbejdet nemt</h2>
+    <p class="section-sub">Opret opgaver, tildel dem til familiemedlemmer og sæt gentagelse, så ingen skal huske det selv.</p>
+
+    <div class="feature-row flip">
+      <div class="phone-col">
+        <img src="screen-opgaver.jpg" alt="Tilføj opgave" class="phone-shot">
+      </div>
+      <div class="content-col">
+        <div class="feature-label">Tilføj opgave</div>
+        <h3 class="feature-title">Opgaver der fordeler sig selv</h3>
+        <p class="feature-desc">Gå til <strong>Opgaver</strong> i bunden og tryk <em>+</em>. Skriv selv eller vælg fra forslagene.</p>
+        <div class="feature-items">
+          <div class="feature-item">
+            <span class="fi-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p class="fi-text"><strong>Forslag</strong>: tryk på et af forslagene (Støvsuge, Lave mad, Vaske tøj osv.) for at tilføje det direkte som titel.</p>
+          </div>
+          <div class="feature-item">
+            <span class="fi-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p class="fi-text"><strong>Deadline</strong>: angiv en dato, så du kan se opgaver der snart skal løses.</p>
+          </div>
+          <div class="feature-item">
+            <span class="fi-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p class="fi-text"><strong>Tildel til</strong>, vælg Fælles eller et specifikt familiemedlem. Medlemmer oprettes under Indstillinger.</p>
+          </div>
+          <div class="feature-item">
+            <span class="fi-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p class="fi-text"><strong>Gentagelse</strong>: Hver uge, Hver 14. dag eller Hver måned, og opgaven dukker automatisk op igen.</p>
+          </div>
+        </div>
+        <div class="tip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <p>Du kan kun oprette opgaver, når der er oprettet familiemedlemmer. Det gøres af admin-brugeren under <strong>Indstillinger</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ MADPLAN ══════════════════════════ -->
+<section class="section alt" id="madplan">
+  <div class="container">
+    <div class="section-eyebrow">Madplan</div>
+    <h2 class="section-title">Planlæg ugens måltider</h2>
+    <p class="section-sub">Sæt aftensmad, frokost og morgenmad for hele ugen, og slip for diskussionen om hvad I skal have.</p>
+
+    <div class="feature-row">
+      <div class="phone-col">
+        <img src="/images/mad_1.webp" alt="Tilføj måltid" class="phone-shot">
+      </div>
+      <div class="content-col">
+        <div class="feature-label">Nyt måltid</div>
+        <h3 class="feature-title">Ugens mad planlagt på få sekunder</h3>
+        <p class="feature-desc">Gå til <strong>Madplaner</strong> og tryk <em>+ Tilføj mad</em> for at planlægge et måltid til en given dag.</p>
+        <div class="feature-items">
+          <div class="feature-item">
+            <span class="fi-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p class="fi-text"><strong>Dag</strong>, vælg hvilken dag i ugen. Scroll vandret for at se hele ugen.</p>
+          </div>
+          <div class="feature-item">
+            <span class="fi-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p class="fi-text"><strong>Type</strong>: vælg Morgenmad, Frokost eller Aftensmad.</p>
+          </div>
+          <div class="feature-item">
+            <span class="fi-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p class="fi-text"><strong>Ret</strong>: skriv hvad I skal have, fx <em>Spaghetti Bolognese</em> eller <em>Tacos</em>.</p>
+          </div>
+          <div class="feature-item">
+            <span class="fi-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p class="fi-text"><strong>Beskrivelse</strong>: tilføj noter eller opskrift, som hele familien kan se.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ INDKØB ══════════════════════════ -->
+<section class="section" id="indkob">
+  <div class="container">
+    <div class="section-eyebrow">Indkøbsliste</div>
+    <h2 class="section-title">Handl uden at glemme noget</h2>
+    <p class="section-sub">Tilføj varer til en fælles liste, og kryds af efterhånden som I finder dem i butikken.</p>
+
+    <div class="feature-row flip">
+      <div class="phone-col">
+        <img src="/images/indkob_1.webp" alt="Tilføj produkt" class="phone-shot">
+      </div>
+      <div class="content-col">
+        <div class="feature-label">Tilføj produkt</div>
+        <h3 class="feature-title">Aldrig mere glemt mælk</h3>
+        <p class="feature-desc">Gå til <strong>Indkøb</strong> og tryk <em>+ Tilføj varer</em>. Skriv produktnavnet og tryk <em>Tilføj</em> eller <em>Næste</em> for at tilføje flere på én gang.</p>
+        <div class="feature-items">
+          <div class="feature-item">
+            <span class="fi-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p class="fi-text"><strong>Billede</strong>: tilføj et foto af produktet, så ingen er i tvivl om hvilken variant der skal købes.</p>
+          </div>
+          <div class="feature-item">
+            <span class="fi-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p class="fi-text"><strong>Afkrydsning</strong>: tryk på cirklen ud for en vare, når du har lagt den i kurven.</p>
+          </div>
+          <div class="feature-item">
+            <span class="fi-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p class="fi-text"><strong>Afsluttede indkøb</strong>, afkrydsede varer flyttes automatisk hertil efter 24 timer, så listen holder sig ryddelig.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ INDSTILLINGER ══════════════════════════ -->
+<section class="section alt" id="indstillinger">
+  <div class="container">
+    <div class="section-eyebrow">Indstillinger</div>
+    <h2 class="section-title">Tilpas appen til din familie</h2>
+    <p class="section-sub">Under <strong>Indstillinger</strong> administrerer du familiemedlemmer, sprog, abonnement og konto.</p>
+
+    <div class="settings-grid">
+      <div class="s-card">
+        <div class="s-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div>
+          <h3>Familiemedlemmer</h3>
+          <p>Admin-brugeren tilføjer og sletter familiemedlemmer. Herfra finder du også familiekoden, som andre bruger til at logge ind.</p>
+        </div>
+      </div>
+
+      <div class="s-card">
+        <div class="s-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <div>
+          <h3>Sprog</h3>
+          <p>Appen understøtter Dansk, Engelsk, Tysk, Spansk, Hollandsk, Svensk og Norsk. Skift sprog, appen opdaterer med det samme.</p>
+        </div>
+      </div>
+
+      <div class="s-card">
+        <div class="s-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        </div>
+        <div>
+          <h3>Abonnement</h3>
+          <p>Du starter med 14 dages gratis prøveperiode. Herefter vælger du månedligt eller halvårligt abonnement. Status ses øverst under Indstillinger.</p>
+        </div>
+      </div>
+
+      <div class="s-card">
+        <div class="s-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div>
+          <h3>Nulstil adgangskode</h3>
+          <p>Skriv din nuværende adgangskode, vælg en ny og bekræft den. Tryk <em>Gem</em> for at gemme ændringen.</p>
+        </div>
+      </div>
+
+      <div class="s-card">
+        <div class="s-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <div>
+          <h3>Vilkår og betingelser</h3>
+          <p>Her finder du links til Privatlivspolitik, Cookiepolitik, Vilkår & betingelser og Apple standard EULA.</p>
+        </div>
+      </div>
+
+      <div class="s-card">
+        <div class="s-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:#EF4444;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2"/></svg>
+        </div>
+        <div>
+          <h3>Slet konto</h3>
+          <p>Sletter din konto og alle familiedata permanent. Handlingen kan ikke fortrydes. <a href="https://www.voreshjem.dk/hvordan-sletter-man-sin-konto" target="_top" style="color:var(--purple);font-weight:600;">Se vejledningen her →</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ FAQ ══════════════════════════ -->
+<section class="section" id="faq">
+  <div class="container">
+    <div style="text-align:center; margin-bottom: 0;">
+      <div class="section-eyebrow" style="justify-content:center;">Ofte stillede spørgsmål</div>
+      <h2 class="section-title">Har du spørgsmål?</h2>
+      <p class="section-sub" style="margin: 0 auto;">Her er svarene på det vi oftest bliver spurgt om.</p>
+    </div>
+
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <button class="faq-btn" onclick="toggleFaq(this)">
+          Hvorfor får jeg ikke nogen påmindelser, selvom jeg har slået det til?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-ans">Hvis notifikationer er slået fra under indstillinger på din telefon, modtager du ingen påmindelser, selvom du har slået det til i appen. Gå til telefonens indstillinger og tillad notifikationer fra Vores Hjem. Husk også at du skal have angivet et starttidspunkt på begivenheden.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn" onclick="toggleFaq(this)">
+          Hvorfor kan jeg ikke oprette opgaver?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-ans">For at oprette opgaver skal der være oprettet familiemedlemmer. Det gøres under Indstillinger af admin-brugeren, den der loggede ind med email. Når mindst ét familiemedlem er oprettet, kan du oprette og tildele opgaver.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn" onclick="toggleFaq(this)">
+          Hvorfor kan jeg ikke finde de varer, jeg har vinget af på indkøbslisten?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-ans">Afkrydsede varer flyttes automatisk til "Afsluttede indkøb" efter 24 timer, så listen holder sig ryddelig. Herfra kan du fjerne dem eller flytte dem tilbage til den aktive liste.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn" onclick="toggleFaq(this)">
+          Hvordan finder jeg min familiekode?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-ans">Familiekoden findes under Indstillinger hos den bruger der oprettede kontoen. Del koden med resten af familien, så de kan logge ind via "Log ind med familiekode" uden at oprette en egen konto med email.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn" onclick="toggleFaq(this)">
+          Hvad sker der, når min prøveperiode udløber?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-ans">Du får 14 dages gratis prøveperiode uden binding. Når perioden udløber, skal du vælge et abonnement for at fortsætte. Dine data gemmes, så du genoptager præcis der, hvor du slap.</div>
+      </div>
+    </div>
+
+    <div style="text-align:center; margin-top: 56px;">
+      <p style="font-size:16px; color:var(--text-secondary); margin-bottom:16px;">Fandt du ikke svar på dit spørgsmål?</p>
+      <a href="https://www.voreshjem.dk/support" target="_top" onclick="window.top.location.href='https://www.voreshjem.dk/support';return false;" style="display:inline-flex;align-items:center;gap:8px;background:var(--gradient);color:#fff;padding:14px 32px;border-radius:100px;font-size:15px;font-weight:700;box-shadow:0 8px 24px rgba(108,71,255,0.25);border:none;cursor:pointer;text-decoration:none;">
+        Kontakt support
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:15px;height:15px;"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="background:#0F0E1A; color:#fff; padding: 64px 0 32px; font-family:'Plus Jakarta Sans',sans-serif;">
+  <div style="max-width:1100px; margin:0 auto; padding:0 40px;">
+    <div class="footer-grid" style="display:grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap:48px; margin-bottom:56px;">
+      <div>
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+          <img src="/images/logo-nav-hvid.webp?v=2" alt="Vores Hjem" style="height:56px; width:auto; display:block; ">
+        </div>
+        <p style="font-size:14px; color:rgba(255,255,255,0.45); line-height:1.6;">Mere ro i hverdagen, for hele familien.</p>
+      </div>
+      <div>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Informationssider</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <a href="https://www.voreshjem.dk" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Forside</a>
+          <a href="https://www.voreshjem.dk/support" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Support</a>
+          <a href="https://www.voreshjem.dk/hvordan-sletter-man-sin-konto" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Slet konto</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Sociale Medier</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <a href="https://www.facebook.com/share/1DAnAoAjhW/?mibextid=wwXIfr" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Facebook</a>
+          <a href="https://www.instagram.com/voreshjemdanmark?igsh=N211MjhjZXBxNjd3" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Instagram</a>
+          <a href="https://www.linkedin.com/company/vores-hjem/" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">LinkedIn</a>
+          <a href="https://www.voreshjem.dk/blog" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Blog</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Politikker</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <a href="https://www.iubenda.com/privacy-policy/85951957" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Privatlivspolitik</a>
+          <a href="https://www.iubenda.com/privacy-policy/85951957/cookie-policy" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Cookiepolitik</a>
+          <a href="https://www.iubenda.com/vilkar-og-betingelser/85951957" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Vilkår og betingelser</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+      <p style="font-size:12px; color:rgba(255,255,255,0.3);">© 2026 Vores Hjem I/S · CVR 45804445 · Alle rettigheder forbeholdes.</p>
+      <a href="https://backend.voreshjem.dk" target="_blank" rel="nofollow noopener" style="font-size:12px; color:rgba(255,255,255,0.3); text-decoration:none; white-space:nowrap;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Medarbejder</a>
+      <p style="font-size:12px; color:rgba(255,255,255,0.3);">Bygget i Danmark 🇩🇰</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+const SECTIONS = ['kom-i-gang','kalender','opgaver','madplan','indkob','indstillinger'];
+const TABS = document.querySelectorAll('.tab');
+
+function goTo(id, btn) {
+  TABS.forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.scrollY - 68 - 50 - 20;
+  window.scrollTo({ top, behavior: 'smooth' });
+}
+
+window.addEventListener('scroll', () => {
+  const offset = 68 + 50 + 60;
+  let cur = SECTIONS[0];
+  SECTIONS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.getBoundingClientRect().top <= offset) cur = id;
+  });
+  TABS.forEach((t, i) => t.classList.toggle('active', SECTIONS[i] === cur));
+}, { passive: true });
+
+function openContactModal() {
+  document.getElementById('contact-modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeContactModal() {
+  document.getElementById('contact-modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeContactModalOutside(e) {
+  if (e.target === document.getElementById('contact-modal-overlay')) closeContactModal();
+}
+async function submitContact() {
+  const name = document.getElementById('c-name').value.trim();
+  const email = document.getElementById('c-email').value.trim();
+  const msg = document.getElementById('c-msg').value.trim();
+  const err = document.getElementById('contact-error');
+  err.style.display = 'none';
+  if (!name || !email || !msg) { err.textContent = 'Udfyld venligst alle felter.'; err.style.display = 'block'; return; }
+  const btn = document.getElementById('contact-submit-btn');
+  btn.disabled = true; btn.textContent = 'Sender…';
+  try {
+    await fetch('https://hook.eu1.make.com/o4qv702raknh1ar1oo8iwpdpeeatbn4r', {
+      method: 'POST', mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ name, email, message: msg })
+    });
+    document.getElementById('contact-form-wrap').style.display = 'none';
+    document.getElementById('contact-success').style.display = 'flex';
+  } catch(e) {
+    btn.disabled = false; btn.textContent = 'Send besked';
+    err.textContent = 'Noget gik galt. Prøv igen eller skriv til kontakt@vores-hjem.dk';
+    err.style.display = 'block';
+  }
+}
+
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const open = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  if (!open) item.classList.add('open');
+}
+</script>
+
+<!-- CONTACT MODAL -->
+<div id="contact-modal-overlay" onclick="closeContactModalOutside(event)">
+  <div class="contact-modal">
+    <button class="contact-modal-close" onclick="closeContactModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <div id="contact-form-wrap">
+      <h3>Skriv til os</h3>
+      <p>Vi svarer inden for 24 timer på hverdage.</p>
+      <div class="contact-field"><label for="c-name">Navn</label><input type="text" id="c-name" placeholder="Dit navn"></div>
+      <div class="contact-field"><label for="c-email">E-mail</label><input type="email" id="c-email" placeholder="din@email.dk"></div>
+      <div class="contact-field"><label for="c-msg">Besked</label><textarea id="c-msg" rows="4" placeholder="Hvad handler det om?"></textarea></div>
+      <p class="contact-error" id="contact-error"></p>
+      <button class="contact-submit" id="contact-submit-btn" onclick="submitContact()">Send besked</button>
+    </div>
+    <div class="contact-success" id="contact-success">
+      <div class="contact-success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <h4>Besked sendt!</h4>
+      <p>Vi vender tilbage til dig hurtigst muligt.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SVÆVENDE HENT-KNAP -->
+<style>
+  .hent-flyd{
+    position:fixed; right:22px; bottom:22px; z-index:9000;
+    display:inline-flex; align-items:center; gap:10px;
+    padding:15px 22px; border-radius:99px; text-decoration:none;
+    background:linear-gradient(110deg,#6C47FF,#4F7BFF 58%,#EC4899);
+    color:#fff; font-weight:800; font-size:15.5px; letter-spacing:-.01em;
+    font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+    box-shadow:0 14px 34px -10px rgba(108,71,255,.75);
+    opacity:0; transform:translateY(16px); pointer-events:none;
+    transition:opacity .3s ease, transform .3s ease, box-shadow .2s ease;
+  }
+  .hent-flyd.vis{ opacity:1; transform:none; pointer-events:auto; }
+  .hent-flyd:hover{ box-shadow:0 18px 44px -10px rgba(108,71,255,.9); }
+  .hent-flyd svg{ flex:none; }
+  /* Chatboblen sidder i højre hjørne, så knappen rykker op over den */
+  @media(min-width:721px){ .hent-flyd{ bottom:96px; } }
+  @media(max-width:720px){
+    .hent-flyd{ right:14px; bottom:84px; padding:13px 18px; font-size:14.5px; }
+    .hent-flyd .lang{ display:none; }
+  }
+</style>
+
+<a class="hent-flyd" id="hent-flyd" href="/hent/" data-sted="flydeknap">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/>
+  </svg>
+  <span>Hent appen<span class="lang"> nu</span></span>
+</a>
+
+<script>
+(function(){
+  var k = document.getElementById('hent-flyd');
+  if (!k) return;
+  // Knappen kommer først frem, når man er kommet lidt ned, så den ikke
+  // dækker for det første indtryk af forsiden.
+  // Wix lægger siden i en iframe. Et element med position:fixed inde i en
+  // iframe hænger fast i iframens egen ramme, ikke i browservinduet, så
+  // knappen ville sidde et tilfældigt sted nede på siden. Inde i en iframe
+  // skjuler vi den, og så står den svævende knap i Wix' egen kode i stedet.
+  var iRamme = false;
+  try { iRamme = window.self !== window.top; } catch (e) { iRamme = true; }
+  if (iRamme) { k.remove(); return; }
+
+  function tjek(){
+    if (window.scrollY > 420) k.classList.add('vis');
+    else k.classList.remove('vis');
+  }
+  window.addEventListener('scroll', tjek, {passive:true});
+  tjek();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Interne arbejdsfiler, som ikke er sider for besoegende
+Disallow: /flyer.html
+Disallow: /brand-guideline.html
+Disallow: /reklame_1.html
+Disallow: /graphify-out/
+
+Sitemap: https://www.voreshjem.dk/sitemap.xml

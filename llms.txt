@@ -1,0 +1,40 @@
+# Vores Hjem
+
+> Dansk familieapp der samler hele husstandens hverdag: fælles kalender, madplan, indkøbsliste og opgaver med point og lommepenge til børnene. Op til 7 personer pr. konto. 39 kr om måneden eller 199 kr for et halvt år. 14 dage gratis, ingen binding. Findes til iPhone og Android. Bygget i Danmark.
+
+## Hvad appen gør
+
+- Kalender: alle familiens aftaler ét sted, med farver pr. person og påmindelser
+- Madplan: ugens mad planlagt på forhånd, med forslag ud fra det I har i køkkenet
+- Indkøbsliste: én fælles liste, alle kan tilføje og krydse af
+- Opgaver: børnene får point for opgaver, som kan blive til lommepenge
+- Vagter: skriv vagter ind og se hvad de giver i løn
+
+## Sider
+
+- [Forsiden](https://www.voreshjem.dk/): overblik og download
+- [Kalender](https://www.voreshjem.dk/kalender)
+- [Madplan](https://www.voreshjem.dk/madplan)
+- [Opgaver og lommepenge](https://www.voreshjem.dk/opgaver)
+- [Indkøbsliste](https://www.voreshjem.dk/indkobsliste)
+- [Blog](https://www.voreshjem.dk/blog): råd om familiens hverdag
+- [Support](https://www.voreshjem.dk/support)
+- [Hent appen](https://www.voreshjem.dk/hent/)
+- [Presse](https://www.voreshjem.dk/presse/): omtale i medierne, fakta og kontakt til journalister
+
+## Fakta
+
+- Pris: 39 kr/md eller 199 kr/halvår, 14 dage gratis
+- Personer pr. konto: op til 7
+- Platforme: iOS og Android
+- Sprog: dansk (tysk udgave: Unser Zuhause)
+- Land: Danmark
+
+## Omtale
+
+- 17. september 2026, recordere.dk: [Ny dansk familie-app vil samle kalender, madplan og opgaver i ét sted](https://www.recordere.dk/2026/09/ny-dansk-familie-app-vil-samle-kalender-madplan-og-opgaver-i-et-sted/)
+
+## Stiftere
+
+- Tre stiftere fra Middelfart: Nicko Skovgaard, Haris og Brigitte Skovgaard
+- Kontakt: kontakt@vores-hjem.dk

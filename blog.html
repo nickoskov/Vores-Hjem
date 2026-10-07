@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+
+<!-- Forbinder tidligt til de eksterne tjenester sporingen bruger, saa selve
+     handshaket (DNS+TLS) er overstaaet, naar scriptet faktisk skal hente dem. -->
+<link rel="preconnect" href="https://cdn.iubenda.com">
+<link rel="preconnect" href="https://embeds.iubenda.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="preconnect" href="https://connect.facebook.net">
+<link rel="preconnect" href="https://bzrcdn.openai.com" crossorigin>
+<link rel="preconnect" href="https://voreshjem-bot.netlify.app">
+
+<!-- ══ SPORING ══ Skal ligge oeverst i <head> paa alle sider.
+     Alt startes fra ét script, som foerst tjekker, om siden vises for sig selv.
+     Inde i en ramme starter INTET, saa der aldrig staar to cookiebannere oven paa
+     hinanden. Raekkefoelgen er ikke tilfaeldig: samtykketilstanden saettes,
+     FOER noget andet loader.
+     16. sept. 2026: Google Tag Manager fjernet (containeren var tom og kostede
+     115 KB). Meta og OpenAI starter foerst, naar den besoegende siger ja til
+     markedsfoering i cookiebanneret. -->
+<script>
+(function () {
+  var iRamme = false;
+  try { iRamme = window.self !== window.top; } catch (e) { iRamme = true; }
+  if (iRamme) return;
+
+  /* 1. Samtykketilstand. Alt er afvist, indtil brugeren siger ja. */
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function () { dataLayer.push(arguments); };
+  gtag('consent', 'default', {
+    'ad_storage': 'denied', 'ad_user_data': 'denied', 'ad_personalization': 'denied',
+    'analytics_storage': 'denied', 'functionality_storage': 'granted', 'security_storage': 'granted',
+    'wait_for_update': 500
+  });
+  gtag('set', 'ads_data_redaction', true);
+  gtag('set', 'url_passthrough', true);
+
+  /* scripts indsaettes i raekkefoelge, ét ad gangen */
+  function hent(src, valg) {
+    var s = document.createElement('script'); s.src = src; s.async = false;
+    if (valg && valg.charset) s.charset = valg.charset;
+    document.head.appendChild(s); return s;
+  }
+
+  /* 2. Cookiebanner, iubenda. siteId 4517758, cookiePolicyId 85951957. */
+  hent('https://embeds.iubenda.com/widgets/c4881ab1-9037-47e2-b5ce-d1950889d637.js');
+  hent('https://cdn.iubenda.com/cs/gpp/stub.js');
+  hent('https://cdn.iubenda.com/cs/iubenda_cs.js', { charset: 'UTF-8' });
+
+  /* 3. Google Analytics 4. Maaler kun, naar samtykket er givet. */
+  hent('https://www.googletagmanager.com/gtag/js?id=G-ZFW1KE91LV');
+  gtag('js', new Date());
+  gtag('config', 'G-ZFW1KE91LV');
+
+  /* 3b. Google Ads. Der er ingen Ads-kode endnu. Naar I opretter en konvertering
+         i Google Ads, faar I et id som AW-123456789. Saet det ind og fjern //
+     gtag('config', 'AW-XXXXXXXXX'); */
+
+  /* 4. Markedsfoering: Meta-pixel og OpenAI. Hentes foerst, naar cookiebanneret
+        melder ja til markedsfoering (ad_storage granted). Siger den besoegende nej,
+        hentes de slet ikke. Har den besoegende sagt ja tidligere, melder banneret
+        det med det samme, og de starter straks. */
+  var reklameStartet = false;
+  function startReklame() {
+    if (reklameStartet) return; reklameStartet = true;
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '697476623339056');
+    fbq('track', 'PageView');
+
+    !function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};
+    q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;
+    var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}
+    (window,document,'script','https://bzrcdn.openai.com/sdk/oaiq.min.js');
+    oaiq('init', { pixelId: 'QZwgYr1hiBh3USt1vsSytt', debug: false });
+  }
+  /* Banneret skriver sit svar i dataLayer. Vi kigger kun paa nye linjer. */
+  var set = 0, vagt = setInterval(function () {
+    for (; set < dataLayer.length; set++) {
+      var a = dataLayer[set];
+      if (a && a[0] === 'consent' && a[2] && a[2].ad_storage === 'granted') {
+        startReklame(); clearInterval(vagt); return;
+      }
+    }
+  }, 400);
+
+  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>,
+     saa de venter til siden er laest faerdig. Hent-knappens script taeller ogsaa
+     besoeget til backenden, uden cookies. */
+  function naarKlar(fn) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
+  naarKlar(function () {
+    hent('https://voreshjem-bot.netlify.app/widget.js');
+    hent('https://voreshjem-bot.netlify.app/hentknap.js');
+  });
+})();
+</script>
+<!-- ══ SPORING SLUT ══ -->
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog om familiens hverdag | Vores Hjem</title>
+<link rel="canonical" href="https://www.voreshjem.dk/blog">
+<meta name="description" content="Gode råd om familiens hverdag. Om kalender, madplan, opgaver og rutiner, der gør ugen lettere for hele husstanden.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Blog | Vores Hjem">
+<meta property="og:description" content="Gode råd om familiens hverdag. Om kalender, madplan, opgaver og rutiner, der gør ugen lettere for hele husstanden.">
+<meta property="og:url" content="https://www.voreshjem.dk/blog">
+<meta property="og:image" content="https://www.voreshjem.dk/images/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>@font-face{font-family:'Plus Jakarta Sans';font-style:normal;font-weight:200 800;font-display:swap;src:url(/fonts/plus-jakarta-sans-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Blog", "name": "Vores Hjem, bloggen", "description": "Gode råd om familiens hverdag, kalender, madplan og rutiner.", "url": "https://www.voreshjem.dk/blog", "blogPost": [{"@type": "BlogPosting", "headline": "Anmeldelse af danske familieapps: Hvad virker?", "datePublished": "2026-09-07", "url": "https://www.voreshjem.dk/post/anmeldelse-af-danske-familieapps-hvad-virker"}, {"@type": "BlogPosting", "headline": "Organisér familiens hverdagsrutiner", "datePublished": "2026-09-05", "url": "https://www.voreshjem.dk/post/organiser-familiens-hverdagsrutiner"}, {"@type": "BlogPosting", "headline": "Hvordan fungerer familiepoint i hverdagen?", "datePublished": "2026-09-03", "url": "https://www.voreshjem.dk/post/hvordan-fungerer-familiepoint-i-hverdagen"}, {"@type": "BlogPosting", "headline": "Familieapp sammenligning for en roligere hverdag", "datePublished": "2026-09-01", "url": "https://www.voreshjem.dk/post/familieapp-sammenligning-for-en-roligere-hverdag"}, {"@type": "BlogPosting", "headline": "Børneopgaver og belønning i en travl hverdag", "datePublished": "2026-08-30", "url": "https://www.voreshjem.dk/post/boerneopgaver-og-beloenning-i-en-travl-hverdag"}, {"@type": "BlogPosting", "headline": "Børnepoint til daglige opgaver med god mening", "datePublished": "2026-08-28", "url": "https://www.voreshjem.dk/post/boernepoint-til-daglige-opgaver-med-god-mening"}, {"@type": "BlogPosting", "headline": "Kan børn optjene lommepenge hjemme hver uge?", "datePublished": "2026-08-26", "url": "https://www.voreshjem.dk/post/kan-boern-optjene-lommepenge-hjemme-hver-uge"}, {"@type": "BlogPosting", "headline": "Guide til børns huslige ansvar i hverdagen", "datePublished": "2026-08-24", "url": "https://www.voreshjem.dk/post/guide-til-boerns-huslige-ansvar-i-hverdagen"}, {"@type": "BlogPosting", "headline": "Bedste apps til familielogistik i en travl hverdag", "datePublished": "2026-08-22", "url": "https://www.voreshjem.dk/post/bedste-apps-til-familielogistik-i-en-travl-hverdag"}, {"@type": "BlogPosting", "headline": "Begynderguide til digital husstandsplanlægning", "datePublished": "2026-08-20", "url": "https://www.voreshjem.dk/post/begynderguide-til-digital-husstandsplanlaegning"}, {"@type": "BlogPosting", "headline": "Alternativ til papir familiekalender for familien", "datePublished": "2026-08-18", "url": "https://www.voreshjem.dk/post/alternativ-til-papir-familiekalender-for-familien"}, {"@type": "BlogPosting", "headline": "Del ansvar mellem forældre uden flere påmindelser", "datePublished": "2026-08-16", "url": "https://www.voreshjem.dk/post/del-ansvar-mellem-foraeldre-uden-flere-paamindelser"}, {"@type": "BlogPosting", "headline": "Familieapp med gratis prøveperiode i 14 dage", "datePublished": "2026-08-14", "url": "https://www.voreshjem.dk/post/familieapp-med-gratis-proeveperiode-i-14-dage"}, {"@type": "BlogPosting", "headline": "Sådan kan familien mindske mental load hjemme", "datePublished": "2026-08-12", "url": "https://www.voreshjem.dk/post/saadan-kan-familien-mindske-mental-load-hjemme"}, {"@type": "BlogPosting", "headline": "Opgaveapp til familien giver ro i hverdagen", "datePublished": "2026-08-10", "url": "https://www.voreshjem.dk/post/opgaveapp-til-familien-giver-ro-i-hverdagen"}, {"@type": "BlogPosting", "headline": "Sådan kan I fordele huslige pligter retfærdigt", "datePublished": "2026-08-09", "url": "https://www.voreshjem.dk/post/saadan-kan-i-fordele-huslige-pligter-retfaerdigt"}, {"@type": "BlogPosting", "headline": "Sådan undgår familien glemte indkøb hjemme", "datePublished": "2026-08-08", "url": "https://www.voreshjem.dk/post/saadan-undgaar-familien-glemte-indkoeb-hjemme"}, {"@type": "BlogPosting", "headline": "Sådan deler du indkøbsliste med familien", "datePublished": "2026-08-07", "url": "https://www.voreshjem.dk/post/saadan-deler-du-indkoebsliste-med-familien"}, {"@type": "BlogPosting", "headline": "Fælles indkøbsliste app til en lettere hverdag", "datePublished": "2026-08-06", "url": "https://www.voreshjem.dk/post/faelles-indkoebsliste-app-til-en-lettere-hverdag"}, {"@type": "BlogPosting", "headline": "Ugentlig madplan til børnefamilie med mindre bøvl", "datePublished": "2026-08-05", "url": "https://www.voreshjem.dk/post/ugentlig-madplan-til-boernefamilie-med-mindre-boevl"}, {"@type": "BlogPosting", "headline": "Hvordan laver man en madplan for familien?", "datePublished": "2026-08-04", "url": "https://www.voreshjem.dk/post/hvordan-laver-man-en-madplan-for-familien"}, {"@type": "BlogPosting", "headline": "Madplan app til familie giver ro om aftensmaden", "datePublished": "2026-08-03", "url": "https://www.voreshjem.dk/post/madplan-app-til-familie-giver-ro-om-aftensmaden"}, {"@type": "BlogPosting", "headline": "Familiekalender for travle forældre med overblik", "datePublished": "2026-08-02", "url": "https://www.voreshjem.dk/post/familiekalender-for-travle-foraeldre-med-overblik"}, {"@type": "BlogPosting", "headline": "Koordinere børnenes fritidsaktiviteter uden kaos", "datePublished": "2026-08-01", "url": "https://www.voreshjem.dk/post/koordinere-boernenes-fritidsaktiviteter-uden-kaos"}, {"@type": "BlogPosting", "headline": "App til at samle familiens aftaler ét sted", "datePublished": "2026-07-31", "url": "https://www.voreshjem.dk/post/app-til-at-samle-familiens-aftaler-et-sted"}, {"@type": "BlogPosting", "headline": "Delt kalender familie giver ro i hverdagen", "datePublished": "2026-07-30", "url": "https://www.voreshjem.dk/post/delt-kalender-familie-giver-ro-i-hverdagen"}, {"@type": "BlogPosting", "headline": "Familieapp til mere ro i en travl hverdag", "datePublished": "2026-07-28", "url": "https://www.voreshjem.dk/post/familie-app-til-mere-ro-i-en-travl-hverdag"}, {"@type": "BlogPosting", "headline": "Fælles familiekalender giver ro i hverdagen", "datePublished": "2026-07-28", "url": "https://www.voreshjem.dk/post/faelles-familiekalender-giver-ro-i-hverdagen"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Forsiden", "item": "https://www.voreshjem.dk"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.voreshjem.dk/blog"}]}</script>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --purple: #6C47FF;
+  --purple-light: #8B6AFF;
+  --blue: #3B82F6;
+  --pink: #EC4899;
+  --success: #10B981;
+  --gradient: linear-gradient(135deg, #6C47FF 0%, #3B82F6 55%, #EC4899 100%);
+  --bg: #FFFFFF;
+  --bg-subtle: #F8F7FF;
+  --bg-muted: #F1F0FA;
+  --text: #0F0E1A;
+  --text-secondary: #5E5A7A;
+  --text-muted: #9B97B5;
+  --border: #E8E5FF;
+  --font: 'Plus Jakarta Sans', sans-serif;
+  --radius: 16px;
+  --shadow: 0 8px 32px rgba(108,71,255,0.12);
+  --shadow-lg: 0 24px 80px rgba(108,71,255,0.18);
+}
+
+html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100%; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+/* ─── NAV ─── */
+nav {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(255,255,255,0.75);
+  border-bottom: 1px solid rgba(108,71,255,0.08);
+}
+/* Chrome-fix: blur på lag BAG indholdet (Chromium-bug: børn af backdrop-filter renderes tilfældigt ikke) */
+nav::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+}
+.nav-logo img { transform: translateZ(0); }
+
+.nav-inner { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+.nav-logo { display: flex; align-items: center; gap: 10px; }
+.logo-icon {
+  width: 36px; height: 36px;
+  background: var(--gradient);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+}
+.logo-icon svg { width: 18px; height: 18px; color: #fff; }
+.logo-text { font-size: 17px; font-weight: 800; color: var(--text); }
+.logo-text span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+/* ─── HERO ─── */
+.contact-hero {
+  background: linear-gradient(160deg, #F8F7FF 0%, #EEF0FF 50%, #F5F0FF 100%);
+  padding: 100px 0 80px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.contact-hero::before {
+  content: '';
+  position: absolute; top: -200px; right: -200px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(108,71,255,0.12), transparent 65%);
+  pointer-events: none;
+}
+.contact-hero::after {
+  content: '';
+  position: absolute; bottom: -150px; left: -150px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(236,72,153,0.1), transparent 65%);
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 16px;
+  background: rgba(108,71,255,0.08);
+  border: 1px solid rgba(108,71,255,0.18);
+  border-radius: 100px;
+  font-size: 13px; font-weight: 600; color: var(--purple);
+  margin-bottom: 24px;
+}
+.contact-hero h1 {
+  font-size: clamp(42px, 6vw, 72px);
+  font-weight: 800;
+  letter-spacing: -2.5px;
+  line-height: 1.08;
+  color: var(--text);
+  margin-bottom: 20px;
+  position: relative; z-index: 1;
+}
+.contact-hero h1 {
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.contact-hero p {
+  font-size: 19px;
+  color: var(--text-secondary);
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.65;
+  position: relative; z-index: 1;
+}
+
+/* ─── MAIN LAYOUT ─── */
+.contact-main {
+  padding: 80px 0 120px;
+}
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 60px;
+  align-items: start;
+}
+
+/* ─── LEFT: INFO ─── */
+.contact-info { display: flex; flex-direction: column; gap: 12px; }
+
+.info-card {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px 28px;
+  display: flex; align-items: flex-start; gap: 16px;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.info-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+.info-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.info-icon svg { width: 20px; height: 20px; }
+.info-card-text h3 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.info-card-text p { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
+.info-card-text a { color: var(--purple); font-weight: 600; }
+.info-card-text a:hover { text-decoration: underline; }
+
+.response-note {
+  margin-top: 8px;
+  background: rgba(16,185,129,0.07);
+  border: 1px solid rgba(16,185,129,0.2);
+  border-radius: 14px;
+  padding: 14px 18px;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: #065f46; font-weight: 600;
+}
+.response-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--success); flex-shrink: 0;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.7)} }
+
+/* ─── RIGHT: FORM BOX ─── */
+.form-box {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 48px 44px;
+  box-shadow: var(--shadow-lg);
+}
+.form-box-header { margin-bottom: 32px; }
+.form-box-header h2 { font-size: 26px; font-weight: 800; letter-spacing: -0.8px; margin-bottom: 8px; }
+.form-box-header p { font-size: 15px; color: var(--text-secondary); }
+
+/* ─── FORM FIELDS ─── */
+.field { margin-bottom: 18px; }
+.field label { display: block; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 7px; }
+.field input, .field textarea, .field select {
+  width: 100%; padding: 13px 16px;
+  background: var(--bg-subtle); border: 1.5px solid var(--border);
+  border-radius: 12px; font-family: var(--font); font-size: 15px; color: var(--text);
+  transition: border-color 0.2s, box-shadow 0.2s; outline: none; resize: none;
+}
+.field input:focus, .field textarea:focus, .field select:focus {
+  border-color: var(--purple); box-shadow: 0 0 0 3px rgba(108,71,255,0.1);
+  background: #fff;
+}
+.field textarea { min-height: 130px; line-height: 1.6; }
+.field input::placeholder, .field textarea::placeholder { color: var(--text-muted); }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+.submit-btn {
+  width: 100%; padding: 16px;
+  background: var(--gradient); color: #fff;
+  border: none; border-radius: 14px; cursor: pointer;
+  font-family: var(--font); font-size: 16px; font-weight: 700;
+  box-shadow: 0 4px 24px rgba(108,71,255,0.4);
+  transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 36px rgba(108,71,255,0.5); }
+.submit-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+.form-success {
+  display: none; text-align: center; padding: 40px 24px;
+  background: rgba(16,185,129,0.06); border: 1.5px solid rgba(16,185,129,0.2);
+  border-radius: 16px;
+}
+.form-success-icon {
+  width: 56px; height: 56px; border-radius: 16px;
+  background: rgba(16,185,129,0.12);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+}
+.form-success-icon svg { width: 26px; height: 26px; color: var(--success); }
+.form-success h3 { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.form-success p { font-size: 14px; color: var(--text-secondary); }
+
+.form-error {
+  display: none; padding: 12px 16px; margin-bottom: 16px;
+  background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 10px; font-size: 13px; color: #b91c1c; font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .field-row { grid-template-columns: 1fr; }
+}
+
+/* ─── FAQ ─── */
+.faq-section {
+  padding: 80px 0;
+  background: linear-gradient(160deg, #F8F7FF 0%, #EEF0FF 50%, #F5F0FF 100%);
+  border-top: 1px solid var(--border);
+}
+.faq-section h2 {
+  font-size: 36px; font-weight: 800; letter-spacing: -1px;
+  color: var(--text); margin-bottom: 8px;
+}
+.faq-section .section-sub {
+  font-size: 16px; color: var(--text-secondary); margin-bottom: 48px;
+}
+.faq-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start;
+}
+.faq-item {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 18px; padding: 24px 28px;
+  cursor: pointer; transition: box-shadow 0.2s, transform 0.2s;
+}
+.faq-item:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+.faq-q {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  font-size: 16px; font-weight: 700; color: var(--text);
+}
+.faq-q svg { width: 18px; height: 18px; color: var(--purple); flex-shrink: 0; transition: transform 0.2s; }
+.faq-item.open .faq-q svg { transform: rotate(45deg); }
+.faq-a {
+  display: none; margin-top: 14px; padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 14px; color: var(--text-secondary); line-height: 1.65;
+}
+.faq-a a { color: var(--purple); font-weight: 600; }
+.faq-item.open .faq-a { display: block; }
+
+/* ─── ABO HJÆLP ─── */
+.abo-section {
+  padding: 80px 0;
+  background: #fff;
+  border-top: 1px solid var(--border);
+}
+.abo-section h2 {
+  font-size: 36px; font-weight: 800; letter-spacing: -1px;
+  color: var(--text); margin-bottom: 8px;
+}
+.abo-section .section-sub {
+  font-size: 16px; color: var(--text-secondary); margin-bottom: 48px;
+}
+.abo-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+.abo-card {
+  background: var(--bg-subtle); border: 1px solid var(--border);
+  border-radius: 20px; padding: 28px 24px;
+}
+.abo-icon {
+  width: 48px; height: 48px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+}
+.abo-icon svg { width: 22px; height: 22px; }
+.abo-card h3 { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.abo-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+.abo-card a { color: var(--purple); font-weight: 600; }
+
+@media (max-width: 900px) {
+  .faq-grid { grid-template-columns: 1fr; }
+  .abo-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .faq-section, .abo-section { padding: 56px 0; }
+  .faq-section h2, .abo-section h2 { font-size: 28px; }
+}
+
+/* ─── BOTTOM STRIP ─── */
+.bottom-strip {
+  background: var(--bg-subtle);
+  border-top: 1px solid var(--border);
+  padding: 28px 0;
+}
+.bottom-strip-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.bottom-strip-left { font-size: 13px; color: var(--text-muted); }
+.bottom-strip-right { display: flex; gap: 24px; }
+.bottom-strip-right a { font-size: 13px; color: var(--text-muted); transition: color 0.2s; }
+.bottom-strip-right a:hover { color: var(--purple); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+  .form-box { padding: 36px 28px; }
+}
+@media (max-width: 600px) {
+  .contact-hero { padding: 72px 0 60px; }
+  .contact-hero h1 { letter-spacing: -1.5px; }
+  .contact-main { padding: 48px 0 80px; }
+  .container { padding: 0 20px; }
+  .form-box { padding: 28px 20px; }
+  .bottom-strip-right { gap: 16px; }
+}
+
+
+/* ─── BLOGOVERSIGT ─── */
+.bo-top { padding: 88px 0 48px; text-align: center; }
+.bo-top h1 { font-size: clamp(38px, 6vw, 60px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; }
+.bo-top h1 span { background: var(--gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.bo-top p { margin: 18px auto 0; max-width: 560px; font-size: 18px; color: var(--text-secondary); }
+.bo-antal { display:inline-block; margin-top:22px; padding:7px 16px; border-radius:999px;
+            background: var(--bg-muted); color: var(--text-secondary); font-size:13px; font-weight:600; }
+
+.bo-net { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; padding-bottom: 96px; }
+.bk { display:flex; flex-direction:column; background: var(--bg); border:1px solid var(--border);
+      border-radius: var(--radius); overflow:hidden; transition: transform .25s, box-shadow .25s, border-color .25s; }
+.bk:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: var(--purple-light); }
+.bk-ramme { aspect-ratio: 3/2; overflow:hidden; background: var(--bg-muted); }
+.bk-bil { width:100%; height:100%; object-fit:cover; display:block; transition: transform .4s; }
+.bk:hover .bk-bil { transform: scale(1.04); }
+.bk-tom { display:flex; align-items:center; justify-content:center;
+           background: linear-gradient(135deg, #F3F0FF 0%, #EDF2FF 55%, #FDF0F7 100%); }
+.bk-tom svg { width:54px; height:54px; color: var(--purple); opacity:.34; }
+.bk-ind { padding: 24px; display:flex; flex-direction:column; flex:1; }
+.bk-dato { font-size:12px; font-weight:700; color: var(--text-muted); text-transform:uppercase; letter-spacing:.05em; }
+.bk-titel { margin-top:10px; font-size:19px; font-weight:700; line-height:1.35; letter-spacing:-0.01em; }
+.bk-tekst { margin-top:10px; font-size:14.5px; color: var(--text-secondary); line-height:1.6; flex:1;
+            display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+.bk-mere { margin-top:18px; display:inline-flex; align-items:center; gap:6px;
+           font-size:14px; font-weight:700; color: var(--purple); }
+.bk-mere svg { width:14px; height:14px; transition: transform .2s; }
+.bk:hover .bk-mere svg { transform: translateX(3px); }
+
+@media (max-width: 940px) { .bo-net { grid-template-columns: repeat(2, 1fr); gap: 22px; } }
+@media (max-width: 620px) { .bo-net { grid-template-columns: 1fr; } .bo-top { padding: 56px 0 36px; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <div class="nav-inner">
+      <a href="https://www.voreshjem.dk" target="_top" class="nav-logo">
+        <img src="/images/logo-nav.webp?v=2" alt="Vores Hjem" style="height:58px;width:auto;display:block;">
+      </a>
+      <a href="https://www.voreshjem.dk" target="_top" style="display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:700;color:var(--text-secondary);transition:color 0.2s;" onmouseover="this.style.color='#6C47FF'" onmouseout="this.style.color='#5E5A7A'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:15px;height:15px;"><polyline points="15 18 9 12 15 6"/></svg>
+        Tilbage til forsiden
+      </a>
+    </div>
+  </div>
+</nav>
+
+<header class="bo-top">
+  <div class="container">
+    <h1>Fra <span>bloggen</span></h1>
+    <p>Gode råd om familiens hverdag. Om kalender, madplan, opgaver og de rutiner, der gør ugen lettere for hele husstanden.</p>
+    <div class="bo-antal">28 indlæg</div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <div class="bo-net">
+      <a class="bk" href="/post/anmeldelse-af-danske-familieapps-hvad-virker">
+        <div class="bk-ramme"><img src="https://www.voreshjem.dk/images/blog/w84fef20b98.webp" alt="Anmeldelse af danske familieapps: Hvad virker?" class="bk-bil"></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-09-07">7. september 2026</time>
+          <h2 class="bk-titel">Anmeldelse af danske familieapps: Hvad virker?</h2>
+          <p class="bk-tekst">Mandag klokken 16.12: Et barn skal til svømning, der mangler mælk, og ingen kan huske, hvem der skulle tage skraldet ud. Det er netop i de små...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/organiser-familiens-hverdagsrutiner">
+        <div class="bk-ramme"><img src="https://www.voreshjem.dk/images/blog/w4c0deb3b3f.webp" alt="Organisér familiens hverdagsrutiner" class="bk-bil"></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-09-05">5. september 2026</time>
+          <h2 class="bk-titel">Organisér familiens hverdagsrutiner</h2>
+          <p class="bk-tekst">Det er sjældent én stor ting, der får en familiehverdag til at vælte. Det er beskeden om gymnastiktøj, der først bliver set klokken 21. Den manglende...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/hvordan-fungerer-familiepoint-i-hverdagen">
+        <div class="bk-ramme"><img src="https://www.voreshjem.dk/images/blog/w72ab3b1066.webp" alt="Hvordan fungerer familiepoint i hverdagen?" class="bk-bil"></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-09-03">3. september 2026</time>
+          <h2 class="bk-titel">Hvordan fungerer familiepoint i hverdagen?</h2>
+          <p class="bk-tekst">Når opvasken står, vasketøjet hober sig op, og ingen kan huske, hvem der egentlig skulle fodre katten, kan små konflikter hurtigt fylde mere end selve...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/familieapp-sammenligning-for-en-roligere-hverdag">
+        <div class="bk-ramme"><img src="https://www.voreshjem.dk/images/blog/w566b07e63c.webp" alt="Familieapp sammenligning for en roligere hverdag" class="bk-bil"></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-09-01">1. september 2026</time>
+          <h2 class="bk-titel">Familieapp sammenligning for en roligere hverdag</h2>
+          <p class="bk-tekst">Mandag klokken 16.20: Ét barn skal hentes, et andet skal til fritidsaktivitet, der mangler mælk, og ingen kan helt huske, hvem der egentlig skulle lave...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/boerneopgaver-og-beloenning-i-en-travl-hverdag">
+        <div class="bk-ramme"><img src="https://www.voreshjem.dk/images/blog/w703d9637ce.webp" alt="Børneopgaver og belønning i en travl hverdag" class="bk-bil"></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-08-30">30. august 2026</time>
+          <h2 class="bk-titel">Børneopgaver og belønning i en travl hverdag</h2>
+          <p class="bk-tekst">Klokken er 16.42, skoletaskerne står i entréen, og nogen spørger, hvad der er til aftensmad. Det er sjældent på det tidspunkt, en lang diskussion om at...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/boernepoint-til-daglige-opgaver-med-god-mening">
+        <div class="bk-ramme"><img src="https://www.voreshjem.dk/images/blog/wa78f0aae02.webp" alt="Børnepoint til daglige opgaver med god mening" class="bk-bil"></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-08-28">28. august 2026</time>
+          <h2 class="bk-titel">Børnepoint til daglige opgaver med god mening</h2>
+          <p class="bk-tekst">Når skoletasken stadig står i gangen, tandbørstningen trækker ud, og opvaskemaskinen er fuld efter aftensmad, kan børnepoint til daglige opgaver virke...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/kan-boern-optjene-lommepenge-hjemme-hver-uge">
+        <div class="bk-ramme"><img src="https://www.voreshjem.dk/images/blog/we816a88254.webp" alt="Kan børn optjene lommepenge hjemme hver uge?" class="bk-bil" loading="lazy" decoding="async"></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-08-26">26. august 2026</time>
+          <h2 class="bk-titel">Kan børn optjene lommepenge hjemme hver uge?</h2>
+          <p class="bk-tekst">Når den samme vasketøjskurv står fyldt, mens alle skynder sig videre til skole, arbejde og fritidsaftaler, er det let at få følelsen af, at alt ansvar...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/guide-til-boerns-huslige-ansvar-i-hverdagen">
+        <div class="bk-ramme"><img src="https://www.voreshjem.dk/images/blog/w3b81f1ce8e.webp" alt="Guide til børns huslige ansvar i hverdagen" class="bk-bil" loading="lazy" decoding="async"></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-08-24">24. august 2026</time>
+          <h2 class="bk-titel">Guide til børns huslige ansvar i hverdagen</h2>
+          <p class="bk-tekst">Når skoletasker står i gangen, aftensmaden skal på bordet, og nogen lige mangler et rent gymnastiksæt, kan huslige opgaver hurtigt blive endnu en ting,...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/bedste-apps-til-familielogistik-i-en-travl-hverdag">
+        <div class="bk-ramme"><img src="https://www.voreshjem.dk/images/blog/w6561bb7285.webp" alt="Bedste apps til familielogistik i en travl hverdag" class="bk-bil" loading="lazy" decoding="async"></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-08-22">22. august 2026</time>
+          <h2 class="bk-titel">Bedste apps til familielogistik i en travl hverdag</h2>
+          <p class="bk-tekst">Klokken er 16.42. Ét barn skal hentes, et andet har glemt at fortælle om en aktivitet i morgen, og der mangler mælk til morgenmaden. Det er sjældent de...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/begynderguide-til-digital-husstandsplanlaegning">
+        <div class="bk-ramme"><img src="https://www.voreshjem.dk/images/blog/w60c6767765.webp" alt="Begynderguide til digital husstandsplanlægning" class="bk-bil" loading="lazy" decoding="async"></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-08-20">20. august 2026</time>
+          <h2 class="bk-titel">Begynderguide til digital husstandsplanlægning</h2>
+          <p class="bk-tekst">Mandag klokken 16.30: Ét barn skal til svømning, et andet skal have gymnastiktøj med næste dag, og nogen skal stadig købe mælk. Det er sjældent én stor...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/alternativ-til-papir-familiekalender-for-familien">
+        <div class="bk-ramme"><img src="https://www.voreshjem.dk/images/blog/w91af7c4a6e.webp" alt="Alternativ til papir familiekalender for familien" class="bk-bil" loading="lazy" decoding="async"></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-08-18">18. august 2026</time>
+          <h2 class="bk-titel">Alternativ til papir familiekalender for familien</h2>
+          <p class="bk-tekst">Mandag morgen, og kalenderen på køleskabet siger én ting. En besked på telefonen siger noget andet. Barnet har fået en ny tid hos tandlægen,...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/del-ansvar-mellem-foraeldre-uden-flere-paamindelser">
+        <div class="bk-ramme"><img src="https://www.voreshjem.dk/images/blog/wb3f9136ae5.webp" alt="Del ansvar mellem forældre uden flere påmindelser" class="bk-bil" loading="lazy" decoding="async"></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-08-16">16. august 2026</time>
+          <h2 class="bk-titel">Del ansvar mellem forældre uden flere påmindelser</h2>
+          <p class="bk-tekst">Den ene husker, at der mangler skiftetøj. Den anden ved, hvornår der er forældremøde. Begge vil gerne hjælpe, men alligevel ender den samme person ofte...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/familieapp-med-gratis-proeveperiode-i-14-dage">
+        <div class="bk-ramme"><img src="https://www.voreshjem.dk/images/blog/w198bc58a2d.webp" alt="Familieapp med gratis prøveperiode i 14 dage" class="bk-bil" loading="lazy" decoding="async"></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-08-14">14. august 2026</time>
+          <h2 class="bk-titel">Familieapp med gratis prøveperiode i 14 dage</h2>
+          <p class="bk-tekst">Mandag klokken 16:42 bliver der ofte sendt den samme slags beskeder i mange familier: Hvem henter? Mangler vi mælk? Var det tirsdag eller torsdag, der...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/saadan-kan-familien-mindske-mental-load-hjemme">
+        <div class="bk-ramme"><img src="https://www.voreshjem.dk/images/blog/wd7a9d2c285.webp" alt="Sådan kan familien mindske mental load hjemme" class="bk-bil" loading="lazy" decoding="async"></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-08-12">12. august 2026</time>
+          <h2 class="bk-titel">Sådan kan familien mindske mental load hjemme</h2>
+          <p class="bk-tekst">Det er søndag aften. Madpakkerne skal huskes, der mangler mælk, et barn skal til fødselsdag, og nogen skal svare på beskeden fra skolen. Ingen af...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/opgaveapp-til-familien-giver-ro-i-hverdagen">
+        <div class="bk-ramme"><img src="https://www.voreshjem.dk/images/blog/w193421d423.webp" alt="Opgaveapp til familien giver ro i hverdagen" class="bk-bil" loading="lazy" decoding="async"></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-08-10">10. august 2026</time>
+          <h2 class="bk-titel">Opgaveapp til familien giver ro i hverdagen</h2>
+          <p class="bk-tekst">Mandag klokken 16.17: Én henter fra fritidsordning, én står i kø i supermarkedet, og aftensmaden kræver lige den ingrediens, der ikke kom på sedlen. En...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/saadan-kan-i-fordele-huslige-pligter-retfaerdigt">
+        <div class="bk-ramme"><img src="https://www.voreshjem.dk/images/blog/w0f45dc8ed5.webp" alt="Sådan kan I fordele huslige pligter retfærdigt" class="bk-bil" loading="lazy" decoding="async"></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-08-09">9. august 2026</time>
+          <h2 class="bk-titel">Sådan kan I fordele huslige pligter retfærdigt</h2>
+          <p class="bk-tekst">Klokken er 17.18. Ét barn mangler sit gymnastiktøj, køleskabet er næsten tomt, og der står stadig en kurv med rent vasketøj på gulvet. I sådan et...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/saadan-undgaar-familien-glemte-indkoeb-hjemme">
+        <div class="bk-ramme"><img src="https://www.voreshjem.dk/images/blog/w7b91fc9a28.webp" alt="Sådan undgår familien glemte indkøb hjemme" class="bk-bil" loading="lazy" decoding="async"></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-08-08">8. august 2026</time>
+          <h2 class="bk-titel">Sådan undgår familien glemte indkøb hjemme</h2>
+          <p class="bk-tekst">At undgå glemte indkøb hjemme handler sjældent om at være mere omhyggelig. Det handler oftere om, at beskeden om den sidste mælk blev sagt højt,...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/saadan-deler-du-indkoebsliste-med-familien">
+        <div class="bk-ramme"><div class="bk-bil bk-tom"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM1 2v2h2l3.6 7.6-1.35 2.45A2 2 0 0 0 7 17h12v-2H7.4l1.1-2h7a2 2 0 0 0 1.8-1.1l3.6-6.5H6.2L5.3 2H1z"/></svg></div></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-08-07">7. august 2026</time>
+          <h2 class="bk-titel">Sådan deler du indkøbsliste med familien</h2>
+          <p class="bk-tekst">Det starter ofte med en besked på vej hjem: Mangler vi mælk? Svaret kommer for sent, fordi listen ligger på køkkenbordet, i en note på én telefon eller...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/faelles-indkoebsliste-app-til-en-lettere-hverdag">
+        <div class="bk-ramme"><div class="bk-bil bk-tom"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM1 2v2h2l3.6 7.6-1.35 2.45A2 2 0 0 0 7 17h12v-2H7.4l1.1-2h7a2 2 0 0 0 1.8-1.1l3.6-6.5H6.2L5.3 2H1z"/></svg></div></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-08-06">6. august 2026</time>
+          <h2 class="bk-titel">Fælles indkøbsliste app til en lettere hverdag</h2>
+          <p class="bk-tekst">Den manglende mælk er sjældent det store problem i sig selv. Det er mere situationen, hvor én opdager det om morgenen, en anden handler på vej hjem, og...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/ugentlig-madplan-til-boernefamilie-med-mindre-boevl">
+        <div class="bk-ramme"><div class="bk-bil bk-tom"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h1v11h2V11h1c1.1 0 2-.9 2-2V2H9v7H8V2H6v7H5V2H3zm13 0c-1.7 0-3 2.7-3 6 0 2.5.8 4.6 2 5.5V22h2V2h-1z"/></svg></div></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-08-05">5. august 2026</time>
+          <h2 class="bk-titel">Ugentlig madplan til børnefamilie med mindre bøvl</h2>
+          <p class="bk-tekst">Klokken er 16.30, et barn er sultent nu, et andet skal til træning, og nogen spørger: “Hvad skal vi have til aftensmad?” Det er sjældent selve...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/hvordan-laver-man-en-madplan-for-familien">
+        <div class="bk-ramme"><div class="bk-bil bk-tom"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h1v11h2V11h1c1.1 0 2-.9 2-2V2H9v7H8V2H6v7H5V2H3zm13 0c-1.7 0-3 2.7-3 6 0 2.5.8 4.6 2 5.5V22h2V2h-1z"/></svg></div></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-08-04">4. august 2026</time>
+          <h2 class="bk-titel">Hvordan laver man en madplan for familien?</h2>
+          <p class="bk-tekst">Klokken er 16.42, et barn skal hentes, et andet skal til fritidsaktivitet, og spørgsmålet melder sig igen: Hvad skal vi spise? Når man spørger, hvordan...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/madplan-app-til-familie-giver-ro-om-aftensmaden">
+        <div class="bk-ramme"><div class="bk-bil bk-tom"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h1v11h2V11h1c1.1 0 2-.9 2-2V2H9v7H8V2H6v7H5V2H3zm13 0c-1.7 0-3 2.7-3 6 0 2.5.8 4.6 2 5.5V22h2V2h-1z"/></svg></div></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-08-03">3. august 2026</time>
+          <h2 class="bk-titel">Madplan app til familie giver ro om aftensmaden</h2>
+          <p class="bk-tekst">Klokken er 16.42, et barn skal hentes, et andet spørger til træning, og køleskabet indeholder mest en halv pose gulerødder. Netop i det øjeblik er en...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/familiekalender-for-travle-foraeldre-med-overblik">
+        <div class="bk-ramme"><div class="bk-bil bk-tom"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zM5 10h14v10H5V10z"/></svg></div></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-08-02">2. august 2026</time>
+          <h2 class="bk-titel">Familiekalender for travle forældre med overblik</h2>
+          <p class="bk-tekst">Klokken er 16.20, og beskeden fra SFO’en ligger stadig ulæst. Den ene skal til svømning, den anden mangler frugt til klassen i morgen, og der er ikke...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/koordinere-boernenes-fritidsaktiviteter-uden-kaos">
+        <div class="bk-ramme"><div class="bk-bil bk-tom"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zM5 10h14v10H5V10z"/></svg></div></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-08-01">1. august 2026</time>
+          <h2 class="bk-titel">Koordinere børnenes fritidsaktiviteter uden kaos</h2>
+          <p class="bk-tekst">Det er tirsdag sidst på eftermiddagen. Ét barn skal til fodbold, et andet til spejder, der mangler indkøb til madpakken, og ingen kan helt huske, hvem...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/app-til-at-samle-familiens-aftaler-et-sted">
+        <div class="bk-ramme"><div class="bk-bil bk-tom"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zM5 10h14v10H5V10z"/></svg></div></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-07-31">31. juli 2026</time>
+          <h2 class="bk-titel">App til at samle familiens aftaler ét sted</h2>
+          <p class="bk-tekst">En app til at samle familiens aftaler kan gøre en mærkbar forskel på de tidspunkter, hvor hverdagen ellers falder mellem to stole. Når én har lægetid,...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/delt-kalender-familie-giver-ro-i-hverdagen">
+        <div class="bk-ramme"><div class="bk-bil bk-tom"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zM5 10h14v10H5V10z"/></svg></div></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-07-30">30. juli 2026</time>
+          <h2 class="bk-titel">Delt kalender familie giver ro i hverdagen</h2>
+          <p class="bk-tekst">Mandag klokken 16.30 står ét barn klar til svømning, mens den anden forælder først dér opdager, at bilen er optaget til et møde. Samtidig mangler der...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/familie-app-til-mere-ro-i-en-travl-hverdag">
+        <div class="bk-ramme"><img src="https://www.voreshjem.dk/images/blog/w6ff152743a.png" alt="Familieapp til mere ro i en travl hverdag" class="bk-bil" loading="lazy" decoding="async"></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-07-28">28. juli 2026</time>
+          <h2 class="bk-titel">Familieapp til mere ro i en travl hverdag</h2>
+          <p class="bk-tekst">Få mere ro i en travl familiehverdag med Vores Hjem. Saml kalender, indkøbsliste, madplan og opgaver i én enkel app for hele familien. Prøv gratis.</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+      <a class="bk" href="/post/faelles-familiekalender-giver-ro-i-hverdagen">
+        <div class="bk-ramme"><img src="https://www.voreshjem.dk/images/blog/w98e275940f.webp" alt="Fælles familiekalender giver ro i hverdagen" class="bk-bil" loading="lazy" decoding="async"></div>
+        <div class="bk-ind">
+          <time class="bk-dato" datetime="2026-07-28">28. juli 2026</time>
+          <h2 class="bk-titel">Fælles familiekalender giver ro i hverdagen</h2>
+          <p class="bk-tekst">Når fritidsaktiviteten er flyttet, tandlægetiden ligger i en sms, og den ene forælder først opdager forældremødet samme eftermiddag, er det sjældent...</p>
+          <span class="bk-mere">Læs indlægget
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </a>
+    </div>
+  </div>
+</main>
+
+<footer style="background:#0F0E1A; color:#fff; padding: 64px 0 32px; font-family:'Plus Jakarta Sans',sans-serif;">
+  <div style="max-width:1200px; margin:0 auto; padding:0 32px;">
+    <div class="footer-grid" style="display:grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap:48px; margin-bottom:56px;">
+      <div>
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+          <img src="/images/logo-nav-hvid.webp?v=2" alt="Vores Hjem" style="height:56px; width:auto; display:block; ">
+        </div>
+        <p style="font-size:14px; color:rgba(255,255,255,0.45); line-height:1.6;">Mere ro i hverdagen, for hele familien.</p>
+      </div>
+      <div>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Informationssider</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <a href="https://www.voreshjem.dk" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Forside</a>
+          <a href="https://www.voreshjem.dk/hvordan-sletter-man-sin-konto" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Hvordan sletter man sin konto?</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Sociale Medier</p>
+        <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:28px;">
+          <a href="https://www.facebook.com/share/1DAnAoAjhW/?mibextid=wwXIfr" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Facebook</a>
+          <a href="https://www.instagram.com/voreshjemdanmark?igsh=N211MjhjZXBxNjd3" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Instagram</a>
+          <a href="https://www.linkedin.com/company/vores-hjem/" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">LinkedIn</a>
+          <a href="https://www.voreshjem.dk/blog" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Blog</a>
+        </div>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Kontakt</p>
+        <a href="https://www.voreshjem.dk/support" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Support</a>
+      </div>
+      <div>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Politikker</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <a href="https://www.iubenda.com/privacy-policy/85951957" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Privatlivspolitik</a>
+          <a href="https://www.iubenda.com/privacy-policy/85951957/cookie-policy" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Cookiepolitik</a>
+          <a href="https://www.iubenda.com/vilkar-og-betingelser/85951957" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Vilkår og betingelser</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+      <p style="font-size:12px; color:rgba(255,255,255,0.3); white-space:nowrap;">© 2026 Vores Hjem I/S · CVR 45804445 · Alle rettigheder forbeholdes.</p>
+      <a href="https://backend.voreshjem.dk" target="_blank" rel="nofollow noopener" style="font-size:12px; color:rgba(255,255,255,0.3); text-decoration:none; white-space:nowrap;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Medarbejder</a>
+      <p style="font-size:12px; color:rgba(255,255,255,0.3); white-space:nowrap;">Bygget i Danmark 🇩🇰</p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

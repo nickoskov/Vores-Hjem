@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+
+<!-- Forbinder tidligt til de eksterne tjenester sporingen bruger, saa selve
+     handshaket (DNS+TLS) er overstaaet, naar scriptet faktisk skal hente dem. -->
+<link rel="preconnect" href="https://cdn.iubenda.com">
+<link rel="preconnect" href="https://embeds.iubenda.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="preconnect" href="https://connect.facebook.net">
+<link rel="preconnect" href="https://bzrcdn.openai.com" crossorigin>
+<link rel="preconnect" href="https://voreshjem-bot.netlify.app">
+
+<!-- ══ SPORING ══ Skal ligge oeverst i <head> paa alle sider.
+     Alt startes fra ét script, som foerst tjekker, om siden vises for sig selv.
+     Inde i en ramme starter INTET, saa der aldrig staar to cookiebannere oven paa
+     hinanden. Raekkefoelgen er ikke tilfaeldig: samtykketilstanden saettes,
+     FOER noget andet loader.
+     16. sept. 2026: Google Tag Manager fjernet (containeren var tom og kostede
+     115 KB). Meta og OpenAI starter foerst, naar den besoegende siger ja til
+     markedsfoering i cookiebanneret. -->
+<script>
+(function () {
+  var iRamme = false;
+  try { iRamme = window.self !== window.top; } catch (e) { iRamme = true; }
+  if (iRamme) return;
+
+  /* 1. Samtykketilstand. Alt er afvist, indtil brugeren siger ja. */
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function () { dataLayer.push(arguments); };
+  gtag('consent', 'default', {
+    'ad_storage': 'denied', 'ad_user_data': 'denied', 'ad_personalization': 'denied',
+    'analytics_storage': 'denied', 'functionality_storage': 'granted', 'security_storage': 'granted',
+    'wait_for_update': 500
+  });
+  gtag('set', 'ads_data_redaction', true);
+  gtag('set', 'url_passthrough', true);
+
+  /* scripts indsaettes i raekkefoelge, ét ad gangen */
+  function hent(src, valg) {
+    var s = document.createElement('script'); s.src = src; s.async = false;
+    if (valg && valg.charset) s.charset = valg.charset;
+    document.head.appendChild(s); return s;
+  }
+
+  /* 2. Cookiebanner, iubenda. siteId 4517758, cookiePolicyId 85951957. */
+  hent('https://embeds.iubenda.com/widgets/c4881ab1-9037-47e2-b5ce-d1950889d637.js');
+  hent('https://cdn.iubenda.com/cs/gpp/stub.js');
+  hent('https://cdn.iubenda.com/cs/iubenda_cs.js', { charset: 'UTF-8' });
+
+  /* 3. Google Analytics 4. Maaler kun, naar samtykket er givet. */
+  hent('https://www.googletagmanager.com/gtag/js?id=G-ZFW1KE91LV');
+  gtag('js', new Date());
+  gtag('config', 'G-ZFW1KE91LV');
+
+  /* 3b. Google Ads. Der er ingen Ads-kode endnu. Naar I opretter en konvertering
+         i Google Ads, faar I et id som AW-123456789. Saet det ind og fjern //
+     gtag('config', 'AW-XXXXXXXXX'); */
+
+  /* 4. Markedsfoering: Meta-pixel og OpenAI. Hentes foerst, naar cookiebanneret
+        melder ja til markedsfoering (ad_storage granted). Siger den besoegende nej,
+        hentes de slet ikke. Har den besoegende sagt ja tidligere, melder banneret
+        det med det samme, og de starter straks. */
+  var reklameStartet = false;
+  function startReklame() {
+    if (reklameStartet) return; reklameStartet = true;
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '697476623339056');
+    fbq('track', 'PageView');
+
+    !function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};
+    q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;
+    var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}
+    (window,document,'script','https://bzrcdn.openai.com/sdk/oaiq.min.js');
+    oaiq('init', { pixelId: 'QZwgYr1hiBh3USt1vsSytt', debug: false });
+  }
+  /* Banneret skriver sit svar i dataLayer. Vi kigger kun paa nye linjer. */
+  var set = 0, vagt = setInterval(function () {
+    for (; set < dataLayer.length; set++) {
+      var a = dataLayer[set];
+      if (a && a[0] === 'consent' && a[2] && a[2].ad_storage === 'granted') {
+        startReklame(); clearInterval(vagt); return;
+      }
+    }
+  }, 400);
+
+  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>,
+     saa de venter til siden er laest faerdig. Hent-knappens script taeller ogsaa
+     besoeget til backenden, uden cookies. */
+  function naarKlar(fn) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
+  naarKlar(function () {
+    hent('https://voreshjem-bot.netlify.app/widget.js');
+    hent('https://voreshjem-bot.netlify.app/hentknap.js');
+  });
+})();
+</script>
+<!-- ══ SPORING SLUT ══ -->
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Madplan til hele familien i én app | Vores Hjem</title>
+<link rel="canonical" href="https://www.voreshjem.dk/madplan">
+<link rel="alternate" hreflang="da" href="https://www.voreshjem.dk/madplan">
+<link rel="alternate" hreflang="de" href="https://www.unserzuhauseapp.de/essenpl%C3%A4ne">
+<link rel="alternate" hreflang="x-default" href="https://www.voreshjem.dk/madplan">
+<meta name="description" content="Planlæg familiens mad for hele ugen: morgenmad, frokost og aftensmad samlet ét sted. Prøv Vores Hjem gratis i 14 dage.">
+<link rel="preload" href="/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>@font-face{font-family:'Plus Jakarta Sans';font-style:normal;font-weight:200 800;font-display:swap;src:url(/fonts/plus-jakarta-sans-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}</style>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --purple: #6C47FF;
+  --blue: #3B82F6;
+  --pink: #EC4899;
+  --success: #10B981;
+  --warning: #F59E0B;
+  --gradient: linear-gradient(135deg, #6C47FF 0%, #3B82F6 55%, #EC4899 100%);
+  --bg: #FFFFFF;
+  --bg-subtle: #F8F7FF;
+  --text: #0F0E1A;
+  --text-secondary: #5E5A7A;
+  --text-muted: #9B97B5;
+  --border: #E8E5FF;
+  --border-light: #F0EEF9;
+  --font: 'Plus Jakarta Sans', sans-serif;
+  --shadow-sm: 0 2px 8px rgba(108,71,255,0.08);
+  --shadow: 0 8px 32px rgba(108,71,255,0.12);
+  --shadow-lg: 0 24px 80px rgba(108,71,255,0.18);
+  --shadow-xl: 0 40px 120px rgba(108,71,255,0.22);
+}
+
+html { scroll-behavior: smooth; overflow-x: hidden; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+
+/* ─── NAV ─── */
+nav {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(255,255,255,0.80);
+  border-bottom: 1px solid rgba(108,71,255,0.08);
+}
+/* Chrome-fix: blur på lag BAG indholdet (Chromium-bug: børn af backdrop-filter renderes tilfældigt ikke) */
+nav::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+}
+.nav-logo img { transform: translateZ(0); }
+
+.nav-inner { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+.nav-logo { display: flex; align-items: center; gap: 10px; }
+.logo-text { font-size: 17px; font-weight: 800; }
+.logo-text span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--text-secondary); transition: color 0.2s; }
+.back-link:hover { color: var(--purple); }
+.back-link svg { width: 16px; height: 16px; }
+
+/* ─── HERO ─── */
+#hero {
+  background: linear-gradient(160deg, #F8F7FF 0%, #EEF0FF 45%, #F5F0FF 100%);
+  padding: 80px 0 100px;
+  position: relative; overflow: hidden;
+}
+.blob { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; }
+.blob-1 { width: 600px; height: 600px; top: -200px; right: -100px; background: radial-gradient(circle, rgba(108,71,255,0.16) 0%, transparent 70%); animation: blobFloat 12s ease-in-out infinite alternate; }
+.blob-2 { width: 400px; height: 400px; bottom: -100px; left: -80px; background: radial-gradient(circle, rgba(236,72,153,0.10) 0%, transparent 70%); animation: blobFloat 15s ease-in-out infinite alternate-reverse; }
+@keyframes blobFloat { from { transform: translate(0,0) scale(1); } to { transform: translate(30px,-40px) scale(1.05); } }
+
+.hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; position: relative; z-index: 1; }
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: rgba(108,71,255,0.08); border: 1px solid rgba(108,71,255,0.18); border-radius: 100px; font-size: 13px; font-weight: 600; color: var(--purple); margin-bottom: 20px; }
+.badge svg { width: 13px; height: 13px; }
+.hero-h1 { font-size: clamp(36px, 4.5vw, 58px); font-weight: 800; letter-spacing: -2px; line-height: 1.08; margin-bottom: 18px; }
+.gradient-text { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero-sub { font-size: 18px; color: var(--text-secondary); line-height: 1.65; margin-bottom: 36px; max-width: 440px; }
+
+.hero-store-btns { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 0; justify-content: center; width: fit-content; }
+.hero-store-btn { display: flex; align-items: center; gap: 10px; padding: 13px 22px; background: rgba(255,255,255,0.7); border: 1.5px solid rgba(108,71,255,0.15); border-radius: 14px; color: var(--text); transition: all 0.2s; text-decoration: none; backdrop-filter: blur(10px); box-shadow: 0 4px 16px rgba(108,71,255,0.08); }
+.hero-store-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(108,71,255,0.14); border-color: rgba(108,71,255,0.3); }
+.hsb-sub { font-size: 10px; color: var(--text-muted); }
+.hsb-name { font-size: 15px; font-weight: 700; }
+
+/* ─── HERO PHONE SCENE ─── */
+.hero-right { position: relative; display: flex; align-items: flex-end; justify-content: center; height: 580px; perspective: 1000px; margin-top: 60px; }
+.phone-main {
+  position: relative; z-index: 3;
+  transform: rotateY(-8deg) rotateX(3deg);
+  animation: phoneHero 6s ease-in-out infinite alternate;
+  filter: drop-shadow(0 32px 64px rgba(108,71,255,0.22));
+}
+@keyframes phoneHero {
+  from { transform: rotateY(-8deg) rotateX(3deg) translateY(0); }
+  to   { transform: rotateY(-6deg) rotateX(2deg) translateY(-16px); }
+}
+/* Uden højde er elementet kun et par pixel højt indtil billedet er hentet.
+   Så udløser lazy-loading aldrig, og rammen står tom. Her er pladsen
+   reserveret fra start: skærmbillederne er 680x1473. */
+  .phone-main img { aspect-ratio: 680 / 1473; height: auto; width: 260px; border-radius: 44px; display: block; border: 3px solid rgba(255,255,255,0.9); box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 20px 60px rgba(0,0,0,0.15); }
+
+/* Floating meal cards */
+.float-card {
+  position: absolute; background: #fff; border-radius: 16px;
+  padding: 12px 16px; display: flex; align-items: center; gap: 10px;
+  box-shadow: 0 16px 48px rgba(108,71,255,0.16), 0 4px 12px rgba(108,71,255,0.08);
+  z-index: 5; white-space: nowrap;
+}
+.fc-meal-icon { width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 15px; }
+.fc-meal-pink { background: rgba(236,72,153,0.1); }
+.fc-meal-purple { background: rgba(108,71,255,0.1); }
+.fc-meal-dark { background: rgba(79,55,168,0.1); }
+.fc-info {}
+.fc-title { font-size: 13px; font-weight: 700; color: var(--text); }
+.fc-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+.float-card-1 { top: 60px; right: -30px; animation: fc1Float 5s ease-in-out infinite; }
+@keyframes fc1Float { 0%,100%{transform:translateY(0) rotate(2deg)} 50%{transform:translateY(-10px) rotate(1deg)} }
+
+.float-card-2 { bottom: 130px; left: -20px; animation: fc2Float 6s ease-in-out infinite alternate; }
+@keyframes fc2Float { from{transform:translateY(0) rotate(-2deg)} to{transform:translateY(-12px) rotate(-1deg)} }
+
+.float-card-3 { bottom: 60px; right: -10px; animation: fc3Float 7s ease-in-out infinite; }
+@keyframes fc3Float { 0%,100%{transform:translateY(0) rotate(1deg)} 50%{transform:translateY(-8px) rotate(0.5deg)} }
+
+.scene-platform { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 260px; height: 40px; background: radial-gradient(ellipse, rgba(108,71,255,0.18) 0%, transparent 70%); filter: blur(20px); border-radius: 50%; animation: platformFloat 6s ease-in-out infinite alternate; }
+@keyframes platformFloat { from{transform:translateX(-50%) scaleX(1)} to{transform:translateX(-50%) scaleX(0.85) scaleY(0.7)} }
+
+/* ─── QUICK STATS ─── */
+#stats { background: #fff; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); padding: 40px 0; }
+.stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 32px; text-align: center; }
+.stat-num { font-size: 36px; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; margin-bottom: 6px; }
+.stat-label { font-size: 14px; color: var(--text-secondary); line-height: 1.4; }
+
+/* ─── FEATURES ─── */
+#features { padding: 100px 0; background: var(--bg-subtle); }
+.section-header { text-align: center; margin-bottom: 60px; }
+.section-h2 { font-size: clamp(30px, 4vw, 48px); font-weight: 800; letter-spacing: -1.5px; line-height: 1.12; margin-bottom: 12px; }
+.section-sub { font-size: 17px; color: var(--text-secondary); max-width: 480px; margin: 0 auto; line-height: 1.65; }
+
+.features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+.feature-card {
+  background: #fff; border: 1px solid var(--border-light);
+  border-radius: 22px; padding: 32px 28px;
+  transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+  transform-style: preserve-3d; perspective: 600px;
+  position: relative; overflow: hidden; cursor: default;
+}
+.feature-card::before { content: ''; position: absolute; inset: 0; background: var(--fc-glow, radial-gradient(ellipse at 0% 0%, rgba(108,71,255,0.06), transparent 60%)); opacity: 0; transition: opacity 0.4s; border-radius: 22px; pointer-events: none; }
+.feature-card:hover { transform: translateY(-8px) rotateX(4deg) rotateY(-2deg); box-shadow: var(--shadow-lg); border-color: rgba(108,71,255,0.2); }
+.feature-card:hover::before { opacity: 1; }
+.f-icon { width: 52px; height: 52px; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; }
+.f-icon svg { width: 22px; height: 22px; }
+.fi-purple { background: rgba(108,71,255,0.1); color: var(--purple); }
+.fi-blue { background: rgba(59,130,246,0.1); color: var(--blue); }
+.fi-green { background: rgba(16,185,129,0.1); color: var(--success); }
+.fi-pink { background: rgba(236,72,153,0.1); color: var(--pink); }
+.fi-orange { background: rgba(249,115,22,0.1); color: #F97316; }
+.fi-yellow { background: rgba(245,158,11,0.1); color: var(--warning); }
+.f-title { font-size: 17px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+.f-desc { font-size: 14px; line-height: 1.65; color: var(--text-secondary); }
+
+/* ─── HOW IT WORKS ─── */
+#how { padding: 100px 0; background: #fff; }
+.step-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 72px;
+  align-items: center; margin-bottom: 80px;
+}
+.step-row:last-child { margin-bottom: 0; }
+.step-row.reverse { direction: rtl; }
+.step-row.reverse > * { direction: ltr; }
+
+.step-num { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; background: var(--gradient); border-radius: 13px; font-size: 17px; font-weight: 800; color: #fff; margin-bottom: 18px; box-shadow: 0 8px 24px rgba(108,71,255,0.3); }
+.step-h3 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.2; margin-bottom: 12px; }
+.step-p { font-size: 16px; color: var(--text-secondary); line-height: 1.65; }
+.step-p strong { color: var(--text); }
+
+.step-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.step-tag { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 100px; font-size: 12px; font-weight: 700; }
+.tag-red { background: rgba(232,64,64,0.08); color: #E84040; }
+.tag-blue { background: rgba(59,130,246,0.08); color: var(--blue); }
+.tag-green { background: rgba(16,185,129,0.08); color: var(--success); }
+.tag-orange { background: rgba(249,115,22,0.08); color: #F97316; }
+.tag-purple { background: rgba(108,71,255,0.08); color: var(--purple); }
+.tag-pink { background: rgba(236,72,153,0.08); color: var(--pink); }
+.tag-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+.step-divider { display: flex; align-items: center; gap: 16px; margin-bottom: 80px; }
+.step-divider-line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); }
+.step-divider-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gradient); opacity: 0.5; }
+
+.step-phone { display: flex; justify-content: center; }
+.step-phone-frame {
+  width: 240px;
+  filter: drop-shadow(0 24px 56px rgba(108,71,255,0.2));
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.step-phone-frame:hover { transform: scale(1.03) translateY(-6px); }
+.step-phone-frame img { aspect-ratio: 680 / 1473; height: auto; width: 100%; border-radius: 40px; display: block; border: 3px solid rgba(255,255,255,0.85); box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 20px 56px rgba(0,0,0,0.14); }
+
+/* ─── CTA ─── */
+#cta { background: var(--gradient); padding: 110px 0; text-align: center; position: relative; overflow: hidden; }
+#cta::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.08), transparent 50%), radial-gradient(ellipse at 80% 30%, rgba(255,255,255,0.06), transparent 50%); pointer-events: none; }
+.cta-shape { position: absolute; border-radius: 50%; pointer-events: none; opacity: 0.15; }
+.cta-shape-1 { width: 300px; height: 300px; top: -100px; left: -80px; background: rgba(255,255,255,0.3); filter: blur(60px); animation: ctaFloat 10s ease-in-out infinite alternate; }
+.cta-shape-2 { width: 200px; height: 200px; bottom: -60px; right: -40px; background: rgba(255,255,255,0.25); filter: blur(50px); animation: ctaFloat 8s ease-in-out infinite alternate-reverse; }
+@keyframes ctaFloat { from{transform:translate(0,0)} to{transform:translate(20px,-30px)} }
+.cta-inner { position: relative; z-index: 1; }
+.cta-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); border-radius: 100px; font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 24px; backdrop-filter: blur(10px); }
+.cta-h2 { font-size: clamp(36px, 5.5vw, 64px); font-weight: 800; letter-spacing: -2px; line-height: 1.08; color: #fff; margin-bottom: 16px; }
+.cta-sub { font-size: 18px; color: rgba(255,255,255,0.75); margin-bottom: 40px; line-height: 1.6; }
+.cta-buttons { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 14px; font-family: var(--font); font-size: 15px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s ease; }
+.btn-white { background: #fff; color: var(--purple); font-weight: 700; box-shadow: 0 4px 20px rgba(0,0,0,0.12); }
+.btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.18); }
+.btn-outline-white { background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.4); color: #fff; font-weight: 600; backdrop-filter: blur(10px); }
+.btn-outline-white:hover { background: rgba(255,255,255,0.2); }
+.btn-lg { padding: 17px 36px; font-size: 16px; border-radius: 16px; }
+.cta-trust { font-size: 14px; color: rgba(255,255,255,0.6); }
+.cta-trust span { color: rgba(255,255,255,0.9); font-weight: 600; }
+
+/* ─── TOAST ─── */
+#not-launched-toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1A1A2E; color: #fff; padding: 14px 20px; border-radius: 16px; display: flex; align-items: center; gap: 12px; box-shadow: 0 16px 48px rgba(0,0,0,0.3); z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.35s cubic-bezier(0.16,1,0.3,1); white-space: nowrap; }
+#not-launched-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+.toast-icon { width: 32px; height: 32px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.toast-icon svg { width: 16px; height: 16px; }
+.toast-text { line-height: 1.4; font-size: 14px; font-weight: 600; }
+.toast-text span { display: block; font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.55); margin-top: 2px; }
+
+/* ─── SCROLL REVEAL ─── */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.65s cubic-bezier(0.16,1,0.3,1); }
+.reveal.visible { opacity: 1; transform: none; }
+.reveal-delay-1 { transition-delay: 0.08s; }
+.reveal-delay-2 { transition-delay: 0.16s; }
+.reveal-delay-3 { transition-delay: 0.24s; }
+@media (max-width: 768px) { .reveal, .reveal.visible { opacity: 1; transform: none; transition: none; } }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .hero-inner { grid-template-columns: 1fr; text-align: center; gap: 0; }
+  .hero-right { height: auto; margin-top: 40px; overflow: visible; }
+  .phone-main img { aspect-ratio: 680 / 1473; height: auto; width: 220px; }
+  .phone-main { transform: none !important; animation: none !important; }
+  .hero-sub { margin-left: auto; margin-right: auto; }
+  .features-grid { grid-template-columns: repeat(2,1fr); }
+  .step-row { grid-template-columns: 1fr; gap: 36px; text-align: center; }
+  .step-row.reverse { direction: ltr; }
+  .step-num { margin-left: auto; margin-right: auto; }
+  .step-tags { justify-content: center; }
+  .stats-grid { grid-template-columns: repeat(2,1fr); }
+}
+@media (max-width: 600px) {
+  .container { padding: 0 20px; }
+  .hero-right { height: auto; margin-top: 32px; padding-bottom: 20px; }
+  .hero-store-btns { width: 100%; flex-wrap: nowrap; gap: 8px; justify-content: center; }
+  .hero-store-btn { padding: 10px 12px; gap: 8px; flex: 1; justify-content: center; }
+  .hero-store-btn svg { width: 20px; height: 20px; }
+  .hsb-name { font-size: 13px; }
+  .hsb-sub { font-size: 9px; }
+  .phone-main img { aspect-ratio: 680 / 1473; height: auto; width: 190px; }
+  .float-card-1, .float-card-2, .float-card-3 { display: none; }
+  .features-grid { grid-template-columns: 1fr; gap: 12px; }
+  .feature-card { padding: 22px 20px; }
+  .step-phone-frame { width: 190px; }
+  .cta-h2 { font-size: 28px; }
+  /* skjul-features-paa-telefon: de seks kort blev til én lang søjle under 600px
+     og fyldte mere end de gav. På computer står de stadig i tre kolonner. */
+  #features { display: none; }
+  /* Punkterne har en titel og en forklaringslinje. Titlen bærer pointen,
+     så forklaringen ryger på telefon, det halverer teksten i listerne. */
+  .mob-kort { display: none; }
+
+  #how, #cta { padding: 64px 0; }
+}
+@media (max-width: 700px) { .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 32px !important; } }
+@media (max-width: 420px) { .footer-grid { grid-template-columns: 1fr !important; gap: 28px !important; } }
+/* ─── CONTACT MODAL ─── */
+#contact-modal-overlay {
+  position: fixed; inset: 0; z-index: 1100;
+  background: rgba(10,8,30,0.55);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+  opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+}
+#contact-modal-overlay.open { opacity: 1; pointer-events: auto; }
+.contact-modal {
+  background: #fff; border-radius: 24px; padding: 44px 40px 36px;
+  max-width: 480px; width: 100%;
+  box-shadow: 0 40px 120px rgba(108,71,255,0.22), 0 8px 32px rgba(0,0,0,0.12);
+  position: relative;
+  transform: scale(0.92) translateY(16px);
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+#contact-modal-overlay.open .contact-modal { transform: scale(1) translateY(0); }
+.contact-modal-close {
+  position: absolute; top: 16px; right: 16px;
+  width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer;
+  background: #F1F0FA; color: #5E5A7A;
+  display: flex; align-items: center; justify-content: center; transition: background 0.2s;
+}
+.contact-modal-close:hover { background: #E8E5FF; }
+.contact-modal-close svg { width: 16px; height: 16px; }
+.contact-modal h3 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
+.contact-modal > p { font-size: 14px; color: #5E5A7A; margin-bottom: 24px; }
+.contact-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.contact-field label { font-size: 13px; font-weight: 700; color: #0F0E1A; }
+.contact-field input, .contact-field textarea {
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px;
+  border: 1.5px solid #E8E5FF; border-radius: 12px; padding: 12px 14px;
+  background: #F8F7FF; color: #0F0E1A; outline: none; transition: border-color 0.2s; resize: none;
+}
+.contact-field input:focus, .contact-field textarea:focus { border-color: #6C47FF; background: #fff; }
+.contact-submit {
+  width: 100%; padding: 14px; border-radius: 14px; border: none;
+  background: linear-gradient(135deg, #6C47FF 0%, #3B82F6 55%, #EC4899 100%);
+  color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 700;
+  cursor: pointer; margin-top: 8px;
+  box-shadow: 0 4px 24px rgba(108,71,255,0.35); transition: transform 0.2s, box-shadow 0.2s;
+}
+.contact-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(108,71,255,0.45); }
+.contact-submit:disabled { opacity: 0.6; cursor: default; transform: none; }
+.contact-error { display: none; color: #E84040; font-size: 13px; font-weight: 600; margin-top: 4px; }
+.contact-success {
+  text-align: center; padding: 16px 0 8px;
+  display: none; flex-direction: column; align-items: center; gap: 12px;
+}
+.contact-success-icon { width: 56px; height: 56px; background: rgba(16,185,129,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.contact-success-icon svg { width: 28px; height: 28px; color: #10B981; }
+.contact-success h4 { font-size: 18px; font-weight: 800; }
+.contact-success p { font-size: 14px; color: #5E5A7A; margin: 0; }
+@media (max-width: 600px) { .contact-modal { padding: 32px 24px 28px; } }
+</style>
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Vores Hjem">
+  <meta property="og:locale" content="da_DK">
+  <meta property="og:title" content="Madplan | Vores Hjem">
+  <meta property="og:description" content="Planlæg familiens mad for hele ugen: morgenmad, frokost og aftensmad samlet ét sted. Prøv Vores Hjem gratis i 14 dage.">
+  <meta property="og:url" content="https://www.voreshjem.dk/madplan">
+  <meta property="og:image" content="https://www.voreshjem.dk/images/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Madplan | Vores Hjem">
+  <meta name="twitter:description" content="Planlæg familiens mad for hele ugen: morgenmad, frokost og aftensmad samlet ét sted. Prøv Vores Hjem gratis i 14 dage.">
+  <meta name="twitter:image" content="https://www.voreshjem.dk/images/og.jpg">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "name": "Madplan | Vores Hjem", "description": "Planlæg familiens mad for hele ugen: morgenmad, frokost og aftensmad samlet ét sted. Prøv Vores Hjem gratis i 14 dage.", "url": "https://www.voreshjem.dk/madplan", "isPartOf": {"@type": "WebSite", "name": "Vores Hjem", "url": "https://www.voreshjem.dk"}}</script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="container">
+    <div class="nav-inner">
+      <a href="https://www.voreshjem.dk" target="_top" class="nav-logo">
+        <img src="/images/logo-nav.webp?v=2" alt="Vores Hjem" style="height:58px;width:auto;display:block;">
+      </a>
+      <a href="https://www.voreshjem.dk" target="_top" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Tilbage til forsiden
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-left reveal">
+        <div class="badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3h18v4H3z"/><path d="M3 10h18v4H3z"/><path d="M3 17h18v4H3z"/></svg>
+          Madplan
+        </div>
+        <h1 class="hero-h1"><span class="gradient-text">Informationsside</span><br>Madplan</h1>
+        <p class="hero-sub">Planlæg familiens mad for hele ugen, samlet ét sted.</p>
+        <div class="hero-store-btns">
+          <a target="_blank" rel="noopener" href="https://apps.apple.com/dk/app/vores-hjem/id6758346281" class="hero-store-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor" style="width:24px;height:24px;flex-shrink:0;"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+            <div><div class="hsb-sub">Download i</div><div class="hsb-name">App Store</div></div>
+          </a>
+          <a target="_blank" rel="noopener" href="https://play.google.com/store/apps/details?id=com.voreshjem.app" class="hero-store-btn">
+            <svg viewBox="0 0 512 512" style="width:24px;height:24px;flex-shrink:0;"><path fill="#4CAF50" d="M325.3 234.3L104.6 13l280.8 161.2z"/><path fill="#4285F4" d="M47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l249.2-249.1z"/><path fill="#FFC107" d="M461.2 219.8l-67.6-39.1-68.5 68.5 68.5 68.5 67.6-39.1c19.3-11.1 19.3-40.6-.1-58.8z"/><path fill="#F44336" d="M104.6 499L325.3 277.7l-60.1-60.1z"/></svg>
+            <div><div class="hsb-sub">Hent på</div><div class="hsb-name">Google Play</div></div>
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-right reveal reveal-delay-2">
+        <div class="scene-platform"></div>
+
+        <!-- Floating meal cards -->
+        <div class="float-card float-card-1">
+          <div class="fc-meal-icon fc-meal-dark">🌙</div>
+          <div class="fc-info">
+            <div class="fc-title">Spaghetti med kødsovs</div>
+            <div class="fc-sub">Mandag · Aftensmad</div>
+          </div>
+        </div>
+        <div class="float-card float-card-2">
+          <div class="fc-meal-icon fc-meal-pink">☀️</div>
+          <div class="fc-info">
+            <div class="fc-title">Spejlæg og havregryn</div>
+            <div class="fc-sub">Tirsdag · Morgenmad</div>
+          </div>
+        </div>
+        <div class="float-card float-card-3">
+          <div class="fc-meal-icon fc-meal-purple">🍴</div>
+          <div class="fc-info">
+            <div class="fc-title">Rugbrød med tun</div>
+            <div class="fc-sub">Onsdag · Frokost</div>
+          </div>
+        </div>
+
+        <div class="phone-main">
+          <img src="images/mad_1.webp" alt="Madplan i Vores Hjem" fetchpriority="high">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEVENDE MADPLAN-DEMO -->
+<section id="mad-demo-sektion">
+<style>
+#mad-demo-sektion { padding: 96px 0 104px; background: var(--bg-subtle); }
+.md-header { text-align:center; max-width:720px; margin:0 auto 46px; }
+.md-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 68px; align-items: center; }
+.md-visual { display: flex; justify-content: center; }
+
+.mad-demo {
+  background: linear-gradient(145deg, #fff 0%, var(--bg-subtle) 100%);
+  border: 1px solid var(--border); border-radius: 26px;
+  padding: 24px 22px 20px; width: 100%; max-width: 400px;
+  box-shadow: var(--shadow-lg); position: relative; overflow: hidden;
+  cursor: pointer; transition: transform 0.4s ease;
+}
+.mad-demo::before {
+  content: ''; position: absolute; top: -70px; right: -70px; width: 210px; height: 210px;
+  background: radial-gradient(circle, rgba(249,115,22,0.13) 0%, transparent 70%);
+  border-radius: 50%; pointer-events: none;
+}
+.mad-demo:hover { transform: perspective(800px) rotateY(2deg) rotateX(-1deg); }
+
+.md-uge { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; position:relative; z-index:2; }
+.md-uge b { font-size:14.5px; font-weight:800; color:var(--text); }
+.md-uge span { font-size:11.5px; color:var(--text-muted); font-weight:700; }
+
+.md-dage { display:flex; flex-direction:column; gap:9px; position:relative; z-index:2; min-height:250px; }
+.md-dag { }
+.md-dagnavn { font-size:11.5px; font-weight:800; color:var(--text-secondary); margin-bottom:5px; letter-spacing:.02em; }
+.md-tom {
+  border:1px dashed var(--border); border-radius:10px; padding:9px 12px;
+  font-size:11.5px; color:var(--text-muted); font-style:italic;
+  transition: opacity .4s ease;
+}
+.md-maaltid {
+  display:flex; align-items:center; gap:9px;
+  background:#fff; border:1px solid var(--border); border-left:3px solid var(--purple);
+  border-radius:10px; padding:8px 11px; margin-bottom:5px;
+  opacity:0; transform:translateY(-6px) scale(.98);
+  transition: opacity .4s ease, transform .5s cubic-bezier(.22,1,.36,1);
+}
+.md-maaltid.on { opacity:1; transform:none; }
+.md-type {
+  font-size:9.5px; font-weight:800; letter-spacing:.06em; text-transform:uppercase;
+  padding:2px 7px; border-radius:100px; flex:none;
+}
+.md-ret { font-size:12.5px; font-weight:700; color:var(--text); }
+.md-hint { text-align:center; font-size:12px; color:var(--text-muted); margin-top:12px; position:relative; z-index:2; }
+
+.md-h2 { font-size:42px; font-weight:800; letter-spacing:-0.03em; line-height:1.12; margin-bottom:16px; }
+.md-text { font-size:17px; color:var(--text-secondary); }
+.md-header .md-text { margin:14px auto 0; max-width:520px; }
+.md-list2 { list-style:none; display:flex; flex-direction:column; gap:16px; }
+.md-list2 li { display:flex; gap:13px; align-items:flex-start; font-size:15px; color:var(--text-secondary); }
+.md-c { width:23px; height:23px; border-radius:50%; background:rgba(249,115,22,0.13);
+        display:flex; align-items:center; justify-content:center; flex:none; margin-top:1px; }
+.md-c svg { width:12px; height:12px; stroke:#F97316; }
+.md-list2 strong { color:var(--text); font-weight:700; }
+
+@media (max-width: 900px) {
+  #mad-demo-sektion { padding: 56px 0 64px; }
+  .md-inner { grid-template-columns:1fr; gap:26px; }
+  .md-header { margin-bottom:26px; }
+  .md-h2 { font-size:27px; }
+}
+@media (max-width: 640px) {
+  .mad-demo { padding:18px 15px 15px; border-radius:22px; }
+  .md-dage { gap:7px; min-height:228px; }
+  .md-maaltid { padding:7px 10px; }
+  .md-ret { font-size:12px; }
+}
+</style>
+
+  <div class="container">
+
+    <div class="md-header reveal">
+      <span class="badge" style="margin-bottom:20px;">Slut med "hvad skal vi have?"</span>
+      <h2 class="md-h2">Ugens mad, planlagt én gang</h2>
+      <p class="md-text">Sæt maden på plads søndag aften. Resten af ugen ved alle hvad der er, uden at nogen skal spørge.</p>
+    </div>
+
+    <div class="md-inner">
+      <div class="md-visual reveal">
+        <div class="mad-demo" id="mad-demo">
+          <div class="md-uge"><b>Uge 16</b><span>13. – 19. april</span></div>
+          <div class="md-dage" id="md-dage"></div>
+          <div class="md-hint">Klik for at se det igen</div>
+        </div>
+      </div>
+
+      <div class="md-content reveal reveal-delay-2">
+        <ul class="md-list2">
+          <li><span class="md-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Morgenmad, frokost og aftensmad</strong><span class="mob-kort"><br>eller kun det I har brug for at planlægge</span></span></li>
+          <li><span class="md-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Genbrug retter I laver tit</strong><span class="mob-kort"><br>vælg fra listen i stedet for at skrive igen</span></span></li>
+          <li><span class="md-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Skriv opskriften med</strong><span class="mob-kort"><br>så kan den der kommer først hjem gå i gang</span></span></li>
+          <li><span class="md-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Bladr frem og tilbage mellem uger</strong><span class="mob-kort"><br>planlæg to uger frem hvis I har lyst</span></span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function () {
+  var demo = document.getElementById('mad-demo');
+  if (!demo) return;
+  var boks = document.getElementById('md-dage');
+
+  var TYPER = {
+    frokost:   { navn: 'Frokost',   bg: 'rgba(168,85,247,.13)', fg: '#A855F7', kant: '#A855F7' },
+    aftensmad: { navn: 'Aftensmad', bg: 'rgba(108,71,255,.13)', fg: '#6C47FF', kant: '#6C47FF' }
+  };
+  var UGE = [
+    { dag: 'Mandag',  maal: [['frokost','Rugbrød med tun'], ['aftensmad','Spaghetti med kødsovs']] },
+    { dag: 'Tirsdag', maal: [['frokost','Tapas'], ['aftensmad','Burger']] },
+    { dag: 'Onsdag',  maal: [['aftensmad','Mexicanske pandekager']] }
+  ];
+
+  // byg dagene én gang, måltiderne ligger klar, men usynlige
+  var alle = [];
+  UGE.forEach(function (d) {
+    var wrap = document.createElement('div');
+    wrap.className = 'md-dag';
+    var n = document.createElement('div');
+    n.className = 'md-dagnavn'; n.textContent = d.dag;
+    wrap.appendChild(n);
+    d.maal.forEach(function (m) {
+      var t = TYPER[m[0]];
+      var el = document.createElement('div');
+      el.className = 'md-maaltid';
+      el.style.borderLeftColor = t.kant;
+      el.innerHTML = '<span class="md-type" style="background:' + t.bg + ';color:' + t.fg + '"></span><span class="md-ret"></span>';
+      el.querySelector('.md-type').textContent = t.navn;
+      el.querySelector('.md-ret').textContent = m[1];
+      wrap.appendChild(el);
+      alle.push(el);
+    });
+    boks.appendChild(wrap);
+  });
+
+  var koerer = false, timere = [];
+  function ryd() { timere.forEach(clearTimeout); timere = []; }
+  function vent(ms, fn) { timere.push(setTimeout(fn, ms)); }
+
+  function spil() {
+    if (koerer) return;
+    koerer = true; ryd();
+    alle.forEach(function (el) { el.classList.remove('on'); });
+    alle.forEach(function (el, i) {
+      vent(550 + i * 620, function () {
+        el.classList.add('on');
+        if (i === alle.length - 1) vent(2500, function () { koerer = false; });
+      });
+    });
+  }
+
+  new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) spil(); });
+  }, { threshold: 0.35 }).observe(demo);
+  demo.addEventListener('click', function () { koerer = false; spil(); });
+})();
+</script>
+</section>
+
+
+<!-- STATS -->
+<section id="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="reveal">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Måltidstyper ,<br>morgenmad, frokost, aftensmad</div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <div class="stat-num">7</div>
+        <div class="stat-label">Dage i ugen<br>du kan planlægge</div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Uger frem<br>du kan planlægge</div>
+      </div>
+      <div class="reveal reveal-delay-3">
+        <div class="stat-num">7</div>
+        <div class="stat-label">Familiemedlemmer<br>på én konto</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="badge" style="margin-bottom:16px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        Alt du behøver
+      </span>
+      <h2 class="section-h2">Madplanen der<br>letter hverdagen</h2>
+      <p class="section-sub">Stop med at spørge "hvad spiser vi i dag?", svar på det én gang om ugen i stedet.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="f-icon fi-purple">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="4" x2="9" y2="9"/><line x1="15" y1="4" x2="15" y2="9"/></svg>
+        </div>
+        <div class="f-title">Ugeoverblik</div>
+        <div class="f-desc">Se hele ugens måltider samlet, skift nemt frem og tilbage mellem uger med pilene øverst.</div>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="f-icon fi-pink">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="3"/><path d="M12 8v8M8 12h8"/></svg>
+        </div>
+        <div class="f-title">3 måltidstyper</div>
+        <div class="f-desc">Vælg mellem morgenmad, frokost og aftensmad: hver med sin egen farve og ikon, så det er nemt at overskue.</div>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="f-icon fi-blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </div>
+        <div class="f-title">Rediger og slet</div>
+        <div class="f-desc">Ændrer planen sig? Tryk på blyanten for at redigere et måltid eller på skraldespanden for at slette det.</div>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="f-icon fi-green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+        <div class="f-title">Hele familien ser det</div>
+        <div class="f-desc">Så snart du tilføjer et måltid, ser alle familiemedlemmer det med det samme, ingen behøver at spørge.</div>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="f-icon fi-orange">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        </div>
+        <div class="f-title">Valgfri beskrivelse</div>
+        <div class="f-desc">Tilføj en note til måltidet, fx "husk at tø kødet op" eller "brug gulerodsstrimler i stedet". Små påmindelser der hjælper.</div>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="f-icon fi-yellow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+        </div>
+        <div class="f-title">Planlæg fremad</div>
+        <div class="f-desc">Brug pilene til at navigere fremad i uger: planlæg næste uge allerede i weekenden, så er hverdagen sat.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+<style>
+/* ── Fælles byggeklodser til de levende trin-demoer ── */
+.step-phone { display:flex; justify-content:center; }
+.trin-demo {
+  background:#fff; border:1px solid var(--border); border-radius:22px;
+  padding:20px 18px 18px; box-shadow:var(--shadow-lg);
+  width:100%; max-width:330px; position:relative; overflow:hidden; cursor:pointer;
+}
+.td-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.td-titel { font-size:13.5px; font-weight:800; color:var(--text); }
+.td-taeller { font-size:11px; font-weight:800; color:var(--text-muted); font-variant-numeric:tabular-nums; }
+.td-liste { display:flex; flex-direction:column; gap:8px; }
+.td-boks { position:relative; }
+
+/* generisk række der glider ind */
+.td-r {
+  display:flex; align-items:center; gap:9px;
+  border:1px solid var(--border); border-left:3px solid var(--purple); border-radius:11px;
+  padding:9px 11px; background:#fff;
+  opacity:0; transform:translateY(-7px);
+  transition:opacity .4s ease, transform .45s cubic-bezier(.22,1,.36,1),
+             background .35s ease, border-color .35s ease;
+}
+.td-r.on { opacity:1; transform:none; }
+.td-r-krop { flex:1; min-width:0; }
+.td-r-t { font-size:12.5px; font-weight:700; color:var(--text); }
+.td-r-m { font-size:10.5px; color:var(--text-muted); margin-top:2px; }
+.td-r.faerdig { background:#F6FBF7; border-color:#CFEBD8; }
+.td-r.faerdig .td-r-t { color:var(--text-muted); text-decoration:line-through; text-decoration-color:rgba(0,0,0,.2); }
+
+/* afkrydsning */
+.td-cirkel {
+  width:19px; height:19px; border-radius:50%; border:2px solid #D5D2E8; flex:none;
+  display:flex; align-items:center; justify-content:center;
+  transition:background .3s ease, border-color .3s ease, transform .3s ease;
+}
+.td-cirkel svg { width:10px; height:10px; stroke:#fff; stroke-width:3.5; opacity:0; transition:opacity .25s ease; }
+.td-r.faerdig .td-cirkel { background:#22C55E; border-color:#22C55E; transform:scale(1.08); }
+.td-r.faerdig .td-cirkel svg { opacity:1; }
+
+/* person-mærkat */
+.td-hvem {
+  width:23px; height:23px; border-radius:50%; flex:none;
+  display:flex; align-items:center; justify-content:center;
+  font-size:10px; font-weight:800; color:#fff;
+}
+
+/* formularfelt der bliver udfyldt */
+.td-felt {
+  border:1px solid var(--border); border-radius:10px; padding:8px 11px; background:#FBFAFF;
+  transition:border-color .3s ease, background .3s ease;
+}
+.td-felt + .td-felt { margin-top:7px; }
+.td-felt.aktiv { border-color:var(--purple); background:#fff; box-shadow:0 0 0 3px rgba(108,71,255,.09); }
+.td-felt-navn { font-size:9.5px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:.05em; }
+.td-felt-vaerdi { font-size:12.5px; font-weight:700; color:var(--text); margin-top:3px; min-height:16px; }
+.td-felt-vaerdi:empty::after { content:'|'; color:var(--purple); opacity:.5; }
+
+/* små valg-chips */
+.td-chips { display:flex; flex-wrap:wrap; gap:5px; margin-top:7px; }
+.td-chip {
+  font-size:10px; font-weight:800; padding:4px 9px; border-radius:100px;
+  border:1px solid var(--border); color:var(--text-muted); background:#fff;
+  transition:background .3s ease, color .3s ease, border-color .3s ease, transform .3s ease;
+}
+.td-chip.valgt { transform:scale(1.06); }
+
+/* faneblade */
+.td-faner { display:flex; gap:5px; background:var(--bg-subtle); border-radius:100px; padding:4px; margin-bottom:13px; }
+.td-fane {
+  flex:1; text-align:center; font-size:11px; font-weight:800; padding:6px 4px; border-radius:100px;
+  color:var(--text-muted); transition:background .3s ease, color .3s ease, box-shadow .3s ease;
+}
+.td-fane.aktiv { background:#fff; color:var(--purple); box-shadow:0 2px 8px rgba(108,71,255,.14); }
+
+/* knapper */
+.td-knapper { display:flex; gap:8px; margin-top:10px; opacity:0; transform:translateY(6px);
+              transition:opacity .35s ease, transform .4s ease; }
+.td-knapper.on { opacity:1; transform:none; }
+.td-knap {
+  flex:1; text-align:center; font-size:11.5px; font-weight:800; padding:8px 6px; border-radius:9px;
+  border:1px solid var(--border); color:var(--text-secondary); background:#fff;
+  transition:transform .2s ease, background .25s ease, color .25s ease, border-color .25s ease;
+}
+.td-knap.ja { background:var(--purple); border-color:var(--purple); color:#fff; }
+.td-knap.trykket { transform:scale(.93); }
+
+/* grøn kvittering */
+.td-kvit {
+  display:flex; align-items:center; gap:7px; margin-top:11px;
+  font-size:11.5px; font-weight:700; color:var(--success);
+  opacity:0; transition:opacity .35s ease;
+}
+.td-kvit.on { opacity:1; }
+.td-kvit svg { width:14px; height:14px; stroke:var(--success); stroke-width:3; }
+
+/* familiens avatarer */
+.td-set { font-size:11px; font-weight:800; color:var(--text-muted); margin-bottom:9px; }
+.td-avatarer { display:flex; gap:8px; margin-bottom:13px; }
+.td-av {
+  width:33px; height:33px; border-radius:50%; flex:none;
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:800; color:#fff;
+  opacity:0; transform:scale(.4);
+  transition:opacity .3s ease, transform .45s cubic-bezier(.34,1.56,.64,1);
+}
+.td-av.on { opacity:1; transform:none; }
+.td-alle {
+  display:flex; align-items:center; gap:7px; font-size:12px; font-weight:800; color:var(--success);
+  opacity:0; transition:opacity .4s ease;
+}
+.td-alle.on { opacity:1; }
+.td-alle svg { width:15px; height:15px; stroke:var(--success); stroke-width:3; }
+
+@media (max-width: 900px) {
+  .trin-demo { max-width:340px; padding:17px 15px 15px; }
+}
+
+.md-dag + .md-dag { margin-top:9px; }
+.md-dagnavn { display:block; font-size:10.5px; font-weight:800; color:var(--text-secondary); margin-bottom:5px; }
+.md-dag .td-r + .td-r { margin-top:5px; }
+
+</style>
+<script>
+(function () {
+  // Scriptet står før markup'en i afsnittet, så elementerne findes ikke endnu når
+  // det parses. Vent til siden er bygget færdig, ellers bliver alle getElementById null.
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
+
+  function start() {
+  var LOOP = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Hver demo får sin egen tidslinje og kører kun mens den er på skærmen.
+  // byg(vent, el) sætter trinnene op og returnerer hvor lang tidslinjen er.
+  function motor(id, byg) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var koerer = false, synlig = false, timere = [];
+    function ryd() { timere.forEach(clearTimeout); timere = []; }
+    function vent(ms, fn) { timere.push(setTimeout(fn, ms)); }
+    function spil() {
+      if (koerer) return;
+      koerer = true; ryd();
+      var slut = byg(vent, el);
+      vent(slut, function () { koerer = false; if (LOOP && synlig) vent(1500, spil); });
+    }
+    new IntersectionObserver(function (es) {
+      es.forEach(function (e) { synlig = e.isIntersecting; if (synlig) spil(); });
+    }, { threshold: 0.35 }).observe(el);
+    el.addEventListener('click', function () { koerer = false; spil(); });
+  }
+
+  // ── små hjælpere, så tidslinjerne bliver korte at læse ──
+  function q(el, s)  { return el.querySelector(s); }
+  function qa(el, s) { return [].slice.call(el.querySelectorAll(s)); }
+  function ryd_alle(el) {
+    qa(el, '.on').forEach(function (x) { x.classList.remove('on'); });
+    qa(el, '.faerdig').forEach(function (x) { x.classList.remove('faerdig'); });
+    qa(el, '.valgt').forEach(function (x) { x.classList.remove('valgt'); });
+    qa(el, '.aktiv').forEach(function (x) { x.classList.remove('aktiv'); });
+    qa(el, '.td-felt-vaerdi').forEach(function (x) { x.textContent = ''; });
+  }
+  // skriver tekst tegn for tegn, som når nogen taster
+  function skriv(vent, felt, tekst, fra, hast) {
+    hast = hast || 45;
+    for (var i = 1; i <= tekst.length; i++) {
+      (function (n) { vent(fra + n * hast, function () { felt.textContent = tekst.slice(0, n); }); })(i);
+    }
+    return fra + tekst.length * hast;
+  }
+
+  // ── Trin 1: ugens måltider lander ét ad gangen ──
+  motor('trin1', function (vent, el) {
+    var raekker = qa(el, '.td-r'), tael = q(el, '#m1-antal');
+    ryd_alle(el); tael.textContent = '0 måltider';
+    raekker.forEach(function (r, i) {
+      vent(650 + i * 520, function () { r.classList.add('on'); tael.textContent = (i + 1) + ' måltider'; });
+    });
+    return 650 + raekker.length * 520 + 2200;
+  });
+
+  // ── Trin 2: dag, måltidstype og ret vælges ──
+  motor('trin2', function (vent, el) {
+    var f = qa(el, '.td-felt'), knap = q(el, '.td-knap');
+    var kvit = q(el, '.td-kvit'), knapper = q(el, '.td-knapper');
+    ryd_alle(el);
+    qa(el, '.td-chip').forEach(function (c) { c.style.background=''; c.style.color=''; c.style.borderColor=''; });
+    function vaelg(chip, farve) {
+      chip.classList.add('valgt');
+      chip.style.background = farve + '22'; chip.style.color = farve; chip.style.borderColor = farve;
+    }
+    var d = qa(f[0], '.td-chip'), t = qa(f[1], '.td-chip');
+    vent(600,  function () { f[0].classList.add('aktiv'); });
+    vent(1000, function () { vaelg(d[0], '#6C47FF'); });
+    vent(1500, function () { f[0].classList.remove('aktiv'); f[1].classList.add('aktiv'); });
+    vent(1950, function () { vaelg(t[2], '#6C47FF'); });
+    vent(2450, function () { f[1].classList.remove('aktiv'); f[2].classList.add('aktiv'); });
+    var slut = skriv(vent, q(f[2], '.td-felt-vaerdi'), 'Mexicanske pandekager', 2650, 40);
+    vent(slut + 350, function () { f[2].classList.remove('aktiv'); knapper.classList.add('on'); });
+    vent(slut + 1000, function () { knap.classList.add('trykket'); });
+    vent(slut + 1300, function () { knap.classList.remove('trykket'); knapper.classList.remove('on'); kvit.classList.add('on'); });
+    return slut + 3100;
+  });
+
+  // ── Trin 3: hele familien kan se den ──
+  motor('trin3', function (vent, el) {
+    var avs = qa(el, '.td-av'), alle = q(el, '.td-alle');
+    avs.forEach(function (a) { a.classList.remove('on'); });
+    alle.classList.remove('on');
+    avs.forEach(function (a, i) { vent(650 + i * 320, function () { a.classList.add('on'); }); });
+    vent(650 + avs.length * 320 + 300, function () { alle.classList.add('on'); });
+    return 4400;
+  });
+  }
+})();
+</script>
+  <div class="container">
+    <div class="section-header reveal" style="margin-bottom:72px;">
+      <span class="badge" style="margin-bottom:16px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Sådan virker det
+      </span>
+      <h2 class="section-h2">Tre trin til<br>ugens madplan</h2>
+    </div>
+
+    <!-- Step 1 -->
+    <div class="step-row reveal">
+      <div>
+        <div class="step-num">1</div>
+        <h3 class="step-h3">Se hvad der er planlagt for ugen</h3>
+        <p class="step-p">Åbn madplanen og se ugens måltider på ét blik. Alle dage er listet med morgenmad, frokost og aftensmad, tydelige farver og ikoner gør det nemt at overskue.</p>
+        <div class="step-tags">
+          <span class="step-tag tag-pink"><span class="tag-dot" style="background:var(--pink);"></span>Morgenmad</span>
+          <span class="step-tag tag-purple"><span class="tag-dot" style="background:var(--purple);"></span>Frokost</span>
+          <span class="step-tag tag-blue"><span class="tag-dot" style="background:var(--blue);"></span>Aftensmad</span>
+        </div>
+      </div>
+      <div class="step-phone">
+        <div class="trin-demo" id="trin1">
+          <div class="td-top"><span class="td-titel">Uge 33</span><span class="td-taeller" id="m1-antal">0 måltider</span></div>
+          <div class="td-liste" style="min-height:188px;">
+            <div class="md-dag"><span class="md-dagnavn">Mandag</span>
+              <div class="td-r" style="border-left-color:#F59E0B"><span class="td-r-krop"><span class="td-r-t">Havregryn med bær</span><div class="td-r-m">Morgenmad</div></span></div>
+              <div class="td-r" style="border-left-color:#6C47FF"><span class="td-r-krop"><span class="td-r-t">Spaghetti med kødsovs</span><div class="td-r-m">Aftensmad</div></span></div>
+            </div>
+            <div class="md-dag"><span class="md-dagnavn">Tirsdag</span>
+              <div class="td-r" style="border-left-color:#A855F7"><span class="td-r-krop"><span class="td-r-t">Rugbrød med tun</span><div class="td-r-m">Frokost</div></span></div>
+              <div class="td-r" style="border-left-color:#6C47FF"><span class="td-r-krop"><span class="td-r-t">Fiskefrikadeller</span><div class="td-r-m">Aftensmad</div></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-divider"><div class="step-divider-line"></div><div class="step-divider-dot"></div><div class="step-divider-line"></div></div>
+
+    <!-- Step 2 -->
+    <div class="step-row reverse reveal">
+      <div>
+        <div class="step-num">2</div>
+        <h3 class="step-h3">Tilføj et måltid på under 30 sekunder</h3>
+        <p class="step-p">Tryk på <strong>+ Tilføj mad</strong> og vælg dag, måltidstype og rettens navn. Tilføj en valgfri beskrivelse med noter eller forberedelse, tryk Gem og du er færdig.</p>
+        <div class="step-tags">
+          <span class="step-tag tag-green"><span class="tag-dot" style="background:var(--success);"></span>Vælg dag</span>
+          <span class="step-tag tag-pink"><span class="tag-dot" style="background:var(--pink);"></span>Vælg måltidstype</span>
+          <span class="step-tag tag-orange"><span class="tag-dot" style="background:#F97316;"></span>Valgfri note</span>
+        </div>
+      </div>
+      <div class="step-phone">
+        <div class="trin-demo" id="trin2">
+          <div class="td-top"><span class="td-titel">Tilføj mad</span></div>
+          <div class="td-boks" style="min-height:200px;">
+            <div class="td-felt" data-f="1"><div class="td-felt-navn">Dag</div>
+              <div class="td-chips">
+                <span class="td-chip" data-c="#6C47FF">Ons</span>
+                <span class="td-chip" data-c="#6C47FF">Tor</span>
+                <span class="td-chip" data-c="#6C47FF">Fre</span>
+              </div>
+            </div>
+            <div class="td-felt" data-f="2"><div class="td-felt-navn">Måltid</div>
+              <div class="td-chips">
+                <span class="td-chip" data-c="#F59E0B">Morgenmad</span>
+                <span class="td-chip" data-c="#A855F7">Frokost</span>
+                <span class="td-chip" data-c="#6C47FF">Aftensmad</span>
+              </div>
+            </div>
+            <div class="td-felt" data-f="3"><div class="td-felt-navn">Ret</div><div class="td-felt-vaerdi"></div></div>
+            <div class="td-knapper"><span class="td-knap ja">Gem</span></div>
+            <div class="td-kvit"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Sat på onsdag</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-divider"><div class="step-divider-line"></div><div class="step-divider-dot"></div><div class="step-divider-line"></div></div>
+
+    <!-- Step 3 -->
+    <div class="step-row reveal">
+      <div>
+        <div class="step-num">3</div>
+        <h3 class="step-h3">Hele familien ved hvad der er til aftensmad</h3>
+        <p class="step-p">Ingen behøver at spørge mere. Alle i familien kan se madplanen, og du kan planlægge så mange uger frem du vil, så det hele er sat på forhånd.</p>
+        <div class="step-tags">
+          <span class="step-tag tag-green"><span class="tag-dot" style="background:var(--success);"></span>Realtid</span>
+          <span class="step-tag tag-purple"><span class="tag-dot" style="background:var(--purple);"></span>Alle ser det</span>
+          <span class="step-tag tag-blue"><span class="tag-dot" style="background:var(--blue);"></span>Planlæg fremad</span>
+        </div>
+      </div>
+      <div class="step-phone">
+        <div class="trin-demo" id="trin3">
+          <div class="td-top"><span class="td-titel">I aften</span></div>
+          <div class="td-r on" style="border-left-color:#6C47FF; margin-bottom:15px; opacity:1; transform:none;">
+            <span class="td-r-krop"><span class="td-r-t">Mexicanske pandekager</span><div class="td-r-m">Aftensmad · onsdag</div></span>
+          </div>
+          <div class="td-set">Kan ses af</div>
+          <div class="td-avatarer">
+            <span class="td-av" style="background:#22C55E">F</span>
+            <span class="td-av" style="background:#3B82F6">N</span>
+            <span class="td-av" style="background:#F59E0B">E</span>
+            <span class="td-av" style="background:#EC4899">B</span>
+          </div>
+          <div class="td-alle"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Ingen behøver at spørge</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-shape cta-shape-1"></div>
+  <div class="cta-shape cta-shape-2"></div>
+  <div class="container">
+    <div class="cta-inner reveal">
+      <div class="cta-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:13px;height:13px;"><polyline points="20 6 9 17 4 12"/></svg>14 dages gratis prøveperiode, ingen binding</div>
+      <h2 class="cta-h2">Klar til mere ro<br>i hverdagen?</h2>
+      <p class="cta-sub">Én app. Hele familien. Madplanen på plads.</p>
+      <div class="cta-buttons">
+        <a href="/hent/" class="btn btn-white btn-lg">Start gratis prøveperiode</a>
+        <a href="https://www.voreshjem.dk/support" target="_top" onclick="window.top.location.href='https://www.voreshjem.dk/support';return false;" class="btn btn-outline-white btn-lg">Kontakt os</a>
+      </div>
+      <p class="cta-trust">Efter 14 dage: <span>39 kr/md</span> eller <span>199 kr/halvår</span> · Annuller når som helst</p>
+      <a href="https://www.voreshjem.dk" target="_top" style="display:inline-flex; align-items:center; gap:6px; margin-top:24px; font-size:14px; font-weight:600; color:rgba(255,255,255,0.55); text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="15 18 9 12 15 6"/></svg>
+        Tilbage til forsiden
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="background:#0F0E1A; color:#fff; padding: 64px 0 32px; font-family:'Plus Jakarta Sans',sans-serif;">
+  <div style="max-width:1200px; margin:0 auto; padding:0 32px;">
+    <div class="footer-grid" style="display:grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap:48px; margin-bottom:56px;">
+      <div>
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+          <img src="/images/logo-nav-hvid.webp?v=2" alt="Vores Hjem" style="height:56px; width:auto; display:block; ">
+        </div>
+        <p style="font-size:14px; color:rgba(255,255,255,0.45); line-height:1.6;">Mere ro i hverdagen, for hele familien.</p>
+      </div>
+      <div>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Informationssider</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <a href="https://www.voreshjem.dk" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Forside</a>
+          <a href="https://www.voreshjem.dk/kalender" target="_top" onclick="window.top.location.href='https://www.voreshjem.dk/kalender';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Kalender</a>
+          <a href="https://www.voreshjem.dk/synkronisering" target="_top" onclick="window.top.location.href='https://www.voreshjem.dk/synkronisering';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Synkronisering</a>
+          <a href="https://www.voreshjem.dk/madplan" target="_top" onclick="window.top.location.href='https://www.voreshjem.dk/madplan';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Madplan</a>
+          <a href="https://www.voreshjem.dk/indkobsliste" target="_top" onclick="window.top.location.href='https://www.voreshjem.dk/indkobsliste';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Indkøbsliste</a>
+          <a href="https://www.voreshjem.dk/opgaver" target="_top" onclick="window.top.location.href='https://www.voreshjem.dk/opgaver';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Opgaver</a>
+          <a href="https://www.voreshjem.dk/hvordan-sletter-man-sin-konto" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Slet konto</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Sociale Medier</p>
+        <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:28px;">
+          <a href="https://www.facebook.com/share/1DAnAoAjhW/?mibextid=wwXIfr" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Facebook</a>
+          <a href="https://www.instagram.com/voreshjemdanmark?igsh=N211MjhjZXBxNjd3" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Instagram</a>
+          <a href="https://www.linkedin.com/company/vores-hjem/" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">LinkedIn</a>
+          <a href="https://www.voreshjem.dk/blog" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Blog</a>
+        </div>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Kontakt</p>
+        <a href="https://www.voreshjem.dk/support" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Support</a>
+      </div>
+      <div>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Politikker</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <a href="https://www.iubenda.com/privacy-policy/85951957" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Privatlivspolitik</a>
+          <a href="https://www.iubenda.com/privacy-policy/85951957/cookie-policy" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Cookiepolitik</a>
+          <a href="https://www.iubenda.com/vilkar-og-betingelser/85951957" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Vilkår og betingelser</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+      <p style="font-size:12px; color:rgba(255,255,255,0.3);">© 2026 Vores Hjem I/S · CVR 45804445 · Alle rettigheder forbeholdes.</p>
+      <a href="https://backend.voreshjem.dk" target="_blank" rel="nofollow noopener" style="font-size:12px; color:rgba(255,255,255,0.3); text-decoration:none; white-space:nowrap;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Medarbejder</a>
+      <p style="font-size:12px; color:rgba(255,255,255,0.3);">Bygget i Danmark 🇩🇰</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+const reveals = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+reveals.forEach(el => obs.observe(el));
+
+document.querySelectorAll('.feature-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    card.style.transform = `perspective(600px) rotateX(${-y*10}deg) rotateY(${x*10}deg) translateY(-8px)`;
+    card.style.boxShadow = `${-x*20}px ${-y*20}px 40px rgba(108,71,255,0.12), 0 24px 60px rgba(108,71,255,0.1)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+    card.style.boxShadow = '';
+  });
+});
+
+window.addEventListener('scroll', () => {
+  document.querySelector('nav').style.boxShadow =
+    window.scrollY > 20 ? '0 4px 24px rgba(108,71,255,0.08)' : 'none';
+});
+
+// Contact modal
+function openContactModal() {
+  document.getElementById('contact-modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeContactModal() {
+  document.getElementById('contact-modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeContactModalOutside(e) {
+  if (e.target === document.getElementById('contact-modal-overlay')) closeContactModal();
+}
+async function submitContact() {
+  const name = document.getElementById('c-name').value.trim();
+  const email = document.getElementById('c-email').value.trim();
+  const msg = document.getElementById('c-msg').value.trim();
+  const err = document.getElementById('contact-error');
+  err.style.display = 'none';
+  if (!name || !email || !msg) { err.textContent = 'Udfyld venligst alle felter.'; err.style.display = 'block'; return; }
+  const btn = document.getElementById('contact-submit-btn');
+  btn.disabled = true; btn.textContent = 'Sender…';
+  try {
+    await fetch('https://hook.eu1.make.com/o4qv702raknh1ar1oo8iwpdpeeatbn4r', {
+      method: 'POST', mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ name, email, message: msg })
+    });
+    document.getElementById('contact-form-wrap').style.display = 'none';
+    document.getElementById('contact-success').style.display = 'flex';
+  } catch(e) {
+    btn.disabled = false; btn.textContent = 'Send besked';
+    err.textContent = 'Noget gik galt. Prøv igen eller skriv til kontakt@vores-hjem.dk';
+    err.style.display = 'block';
+  }
+}
+
+let toastTimer;
+function goToStore(e){ if(e) e.preventDefault();
+  var ua=(navigator.userAgent||navigator.vendor||'').toLowerCase();
+  var url=/android/.test(ua) ? 'https://play.google.com/store/apps/details?id=com.voreshjem.app' : 'https://apps.apple.com/dk/app/vores-hjem/id6758346281';
+  window.open(url,'_blank','noopener');
+}
+</script>
+
+<!-- CONTACT MODAL -->
+<div id="contact-modal-overlay" onclick="closeContactModalOutside(event)">
+  <div class="contact-modal">
+    <button class="contact-modal-close" onclick="closeContactModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <div id="contact-form-wrap">
+      <h3>Skriv til os</h3>
+      <p>Vi svarer inden for 24 timer på hverdage.</p>
+      <div class="contact-field"><label for="c-name">Navn</label><input type="text" id="c-name" placeholder="Dit navn"></div>
+      <div class="contact-field"><label for="c-email">E-mail</label><input type="email" id="c-email" placeholder="din@email.dk"></div>
+      <div class="contact-field"><label for="c-msg">Besked</label><textarea id="c-msg" rows="4" placeholder="Hvad handler det om?"></textarea></div>
+      <p class="contact-error" id="contact-error"></p>
+      <button class="contact-submit" id="contact-submit-btn" onclick="submitContact()">Send besked</button>
+    </div>
+    <div class="contact-success" id="contact-success">
+      <div class="contact-success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <h4>Besked sendt!</h4>
+      <p>Vi vender tilbage til dig hurtigst muligt.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- SVÆVENDE HENT-KNAP -->
+<style>
+  .hent-flyd{
+    position:fixed; right:22px; bottom:22px; z-index:9000;
+    display:inline-flex; align-items:center; gap:10px;
+    padding:15px 22px; border-radius:99px; text-decoration:none;
+    background:linear-gradient(110deg,#6C47FF,#4F7BFF 58%,#EC4899);
+    color:#fff; font-weight:800; font-size:15.5px; letter-spacing:-.01em;
+    font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+    box-shadow:0 14px 34px -10px rgba(108,71,255,.75);
+    opacity:0; transform:translateY(16px); pointer-events:none;
+    transition:opacity .3s ease, transform .3s ease, box-shadow .2s ease;
+  }
+  .hent-flyd.vis{ opacity:1; transform:none; pointer-events:auto; }
+  .hent-flyd:hover{ box-shadow:0 18px 44px -10px rgba(108,71,255,.9); }
+  .hent-flyd svg{ flex:none; }
+  /* Chatboblen sidder i højre hjørne, så knappen rykker op over den */
+  @media(min-width:721px){ .hent-flyd{ bottom:96px; } }
+  @media(max-width:720px){
+    .hent-flyd{ right:14px; bottom:84px; padding:13px 18px; font-size:14.5px; }
+    .hent-flyd .lang{ display:none; }
+  }
+</style>
+
+<a class="hent-flyd" id="hent-flyd" href="/hent/" data-sted="flydeknap">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/>
+  </svg>
+  <span>Hent appen<span class="lang"> nu</span></span>
+</a>
+
+<script>
+(function(){
+  var k = document.getElementById('hent-flyd');
+  if (!k) return;
+  // Knappen kommer først frem, når man er kommet lidt ned, så den ikke
+  // dækker for det første indtryk af forsiden.
+  // Wix lægger siden i en iframe. Et element med position:fixed inde i en
+  // iframe hænger fast i iframens egen ramme, ikke i browservinduet, så
+  // knappen ville sidde et tilfældigt sted nede på siden. Inde i en iframe
+  // skjuler vi den, og så står den svævende knap i Wix' egen kode i stedet.
+  var iRamme = false;
+  try { iRamme = window.self !== window.top; } catch (e) { iRamme = true; }
+  if (iRamme) { k.remove(); return; }
+
+  function tjek(){
+    if (window.scrollY > 420) k.classList.add('vis');
+    else k.classList.remove('vis');
+  }
+  window.addEventListener('scroll', tjek, {passive:true});
+  tjek();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+
+<!-- Forbinder tidligt til de eksterne tjenester sporingen bruger, saa selve
+     handshaket (DNS+TLS) er overstaaet, naar scriptet faktisk skal hente dem. -->
+<link rel="preconnect" href="https://cdn.iubenda.com">
+<link rel="preconnect" href="https://embeds.iubenda.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="preconnect" href="https://connect.facebook.net">
+<link rel="preconnect" href="https://bzrcdn.openai.com" crossorigin>
+<link rel="preconnect" href="https://voreshjem-bot.netlify.app">
+
+<!-- ══ SPORING ══ Skal ligge oeverst i <head> paa alle sider.
+     Alt startes fra ét script, som foerst tjekker, om siden vises for sig selv.
+     Inde i en ramme starter INTET, saa der aldrig staar to cookiebannere oven paa
+     hinanden. Raekkefoelgen er ikke tilfaeldig: samtykketilstanden saettes,
+     FOER noget andet loader.
+     16. sept. 2026: Google Tag Manager fjernet (containeren var tom og kostede
+     115 KB). Meta og OpenAI starter foerst, naar den besoegende siger ja til
+     markedsfoering i cookiebanneret. -->
+<script>
+(function () {
+  var iRamme = false;
+  try { iRamme = window.self !== window.top; } catch (e) { iRamme = true; }
+  if (iRamme) return;
+
+  /* 1. Samtykketilstand. Alt er afvist, indtil brugeren siger ja. */
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function () { dataLayer.push(arguments); };
+  gtag('consent', 'default', {
+    'ad_storage': 'denied', 'ad_user_data': 'denied', 'ad_personalization': 'denied',
+    'analytics_storage': 'denied', 'functionality_storage': 'granted', 'security_storage': 'granted',
+    'wait_for_update': 500
+  });
+  gtag('set', 'ads_data_redaction', true);
+  gtag('set', 'url_passthrough', true);
+
+  /* scripts indsaettes i raekkefoelge, ét ad gangen */
+  function hent(src, valg) {
+    var s = document.createElement('script'); s.src = src; s.async = false;
+    if (valg && valg.charset) s.charset = valg.charset;
+    document.head.appendChild(s); return s;
+  }
+
+  /* 2. Cookiebanner, iubenda. siteId 4517758, cookiePolicyId 85951957. */
+  hent('https://embeds.iubenda.com/widgets/c4881ab1-9037-47e2-b5ce-d1950889d637.js');
+  hent('https://cdn.iubenda.com/cs/gpp/stub.js');
+  hent('https://cdn.iubenda.com/cs/iubenda_cs.js', { charset: 'UTF-8' });
+
+  /* 3. Google Analytics 4. Maaler kun, naar samtykket er givet. */
+  hent('https://www.googletagmanager.com/gtag/js?id=G-ZFW1KE91LV');
+  gtag('js', new Date());
+  gtag('config', 'G-ZFW1KE91LV');
+
+  /* 3b. Google Ads. Der er ingen Ads-kode endnu. Naar I opretter en konvertering
+         i Google Ads, faar I et id som AW-123456789. Saet det ind og fjern //
+     gtag('config', 'AW-XXXXXXXXX'); */
+
+  /* 4. Markedsfoering: Meta-pixel og OpenAI. Hentes foerst, naar cookiebanneret
+        melder ja til markedsfoering (ad_storage granted). Siger den besoegende nej,
+        hentes de slet ikke. Har den besoegende sagt ja tidligere, melder banneret
+        det med det samme, og de starter straks. */
+  var reklameStartet = false;
+  function startReklame() {
+    if (reklameStartet) return; reklameStartet = true;
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '697476623339056');
+    fbq('track', 'PageView');
+
+    !function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};
+    q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;
+    var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}
+    (window,document,'script','https://bzrcdn.openai.com/sdk/oaiq.min.js');
+    oaiq('init', { pixelId: 'QZwgYr1hiBh3USt1vsSytt', debug: false });
+  }
+  /* Banneret skriver sit svar i dataLayer. Vi kigger kun paa nye linjer. */
+  var set = 0, vagt = setInterval(function () {
+    for (; set < dataLayer.length; set++) {
+      var a = dataLayer[set];
+      if (a && a[0] === 'consent' && a[2] && a[2].ad_storage === 'granted') {
+        startReklame(); clearInterval(vagt); return;
+      }
+    }
+  }, 400);
+
+  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>,
+     saa de venter til siden er laest faerdig. Hent-knappens script taeller ogsaa
+     besoeget til backenden, uden cookies. */
+  function naarKlar(fn) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
+  naarKlar(function () {
+    hent('https://voreshjem-bot.netlify.app/widget.js');
+    hent('https://voreshjem-bot.netlify.app/hentknap.js');
+  });
+})();
+</script>
+<!-- ══ SPORING SLUT ══ -->
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slet din konto | Vores Hjem</title>
+<link rel="canonical" href="https://www.voreshjem.dk/hvordan-sletter-man-sin-konto">
+<link rel="alternate" hreflang="da" href="https://www.voreshjem.dk/hvordan-sletter-man-sin-konto">
+<link rel="alternate" hreflang="de" href="https://www.unserzuhauseapp.de/konto-loeschen">
+<link rel="alternate" hreflang="x-default" href="https://www.voreshjem.dk/hvordan-sletter-man-sin-konto">
+<meta name="description" content="Sådan sletter du din Vores Hjem-konto og alle data, trin for trin. Det tager under et minut og gøres direkte i appen under Indstillinger.">
+<link rel="preload" href="/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>@font-face{font-family:'Plus Jakarta Sans';font-style:normal;font-weight:200 800;font-display:swap;src:url(/fonts/plus-jakarta-sans-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}</style>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --purple: #6C47FF;
+  --purple-light: #8B6AFF;
+  --blue: #3B82F6;
+  --pink: #EC4899;
+  --gradient: linear-gradient(135deg, #6C47FF 0%, #3B82F6 55%, #EC4899 100%);
+  --bg: #FFFFFF;
+  --bg-subtle: #F8F7FF;
+  --text: #0F0E1A;
+  --text-secondary: #5E5A7A;
+  --text-muted: #9B97B5;
+  --border: #E8E5FF;
+  --font: 'Plus Jakarta Sans', sans-serif;
+  --radius: 16px;
+  --shadow: 0 8px 32px rgba(108,71,255,0.10);
+  --shadow-lg: 0 24px 80px rgba(108,71,255,0.16);
+}
+
+html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100%; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  max-width: 100%;
+}
+a { color: inherit; text-decoration: none; }
+.container { max-width: 960px; margin: 0 auto; padding: 0 32px; }
+
+/* ─── NAV ─── */
+nav {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(255,255,255,0.80);
+  border-bottom: 1px solid rgba(108,71,255,0.08);
+}
+/* Chrome-fix: blur på lag BAG indholdet (Chromium-bug: børn af backdrop-filter renderes tilfældigt ikke) */
+nav::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+}
+.nav-logo img { transform: translateZ(0); }
+
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 68px; max-width: 960px; margin: 0 auto; padding: 0 32px;
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; }
+.nav-logo svg { width: 36px; height: 36px; }
+.logo-text { font-size: 17px; font-weight: 800; color: var(--text); }
+.logo-text span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.back-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 14px; font-weight: 600; color: var(--text-secondary);
+  transition: color 0.2s;
+}
+.back-link:hover { color: var(--purple); }
+.back-link svg { width: 16px; height: 16px; }
+
+/* ─── HERO ─── */
+.hero {
+  background: linear-gradient(160deg, #F8F7FF 0%, #EEF0FF 50%, #F5F0FF 100%);
+  padding: 80px 0 72px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: -200px; right: -200px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(108,71,255,0.12), transparent 65%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute; bottom: -150px; left: -150px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(236,72,153,0.10), transparent 65%);
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(108,71,255,0.08); border: 1px solid rgba(108,71,255,0.15);
+  border-radius: 100px; padding: 6px 16px;
+  font-size: 13px; font-weight: 700; color: var(--purple);
+  margin-bottom: 24px; position: relative; z-index: 1;
+}
+.hero h1 {
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  color: var(--text);
+  margin-bottom: 16px;
+  position: relative; z-index: 1;
+}
+.hero p {
+  font-size: 18px; color: var(--text-secondary);
+  max-width: 500px; margin: 0 auto;
+  position: relative; z-index: 1;
+  line-height: 1.6;
+}
+
+/* ─── STEPS ─── */
+.steps-section {
+  padding: 80px 0 100px;
+  background: var(--bg);
+}
+
+.step-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+  margin-bottom: 80px;
+}
+.step-card:last-child { margin-bottom: 0; }
+.step-card.reverse { direction: rtl; }
+.step-card.reverse > * { direction: ltr; }
+
+/* Step number + text */
+.step-content {}
+.step-number {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px;
+  background: var(--gradient);
+  border-radius: 14px;
+  font-size: 18px; font-weight: 800; color: #fff;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 24px rgba(108,71,255,0.30);
+}
+.step-content h2 {
+  font-size: 26px; font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--text);
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+.step-content p {
+  font-size: 16px; color: var(--text-secondary);
+  line-height: 1.65;
+}
+.step-content p strong { color: var(--text); font-weight: 700; }
+
+/* Warning box */
+.warning-box {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: rgba(239,68,68,0.06);
+  border: 1px solid rgba(239,68,68,0.20);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-top: 20px;
+}
+.warning-icon {
+  width: 20px; height: 20px; flex-shrink: 0;
+  color: #EF4444; margin-top: 1px;
+}
+.warning-box p {
+  font-size: 14px; color: #B91C1C;
+  line-height: 1.5;
+}
+
+/* Phone mockup */
+.phone-wrap {
+  display: flex; align-items: center; justify-content: center;
+}
+.phone-frame {
+  position: relative;
+  width: 240px;
+  filter: drop-shadow(0 32px 64px rgba(108,71,255,0.18));
+}
+.phone-frame img {
+  width: 100%;
+  border-radius: 36px;
+  display: block;
+  border: 3px solid rgba(255,255,255,0.8);
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,0.06),
+    0 24px 64px rgba(0,0,0,0.14);
+}
+
+/* ─── DIVIDER ─── */
+.step-divider {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 80px;
+}
+.step-divider-line {
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+.step-divider-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--gradient);
+  opacity: 0.5;
+}
+
+/* ─── CONTACT CTA ─── */
+.contact-cta {
+  background: linear-gradient(160deg, #F8F7FF 0%, #EEF0FF 50%, #F5F0FF 100%);
+  padding: 72px 32px 0;
+  text-align: center;
+  border-top: 1px solid var(--border);
+}
+.contact-cta h2 {
+  font-size: 28px; font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 10px;
+}
+.contact-cta p {
+  font-size: 16px; color: var(--text-secondary);
+  margin-bottom: 28px;
+}
+.cta-buttons {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  flex-wrap: wrap;
+}
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--gradient);
+  color: #fff;
+  padding: 13px 28px;
+  border-radius: 100px;
+  font-size: 15px; font-weight: 700;
+  box-shadow: 0 8px 24px rgba(108,71,255,0.30);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(108,71,255,0.38); }
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(108,71,255,0.07);
+  border: 1px solid rgba(108,71,255,0.15);
+  color: var(--purple);
+  padding: 13px 28px;
+  border-radius: 100px;
+  font-size: 15px; font-weight: 700;
+  transition: background 0.2s, transform 0.2s;
+}
+.btn-secondary:hover { background: rgba(108,71,255,0.12); transform: translateY(-2px); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 700px) {
+  .container { padding: 0 20px; }
+  .hero { padding: 64px 0 56px; }
+  .hero h1 { font-size: 30px; }
+  .hero p { font-size: 16px; }
+  .steps-section { padding: 56px 0 72px; }
+
+  .step-card {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    margin-bottom: 56px;
+  }
+  .step-card.reverse { direction: ltr; }
+  .phone-frame { width: 200px; }
+
+  .step-divider { margin-bottom: 56px; }
+  .contact-cta h2 { font-size: 22px; }
+}
+/* ─── CONTACT MODAL ─── */
+#contact-modal-overlay {
+  position: fixed; inset: 0; z-index: 1100;
+  background: rgba(10,8,30,0.55);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+  opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+}
+#contact-modal-overlay.open { opacity: 1; pointer-events: auto; }
+.contact-modal {
+  background: #fff; border-radius: 24px; padding: 44px 40px 36px;
+  max-width: 480px; width: 100%;
+  box-shadow: 0 40px 120px rgba(108,71,255,0.22), 0 8px 32px rgba(0,0,0,0.12);
+  position: relative;
+  transform: scale(0.92) translateY(16px);
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+#contact-modal-overlay.open .contact-modal { transform: scale(1) translateY(0); }
+.contact-modal-close {
+  position: absolute; top: 16px; right: 16px;
+  width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer;
+  background: #F1F0FA; color: #5E5A7A;
+  display: flex; align-items: center; justify-content: center; transition: background 0.2s;
+}
+.contact-modal-close:hover { background: #E8E5FF; }
+.contact-modal-close svg { width: 16px; height: 16px; }
+.contact-modal h3 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
+.contact-modal > p { font-size: 14px; color: #5E5A7A; margin-bottom: 24px; }
+.contact-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.contact-field label { font-size: 13px; font-weight: 700; color: #0F0E1A; }
+.contact-field input, .contact-field textarea {
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px;
+  border: 1.5px solid #E8E5FF; border-radius: 12px; padding: 12px 14px;
+  background: #F8F7FF; color: #0F0E1A; outline: none; transition: border-color 0.2s; resize: none;
+}
+.contact-field input:focus, .contact-field textarea:focus { border-color: #6C47FF; background: #fff; }
+.contact-submit {
+  width: 100%; padding: 14px; border-radius: 14px; border: none;
+  background: linear-gradient(135deg, #6C47FF 0%, #3B82F6 55%, #EC4899 100%);
+  color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 700;
+  cursor: pointer; margin-top: 8px;
+  box-shadow: 0 4px 24px rgba(108,71,255,0.35); transition: transform 0.2s, box-shadow 0.2s;
+}
+.contact-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(108,71,255,0.45); }
+.contact-submit:disabled { opacity: 0.6; cursor: default; transform: none; }
+.contact-error { display: none; color: #E84040; font-size: 13px; font-weight: 600; margin-top: 4px; }
+.contact-success {
+  text-align: center; padding: 16px 0 8px;
+  display: none; flex-direction: column; align-items: center; gap: 12px;
+}
+.contact-success-icon { width: 56px; height: 56px; background: rgba(16,185,129,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.contact-success-icon svg { width: 28px; height: 28px; color: #10B981; }
+.contact-success h4 { font-size: 18px; font-weight: 800; }
+.contact-success p { font-size: 14px; color: #5E5A7A; margin: 0; }
+@media (max-width: 600px) { .contact-modal { padding: 32px 24px 28px; } }
+</style>
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Vores Hjem">
+  <meta property="og:locale" content="da_DK">
+  <meta property="og:title" content="Slet din konto | Vores Hjem">
+  <meta property="og:description" content="Trin-for-trin guide til at slette din Vores Hjem-konto.">
+  <meta property="og:url" content="https://www.voreshjem.dk/hvordan-sletter-man-sin-konto">
+  <meta property="og:image" content="https://www.voreshjem.dk/images/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Slet din konto | Vores Hjem">
+  <meta name="twitter:description" content="Trin-for-trin guide til at slette din Vores Hjem-konto.">
+  <meta name="twitter:image" content="https://www.voreshjem.dk/images/og.jpg">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "name": "Slet din konto | Vores Hjem", "description": "Trin-for-trin guide til at slette din Vores Hjem-konto.", "url": "https://www.voreshjem.dk/hvordan-sletter-man-sin-konto", "isPartOf": {"@type": "WebSite", "name": "Vores Hjem", "url": "https://www.voreshjem.dk"}}</script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="https://www.voreshjem.dk" target="_top" class="nav-logo">
+      <img src="/images/logo-nav.webp?v=2" alt="Vores Hjem" style="height:58px;width:auto;display:block;">
+    </a>
+    <a href="https://www.voreshjem.dk" target="_top" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+      Tilbage til forsiden
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Hjælpecenter
+    </div>
+    <h1>Hvordan sletter jeg<br>min konto?</h1>
+    <p>Følg de fire trin herunder for at slette din Vores Hjem-konto permanent.</p>
+  </div>
+</section>
+
+<!-- TILBAGE KNAP TOP -->
+<div style="text-align:center; padding: 32px 32px 0;">
+  <a href="https://www.voreshjem.dk" target="_top" style="display:inline-flex; align-items:center; gap:8px; background:rgba(108,71,255,0.07); border:1px solid rgba(108,71,255,0.15); color:#6C47FF; padding:13px 28px; border-radius:100px; font-size:15px; font-weight:700; font-family:'Plus Jakarta Sans',sans-serif; text-decoration:none;">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    Vend tilbage til forsiden
+  </a>
+</div>
+
+<!-- STEPS -->
+<section class="steps-section">
+  <div class="container">
+
+    <!-- Step 1 -->
+    <div class="step-card">
+      <div class="step-content">
+        <div class="step-number">1</div>
+        <h2>Log ind på Vores Hjem</h2>
+        <p>Åbn <strong>Vores Hjem</strong>-appen på din telefon og log ind med din email og adgangskode.</p>
+      </div>
+      <div class="phone-wrap">
+        <div class="phone-frame">
+          <img src="https://www.voreshjem.dk/images/blog/w4dc9690306.jpg" alt="Log ind på Vores Hjem" loading="lazy">
+        </div>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="step-divider">
+      <div class="step-divider-line"></div>
+      <div class="step-divider-dot"></div>
+      <div class="step-divider-line"></div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step-card reverse">
+      <div class="step-content">
+        <div class="step-number">2</div>
+        <h2>Gå til indstillinger</h2>
+        <p>Tryk på <strong>indstillinger</strong> i appen, følg pilen som vist på billedet.</p>
+      </div>
+      <div class="phone-wrap">
+        <div class="phone-frame">
+          <img src="https://www.voreshjem.dk/images/blog/w5975320697.jpg" alt="Gå til indstillinger" loading="lazy">
+        </div>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="step-divider">
+      <div class="step-divider-line"></div>
+      <div class="step-divider-dot"></div>
+      <div class="step-divider-line"></div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step-card">
+      <div class="step-content">
+        <div class="step-number">3</div>
+        <h2>Tryk på "Slet konto"</h2>
+        <p>Rul ned i indstillinger og tryk på <strong>Slet konto</strong>, følg pilen som vist på billedet.</p>
+      </div>
+      <div class="phone-wrap">
+        <div class="phone-frame">
+          <img src="https://www.voreshjem.dk/images/blog/w76b2b321c9.jpg" alt="Tryk på Slet konto" loading="lazy">
+        </div>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="step-divider">
+      <div class="step-divider-line"></div>
+      <div class="step-divider-dot"></div>
+      <div class="step-divider-line"></div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="step-card reverse">
+      <div class="step-content">
+        <div class="step-number">4</div>
+        <h2>Tryk "Slet alt"</h2>
+        <p>Bekræft sletningen ved at trykke på <strong>Slet alt</strong>. Din konto og alle data slettes permanent.</p>
+        <div class="warning-box">
+          <svg class="warning-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <p><strong>Vigtigt:</strong> Du har herefter ikke mulighed for at gendanne din konto eller dine data.</p>
+        </div>
+      </div>
+      <div class="phone-wrap">
+        <div class="phone-frame">
+          <img src="https://www.voreshjem.dk/images/blog/w7fb38dfde8.jpg" alt="Tryk Slet alt" loading="lazy">
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT CTA -->
+<section class="contact-cta">
+  <h2>Fik du ikke løst dit problem?</h2>
+  <p>Vi sidder klar til at hjælpe dig, hverdage kl. 9–17.</p>
+  <div class="cta-buttons">
+    <a href="https://www.voreshjem.dk/support" target="_top" onclick="window.top.location.href='https://www.voreshjem.dk/support';return false;" class="btn-primary">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Kontakt os
+    </a>
+    <a href="https://www.voreshjem.dk" target="_top" class="btn-secondary">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Tilbage til forsiden
+    </a>
+  </div>
+</section>
+
+<!-- TILBAGE KNAP -->
+<style>
+@media (max-width: 700px) { .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 32px !important; } }
+@media (max-width: 420px) { .footer-grid { grid-template-columns: 1fr !important; gap: 28px !important; } }
+</style>
+<footer style="background:#0F0E1A; color:#fff; padding: 64px 0 32px; font-family:'Plus Jakarta Sans',sans-serif;">
+  <div style="max-width:1200px; margin:0 auto; padding:0 32px;">
+    <div class="footer-grid" style="display:grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap:48px; margin-bottom:56px;">
+      <div>
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+          <img src="/images/logo-nav-hvid.webp?v=2" alt="Vores Hjem" style="height:56px; width:auto; display:block; ">
+        </div>
+        <p style="font-size:14px; color:rgba(255,255,255,0.45); line-height:1.6;">Mere ro i hverdagen, for hele familien.</p>
+      </div>
+      <div>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Informationssider</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <a href="https://www.voreshjem.dk" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Forside</a>
+          <a href="https://www.voreshjem.dk/hvordan-sletter-man-sin-konto" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Hvordan sletter man sin konto?</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Sociale Medier</p>
+        <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:28px;">
+          <a href="https://www.facebook.com/share/1DAnAoAjhW/?mibextid=wwXIfr" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Facebook</a>
+          <a href="https://www.instagram.com/voreshjemdanmark?igsh=N211MjhjZXBxNjd3" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Instagram</a>
+          <a href="https://www.linkedin.com/company/vores-hjem/" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">LinkedIn</a>
+          <a href="https://www.voreshjem.dk/blog" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Blog</a>
+        </div>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Kontakt</p>
+        <a href="https://www.voreshjem.dk/support" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Support</a>
+      </div>
+      <div>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Politikker</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <a href="https://www.iubenda.com/privacy-policy/85951957" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Privatlivspolitik</a>
+          <a href="https://www.iubenda.com/privacy-policy/85951957/cookie-policy" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Cookiepolitik</a>
+          <a href="https://www.iubenda.com/vilkar-og-betingelser/85951957" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Vilkår og betingelser</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+      <p style="font-size:12px; color:rgba(255,255,255,0.3); white-space:nowrap;">© 2026 Vores Hjem I/S · CVR 45804445 · Alle rettigheder forbeholdes.</p>
+      <a href="https://backend.voreshjem.dk" target="_blank" rel="nofollow noopener" style="font-size:12px; color:rgba(255,255,255,0.3); text-decoration:none; white-space:nowrap;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Medarbejder</a>
+      <p style="font-size:12px; color:rgba(255,255,255,0.3); white-space:nowrap;">Bygget i Danmark 🇩🇰</p>
+    </div>
+  </div>
+</footer>
+
+<!-- CONTACT MODAL -->
+<div id="contact-modal-overlay" onclick="closeContactModalOutside(event)">
+  <div class="contact-modal">
+    <button class="contact-modal-close" onclick="closeContactModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <div id="contact-form-wrap">
+      <h3>Skriv til os</h3>
+      <p>Vi svarer inden for 24 timer på hverdage.</p>
+      <div class="contact-field"><label for="c-name">Navn</label><input type="text" id="c-name" placeholder="Dit navn"></div>
+      <div class="contact-field"><label for="c-email">E-mail</label><input type="email" id="c-email" placeholder="din@email.dk"></div>
+      <div class="contact-field"><label for="c-msg">Besked</label><textarea id="c-msg" rows="4" placeholder="Hvad handler det om?"></textarea></div>
+      <p class="contact-error" id="contact-error"></p>
+      <button class="contact-submit" id="contact-submit-btn" onclick="submitContact()">Send besked</button>
+    </div>
+    <div class="contact-success" id="contact-success">
+      <div class="contact-success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <h4>Besked sendt!</h4>
+      <p>Vi vender tilbage til dig hurtigst muligt.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+function openContactModal() {
+  document.getElementById('contact-modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeContactModal() {
+  document.getElementById('contact-modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeContactModalOutside(e) {
+  if (e.target === document.getElementById('contact-modal-overlay')) closeContactModal();
+}
+async function submitContact() {
+  const name = document.getElementById('c-name').value.trim();
+  const email = document.getElementById('c-email').value.trim();
+  const msg = document.getElementById('c-msg').value.trim();
+  const err = document.getElementById('contact-error');
+  err.style.display = 'none';
+  if (!name || !email || !msg) { err.textContent = 'Udfyld venligst alle felter.'; err.style.display = 'block'; return; }
+  const btn = document.getElementById('contact-submit-btn');
+  btn.disabled = true; btn.textContent = 'Sender…';
+  try {
+    await fetch('https://hook.eu1.make.com/o4qv702raknh1ar1oo8iwpdpeeatbn4r', {
+      method: 'POST', mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ name, email, message: msg })
+    });
+    document.getElementById('contact-form-wrap').style.display = 'none';
+    document.getElementById('contact-success').style.display = 'flex';
+  } catch(e) {
+    btn.disabled = false; btn.textContent = 'Send besked';
+    err.textContent = 'Noget gik galt. Prøv igen eller skriv til kontakt@vores-hjem.dk';
+    err.style.display = 'block';
+  }
+}
+</script>
+
+</body>
+</html>

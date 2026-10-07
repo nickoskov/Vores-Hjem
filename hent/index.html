@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<link rel="canonical" href="https://www.voreshjem.dk/hent/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Hent Vores Hjem — App Store & Google Play">
+<meta property="og:description" content="Hent Vores Hjem til iPhone eller Android. 14 dage gratis, ingen binding.">
+<meta property="og:url" content="https://www.voreshjem.dk/hent/">
+<link rel="image_src" href="https://www.voreshjem.dk/images/og.jpg">
+  <meta property="og:image" content="https://www.voreshjem.dk/images/og.jpg">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "url": "https://www.voreshjem.dk/hent/", "name": "Hent Vores Hjem til iPhone og Android", "inLanguage": "da", "primaryImageOfPage": {"@type": "ImageObject", "url": "https://www.voreshjem.dk/images/og.jpg", "width": 1200, "height": 630}}</script>
+<meta name="twitter:card" content="summary_large_image">
+
+
+<!-- ══ SPORING ══ Skal ligge oeverst i <head> paa alle sider.
+     Alt startes fra ét script, som foerst tjekker, om siden vises for sig selv.
+     Inde i en ramme starter INTET, saa der aldrig staar to cookiebannere oven paa
+     hinanden. Raekkefoelgen er ikke tilfaeldig: samtykketilstanden saettes,
+     FOER noget andet loader.
+     16. sept. 2026: Google Tag Manager fjernet (containeren var tom og kostede
+     115 KB). Meta og OpenAI starter foerst, naar den besoegende siger ja til
+     markedsfoering i cookiebanneret. -->
+<script>
+(function () {
+  var iRamme = false;
+  try { iRamme = window.self !== window.top; } catch (e) { iRamme = true; }
+  if (iRamme) return;
+
+  /* 1. Samtykketilstand. Alt er afvist, indtil brugeren siger ja. */
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function () { dataLayer.push(arguments); };
+  gtag('consent', 'default', {
+    'ad_storage': 'denied', 'ad_user_data': 'denied', 'ad_personalization': 'denied',
+    'analytics_storage': 'denied', 'functionality_storage': 'granted', 'security_storage': 'granted',
+    'wait_for_update': 500
+  });
+  gtag('set', 'ads_data_redaction', true);
+  gtag('set', 'url_passthrough', true);
+
+  /* scripts indsaettes i raekkefoelge, ét ad gangen */
+  function hent(src, valg) {
+    var s = document.createElement('script'); s.src = src; s.async = false;
+    if (valg && valg.charset) s.charset = valg.charset;
+    document.head.appendChild(s); return s;
+  }
+
+  /* 2. Cookiebanner, iubenda. siteId 4517758, cookiePolicyId 85951957. */
+  hent('https://embeds.iubenda.com/widgets/c4881ab1-9037-47e2-b5ce-d1950889d637.js');
+  hent('https://cdn.iubenda.com/cs/gpp/stub.js');
+  hent('https://cdn.iubenda.com/cs/iubenda_cs.js', { charset: 'UTF-8' });
+
+  /* 3. Google Analytics 4. Maaler kun, naar samtykket er givet. */
+  hent('https://www.googletagmanager.com/gtag/js?id=G-ZFW1KE91LV');
+  gtag('js', new Date());
+  gtag('config', 'G-ZFW1KE91LV');
+
+  /* 3b. Google Ads. Der er ingen Ads-kode endnu. Naar I opretter en konvertering
+         i Google Ads, faar I et id som AW-123456789. Saet det ind og fjern //
+     gtag('config', 'AW-XXXXXXXXX'); */
+
+  /* 4. Markedsfoering: Meta-pixel og OpenAI. Hentes foerst, naar cookiebanneret
+        melder ja til markedsfoering (ad_storage granted). Siger den besoegende nej,
+        hentes de slet ikke. Har den besoegende sagt ja tidligere, melder banneret
+        det med det samme, og de starter straks. */
+  var reklameStartet = false;
+  function startReklame() {
+    if (reklameStartet) return; reklameStartet = true;
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '697476623339056');
+    fbq('track', 'PageView');
+
+    !function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};
+    q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;
+    var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}
+    (window,document,'script','https://bzrcdn.openai.com/sdk/oaiq.min.js');
+    oaiq('init', { pixelId: 'QZwgYr1hiBh3USt1vsSytt', debug: false });
+  }
+  /* Banneret skriver sit svar i dataLayer. Vi kigger kun paa nye linjer. */
+  var set = 0, vagt = setInterval(function () {
+    for (; set < dataLayer.length; set++) {
+      var a = dataLayer[set];
+      if (a && a[0] === 'consent' && a[2] && a[2].ad_storage === 'granted') {
+        startReklame(); clearInterval(vagt); return;
+      }
+    }
+  }, 400);
+
+  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>,
+     saa de venter til siden er laest faerdig. Hent-knappens script taeller ogsaa
+     besoeget til backenden, uden cookies. */
+  function naarKlar(fn) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
+  naarKlar(function () {
+    hent('https://voreshjem-bot.netlify.app/widget.js');
+    hent('https://voreshjem-bot.netlify.app/hentknap.js');
+  });
+})();
+</script>
+<!-- ══ SPORING SLUT ══ -->
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hent Vores Hjem til iPhone og Android</title>
+<meta name="description" content="Hent Vores Hjem til iPhone og Android og saml familiens hverdag i én app: kalender, madplan, indkøb og opgaver. Prøv gratis i 14 dage.">
+<link rel="icon" href="/logo.svg">
+<link rel="preload" href="/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>@font-face{font-family:'Plus Jakarta Sans';font-style:normal;font-weight:200 800;font-display:swap;src:url(/fonts/plus-jakarta-sans-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}</style>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family:'Plus Jakarta Sans', -apple-system, sans-serif;
+    background:linear-gradient(160deg, #F8F7FF 0%, #EEF0FF 40%, #F5F0FF 100%);
+    color:#1B1633;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px 20px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .card {
+    width:100%;
+    max-width:440px;
+    text-align:center;
+    background:#fff;
+    border-radius:32px;
+    padding:40px 28px 34px;
+    box-shadow:0 24px 60px rgba(76,71,180,.16);
+  }
+  .logo { display:block; height:44px; width:auto; margin:0 auto 26px; }
+  .phone {
+    display:block;
+    width:184px;
+    max-width:60%;
+    height:auto;
+    border-radius:26px;
+    box-shadow:0 16px 40px rgba(76,71,180,.22);
+    margin:0 auto 26px;
+  }
+  h1 {
+    font-size:26px;
+    font-weight:800;
+    line-height:1.2;
+    letter-spacing:-.02em;
+    margin-bottom:12px;
+  }
+  h1 .grad {
+    background:linear-gradient(135deg, #6C47FF 0%, #3B82F6 55%, #EC4899 100%);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  }
+  p.sub {
+    font-size:16px;
+    line-height:1.5;
+    color:#5B5470;
+    margin-bottom:28px;
+  }
+  .store-btns {
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    align-items:stretch;
+  }
+  .store-btn {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    text-decoration:none;
+    background:#12101F;
+    color:#fff;
+    padding:14px 22px;
+    border-radius:16px;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .store-btn:hover { transform:translateY(-2px); box-shadow:0 12px 28px rgba(18,16,31,.28); }
+  .store-btn svg { width:26px; height:26px; flex-shrink:0; }
+  .store-btn-text { text-align:left; line-height:1.15; }
+  .store-btn-sub { font-size:11px; font-weight:500; opacity:.8; }
+  .store-btn-name { font-size:18px; font-weight:700; letter-spacing:-.01em; }
+  .web-btn {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    text-decoration:none;
+    background:#F1EEFF;
+    color:#4B2FD6;
+    font-size:16px;
+    font-weight:700;
+    padding:14px 22px;
+    border-radius:16px;
+    border:1.5px solid #E1DAFF;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .web-btn:hover { transform:translateY(-2px); background:#E9E4FF; }
+  .web-btn svg { width:20px; height:20px; flex-shrink:0; }
+  .trial {
+    margin-top:24px;
+    font-size:14px;
+    font-weight:600;
+    color:#6C47FF;
+  }
+  .trial span { display:block; font-weight:500; color:#8B849B; font-size:13px; margin-top:4px; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"MobileApplication","name":"Vores Hjem","operatingSystem":"iOS, Android","applicationCategory":"LifestyleApplication","inLanguage":"da",
+ "description":"Dansk familieapp der samler kalender, madplan, indkøbsliste og opgaver for op til 7 personer. 14 dages gratis prøveperiode.",
+ "url":"https://www.voreshjem.dk/hent/","image":"https://www.voreshjem.dk/images/og.jpg",
+ "installUrl":["https://apps.apple.com/dk/app/vores-hjem/id6758346281","https://play.google.com/store/apps/details?id=com.voreshjem.app"],
+ "offers":[{"@type":"Offer","price":"39","priceCurrency":"DKK","name":"Månedligt abonnement"},{"@type":"Offer","price":"199","priceCurrency":"DKK","name":"Halvårligt abonnement"}],
+ "publisher":{"@type":"Organization","name":"Vores Hjem I/S","url":"https://www.voreshjem.dk"}}
+</script>
+</head>
+<body>
+  <div class="card">
+    <img src="/logo.svg" alt="Vores Hjem" class="logo">
+    <img src="/screen-kalender.webp" alt="Vores Hjem app" class="phone">
+    <h1>Hent <span class="grad">Vores Hjem</span></h1>
+    <p class="sub" data-vh="hent.undertekst">Hele familiens hverdag samlet i én app — kalender, madplan, indkøb og opgaver.</p>
+    <div class="store-btns">
+      <a href="https://apps.apple.com/dk/app/vores-hjem/id6758346281" target="_blank" rel="noopener" class="store-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        <div class="store-btn-text"><div class="store-btn-sub">Download i</div><div class="store-btn-name">App Store</div></div>
+      </a>
+      <a href="https://play.google.com/store/apps/details?id=com.voreshjem.app" target="_blank" rel="noopener" class="store-btn">
+        <svg viewBox="0 0 512 512"><path fill="#4CAF50" d="M325.3 234.3L104.6 13l280.8 161.2z"/><path fill="#4285F4" d="M47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l249.2-249.1z"/><path fill="#FFC107" d="M461.2 219.8l-67.6-39.1-68.5 68.5 68.5 68.5 67.6-39.1c19.3-11.1 19.3-40.6-.1-58.8z"/><path fill="#F44336" d="M104.6 499L325.3 277.7l-60.1-60.1z"/></svg>
+        <div class="store-btn-text"><div class="store-btn-sub">Hent på</div><div class="store-btn-name">Google Play</div></div>
+      </a>
+      <a href="https://www.voreshjem.dk" target="_blank" rel="noopener" class="web-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        Besøg voreshjem.dk
+      </a>
+    </div>
+    <div class="trial">14 dage gratis — ingen binding<span>39 kr/md · op til 7 personer</span></div>
+  </div>
+</body>
+</html>
