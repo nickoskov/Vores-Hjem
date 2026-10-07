@@ -26,6 +26,43 @@ for = "/fonts/*"
   [headers.values]
   Cache-Control = "public, max-age=31536000, immutable"
 
+# GEO, okt. 2026
+[[redirects]]
+from = "/om-vores-hjem"
+to = "/om-vores-hjem.html"
+status = 200
+force = false
+
+[[redirects]]
+from = "/om"
+to = "/om-vores-hjem"
+status = 301
+force = false
+
+[[redirects]]
+from = "/fakta"
+to = "/om-vores-hjem"
+status = 301
+force = false
+
+[[redirects]]
+from = "/privacy-policy"
+to = "https://www.iubenda.com/privacy-policy/85951957"
+status = 301
+force = true
+
+[[redirects]]
+from = "/terms-and-conditions"
+to = "https://www.iubenda.com/vilkar-og-betingelser/85951957"
+status = 301
+force = true
+
+[[redirects]]
+from = "/accessibility-statement"
+to = "/"
+status = 301
+force = false
+
 [[redirects]]
 from = "https://vores-hjem.dk/*"
 to = "https://www.voreshjem.dk/:splat"
@@ -774,7 +811,7 @@ force = false
 from = "/kontakt"
 to = "/support"
 status = 301
-force = false
+force = true
 
   [redirects.query]
 
@@ -820,9 +857,9 @@ force = false
 
 [[redirects]]
 from = "/om-os"
-to = "/"
+to = "/om-vores-hjem"
 status = 301
-force = false
+force = true
 
   [redirects.query]
 

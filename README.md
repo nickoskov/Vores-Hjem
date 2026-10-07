@@ -32,3 +32,23 @@ og ligger kun på Mac'en. En udgivelse herfra ville slette dem.
 - Kildekoden til backend- og chatbot-funktionerne
 - App-koden (iPhone/Android)
 - `_redirects` til `hjemmeside/hent_rettelser.js` (scriptet, der henter rettelser fra backend-panelet før udgivelse)
+
+## Før hver udgivelse
+
+Backend-panelet kan rette titler og beskrivelser direkte på live-sitet. Tjek derfor, at live
+ikke er ændret siden sidste udgivelse fra repoet, ellers overskrives rettelserne.
+Udgiv altid en testudgave først, og læg den live, når den er tjekket.
+
+## Værktøjer
+
+- `vaerktoej/vh-blog.js`: vedligehold af blogindlæg (brødkrumme, dateModified, sitemap-lastmod,
+  sammenlægning af indlæg). Kør uden `--skriv` først. Fx
+  `node ../vaerktoej/vh-blog.js . opdateret post/<slug> --skriv` inde fra `hjemmeside/`.
+
+## Ændringslog
+
+- 2026-10-07: minbolighandel fjernet. GEO-rettelser: modsigelser rettet (svartid, data i EU,
+  automatisk fornyelse, private aftaler, kalendervisninger, maks. 200 varer, opsigelse på Android),
+  ny side /om-vores-hjem, llms.txt + llms-full.txt, robots.txt, JSON-LD (Organization, app, FAQ,
+  brødkrummer), beskrivende H1 på funktionssider, footer-links, viderestillinger, sitemap, IndexNow.
+  Ingen konkurrentnavne og ingen "Kort fortalt"-/faktabokse (ejerens ønske).

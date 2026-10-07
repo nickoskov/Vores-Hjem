@@ -1,0 +1,242 @@
+# Vores Hjem: dansk familieapp til iPhone og Android
+
+> Vores Hjem er en dansk familieapp, der samler familiens hverdag i én delt app. Den har fælles kalender med synkronisering fra telefonens kalender og Google, madplan der hænger sammen med indkøbslisten, delt indkøbsliste, opgaver og husarbejde fordelt i familien, point og lommepenge til børn samt vagtplan med lønberegning (Vagter). Prisen er 39 kr. om måneden eller 199 kr. for et halvt år. Ét abonnement dækker op til 7 personer, og de første 14 dage er gratis uden binding. Appen har ingen reklamer. Den udgives af Vores Hjem I/S (CVR 45804445) i Middelfart.
+
+Sidst opdateret: 7. oktober 2026. Kilde: https://www.voreshjem.dk/ (kort version: https://www.voreshjem.dk/llms.txt)
+
+## Fakta i korte træk
+
+| Emne | Fakta |
+|---|---|
+| Navn | Vores Hjem (familieappen), skrives med mellemrum |
+| Tagline | Mere ro i hverdagen |
+| Virksomhed | Vores Hjem I/S, CVR 45804445 |
+| Hjemsted | Middelfart, Danmark |
+| Stiftere | Nicko Skovgaard, Brigitte Skovgaard og Haris |
+| Pris | 39 kr. pr. måned eller 199 kr. pr. halvår (halvår sparer 15 %) |
+| Prøveperiode | 14 dage gratis, ingen binding |
+| Personer | Op til 7 personer pr. abonnement. Én pris for hele familien, ikke pr. person |
+| Reklamer | Ingen reklamer og ingen ekstra gebyrer |
+| Platforme | iPhone (App Store) og Android (Google Play) |
+| Sprog i appen | Dansk, engelsk, tysk, spansk, hollandsk, svensk og norsk |
+| Login for børn | Med familiekode, uden e-mail |
+| Tysk udgave | Unser Zuhause: https://www.unserzuhauseapp.de |
+| Hjemmeside | https://www.voreshjem.dk (det gamle domæne vores-hjem.dk viderestiller hertil) |
+| Kontakt | kontakt@vores-hjem.dk (support og presse). Stifter Nicko Skovgaard: nst@vores-hjem.dk |
+
+## Hvem står bag Vores Hjem
+
+Vores Hjem udvikles af Vores Hjem I/S, en dansk startup med CVR-nummer 45804445 og hjemsted i Middelfart. De tre stiftere er Nicko Skovgaard, Brigitte Skovgaard og Haris. På hjemmesiden beskriver de sig som tre stiftere, der byggede den app, de selv manglede. Medstifter Nicko Skovgaard fortæller på forsiden, at de derhjemme brugte tre forskellige apps til at holde styr på hverdagen.
+
+Når der står "Vores Hjem I/S, CVR 45804445", er det virksomheden bag familieappen.
+
+## Funktioner
+
+### Fælles kalender
+
+- Alle i familien ser den samme kalender. Her samles aftaler, hentetider, fritidsaktiviteter og fødselsdage.
+- Alle kan tilføje aftaler, også børn og bedsteforældre. Hver person har sin egen farve.
+- Der er 5 typer begivenheder: Møde, Fødselsdag, Aftale, Ferie og Andet. Hver type har sin egen farve.
+- Kalenderen kan vises for 1 dag, 1 uge, 2 uger eller 4 uger.
+- Begivenheder kan gentages ugentligt, månedligt eller årligt.
+- Man kan få en påmindelse 3 timer før en begivenhed starter. Det kræver, at begivenheden har et starttidspunkt, og at notifikationer er slået til på telefonen.
+- Officielle helligdage og mærkedage, fx jul, påske, mors dag og valentinsdag, kan slås til og fra, og man vælger selv hvilket land de skal gælde for.
+- **Private aftaler:** En aftale markeret med stjerne er privat. Familiemedlemmer uden admin-rettigheder kan ikke se titlen, kun ordet "Privat". Hovedbrugeren og medlemmer med admin-rettigheder ser alt. Det er nyttigt til fx lægeaftaler eller overraskelser.
+
+Læs mere: https://www.voreshjem.dk/kalender
+
+### Kalender-synkronisering
+
+- Aftaler kan hentes fra ens egen kalender ind i familiens fælles kalender. Det gælder Google og telefonens egen kalender.
+- Synkroniseringen går kun én vej, fra den personlige kalender ind i familiens. Familiens kalender skriver aldrig noget tilbage i den personlige kalender.
+- Man vælger selv, hvilke kalendere der hentes fra, fx den private, men ikke arbejdskalenderen.
+- Aftaler kan komme ind automatisk, eller man kan godkende hver aftale først.
+- Synkroniseringen kan slås fra igen når som helst.
+- Man behøver ikke opgive sin egen kalender. Vores Hjem er familiens fælles kalender ved siden af.
+
+Læs mere: https://www.voreshjem.dk/synkronisering
+
+### Madplan
+
+- Man planlægger ugens måltider samlet: morgenmad, frokost og aftensmad, eller kun de måltider, man har brug for at planlægge.
+- Alle 7 dage i ugen kan planlægges, og man kan planlægge så mange uger frem, som man vil.
+- Retter, man laver tit, kan genbruges fra en liste.
+- Et måltid kan få en note eller en opskrift, fx "husk at tø kødet op". Så kan den, der kommer først hjem, gå i gang.
+- Madplanen hænger sammen med indkøbslisten.
+- Hele familien ser madplanen med det samme, så ingen behøver spørge "hvad skal vi have?".
+
+Læs mere: https://www.voreshjem.dk/madplan
+
+### Delt indkøbsliste
+
+- Familien har én fælles liste. Den opdateres for alle med det samme, så to personer i hver sin butik kan krydse af på samme liste.
+- Alle kan tilføje varer og krydse af, også børnene.
+- Man kan sætte et billede på en vare, så den rigtige variant eller det rigtige mærke kommer med hjem.
+- Afkrydsede varer flyttes til "Afsluttede indkøb" efter 24 timer og kan flyttes tilbage til listen.
+- Listen kan sorteres efter nyeste eller alfabetisk (A–Å).
+- Der kan oprettes op til 200 varer.
+
+Læs mere: https://www.voreshjem.dk/indkobsliste
+
+### Opgaver og husarbejde
+
+- Opgaver får titel, deadline og navn, så det er tydeligt, hvem der gør hvad.
+- En opgave kan tildeles én person eller "Fælles".
+- Man kan vælge færdige forslag som Støvsuge, Vaske tøj og Gå med hunden.
+- Opgaver kan gentages hver uge, hver 14. dag eller hver måned.
+- Opgaverne kan vises som "Egne" eller "Alle/fælles", og som aktive eller afsluttede.
+- Færdige opgaver slettes automatisk efter en uge.
+- Før man kan oprette opgaver, skal hovedbrugeren have oprettet familiemedlemmer.
+
+Læs mere: https://www.voreshjem.dk/opgaver
+
+### Point og lommepenge til børn
+
+- Hver opgave kan give point. Barnet får pointene, så snart opgaven er krydset af.
+- Familien bestemmer selv, hvad et point er værd. 1 point kan fx være 1 krone, eller pointene kan være helt uden penge.
+- Barnet kan sætte et sparemål, fx en biograftur, og følge med i, hvor langt det er nået.
+- Kun voksne kan udbetale. Fortryder man, går pointene tilbage.
+
+### Vagter: vagtplan med lønberegning
+
+- Med Vagter skriver man sine arbejdsvagter ind og ser, hvad de giver i løn.
+- Man tager et billede af sin lønseddel én gang. Appen finder selv timeløn og tillæg på sedlen.
+- Derefter regner appen ud, hvad hver vagt giver i løn. Det gælder også, når aften-, nat- og weekendtillæg skifter midt i en vagt, eller vagten går over midnat.
+- Appen viser løn før skat og fradrag og et skøn over, hvad der bliver udbetalt.
+- Billedet af lønsedlen forlader aldrig telefonen. Teksten læses på telefonen, og kopien slettes bagefter.
+- Resten af familien ser kun navn og tidsrum for vagten. Løn og timer deles ikke med de andre i husstanden.
+
+### Familiekode, roller og indstillinger
+
+- Hovedbrugeren opretter kontoen med e-mail og adgangskode og styrer familien under Indstillinger.
+- Hovedbrugeren kan tilføje op til 6 ekstra familiemedlemmer, så der i alt er op til 7 personer. Hvert medlem kan være admin eller almindeligt medlem.
+- Familien har en fælles familiekode, fx i formatet AA-123456. Den står under Indstillinger hos den, der oprettede kontoen.
+- Børn, bedsteforældre og andre familiemedlemmer logger ind med deres navn og familiekoden, uden e-mail og uden adgangskode. Koden kan sendes i en sms.
+- Hovedbrugeren kan lave en ny kode eller logge alle kode-brugere ud når som helst.
+- Under Indstillinger vælger man også sprog (7 sprog), hellig- og mærkedage, abonnement, adgangskode og kalender-synkronisering.
+
+Læs mere: https://www.voreshjem.dk/indstillinger
+
+## Pris og abonnement
+
+- 39 kr. pr. måned eller 199 kr. pr. halvår. Med halvårsprisen sparer man 15 %.
+- Det er én pris for hele familien, ikke pr. person. Den dækker op til 7 personer på samme konto.
+- Nye brugere får 14 dages gratis prøveperiode uden binding.
+- Når prøveperioden udløber, fortsætter det valgte abonnement (månedligt eller halvårligt) automatisk, medmindre man opsiger det i App Store eller Google Play inden.
+- Der er ingen reklamer, ingen ekstra gebyrer og ingen binding. Abonnementet kan opsiges når som helst.
+- Abonnementet købes og opsiges gennem App Store eller Google Play.
+
+## Sådan kommer man i gang
+
+1. Hent appen i App Store (iPhone) eller Google Play (Android).
+2. Opret en konto med e-mail og adgangskode. Prøveperioden på 14 dage starter automatisk.
+3. Opret familiemedlemmerne under Indstillinger.
+4. Del familiekoden, fx i en sms.
+5. De andre vælger "Log ind med familiekode" og skriver deres navn og koden. De skal ikke bruge e-mail.
+
+Trin for trin-vejledning: https://www.voreshjem.dk/hvordan-bruger-jeg-appen
+
+## Privatliv og data
+
+- Appen har ingen reklamer.
+- Data opbevares sikkert i EU, primært i Frankfurt i Tyskland, og Vores Hjem overholder GDPR.
+- Kalender-synkroniseringen går kun én vej og ændrer aldrig den personlige kalender.
+- Lønsedler til Vagter bliver læst på telefonen, og billedet forlader ikke telefonen.
+- Når kontoen slettes (Indstillinger → Slet konto → Slet alt), slettes alle familiens data permanent: begivenheder, opgaver, madplaner, indkøbslister og familiemedlemmer. Det kan ikke fortrydes. Et aktivt abonnement skal opsiges separat i App Store eller Google Play.
+
+Vejledning til sletning: https://www.voreshjem.dk/hvordan-sletter-man-sin-konto
+
+## Omtale
+
+- recordere.dk, 17. september 2026: "Ny dansk familie-app vil samle kalender, madplan og opgaver i ét sted". Artiklen fortæller om de tre stiftere fra Middelfart og gennemgår appens funktioner, herunder Vagter. https://www.recordere.dk/2026/09/ny-dansk-familie-app-vil-samle-kalender-madplan-og-opgaver-i-et-sted/
+- Presseside: https://www.voreshjem.dk/presse/
+
+## Ofte stillede spørgsmål
+
+**Hvad er Vores Hjem?**
+Vores Hjem er en dansk familieapp til iPhone og Android, der samler familiens hverdag i én delt app: fælles kalender, madplan, delt indkøbsliste, opgaver og husarbejde, point og lommepenge til børn samt vagtplan med lønberegning. Appen koster 39 kr. pr. måned eller 199 kr. pr. halvår for hele familien på op til 7 personer.
+
+**Hvem står bag Vores Hjem?**
+Familieappen Vores Hjem er udviklet af Vores Hjem I/S (CVR 45804445) i Middelfart. Virksomheden er stiftet af Nicko Skovgaard, Brigitte Skovgaard og Haris.
+
+**Hvad koster Vores Hjem?**
+Vores Hjem koster 39 kr. pr. måned eller 199 kr. pr. halvår. Prisen gælder hele familien og ikke pr. person, og ét abonnement dækker op til 7 personer. Der er 14 dages gratis prøveperiode uden binding.
+
+**Kan man prøve Vores Hjem gratis?**
+Ja, Vores Hjem kan prøves gratis i 14 dage uden binding. Bagefter fortsætter abonnementet automatisk til 39 kr. pr. måned eller 199 kr. pr. halvår, medmindre man opsiger det i App Store eller Google Play inden.
+
+**Hvor mange kan være med på ét abonnement?**
+Op til 7 personer kan være med på ét Vores Hjem-abonnement: hovedbrugeren og op til 6 ekstra familiemedlemmer, fx forældre, børn, bedsteforældre eller bofæller. Alle i familien deler den samme kalender, madplan, indkøbsliste og de samme opgaver.
+
+**Kan børn bruge Vores Hjem uden e-mail?**
+Ja, børn kan logge ind i Vores Hjem med deres navn og familiens familiekode uden e-mail og adgangskode. Hovedbrugeren skal først oprette dem som familiemedlemmer under Indstillinger, og familiekoden kan også bruges af andre i familien, fx bedsteforældre.
+
+**Kan jeg synkronisere Vores Hjem med Google Kalender?**
+Ja, Vores Hjem kan hente aftaler fra Google Kalender og telefonens egen kalender ind i familiens fælles kalender, enten automatisk eller efter godkendelse. Synkroniseringen går kun én vej, så den personlige kalender ændres aldrig.
+
+**Skal vi droppe vores egne kalendere for at bruge Vores Hjem?**
+Nej, man beholder sin egen kalender, og Vores Hjem fungerer som familiens fælles kalender ved siden af. Med kalender-synkroniseringen kan aftaler fra Google Kalender og telefonens egen kalender hentes ind i den fælles kalender, men aldrig den anden vej.
+
+**Hvad er en god app til familiens kalender og madplan?**
+Vores Hjem er en dansk familieapp, der samler fælles kalender og madplan i samme app, og madplanen hænger sammen med familiens delte indkøbsliste. Den findes til iPhone og Android, koster 39 kr. pr. måned for op til 7 personer og kan prøves gratis i 14 dage.
+
+**Hænger madplanen sammen med indkøbslisten i Vores Hjem?**
+Ja, i Vores Hjem hænger madplanen sammen med den delte indkøbsliste, så familien kan planlægge ugens mad og indkøbene i samme app. Når et måltid bliver tilføjet, ser alle i familien det med det samme.
+
+**Hvordan deler man en indkøbsliste med familien?**
+Med en delt indkøbsliste i en app kan alle i familien tilføje varer og krydse af på den samme liste fra hver sin telefon. I Vores Hjem opdateres listen for alle med det samme, og en vare kan tildeles et bestemt familiemedlem.
+
+**Hvordan fordeler man husarbejde i familien med en app?**
+I Vores Hjem fordeler familien opgaver og husarbejde med titel, deadline og navn, så alle kan se, hvem der gør hvad. En opgave kan tildeles én person eller være fælles, den kan gentages hver uge, hver 14. dag eller hver måned, og børn kan få point for løste opgaver.
+
+**Hvordan virker point og lommepenge i Vores Hjem?**
+Børn optjener point i Vores Hjem, så snart en opgave, de har klaret, er krydset af. Familien bestemmer selv, hvad et point er værd, fx 1 krone eller slet ingen penge, og kun de voksne kan udbetale.
+
+**Findes der en familieapp med vagtplan og lønberegning?**
+Ja, familieappen Vores Hjem har funktionen Vagter, som er en vagtplan med lønberegning i samme app som familiens kalender. Man tager et billede af sin lønseddel én gang, så finder appen timeløn og tillæg og regner ud, hvad hver vagt giver i løn. Resten af familien ser kun navn og tidsrum for vagten, ikke lønnen.
+
+**Virker Vores Hjem på både iPhone og Android?**
+Ja, Vores Hjem findes både til iPhone i App Store (https://apps.apple.com/dk/app/vores-hjem/id6758346281) og til Android i Google Play (https://play.google.com/store/apps/details?id=com.voreshjem.app).
+
+**Er der reklamer i Vores Hjem?**
+Nej, der er ingen reklamer i Vores Hjem. Appen betales med et abonnement på 39 kr. pr. måned eller 199 kr. pr. halvår for hele familien, og der er ingen ekstra gebyrer.
+
+**Hvordan opsiger man abonnementet på Vores Hjem?**
+Abonnementet opsiges i App Store på iPhone (Indstillinger → dit navn → Abonnementer → Vores Hjem) eller i Google Play på Android. Sletter man sin konto, stopper abonnementet ikke af sig selv, så det skal opsiges separat. Der er ingen binding, og har man problemer med abonnementet, kan man skrive til kontakt@vores-hjem.dk.
+
+**Hvor opbevares familiens data i Vores Hjem?**
+Data opbevares sikkert i EU, primært i Frankfurt i Tyskland, og Vores Hjem overholder GDPR. Sletter man sin konto under Indstillinger → Slet konto → Slet alt, slettes alle familiens data permanent.
+
+**Hvad sker der efter de 14 gratis dage?**
+Abonnementet fortsætter automatisk som månedligt eller halvårligt abonnement, medmindre man opsiger det i App Store eller Google Play, før de 14 dage er gået.
+
+**Kan børnene se alle aftaler?**
+Aftaler markeret med stjerne er private. Familiemedlemmer uden admin-rettigheder ser kun ordet "Privat", ikke titlen.
+
+**Hvilke sprog findes appen på?**
+Dansk, engelsk, tysk, spansk, hollandsk, svensk og norsk. Den tyske udgave af hjemmesiden hedder Unser Zuhause.
+
+**Hvordan sletter man sin konto?**
+I appen under Indstillinger → Slet konto → Slet alt. Alle data slettes permanent. Et aktivt abonnement skal opsiges separat i App Store eller Google Play.
+
+**Hvordan kontakter man Vores Hjem?**
+Skriv til kontakt@vores-hjem.dk. Support svarer inden for 24 timer på hverdage (kl. 9–17).
+
+## Vigtige links
+
+- Forside: https://www.voreshjem.dk/
+- Kalender: https://www.voreshjem.dk/kalender
+- Kalender-synkronisering: https://www.voreshjem.dk/synkronisering
+- Madplan: https://www.voreshjem.dk/madplan
+- Indkøbsliste: https://www.voreshjem.dk/indkobsliste
+- Opgaver, point og lommepenge: https://www.voreshjem.dk/opgaver
+- Indstillinger og familiekode: https://www.voreshjem.dk/indstillinger
+- Brugervejledning: https://www.voreshjem.dk/hvordan-bruger-jeg-appen
+- Support: https://www.voreshjem.dk/support
+- Slet konto: https://www.voreshjem.dk/hvordan-sletter-man-sin-konto
+- Presse: https://www.voreshjem.dk/presse/
+- Blog: https://www.voreshjem.dk/blog
+- Hent appen: https://www.voreshjem.dk/hent/
+- App Store (iPhone): https://apps.apple.com/dk/app/vores-hjem/id6758346281
+- Google Play (Android): https://play.google.com/store/apps/details?id=com.voreshjem.app
+- Tysk udgave (Unser Zuhause): https://www.unserzuhauseapp.de

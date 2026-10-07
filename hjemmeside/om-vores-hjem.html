@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<!-- ══ SPORING ══ Skal ligge oeverst i <head> paa alle sider.
+     Alt startes fra ét script, som foerst tjekker, om siden vises for sig selv.
+     Inde i en ramme starter INTET, saa der aldrig staar to cookiebannere oven paa
+     hinanden. Raekkefoelgen er ikke tilfaeldig: samtykketilstanden saettes,
+     FOER noget andet loader.
+     16. sept. 2026: Google Tag Manager fjernet (containeren var tom og kostede
+     115 KB). Meta og OpenAI starter foerst, naar den besoegende siger ja til
+     markedsfoering i cookiebanneret. -->
+<script>
+(function () {
+  var iRamme = false;
+  try { iRamme = window.self !== window.top; } catch (e) { iRamme = true; }
+  if (iRamme) return;
+
+  /* 1. Samtykketilstand. Alt er afvist, indtil brugeren siger ja. */
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function () { dataLayer.push(arguments); };
+  gtag('consent', 'default', {
+    'ad_storage': 'denied', 'ad_user_data': 'denied', 'ad_personalization': 'denied',
+    'analytics_storage': 'denied', 'functionality_storage': 'granted', 'security_storage': 'granted',
+    'wait_for_update': 500
+  });
+  gtag('set', 'ads_data_redaction', true);
+  gtag('set', 'url_passthrough', true);
+
+  /* scripts indsaettes i raekkefoelge, ét ad gangen */
+  function hent(src, valg) {
+    var s = document.createElement('script'); s.src = src; s.async = false;
+    if (valg && valg.charset) s.charset = valg.charset;
+    document.head.appendChild(s); return s;
+  }
+
+  /* 2. Cookiebanner, iubenda. siteId 4517758, cookiePolicyId 85951957. */
+  hent('https://embeds.iubenda.com/widgets/c4881ab1-9037-47e2-b5ce-d1950889d637.js');
+  hent('https://cdn.iubenda.com/cs/gpp/stub.js');
+  hent('https://cdn.iubenda.com/cs/iubenda_cs.js', { charset: 'UTF-8' });
+
+  /* 3. Google Analytics 4. Maaler kun, naar samtykket er givet. */
+  hent('https://www.googletagmanager.com/gtag/js?id=G-ZFW1KE91LV');
+  gtag('js', new Date());
+  gtag('config', 'G-ZFW1KE91LV');
+
+  /* 3b. Google Ads. Der er ingen Ads-kode endnu. Naar I opretter en konvertering
+         i Google Ads, faar I et id som AW-123456789. Saet det ind og fjern //
+     gtag('config', 'AW-XXXXXXXXX'); */
+
+  /* 4. Markedsfoering: Meta-pixel og OpenAI. Hentes foerst, naar cookiebanneret
+        melder ja til markedsfoering (ad_storage granted). Siger den besoegende nej,
+        hentes de slet ikke. Har den besoegende sagt ja tidligere, melder banneret
+        det med det samme, og de starter straks. */
+  var reklameStartet = false;
+  function startReklame() {
+    if (reklameStartet) return; reklameStartet = true;
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '697476623339056');
+    fbq('track', 'PageView');
+
+    !function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};
+    q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;
+    var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}
+    (window,document,'script','https://bzrcdn.openai.com/sdk/oaiq.min.js');
+    oaiq('init', { pixelId: 'QZwgYr1hiBh3USt1vsSytt', debug: false });
+  }
+  /* Banneret skriver sit svar i dataLayer. Vi kigger kun paa nye linjer. */
+  var set = 0, vagt = setInterval(function () {
+    for (; set < dataLayer.length; set++) {
+      var a = dataLayer[set];
+      if (a && a[0] === 'consent' && a[2] && a[2].ad_storage === 'granted') {
+        startReklame(); clearInterval(vagt); return;
+      }
+    }
+  }, 400);
+
+  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>,
+     saa de venter til siden er laest faerdig. Hent-knappens script taeller ogsaa
+     besoeget til backenden, uden cookies. */
+  function naarKlar(fn) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
+  naarKlar(function () {
+    hent('https://voreshjem-bot.netlify.app/widget.js');
+    hent('https://voreshjem-bot.netlify.app/hentknap.js');
+  });
+})();
+</script>
+<!-- ══ SPORING SLUT ══ -->
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Om Vores Hjem: fakta om familieappen | Vores Hjem</title>
+<meta name="description" content="Fakta om familieappen Vores Hjem: kalender, madplan, indkøbsliste, opgaver, point og vagter. 39 kr/md for op til 7 personer. Vores Hjem I/S, Middelfart.">
+<link rel="canonical" href="https://www.voreshjem.dk/om-vores-hjem">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<meta name="author" content="Vores Hjem I/S">
+<meta name="theme-color" content="#6C47FF">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vores Hjem">
+<meta property="og:locale" content="da_DK">
+<meta property="og:title" content="Om Vores Hjem: fakta om familieappen">
+<meta property="og:description" content="Fakta om familieappen Vores Hjem: kalender, madplan, indkøbsliste, opgaver, point og vagter. 39 kr/md for op til 7 personer. Vores Hjem I/S, Middelfart.">
+<meta property="og:url" content="https://www.voreshjem.dk/om-vores-hjem">
+<meta property="og:image" content="https://www.voreshjem.dk/images/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="article:modified_time" content="2026-10-07">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Om Vores Hjem: fakta om familieappen">
+<meta name="twitter:description" content="Fakta om familieappen Vores Hjem: kalender, madplan, indkøbsliste, opgaver, point og vagter. 39 kr/md for op til 7 personer. Vores Hjem I/S, Middelfart.">
+<meta name="twitter:image" content="https://www.voreshjem.dk/images/og.jpg">
+
+<link rel="preload" href="/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>@font-face{font-family:'Plus Jakarta Sans';font-style:normal;font-weight:200 800;font-display:swap;src:url(/fonts/plus-jakarta-sans-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}</style>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --purple: #6C47FF;
+  --purple-soft: rgba(108,71,255,0.07);
+  --gradient: linear-gradient(135deg, #6C47FF 0%, #3B82F6 55%, #EC4899 100%);
+  --bg: #FFFFFF;
+  --bg-subtle: #F8F7FF;
+  --text: #0F0E1A;
+  --text-secondary: #5E5A7A;
+  --border: #E8E5FF;
+  --font: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+img { display: block; max-width: 100%; height: auto; }
+a { color: var(--purple); font-weight: 700; text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+a:focus-visible, summary:focus-visible { outline: 2px solid var(--purple); outline-offset: 3px; border-radius: 4px; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+.narrow { max-width: 860px; }
+.skip { position: absolute; left: -9999px; top: 12px; z-index: 300; background: #fff; padding: 10px 16px; border-radius: 10px; }
+.skip:focus { left: 16px; }
+
+/* ─── HEADER ─── */
+.site-header { position: sticky; top: 0; z-index: 200; background: rgba(255,255,255,0.92); border-bottom: 1px solid rgba(108,71,255,0.08); }
+.site-header::before { content: ""; position: absolute; inset: 0; z-index: -1; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+.nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 68px; }
+.nav-logo img { height: 58px; width: auto; }
+.nav-links { display: flex; align-items: center; gap: 22px; list-style: none; }
+.nav-links a { font-size: 14px; font-weight: 600; color: var(--text-secondary); }
+.nav-links a:hover { color: var(--purple); text-decoration: none; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 20px; border-radius: 14px; background: var(--gradient); color: #fff !important; font-size: 15px; font-weight: 700; box-shadow: 0 4px 20px rgba(108,71,255,0.30); transition: transform .2s, box-shadow .2s; }
+.btn:hover { text-decoration: none; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(108,71,255,0.40); }
+.btn-sm { padding: 9px 16px; font-size: 14px; border-radius: 12px; }
+.btn-ghost { background: #fff; color: var(--text) !important; border: 1.5px solid var(--border); box-shadow: none; }
+.btn-ghost:hover { border-color: rgba(108,71,255,0.4); box-shadow: 0 6px 20px rgba(108,71,255,0.10); }
+
+/* ─── HERO ─── */
+.hero { background: linear-gradient(160deg, #F8F7FF 0%, #EEF0FF 50%, #F5F0FF 100%); padding: 48px 0 64px; position: relative; overflow: hidden; }
+.hero::before { content: ""; position: absolute; top: -220px; right: -160px; width: 600px; height: 600px; background: radial-gradient(circle, rgba(108,71,255,0.12), transparent 65%); pointer-events: none; }
+.hero > .container { position: relative; z-index: 1; }
+.crumbs ol { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px; color: var(--text-secondary); margin-bottom: 32px; }
+.crumbs li + li::before { content: "/"; margin-right: 8px; color: #B9B4DA; }
+.crumbs a { color: var(--text-secondary); font-weight: 600; }
+.badge { display: inline-flex; padding: 6px 16px; background: rgba(108,71,255,0.08); border: 1px solid rgba(108,71,255,0.15); border-radius: 100px; font-size: 13px; font-weight: 600; color: var(--purple); margin-bottom: 22px; }
+.hero h1 { font-size: clamp(34px, 5.6vw, 62px); font-weight: 800; letter-spacing: -2px; line-height: 1.08; margin-bottom: 22px; }
+.hero h1 .grad { display: block; background: var(--gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.lead { font-size: 18px; color: var(--text-secondary); max-width: 700px; line-height: 1.7; }
+.lead strong { color: var(--text); }
+.updated { margin-top: 20px; font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+
+/* ─── KORT FORTALT ─── */
+.summary-wrap { margin-top: -28px; position: relative; z-index: 2; }
+.summary { background: #fff; border: 1px solid var(--border); border-left: 4px solid var(--purple); border-radius: 0 20px 20px 0; padding: 28px 32px; box-shadow: 0 12px 40px rgba(108,71,255,0.08); }
+.summary h2 { font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); margin-bottom: 14px; }
+.summary ul { list-style: none; display: grid; gap: 10px; }
+.summary li { position: relative; padding-left: 22px; font-size: 16px; line-height: 1.6; }
+.summary li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 8px; height: 8px; border-radius: 50%; background: var(--gradient); }
+
+/* ─── SEKTIONER ─── */
+.section { padding: 80px 0; border-bottom: 1px solid var(--border); }
+.section.alt { background: var(--bg-subtle); }
+.eyebrow { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); margin-bottom: 12px; }
+.eyebrow::before { content: ""; width: 20px; height: 2px; border-radius: 2px; background: var(--gradient); }
+.section h2 { font-size: clamp(26px, 3.4vw, 40px); font-weight: 800; letter-spacing: -1.2px; line-height: 1.12; margin-bottom: 14px; }
+.section-sub { font-size: 17px; color: var(--text-secondary); max-width: 660px; line-height: 1.7; margin-bottom: 36px; }
+.prose p { font-size: 16px; color: #3B3852; line-height: 1.75; margin-bottom: 14px; }
+.prose h3 { font-size: 20px; font-weight: 800; letter-spacing: -0.3px; margin: 32px 0 10px; }
+
+/* ─── FAKTA (dl) ─── */
+.facts { display: grid; grid-template-columns: minmax(150px, 230px) 1fr; background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 6px 28px; }
+.facts dt, .facts dd { padding: 14px 0; border-bottom: 1px solid var(--border); }
+.facts dt { font-size: 14px; font-weight: 700; padding-right: 20px; }
+.facts dd { font-size: 15px; color: var(--text-secondary); }
+.facts dt:nth-last-of-type(1), .facts dd:last-of-type { border-bottom: none; }
+
+/* ─── FUNKTIONER ─── */
+.features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.feature { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 28px 28px 24px; display: flex; flex-direction: column; scroll-margin-top: 90px; }
+.feature h3 { font-size: 20px; font-weight: 800; letter-spacing: -0.3px; line-height: 1.25; margin-bottom: 8px; }
+.feature p { font-size: 15px; color: var(--text-secondary); line-height: 1.65; margin-bottom: 14px; }
+.feature ul { list-style: none; display: grid; gap: 9px; margin-bottom: 18px; }
+.feature li { position: relative; padding-left: 20px; font-size: 14.5px; color: var(--text-secondary); line-height: 1.55; }
+.feature li::before { content: ""; position: absolute; left: 2px; top: 0.58em; width: 7px; height: 7px; border-radius: 2px; background: var(--purple); opacity: 0.55; }
+.feature .more { margin-top: auto; font-size: 14px; }
+
+/* ─── PRISER ─── */
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; background: #fff; border: 1px solid var(--border); border-radius: 20px; }
+table { width: 100%; min-width: 540px; border-collapse: collapse; font-size: 15px; }
+caption { text-align: left; padding: 20px 24px 6px; font-size: 14px; font-weight: 600; color: var(--text-secondary); }
+th, td { padding: 15px 24px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--border); }
+thead th { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); }
+tbody th { font-weight: 800; }
+tbody tr:last-child > * { border-bottom: none; }
+.save { display: inline-block; margin-left: 6px; padding: 2px 9px; border-radius: 100px; background: rgba(108,71,255,0.10); color: var(--purple); font-size: 12px; font-weight: 700; white-space: nowrap; }
+.checks { list-style: none; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 28px; margin-top: 24px; }
+.checks li { position: relative; padding-left: 24px; font-size: 15px; color: var(--text-secondary); }
+.checks li::before { content: ""; position: absolute; left: 3px; top: 0.35em; width: 6px; height: 11px; border-right: 2px solid var(--purple); border-bottom: 2px solid var(--purple); transform: rotate(45deg); }
+
+/* ─── HVEM STÅR BAG ─── */
+.founders { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0 22px; }
+.founders li { background: #fff; border: 1px solid var(--border); border-radius: 100px; padding: 8px 18px; font-size: 15px; font-weight: 700; }
+.press-card { display: block; color: inherit; font-weight: 400; background: #fff; border: 1px solid rgba(108,71,255,0.15); border-radius: 18px; padding: 22px 24px; box-shadow: 0 8px 30px rgba(108,71,255,0.06); transition: border-color .2s, box-shadow .2s; }
+.press-card:hover { text-decoration: none; border-color: rgba(108,71,255,0.35); box-shadow: 0 12px 36px rgba(108,71,255,0.12); }
+.press-meta { font-size: 13px; font-weight: 700; color: var(--purple); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+.press-meta time { color: var(--text-secondary); font-weight: 600; text-transform: none; letter-spacing: 0; }
+.press-title { font-size: 19px; font-weight: 800; line-height: 1.3; }
+.press-link { margin-top: 10px; font-size: 14px; font-weight: 700; color: var(--purple); }
+.note { margin-top: 28px; font-size: 14px; color: var(--text-secondary); background: var(--purple-soft); border-radius: 12px; padding: 14px 18px; line-height: 1.6; }
+
+/* ─── KONTAKT ─── */
+.contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.contact-card { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 24px; }
+.contact-card h3 { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
+.contact-card p, .contact-card li { font-size: 15px; color: var(--text-secondary); line-height: 1.6; }
+.contact-card ul { list-style: none; display: grid; gap: 6px; }
+.contact-card a { overflow-wrap: anywhere; }
+
+/* ─── FAQ ─── */
+.faq { border-top: 1px solid var(--border); }
+.faq details { border-bottom: 1px solid var(--border); }
+.faq summary { list-style: none; cursor: pointer; position: relative; padding: 20px 40px 20px 0; font-size: 16px; font-weight: 700; line-height: 1.45; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: ""; position: absolute; right: 8px; top: 50%; width: 9px; height: 9px; border-right: 2px solid var(--purple); border-bottom: 2px solid var(--purple); transform: translateY(-70%) rotate(45deg); transition: transform .2s; }
+.faq details[open] summary::after { transform: translateY(-25%) rotate(-135deg); }
+.faq .answer { padding: 0 0 22px; font-size: 15px; color: var(--text-secondary); line-height: 1.7; }
+.faq .answer a { overflow-wrap: anywhere; }
+
+/* ─── CTA ─── */
+.cta { text-align: center; padding: 80px 0; background: linear-gradient(160deg, #F8F7FF 0%, #EEF0FF 50%, #F5F0FF 100%); }
+.cta h2 { font-size: clamp(26px, 3.4vw, 40px); font-weight: 800; letter-spacing: -1.2px; line-height: 1.12; margin-bottom: 12px; }
+.cta p { font-size: 17px; color: var(--text-secondary); }
+.cta-buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+
+/* ─── FOOTER ─── */
+.site-footer { background: #0F0E1A; color: #fff; padding: 64px 0 32px; }
+.footer-grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+.footer-grid img { height: 56px; width: auto; margin-bottom: 14px; }
+.footer-grid p { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+.footer-title { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+.footer-grid ul { list-style: none; display: grid; gap: 9px; }
+.footer-grid a { font-size: 14px; font-weight: 400; color: rgba(255,255,255,0.7); }
+.footer-grid a:hover { color: #fff; }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 12px; color: rgba(255,255,255,0.45); }
+
+/* ─── RESPONSIVT ─── */
+@media (max-width: 900px) {
+  .features { grid-template-columns: 1fr; }
+  .contact-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+}
+@media (max-width: 700px) {
+  .nav-links .hide-sm { display: none; }
+  .checks { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .container { padding: 0 20px; }
+  .nav-logo img { height: 48px; }
+  .hero { padding: 32px 0 56px; }
+  .lead { font-size: 17px; }
+  .summary { padding: 22px 20px; }
+  .section { padding: 56px 0; }
+  .facts { grid-template-columns: 1fr; padding: 4px 20px; }
+  .facts dt { border-bottom: none; padding: 14px 0 2px; }
+  .facts dd { padding: 0 0 14px; }
+  .facts dt:nth-last-of-type(1) { border-bottom: none; }
+  .feature { padding: 22px 20px 20px; }
+  th, td { padding: 13px 16px; }
+  caption { padding: 16px 16px 4px; }
+  .cta { padding: 56px 0; }
+}
+@media (max-width: 420px) {
+  .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+}
+</style>
+
+<!-- JSON-LD: organisation og website (schema/organization.jsonld) -->
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.voreshjem.dk/#org","name":"Vores Hjem","legalName":"Vores Hjem I/S","alternateName":"Familieappen Vores Hjem","url":"https://www.voreshjem.dk/","logo":{"@type":"ImageObject","@id":"https://www.voreshjem.dk/#logo","url":"https://www.voreshjem.dk/images/logo-nav.webp","contentUrl":"https://www.voreshjem.dk/images/logo-nav.webp","width":256,"height":256,"caption":"Vores Hjem"},"image":{"@id":"https://www.voreshjem.dk/#logo"},"slogan":"Mere ro i hverdagen","description":"Vores Hjem I/S står bag Vores Hjem, en dansk familieapp til iPhone og Android, der samler familiens hverdag i én delt app: fælles kalender med synkronisering fra telefonens kalender og Google, madplan der hænger sammen med indkøbslisten, delt indkøbsliste, opgaver og husarbejde, point og lommepenge til børn samt vagtplan med lønberegning. 39 kr. pr. måned eller 199 kr. pr. halvår, 14 dages gratis prøveperiode uden binding, op til 7 personer pr. abonnement og ingen reklamer.","disambiguatingDescription":"Vores Hjem I/S (CVR 45804445) i Middelfart udvikler familieappen Vores Hjem til iPhone og Android.","taxID":"45804445","identifier":{"@type":"PropertyValue","propertyID":"CVR","name":"CVR-nummer","value":"45804445"},"email":"kontakt@vores-hjem.dk","contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"kontakt@vores-hjem.dk","url":"https://www.voreshjem.dk/support","availableLanguage":"da"},"address":{"@type":"PostalAddress","addressLocality":"Middelfart","addressCountry":"DK"},"foundingLocation":{"@type":"Place","name":"Middelfart, Danmark","address":{"@type":"PostalAddress","addressLocality":"Middelfart","addressCountry":"DK"}},"founder":[{"@type":"Person","@id":"https://www.voreshjem.dk/#founder-nicko-skovgaard","name":"Nicko Skovgaard"},{"@type":"Person","@id":"https://www.voreshjem.dk/#founder-brigitte-skovgaard","name":"Brigitte Skovgaard"},{"@type":"Person","@id":"https://www.voreshjem.dk/#founder-haris","name":"Haris"}],"subjectOf":{"@type":"NewsArticle","headline":"Ny dansk familie-app vil samle kalender, madplan og opgaver i ét sted","url":"https://www.recordere.dk/2026/09/ny-dansk-familie-app-vil-samle-kalender-madplan-og-opgaver-i-et-sted/","datePublished":"2026-09-17","publisher":{"@type":"Organization","name":"Recordere.dk","url":"https://www.recordere.dk/"}},"sameAs":["https://apps.apple.com/dk/developer/vores-hjem-i-s/id1872418838","https://play.google.com/store/apps/dev?id=7200296081452188170","https://www.linkedin.com/company/vores-hjem/","https://www.instagram.com/voreshjemdanmark/","https://www.tiktok.com/@voreshjem","https://dk.trustpilot.com/review/voreshjem.dk"]},{"@type":"WebSite","@id":"https://www.voreshjem.dk/#website","url":"https://www.voreshjem.dk/","name":"Vores Hjem","alternateName":"voreshjem.dk","description":"Hjemmesiden for Vores Hjem, en dansk familieapp med fælles kalender, madplan, indkøbsliste, opgaver, point/lommepenge og vagter.","inLanguage":"da","publisher":{"@id":"https://www.voreshjem.dk/#org"},"copyrightHolder":{"@id":"https://www.voreshjem.dk/#org"}}]}</script>
+<!-- JSON-LD: appen (schema/app.jsonld) -->
+<script type="application/ld+json">{"@context":"https://schema.org","@type":["MobileApplication","SoftwareApplication"],"@id":"https://www.voreshjem.dk/#app","name":"Vores Hjem","alternateName":["Familieappen Vores Hjem","Vores Hjem familieapp","Vores Hjem-appen"],"url":"https://www.voreshjem.dk/","description":"Vores Hjem er en dansk familieapp til iPhone og Android, der samler familiens hverdag i én delt app: fælles kalender med synkronisering fra telefonens kalender og Google, madplan der hænger sammen med indkøbslisten, delt indkøbsliste, opgaver og husarbejde fordelt i familien, point og lommepenge til børn samt vagtplan med lønberegning. Ét abonnement dækker op til 7 personer, og børn kan logge ind med en familiekode uden e-mail. Prisen er 39 kr. pr. måned eller 199 kr. pr. halvår med 14 dages gratis prøveperiode uden binding. Ingen reklamer.","disambiguatingDescription":"Familieapp (software) til iPhone og Android fra Vores Hjem I/S, CVR 45804445, Middelfart.","operatingSystem":"iOS, Android","applicationCategory":"LifestyleApplication","applicationSubCategory":"Familieapp: fælles kalender, madplan, indkøbsliste og opgaver","inLanguage":["da","en","de","es","nl","sv","no"],"audience":{"@type":"Audience","audienceType":"Familier"},"featureList":["Fælles familiekalender for hele familien","Kalender-synkronisering fra telefonens kalender og Google Kalender","Madplan der hænger sammen med indkøbslisten","Delt indkøbsliste, som hele familien kan krydse af på","Opgaver og husarbejde fordelt mellem familiens medlemmer","Point for løste opgaver, som familien selv kan omregne til lommepenge til børn","Vagtplan med lønberegning (Vagter)","Børn logger ind med en familiekode uden e-mail","Ét abonnement dækker op til 7 personer","14 dages gratis prøveperiode uden binding","Ingen reklamer"],"image":{"@type":"ImageObject","url":"https://www.voreshjem.dk/images/og.jpg","width":1200,"height":630},"screenshot":[{"@type":"ImageObject","url":"https://www.voreshjem.dk/screen-kalender.webp","contentUrl":"https://www.voreshjem.dk/screen-kalender.webp","width":540,"height":810,"caption":"Vores Hjem: fælles familiekalender"},{"@type":"ImageObject","url":"https://www.voreshjem.dk/screen-opgaver.webp","contentUrl":"https://www.voreshjem.dk/screen-opgaver.webp","width":540,"height":810,"caption":"Vores Hjem: opgaver i familien"},{"@type":"ImageObject","url":"https://www.voreshjem.dk/screen-login.webp","contentUrl":"https://www.voreshjem.dk/screen-login.webp","width":540,"height":810,"caption":"Vores Hjem: login-skærm"}],"installUrl":["https://apps.apple.com/dk/app/vores-hjem/id6758346281","https://play.google.com/store/apps/details?id=com.voreshjem.app"],"downloadUrl":["https://apps.apple.com/dk/app/vores-hjem/id6758346281","https://play.google.com/store/apps/details?id=com.voreshjem.app"],"sameAs":["https://apps.apple.com/dk/app/vores-hjem/id6758346281","https://play.google.com/store/apps/details?id=com.voreshjem.app"],"identifier":[{"@type":"PropertyValue","propertyID":"Apple App Store ID","value":"6758346281"},{"@type":"PropertyValue","propertyID":"Google Play package name","value":"com.voreshjem.app"}],"offers":[{"@type":"Offer","@id":"https://www.voreshjem.dk/#offer-maaned","name":"Vores Hjem – månedsabonnement","description":"39 kr. pr. måned for hele familien (op til 7 personer). 14 dages gratis prøveperiode uden binding. Ingen reklamer.","price":"39.00","priceCurrency":"DKK","availability":"https://schema.org/InStock","url":"https://www.voreshjem.dk/hent/","seller":{"@id":"https://www.voreshjem.dk/#org"},"priceSpecification":[{"@type":"UnitPriceSpecification","name":"14 dages gratis prøveperiode","price":"0","priceCurrency":"DKK","billingDuration":"P14D"},{"@type":"UnitPriceSpecification","name":"Pris pr. måned","price":"39.00","priceCurrency":"DKK","referenceQuantity":{"@type":"QuantitativeValue","value":1,"unitCode":"MON","unitText":"måned"}}]},{"@type":"Offer","@id":"https://www.voreshjem.dk/#offer-halvaar","name":"Vores Hjem – halvårsabonnement","description":"199 kr. pr. halvår for hele familien (op til 7 personer). 14 dages gratis prøveperiode uden binding. Ingen reklamer.","price":"199.00","priceCurrency":"DKK","availability":"https://schema.org/InStock","url":"https://www.voreshjem.dk/hent/","seller":{"@id":"https://www.voreshjem.dk/#org"},"priceSpecification":[{"@type":"UnitPriceSpecification","name":"14 dages gratis prøveperiode","price":"0","priceCurrency":"DKK","billingDuration":"P14D"},{"@type":"UnitPriceSpecification","name":"Pris pr. halvår","price":"199.00","priceCurrency":"DKK","referenceQuantity":{"@type":"QuantitativeValue","value":6,"unitCode":"MON","unitText":"halvår (6 måneder)"}}]}],"publisher":{"@type":"Organization","@id":"https://www.voreshjem.dk/#org","name":"Vores Hjem","legalName":"Vores Hjem I/S"},"author":{"@id":"https://www.voreshjem.dk/#org"},"provider":{"@id":"https://www.voreshjem.dk/#org"}}</script>
+<!-- JSON-LD: FAQ (schema/faq.jsonld) -->
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","@id":"https://www.voreshjem.dk/om-vores-hjem#faq","url":"https://www.voreshjem.dk/om-vores-hjem","inLanguage":"da","name":"Spørgsmål og svar om familieappen Vores Hjem","about":{"@id":"https://www.voreshjem.dk/#org"},"publisher":{"@id":"https://www.voreshjem.dk/#org"},"mainEntity":[{"@type":"Question","name":"Hvad er Vores Hjem?","acceptedAnswer":{"@type":"Answer","text":"Vores Hjem er en dansk familieapp til iPhone og Android, der samler familiens hverdag i én delt app: fælles kalender, madplan, delt indkøbsliste, opgaver og husarbejde, point og lommepenge til børn samt vagtplan med lønberegning. Appen koster 39 kr. pr. måned eller 199 kr. pr. halvår for hele familien på op til 7 personer."}},{"@type":"Question","name":"Hvem står bag Vores Hjem?","acceptedAnswer":{"@type":"Answer","text":"Familieappen Vores Hjem er udviklet af Vores Hjem I/S (CVR 45804445) i Middelfart. Virksomheden er stiftet af Nicko Skovgaard, Brigitte Skovgaard og Haris."}},{"@type":"Question","name":"Hvad koster Vores Hjem?","acceptedAnswer":{"@type":"Answer","text":"Vores Hjem koster 39 kr. pr. måned eller 199 kr. pr. halvår. Prisen gælder hele familien og ikke pr. person, og ét abonnement dækker op til 7 personer. Der er 14 dages gratis prøveperiode uden binding."}},{"@type":"Question","name":"Kan man prøve Vores Hjem gratis?","acceptedAnswer":{"@type":"Answer","text":"Ja, Vores Hjem kan prøves gratis i 14 dage uden binding. Bagefter fortsætter abonnementet automatisk til 39 kr. pr. måned eller 199 kr. pr. halvår, medmindre man opsiger det i App Store eller Google Play inden."}},{"@type":"Question","name":"Hvor mange kan være med på ét abonnement?","acceptedAnswer":{"@type":"Answer","text":"Op til 7 personer kan være med på ét Vores Hjem-abonnement: hovedbrugeren og op til 6 ekstra familiemedlemmer, fx forældre, børn, bedsteforældre eller bofæller. Alle i familien deler den samme kalender, madplan, indkøbsliste og de samme opgaver."}},{"@type":"Question","name":"Kan børn bruge Vores Hjem uden e-mail?","acceptedAnswer":{"@type":"Answer","text":"Ja, børn kan logge ind i Vores Hjem med deres navn og familiens familiekode uden e-mail og adgangskode. Hovedbrugeren skal først oprette dem som familiemedlemmer under Indstillinger, og familiekoden kan også bruges af andre i familien, fx bedsteforældre."}},{"@type":"Question","name":"Kan jeg synkronisere Vores Hjem med Google Kalender?","acceptedAnswer":{"@type":"Answer","text":"Ja, Vores Hjem kan hente aftaler fra Google Kalender og telefonens egen kalender ind i familiens fælles kalender, enten automatisk eller efter godkendelse. Synkroniseringen går kun én vej, så den personlige kalender ændres aldrig."}},{"@type":"Question","name":"Skal vi droppe vores egne kalendere for at bruge Vores Hjem?","acceptedAnswer":{"@type":"Answer","text":"Nej, man beholder sin egen kalender, og Vores Hjem fungerer som familiens fælles kalender ved siden af. Med kalender-synkroniseringen kan aftaler fra Google Kalender og telefonens egen kalender hentes ind i den fælles kalender, men aldrig den anden vej."}},{"@type":"Question","name":"Hvad er en god app til familiens kalender og madplan?","acceptedAnswer":{"@type":"Answer","text":"Vores Hjem er en dansk familieapp, der samler fælles kalender og madplan i samme app, og madplanen hænger sammen med familiens delte indkøbsliste. Den findes til iPhone og Android, koster 39 kr. pr. måned for op til 7 personer og kan prøves gratis i 14 dage."}},{"@type":"Question","name":"Hænger madplanen sammen med indkøbslisten i Vores Hjem?","acceptedAnswer":{"@type":"Answer","text":"Ja, i Vores Hjem hænger madplanen sammen med den delte indkøbsliste, så familien kan planlægge ugens mad og indkøbene i samme app. Når et måltid bliver tilføjet, ser alle i familien det med det samme."}},{"@type":"Question","name":"Hvordan deler man en indkøbsliste med familien?","acceptedAnswer":{"@type":"Answer","text":"Med en delt indkøbsliste i en app kan alle i familien tilføje varer og krydse af på den samme liste fra hver sin telefon. I Vores Hjem opdateres listen for alle med det samme, og en vare kan tildeles et bestemt familiemedlem."}},{"@type":"Question","name":"Hvordan fordeler man husarbejde i familien med en app?","acceptedAnswer":{"@type":"Answer","text":"I Vores Hjem fordeler familien opgaver og husarbejde med titel, deadline og navn, så alle kan se, hvem der gør hvad. En opgave kan tildeles én person eller være fælles, den kan gentages hver uge, hver 14. dag eller hver måned, og børn kan få point for løste opgaver."}},{"@type":"Question","name":"Hvordan virker point og lommepenge i Vores Hjem?","acceptedAnswer":{"@type":"Answer","text":"Børn optjener point i Vores Hjem, så snart en opgave, de har klaret, er krydset af. Familien bestemmer selv, hvad et point er værd, fx 1 krone eller slet ingen penge, og kun de voksne kan udbetale."}},{"@type":"Question","name":"Findes der en familieapp med vagtplan og lønberegning?","acceptedAnswer":{"@type":"Answer","text":"Ja, familieappen Vores Hjem har funktionen Vagter, som er en vagtplan med lønberegning i samme app som familiens kalender. Man tager et billede af sin lønseddel én gang, så finder appen timeløn og tillæg og regner ud, hvad hver vagt giver i løn. Resten af familien ser kun navn og tidsrum for vagten, ikke lønnen."}},{"@type":"Question","name":"Virker Vores Hjem på både iPhone og Android?","acceptedAnswer":{"@type":"Answer","text":"Ja, Vores Hjem findes både til iPhone i App Store (https://apps.apple.com/dk/app/vores-hjem/id6758346281) og til Android i Google Play (https://play.google.com/store/apps/details?id=com.voreshjem.app)."}},{"@type":"Question","name":"Er der reklamer i Vores Hjem?","acceptedAnswer":{"@type":"Answer","text":"Nej, der er ingen reklamer i Vores Hjem. Appen betales med et abonnement på 39 kr. pr. måned eller 199 kr. pr. halvår for hele familien, og der er ingen ekstra gebyrer."}},{"@type":"Question","name":"Hvordan opsiger man abonnementet på Vores Hjem?","acceptedAnswer":{"@type":"Answer","text":"Abonnementet opsiges i App Store på iPhone (Indstillinger → dit navn → Abonnementer → Vores Hjem) eller i Google Play på Android. Sletter man sin konto, stopper abonnementet ikke af sig selv, så det skal opsiges separat. Der er ingen binding, og har man problemer med abonnementet, kan man skrive til kontakt@vores-hjem.dk."}},{"@type":"Question","name":"Hvor opbevares familiens data i Vores Hjem?","acceptedAnswer":{"@type":"Answer","text":"Data opbevares sikkert i EU, primært i Frankfurt i Tyskland, og Vores Hjem overholder GDPR. Sletter man sin konto under Indstillinger → Slet konto → Slet alt, slettes alle familiens data permanent."}}],"dateModified":"2026-10-07"}</script>
+<!-- JSON-LD: denne side og brødkrumme -->
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"AboutPage","@id":"https://www.voreshjem.dk/om-vores-hjem#webpage","url":"https://www.voreshjem.dk/om-vores-hjem","name":"Om Vores Hjem: fakta om familieappen","description":"Fakta om familieappen Vores Hjem: kalender, madplan, indkøbsliste, opgaver, point og vagter. 39 kr/md for op til 7 personer. Vores Hjem I/S, Middelfart.","inLanguage":"da","isPartOf":{"@id":"https://www.voreshjem.dk/#website"},"about":{"@id":"https://www.voreshjem.dk/#org"},"mainEntity":{"@id":"https://www.voreshjem.dk/#org"},"mentions":{"@id":"https://www.voreshjem.dk/#app"},"hasPart":{"@id":"https://www.voreshjem.dk/om-vores-hjem#faq"},"breadcrumb":{"@id":"https://www.voreshjem.dk/om-vores-hjem#breadcrumb"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://www.voreshjem.dk/images/og.jpg","width":1200,"height":630},"datePublished":"2026-10-07","dateModified":"2026-10-07","lastReviewed":"2026-10-07"},{"@type":"BreadcrumbList","@id":"https://www.voreshjem.dk/om-vores-hjem#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Forside","item":"https://www.voreshjem.dk/"},{"@type":"ListItem","position":2,"name":"Om Vores Hjem","item":"https://www.voreshjem.dk/om-vores-hjem"}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#indhold">Spring til indholdet</a>
+
+<header class="site-header">
+  <div class="container nav-inner">
+    <a href="https://www.voreshjem.dk/" class="nav-logo" aria-label="Vores Hjem, til forsiden">
+      <img src="/images/logo-nav.webp?v=2" alt="Vores Hjem" width="58" height="58">
+    </a>
+    <nav aria-label="Genveje på siden">
+      <ul class="nav-links">
+        <li class="hide-sm"><a href="#funktioner">Funktioner</a></li>
+        <li class="hide-sm"><a href="#priser">Priser</a></li>
+        <li class="hide-sm"><a href="#hvem-staar-bag">Hvem står bag</a></li>
+        <li class="hide-sm"><a href="#faq">Spørgsmål</a></li>
+        <li><a class="btn btn-sm" href="https://www.voreshjem.dk/hent/">Hent appen</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="indhold">
+
+  <header class="hero">
+    <div class="container">
+      <nav class="crumbs" aria-label="Brødkrumme">
+        <ol>
+          <li><a href="https://www.voreshjem.dk/">Forside</a></li>
+          <li aria-current="page">Om Vores Hjem</li>
+        </ol>
+      </nav>
+      <p class="badge">Fakta</p>
+      <h1>Om Vores Hjem: <span class="grad">fakta om familieappen</span></h1>
+      <p class="lead"><strong>Vores Hjem er en dansk familieapp til iPhone og Android, der samler familiens hverdag i én delt app:</strong> fælles kalender, madplan, indkøbsliste, opgaver, point og lommepenge til børn samt vagtplan med lønberegning. Appen er udviklet af Vores Hjem I/S (CVR 45804445) i Middelfart.</p>
+      <p class="updated">Sidst opdateret <time datetime="2026-10-07">7. oktober 2026</time></p>
+    </div>
+  </header>
+
+  <div class="container narrow summary-wrap">
+    <section class="summary" aria-labelledby="kort-fortalt">
+      <h2 id="kort-fortalt">Kort fortalt</h2>
+      <ul>
+        <li><strong>Hvad:</strong> En dansk familieapp med fælles kalender, madplan, delt indkøbsliste, opgaver, point og lommepenge samt vagter med lønberegning.</li>
+        <li><strong>Pris:</strong> 39 kr. pr. måned eller 199 kr. pr. halvår. Én pris for hele familien, og ét abonnement dækker op til 7 personer.</li>
+        <li><strong>Prøv først:</strong> 14 dage gratis uden binding. Ingen reklamer.</li>
+        <li><strong>Børn er med:</strong> De logger ind med en familiekode, så de behøver ikke en e-mailadresse.</li>
+        <li><strong>Hvem:</strong> Vores Hjem I/S, CVR 45804445, Middelfart. Stiftet af Nicko Skovgaard, Brigitte Skovgaard og Haris.</li>
+      </ul>
+    </section>
+  </div>
+
+  <section class="section" id="fakta" aria-labelledby="fakta-titel">
+    <div class="container narrow">
+      <p class="eyebrow">Faktaark</p>
+      <h2 id="fakta-titel">Vores Hjem i tal og fakta</h2>
+      <p class="section-sub">De vigtigste oplysninger om appen og virksomheden samlet ét sted.</p>
+      <dl class="facts">
+        <dt>Navn</dt>
+        <dd>Vores Hjem (familieappen Vores Hjem)</dd>
+        <dt>Hvad det er</dt>
+        <dd>En dansk familieapp, der samler familiens hverdag i én delt app</dd>
+        <dt>Funktioner</dt>
+        <dd>Fælles kalender med synkronisering fra telefonens kalender og Google, madplan der hænger sammen med indkøbslisten, delt indkøbsliste, opgaver og husarbejde, point og lommepenge til børn, vagtplan med lønberegning (Vagter)</dd>
+        <dt>Platforme</dt>
+        <dd>iPhone (<a href="https://apps.apple.com/dk/app/vores-hjem/id6758346281" rel="noopener">App Store</a>) og Android (<a href="https://play.google.com/store/apps/details?id=com.voreshjem.app" rel="noopener">Google Play</a>)</dd>
+        <dt>Pris</dt>
+        <dd>39 kr. pr. måned eller 199 kr. pr. halvår for hele familien</dd>
+        <dt>Prøveperiode</dt>
+        <dd>14 dage gratis, ingen binding</dd>
+        <dt>Antal personer</dt>
+        <dd>Op til 7 personer pr. abonnement</dd>
+        <dt>Login for børn</dt>
+        <dd>Med familiekode, uden e-mail</dd>
+        <dt>Reklamer</dt>
+        <dd>Ingen</dd>
+        <dt>Sprog i appen</dt>
+        <dd>Dansk, engelsk, tysk, spansk, hollandsk, svensk og norsk</dd>
+        <dt>Data</dt>
+        <dd>Data opbevares sikkert i EU, primært i Frankfurt i Tyskland, og Vores Hjem overholder GDPR</dd>
+        <dt>Virksomhed</dt>
+        <dd>Vores Hjem I/S (interessentskab)</dd>
+        <dt>CVR-nummer</dt>
+        <dd>45804445</dd>
+        <dt>Hjemby</dt>
+        <dd>Middelfart, Danmark</dd>
+        <dt>Stiftere</dt>
+        <dd>Nicko Skovgaard, Brigitte Skovgaard og Haris</dd>
+        <dt>Tysk udgave</dt>
+        <dd>Unser Zuhause, <a href="https://www.unserzuhauseapp.de/" rel="noopener">unserzuhauseapp.de</a></dd>
+        <dt>Hjemmeside</dt>
+        <dd><a href="https://www.voreshjem.dk/">www.voreshjem.dk</a></dd>
+        <dt>Kontakt</dt>
+        <dd><a href="mailto:kontakt@vores-hjem.dk">kontakt@vores-hjem.dk</a></dd>
+        <dt>Slogan</dt>
+        <dd>Mere ro i hverdagen</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section alt" id="funktioner" aria-labelledby="funktioner-titel">
+    <div class="container">
+      <p class="eyebrow">Funktioner</p>
+      <h2 id="funktioner-titel">Hvad kan Vores Hjem?</h2>
+      <p class="section-sub">Alle funktioner er med i samme abonnement, og alle i familien ser det samme, så snart noget bliver ændret.</p>
+
+      <div class="features">
+        <article class="feature" id="kalender" aria-labelledby="f-kalender">
+          <h3 id="f-kalender">Fælles kalender</h3>
+          <p>Alle i familien lægger deres aftaler ind samme sted og ser dem med det samme. Hentetider, fritidsaktiviteter og familiens øvrige aftaler samles i ét overblik.</p>
+          <ul>
+            <li>Alle kan tilføje aftaler, også børn og bedsteforældre.</li>
+            <li>Private aftaler: markér en aftale som privat, så kan kun familiens administratorer se, hvad den handler om.</li>
+            <li>I behøver ikke droppe jeres egne kalendere. Vores Hjem er familiens fælles kalender ved siden af.</li>
+          </ul>
+          <a class="more" href="https://www.voreshjem.dk/kalender">Læs mere om kalenderen</a>
+        </article>
+
+        <article class="feature" id="synkronisering" aria-labelledby="f-synk">
+          <h3 id="f-synk">Kalender-synkronisering fra telefonens kalender og Google</h3>
+          <p>Aftaler fra din egen kalender, fx Google Kalender eller telefonens egen kalender, kan hentes ind i familiens fælles kalender, så du ikke skal taste dem to gange.</p>
+          <ul>
+            <li>Kun én vej: Vores Hjem skriver aldrig tilbage i din personlige kalender.</li>
+            <li>Du vælger selv, hvilke kalendere der hentes fra, fx den private, men ikke arbejdskalenderen.</li>
+            <li>Aftaler kommer ind automatisk eller først efter din godkendelse, og synkroniseringen kan slås fra når som helst.</li>
+          </ul>
+          <a class="more" href="https://www.voreshjem.dk/synkronisering">Læs mere om synkronisering</a>
+        </article>
+
+        <article class="feature" id="madplan" aria-labelledby="f-madplan">
+          <h3 id="f-madplan">Madplan der hænger sammen med indkøbslisten</h3>
+          <p>Planlæg ugens mad én gang, så alle kan se, hvad der skal spises. Madplanen hænger sammen med den delte indkøbsliste, så ugens mad og indkøbene planlægges samme sted.</p>
+          <ul>
+            <li>Morgenmad, frokost og aftensmad, eller kun det, I har brug for at planlægge.</li>
+            <li>Genbrug retter, I laver tit, og skriv opskriften eller en note med.</li>
+            <li>Planlæg så mange uger frem, I har lyst til.</li>
+          </ul>
+          <a class="more" href="https://www.voreshjem.dk/madplan">Læs mere om madplanen</a>
+        </article>
+
+        <article class="feature" id="indkobsliste" aria-labelledby="f-indkob">
+          <h3 id="f-indkob">Delt indkøbsliste</h3>
+          <p>Én fælles liste, som alle kan tilføje varer til og krydse af på. Listen opdateres for alle med det samme, også når I handler i hver sin butik.</p>
+          <ul>
+            <li>En vare kan tildeles et bestemt familiemedlem.</li>
+            <li>Tag et billede af varen, så det rigtige mærke kommer med hjem.</li>
+            <li>Købte varer bliver liggende et døgn, så de kan sættes tilbage, hvis noget gik galt.</li>
+          </ul>
+          <a class="more" href="https://www.voreshjem.dk/indkobsliste">Læs mere om indkøbslisten</a>
+        </article>
+
+        <article class="feature" id="opgaver" aria-labelledby="f-opgaver">
+          <h3 id="f-opgaver">Opgaver og husarbejde</h3>
+          <p>Skriv opgaverne op og sæt navn på. Så kan alle se, hvad de selv skal, og hvad de andre har taget.</p>
+          <ul>
+            <li>Tildel en opgave til én person eller til hele familien, gerne med en deadline.</li>
+            <li>Opgaver, der går igen, kommer af sig selv.</li>
+            <li>Færdige opgaver slettes automatisk efter en uge.</li>
+          </ul>
+          <a class="more" href="https://www.voreshjem.dk/opgaver">Læs mere om opgaver</a>
+        </article>
+
+        <article class="feature" id="point" aria-labelledby="f-point">
+          <h3 id="f-point">Point og lommepenge til børn</h3>
+          <p>Sæt point på opgaverne. Barnet får pointene, så snart opgaven er markeret som færdig.</p>
+          <ul>
+            <li>I bestemmer selv, hvad et point er værd, fx 1 krone, eller om pointene slet ikke skal være penge.</li>
+            <li>Børnene kan sætte et sparemål og følge med i, hvor langt de er.</li>
+            <li>Kun voksne kan udbetale, og fortryder I, ryger pointene tilbage.</li>
+          </ul>
+          <a class="more" href="https://www.voreshjem.dk/opgaver">Læs mere om opgaver og point</a>
+        </article>
+
+        <article class="feature" id="vagter" aria-labelledby="f-vagter">
+          <h3 id="f-vagter">Vagter: vagtplan med lønberegning</h3>
+          <p>Tag et billede af lønsedlen, så finder appen selv timeløn og tillæg. Derefter kan du se, hvad hver vagt giver i løn.</p>
+          <ul>
+            <li>Tillæg for aften, nat og weekend lægges på af sig selv, også når en vagt går over midnat.</li>
+            <li>Billedet forlader ikke telefonen. Teksten læses på enheden, og kopien slettes bagefter.</li>
+            <li>Resten af familien ser kun vagtens navn og tidsrum. Løn og timer deles ikke.</li>
+          </ul>
+          <a class="more" href="https://www.voreshjem.dk/hent/">Hent appen og prøv Vagter</a>
+        </article>
+
+        <article class="feature" id="familiekode" aria-labelledby="f-kode">
+          <h3 id="f-kode">Familiekode og roller</h3>
+          <p>Hele familien kommer ind med én familiekode. Børn og bedsteforældre logger ind med deres navn og koden, uden e-mail og adgangskode.</p>
+          <ul>
+            <li>Hovedbrugeren opretter familiemedlemmerne under Indstillinger og deler koden, fx i en SMS.</li>
+            <li>Ud over hovedbrugeren kan der være op til 6 medlemmer, i alt 7 personer.</li>
+            <li>Hvert medlem kan være admin eller almindeligt medlem, og koden kan skiftes når som helst.</li>
+          </ul>
+          <a class="more" href="https://www.voreshjem.dk/indstillinger">Læs mere om indstillinger</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="priser" aria-labelledby="priser-titel">
+    <div class="container narrow">
+      <p class="eyebrow">Priser</p>
+      <h2 id="priser-titel">Hvad koster Vores Hjem?</h2>
+      <p class="section-sub">Der er ét abonnement med alle funktioner. Prisen gælder hele familien og ikke pr. person.</p>
+      <div class="table-wrap">
+        <table>
+          <caption>Priser for Vores Hjem, gældende pr. 7. oktober 2026</caption>
+          <thead>
+            <tr>
+              <th scope="col">Abonnement</th>
+              <th scope="col">Pris</th>
+              <th scope="col">Svarer til pr. måned</th>
+              <th scope="col">Dækker</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Månedligt</th>
+              <td>39 kr. pr. måned</td>
+              <td>39 kr.</td>
+              <td>Op til 7 personer</td>
+            </tr>
+            <tr>
+              <th scope="row">Halvårligt</th>
+              <td>199 kr. pr. halvår</td>
+              <td>ca. 33 kr. <span class="save">spar 15 %</span></td>
+              <td>Op til 7 personer</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="checks">
+        <li>De første 14 dage er gratis</li>
+        <li>Ingen binding</li>
+        <li>Ingen reklamer og ingen ekstra gebyrer</li>
+        <li>Alle funktioner er med i begge abonnementer</li>
+        <li>Når prøveperioden er slut, fortsætter abonnementet automatisk, medmindre I opsiger det inden</li>
+        <li>Abonnementet købes og opsiges i App Store eller Google Play</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section alt" id="hvem-staar-bag" aria-labelledby="bag-titel">
+    <div class="container narrow">
+      <p class="eyebrow">Virksomheden</p>
+      <h2 id="bag-titel">Hvem står bag Vores Hjem?</h2>
+      <div class="prose">
+        <p>Familieappen Vores Hjem er udviklet af <strong>Vores Hjem I/S</strong>, et interessentskab med CVR-nummer 45804445 og hjemsted i Middelfart. Virksomheden er stiftet af:</p>
+      </div>
+      <ul class="founders" aria-label="Stiftere">
+        <li>Nicko Skovgaard</li>
+        <li>Brigitte Skovgaard</li>
+        <li>Haris</li>
+      </ul>
+      <div class="prose">
+        <p>Stifterne brugte selv flere forskellige apps til at holde styr på hverdagen og savnede én, der samlede det hele. Det er den app, de har bygget. Appen er lavet i Danmark til danske familier og testes hver dag af stifternes egne familier.</p>
+        <p>Den tyske udgave af appen hedder Unser Zuhause og har sin egen hjemmeside: <a href="https://www.unserzuhauseapp.de/" rel="noopener">unserzuhauseapp.de</a>.</p>
+
+        <h3>Omtale</h3>
+      </div>
+      <a class="press-card" href="https://www.recordere.dk/2026/09/ny-dansk-familie-app-vil-samle-kalender-madplan-og-opgaver-i-et-sted/" rel="noopener">
+        <p class="press-meta">recordere.dk · <time datetime="2026-09-17">17. september 2026</time></p>
+        <p class="press-title">Ny dansk familie-app vil samle kalender, madplan og opgaver i ét sted</p>
+        <p class="press-link">Læs artiklen hos recordere.dk</p>
+      </a>
+      <p class="note"><strong>Navneforveksling:</strong> Vores Hjem I/S (CVR 45804445) er en softwarevirksomhed, der udvikler familieappen Vores Hjem. Den er ikke det samme selskab som byggevirksomheden VoresHjem A/S, som også har adresse i Middelfart.</p>
+    </div>
+  </section>
+
+  <section class="section" id="kontakt" aria-labelledby="kontakt-titel">
+    <div class="container">
+      <p class="eyebrow">Kontakt</p>
+      <h2 id="kontakt-titel">Kontakt Vores Hjem</h2>
+      <p class="section-sub">Spørgsmål om appen, abonnementet eller presse? Skriv til os.</p>
+      <div class="contact-grid">
+        <section class="contact-card" aria-labelledby="k-mail">
+          <h3 id="k-mail">E-mail</h3>
+          <p><a href="mailto:kontakt@vores-hjem.dk">kontakt@vores-hjem.dk</a></p>
+          <p>Vi besvarer henvendelser på hverdage kl. 9–17 og svarer inden for 24 timer på hverdage.</p>
+        </section>
+        <section class="contact-card" aria-labelledby="k-hjaelp">
+          <h3 id="k-hjaelp">Hjælp og vejledning</h3>
+          <ul>
+            <li><a href="https://www.voreshjem.dk/support">Support og ofte stillede spørgsmål</a></li>
+            <li><a href="https://www.voreshjem.dk/hvordan-bruger-jeg-appen">Sådan bruger du Vores Hjem</a></li>
+            <li><a href="https://www.voreshjem.dk/hvordan-sletter-man-sin-konto">Sådan sletter du din konto</a></li>
+            <li><a href="https://www.voreshjem.dk/presse/">Presse og omtale</a></li>
+          </ul>
+        </section>
+        <section class="contact-card" aria-labelledby="k-find">
+          <h3 id="k-find">Find Vores Hjem</h3>
+          <ul>
+            <li><a href="https://apps.apple.com/dk/app/vores-hjem/id6758346281" rel="noopener">App Store (iPhone)</a></li>
+            <li><a href="https://play.google.com/store/apps/details?id=com.voreshjem.app" rel="noopener">Google Play (Android)</a></li>
+            <li><a href="https://www.linkedin.com/company/vores-hjem/" rel="noopener">LinkedIn</a></li>
+            <li><a href="https://www.instagram.com/voreshjemdanmark/" rel="noopener">Instagram</a></li>
+            <li><a href="https://www.tiktok.com/@voreshjem" rel="noopener">TikTok</a></li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="faq" aria-labelledby="faq-titel">
+    <div class="container narrow">
+      <p class="eyebrow">Spørgsmål og svar</p>
+      <h2 id="faq-titel">Ofte stillede spørgsmål</h2>
+      <p class="section-sub">Korte svar på det, folk oftest spørger om, når de overvejer Vores Hjem.</p>
+      <div class="faq">
+        <details open>
+          <summary>Hvad er Vores Hjem?</summary>
+          <p class="answer">Vores Hjem er en dansk familieapp til iPhone og Android, der samler familiens hverdag i én delt app: fælles kalender, madplan, delt indkøbsliste, opgaver og husarbejde, point og lommepenge til børn samt vagtplan med lønberegning. Appen koster 39 kr. pr. måned eller 199 kr. pr. halvår for hele familien på op til 7 personer.</p>
+        </details>
+        <details open>
+          <summary>Hvem står bag Vores Hjem?</summary>
+          <p class="answer">Familieappen Vores Hjem er udviklet af Vores Hjem I/S (CVR 45804445) i Middelfart. Virksomheden er stiftet af Nicko Skovgaard, Brigitte Skovgaard og Haris.</p>
+        </details>
+        <details open>
+          <summary>Hvad koster Vores Hjem?</summary>
+          <p class="answer">Vores Hjem koster 39 kr. pr. måned eller 199 kr. pr. halvår. Prisen gælder hele familien og ikke pr. person, og ét abonnement dækker op til 7 personer. Der er 14 dages gratis prøveperiode uden binding.</p>
+        </details>
+        <details>
+          <summary>Kan man prøve Vores Hjem gratis?</summary>
+          <p class="answer">Ja, Vores Hjem kan prøves gratis i 14 dage uden binding. Bagefter fortsætter abonnementet automatisk til 39 kr. pr. måned eller 199 kr. pr. halvår, medmindre man opsiger det i App Store eller Google Play inden.</p>
+        </details>
+        <details>
+          <summary>Hvor mange kan være med på ét abonnement?</summary>
+          <p class="answer">Op til 7 personer kan være med på ét Vores Hjem-abonnement: hovedbrugeren og op til 6 ekstra familiemedlemmer, fx forældre, børn, bedsteforældre eller bofæller. Alle i familien deler den samme kalender, madplan, indkøbsliste og de samme opgaver.</p>
+        </details>
+        <details>
+          <summary>Kan børn bruge Vores Hjem uden e-mail?</summary>
+          <p class="answer">Ja, børn kan logge ind i Vores Hjem med deres navn og familiens familiekode uden e-mail og adgangskode. Hovedbrugeren skal først oprette dem som familiemedlemmer under Indstillinger, og familiekoden kan også bruges af andre i familien, fx bedsteforældre.</p>
+        </details>
+        <details>
+          <summary>Kan jeg synkronisere Vores Hjem med Google Kalender?</summary>
+          <p class="answer">Ja, Vores Hjem kan hente aftaler fra Google Kalender og telefonens egen kalender ind i familiens fælles kalender, enten automatisk eller efter godkendelse. Synkroniseringen går kun én vej, så den personlige kalender ændres aldrig.</p>
+        </details>
+        <details>
+          <summary>Skal vi droppe vores egne kalendere for at bruge Vores Hjem?</summary>
+          <p class="answer">Nej, man beholder sin egen kalender, og Vores Hjem fungerer som familiens fælles kalender ved siden af. Med kalender-synkroniseringen kan aftaler fra Google Kalender og telefonens egen kalender hentes ind i den fælles kalender, men aldrig den anden vej.</p>
+        </details>
+        <details>
+          <summary>Hvad er en god app til familiens kalender og madplan?</summary>
+          <p class="answer">Vores Hjem er en dansk familieapp, der samler fælles kalender og madplan i samme app, og madplanen hænger sammen med familiens delte indkøbsliste. Den findes til iPhone og Android, koster 39 kr. pr. måned for op til 7 personer og kan prøves gratis i 14 dage.</p>
+        </details>
+        <details>
+          <summary>Hænger madplanen sammen med indkøbslisten i Vores Hjem?</summary>
+          <p class="answer">Ja, i Vores Hjem hænger madplanen sammen med den delte indkøbsliste, så familien kan planlægge ugens mad og indkøbene i samme app. Når et måltid bliver tilføjet, ser alle i familien det med det samme.</p>
+        </details>
+        <details>
+          <summary>Hvordan deler man en indkøbsliste med familien?</summary>
+          <p class="answer">Med en delt indkøbsliste i en app kan alle i familien tilføje varer og krydse af på den samme liste fra hver sin telefon. I Vores Hjem opdateres listen for alle med det samme, og en vare kan tildeles et bestemt familiemedlem.</p>
+        </details>
+        <details>
+          <summary>Hvordan fordeler man husarbejde i familien med en app?</summary>
+          <p class="answer">I Vores Hjem fordeler familien opgaver og husarbejde med titel, deadline og navn, så alle kan se, hvem der gør hvad. En opgave kan tildeles én person eller være fælles, den kan gentages hver uge, hver 14. dag eller hver måned, og børn kan få point for løste opgaver.</p>
+        </details>
+        <details>
+          <summary>Hvordan virker point og lommepenge i Vores Hjem?</summary>
+          <p class="answer">Børn optjener point i Vores Hjem, så snart en opgave, de har klaret, er krydset af. Familien bestemmer selv, hvad et point er værd, fx 1 krone eller slet ingen penge, og kun de voksne kan udbetale.</p>
+        </details>
+        <details>
+          <summary>Findes der en familieapp med vagtplan og lønberegning?</summary>
+          <p class="answer">Ja, familieappen Vores Hjem har funktionen Vagter, som er en vagtplan med lønberegning i samme app som familiens kalender. Man tager et billede af sin lønseddel én gang, så finder appen timeløn og tillæg og regner ud, hvad hver vagt giver i løn. Resten af familien ser kun navn og tidsrum for vagten, ikke lønnen.</p>
+        </details>
+        <details>
+          <summary>Virker Vores Hjem på både iPhone og Android?</summary>
+          <p class="answer">Ja, Vores Hjem findes både til iPhone i App Store (<a href="https://apps.apple.com/dk/app/vores-hjem/id6758346281" rel="noopener">https://apps.apple.com/dk/app/vores-hjem/id6758346281</a>) og til Android i Google Play (<a href="https://play.google.com/store/apps/details?id=com.voreshjem.app" rel="noopener">https://play.google.com/store/apps/details?id=com.voreshjem.app</a>).</p>
+        </details>
+        <details>
+          <summary>Er der reklamer i Vores Hjem?</summary>
+          <p class="answer">Nej, der er ingen reklamer i Vores Hjem. Appen betales med et abonnement på 39 kr. pr. måned eller 199 kr. pr. halvår for hele familien, og der er ingen ekstra gebyrer.</p>
+        </details>
+        <details>
+          <summary>Hvordan opsiger man abonnementet på Vores Hjem?</summary>
+          <p class="answer">Abonnementet opsiges i App Store på iPhone (Indstillinger → dit navn → Abonnementer → Vores Hjem) eller i Google Play på Android. Sletter man sin konto, stopper abonnementet ikke af sig selv, så det skal opsiges separat. Der er ingen binding, og har man problemer med abonnementet, kan man skrive til kontakt@vores-hjem.dk.</p>
+        </details>
+        <details>
+          <summary>Hvor opbevares familiens data i Vores Hjem?</summary>
+          <p class="answer">Data opbevares sikkert i EU, primært i Frankfurt i Tyskland, og Vores Hjem overholder GDPR. Sletter man sin konto under Indstillinger → Slet konto → Slet alt, slettes alle familiens data permanent.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta" aria-labelledby="cta-titel">
+    <div class="container">
+      <h2 id="cta-titel">Prøv Vores Hjem gratis i 14 dage</h2>
+      <p>Ingen binding. Herefter 39 kr. pr. måned eller 199 kr. pr. halvår for hele familien.</p>
+      <div class="cta-buttons">
+        <a class="btn" href="https://apps.apple.com/dk/app/vores-hjem/id6758346281" rel="noopener">Hent i App Store</a>
+        <a class="btn btn-ghost" href="https://play.google.com/store/apps/details?id=com.voreshjem.app" rel="noopener">Hent på Google Play</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <img src="/images/logo-nav-hvid.webp?v=2" alt="Vores Hjem" width="56" height="56" loading="lazy">
+        <p>Mere ro i hverdagen, for hele familien.</p>
+      </div>
+      <nav aria-label="Funktioner">
+        <p class="footer-title">Funktioner</p>
+        <ul>
+          <li><a href="https://www.voreshjem.dk/kalender">Kalender</a></li>
+          <li><a href="https://www.voreshjem.dk/synkronisering">Synkronisering</a></li>
+          <li><a href="https://www.voreshjem.dk/madplan">Madplan</a></li>
+          <li><a href="https://www.voreshjem.dk/indkobsliste">Indkøbsliste</a></li>
+          <li><a href="https://www.voreshjem.dk/opgaver">Opgaver</a></li>
+          <li><a href="https://www.voreshjem.dk/indstillinger">Indstillinger</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Om og hjælp">
+        <p class="footer-title">Om og hjælp</p>
+        <ul>
+          <li><a href="https://www.voreshjem.dk/om-vores-hjem" aria-current="page">Om Vores Hjem</a></li>
+          <li><a href="https://www.voreshjem.dk/hvordan-bruger-jeg-appen">Sådan bruger du appen</a></li>
+          <li><a href="https://www.voreshjem.dk/support">Support</a></li>
+          <li><a href="https://www.voreshjem.dk/presse/">Presse</a></li>
+          <li><a href="https://www.voreshjem.dk/blog">Blog</a></li>
+          <li><a href="https://www.voreshjem.dk/hvordan-sletter-man-sin-konto">Slet konto</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Politikker">
+        <p class="footer-title">Politikker</p>
+        <ul>
+          <li><a href="https://www.iubenda.com/privacy-policy/85951957" rel="noopener">Privatlivspolitik</a></li>
+          <li><a href="https://www.iubenda.com/privacy-policy/85951957/cookie-policy" rel="noopener">Cookiepolitik</a></li>
+          <li><a href="https://www.iubenda.com/vilkar-og-betingelser/85951957" rel="noopener">Vilkår og betingelser</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Vores Hjem I/S · CVR 45804445 · Middelfart · <a href="mailto:kontakt@vores-hjem.dk" style="color:inherit;font-weight:400;">kontakt@vores-hjem.dk</a></p>
+      <p>Bygget i Danmark</p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

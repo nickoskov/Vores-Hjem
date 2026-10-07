@@ -1,40 +1,77 @@
 # Vores Hjem
 
-> Dansk familieapp der samler hele husstandens hverdag: fælles kalender, madplan, indkøbsliste og opgaver med point og lommepenge til børnene. Op til 7 personer pr. konto. 39 kr om måneden eller 199 kr for et halvt år. 14 dage gratis, ingen binding. Findes til iPhone og Android. Bygget i Danmark.
+> Vores Hjem er en dansk familieapp til iPhone og Android, der samler familiens hverdag i én delt app: fælles kalender med synkronisering fra telefonens kalender og Google, madplan der hænger sammen med indkøbslisten, delt indkøbsliste, opgaver og husarbejde, point og lommepenge til børn samt vagtplan med lønberegning. Prisen er 39 kr. pr. måned eller 199 kr. pr. halvår for hele familien. Der er 14 dages gratis prøveperiode uden binding. Ét abonnement dækker op til 7 personer, og der er ingen reklamer. Appen er lavet af Vores Hjem I/S (CVR 45804445) i Middelfart.
 
-## Hvad appen gør
+Nøglefakta (opdateret 7. oktober 2026):
 
-- Kalender: alle familiens aftaler ét sted, med farver pr. person og påmindelser
-- Madplan: ugens mad planlagt på forhånd, med forslag ud fra det I har i køkkenet
-- Indkøbsliste: én fælles liste, alle kan tilføje og krydse af
-- Opgaver: børnene får point for opgaver, som kan blive til lommepenge
-- Vagter: skriv vagter ind og se hvad de giver i løn
+- Navn: Vores Hjem, familieappen. Tagline: "Mere ro i hverdagen".
+- Virksomhed: Vores Hjem I/S, CVR 45804445, Middelfart, Danmark.
+- Stiftere: Nicko Skovgaard, Brigitte Skovgaard og Haris.
+- Pris: 39 kr. pr. måned eller 199 kr. pr. halvår (spar 15 %). Én pris for hele familien, ikke pr. person. Ingen ekstra gebyrer.
+- Prøveperiode: 14 dage gratis, ingen binding.
+- Antal personer: op til 7 på ét abonnement (den, der opretter familien, plus op til 6 familiemedlemmer).
+- Reklamer: ingen.
+- Login for børn: børn og bedsteforældre logger ind med deres navn og familiens familiekode, uden e-mail og uden egen konto.
+- Platforme: iPhone (App Store) og Android (Google Play).
+- Sprog i appen: dansk, engelsk, tysk, spansk, hollandsk, svensk og norsk.
+- Data: data opbevares sikkert i EU, primært i Frankfurt i Tyskland, og Vores Hjem overholder GDPR.
+- Tysk udgave: Unser Zuhause (https://www.unserzuhauseapp.de/) fra samme virksomhed.
 
-## Sider
+## Om Vores Hjem
 
-- [Forsiden](https://www.voreshjem.dk/): overblik og download
-- [Kalender](https://www.voreshjem.dk/kalender)
-- [Madplan](https://www.voreshjem.dk/madplan)
-- [Opgaver og lommepenge](https://www.voreshjem.dk/opgaver)
-- [Indkøbsliste](https://www.voreshjem.dk/indkobsliste)
-- [Blog](https://www.voreshjem.dk/blog): råd om familiens hverdag
-- [Support](https://www.voreshjem.dk/support)
-- [Hent appen](https://www.voreshjem.dk/hent/)
-- [Presse](https://www.voreshjem.dk/presse/): omtale i medierne, fakta og kontakt til journalister
+- [Om Vores Hjem: fakta om familieappen](https://www.voreshjem.dk/om-vores-hjem): Samlet faktaside med funktioner, priser, prøveperiode, antal personer, virksomhed, stiftere, omtale og kontakt.
+- [Fuld faktatekst til sprogmodeller](https://www.voreshjem.dk/llms-full.txt): Alle fakta, funktioner og svar på ofte stillede spørgsmål om Vores Hjem samlet i én tekstfil.
+- [Vores Hjem i medierne](https://www.voreshjem.dk/presse/): Fakta om appen og de tre stiftere fra Middelfart, presseomtale og kontakt til journalister.
+- [recordere.dk, 17. september 2026: "Ny dansk familie-app vil samle kalender, madplan og opgaver i ét sted"](https://www.recordere.dk/2026/09/ny-dansk-familie-app-vil-samle-kalender-madplan-og-opgaver-i-et-sted/): Artikel om de tre stiftere fra Middelfart og appens kalender, madplan, indkøbsliste, opgaver og vagter.
+- [Unser Zuhause](https://www.unserzuhauseapp.de/): Den tyske udgave af appen fra Vores Hjem I/S.
 
-## Fakta
+## Funktioner
 
-- Pris: 39 kr/md eller 199 kr/halvår, 14 dage gratis
-- Personer pr. konto: op til 7
-- Platforme: iOS og Android
-- Sprog: dansk (tysk udgave: Unser Zuhause)
-- Land: Danmark
+- [Fælles kalender](https://www.voreshjem.dk/kalender): Alle familiens aftaler ét sted med påmindelser, og alle kan tilføje aftaler, også børn og bedsteforældre. Aftaler kan markeres som private, så familiemedlemmer uden administratoradgang kun ser ordet "Privat" og ikke titlen.
+- [Kalender-synkronisering](https://www.voreshjem.dk/synkronisering): Henter aftaler fra Google og telefonens egen kalender ind i familiens fælles kalender. Man vælger selv hvilke kalendere der hentes fra, og om aftaler kommer ind automatisk eller først skal godkendes. Synkroniseringen går kun én vej, så intet sendes tilbage til den personlige kalender.
+- [Madplan](https://www.voreshjem.dk/madplan): Ugens morgenmad, frokost og aftensmad planlagt ét sted. Retter kan genbruges, opskrift og note kan skrives med, og man kan planlægge flere uger frem. Madplanen hænger sammen med indkøbslisten.
+- [Indkøbsliste](https://www.voreshjem.dk/indkobsliste): Én fælles indkøbsliste, som alle i familien kan tilføje til og krydse af. Ændringer ses med det samme, og varer kan have billeder.
+- [Opgaver, point og lommepenge](https://www.voreshjem.dk/opgaver): Fordel husarbejdet med deadline, ansvarlig person og automatisk gentagelse. Opgaver kan give point, og familien bestemmer selv kursen, fx 1 point = 1 krone eller slet ingen penge. Børn kan spare op til et mål, og kun voksne kan udbetale.
+- [Vagter med lønberegning](https://www.voreshjem.dk/opgaver): Vagtplan, der regner løn ud. Appen læser timeløn og tillæg fra et billede af lønsedlen og beregner, hvad hver vagt giver, også med aften-, nat- og weekendtillæg. Resten af familien ser kun navn og tidsrum, ikke løn og timer. Beskrevet på opgavesiden og forsiden.
+- [Indstillinger og familiekode](https://www.voreshjem.dk/indstillinger): Familiemedlemmer og roller (admin og medlem), familiekode, abonnement, sprog, hellig- og mærkedage, point og beløb samt svar på ofte stillede spørgsmål.
 
-## Omtale
+## Priser og prøveperiode
 
-- 17. september 2026, recordere.dk: [Ny dansk familie-app vil samle kalender, madplan og opgaver i ét sted](https://www.recordere.dk/2026/09/ny-dansk-familie-app-vil-samle-kalender-madplan-og-opgaver-i-et-sted/)
+- [Forside med pris og FAQ](https://www.voreshjem.dk/): 39 kr./md. eller 199 kr./halvår for hele familien, op til 7 personer, 14 dages gratis prøveperiode uden binding, ingen reklamer. Overblik over alle funktioner.
 
-## Stiftere
+## Hent appen
 
-- Tre stiftere fra Middelfart: Nicko Skovgaard, Haris og Brigitte Skovgaard
-- Kontakt: kontakt@vores-hjem.dk
+- [Hent Vores Hjem](https://www.voreshjem.dk/hent/): Links til download på iPhone og Android.
+- [Vores Hjem i App Store](https://apps.apple.com/dk/app/vores-hjem/id6758346281): iPhone-appen (app-id 6758346281).
+- [Vores Hjem i Google Play](https://play.google.com/store/apps/details?id=com.voreshjem.app): Android-appen (pakkenavn com.voreshjem.app).
+
+## Hjælp og support
+
+- [Sådan bruger du Vores Hjem](https://www.voreshjem.dk/hvordan-bruger-jeg-appen): Trin-for-trin-guide til at oprette familien, logge ind med familiekode og bruge kalender, opgaver, madplan, indkøbsliste og indstillinger.
+- [Support og FAQ](https://www.voreshjem.dk/support): Hjælp til invitation af familien, gratis prøveperiode, abonnement og opsigelse, data og glemt adgangskode, plus kontaktformular. Abonnementet købes og opsiges via App Store eller Google Play.
+- [Slet din konto](https://www.voreshjem.dk/hvordan-sletter-man-sin-konto): Sådan sletter man sin konto og alle data direkte i appen under Indstillinger.
+
+## Guides til familiens hverdag
+
+- [Hvordan laver man en madplan for familien?](https://www.voreshjem.dk/post/hvordan-laver-man-en-madplan-for-familien): Trin for trin til en madplan, der holder hele ugen.
+- [Sådan deler du indkøbsliste med familien](https://www.voreshjem.dk/post/saadan-deler-du-indkoebsliste-med-familien): Sådan deler familien én indkøbsliste, og hvad I skal aftale på forhånd.
+- [Koordinér børnenes fritidsaktiviteter uden kaos](https://www.voreshjem.dk/post/koordinere-boernenes-fritidsaktiviteter-uden-kaos): Træning, afhentning og fødselsdage samlet i én familiekalender.
+- [Alternativ til papirkalenderen](https://www.voreshjem.dk/post/alternativ-til-papir-familiekalender-for-familien): Forskellen på papirkalenderen på køleskabet og en fælles digital familiekalender.
+- [Hvordan fungerer familiepoint i hverdagen?](https://www.voreshjem.dk/post/hvordan-fungerer-familiepoint-i-hverdagen): Sådan belønner point børn for opgaver derhjemme og kan blive til lommepenge.
+- [Kan børn optjene lommepenge hjemme hver uge?](https://www.voreshjem.dk/post/kan-boern-optjene-lommepenge-hjemme-hver-uge): Regler, point og udbetaling for lommepenge, der er fair for alle.
+- [Guide til børns huslige ansvar](https://www.voreshjem.dk/post/guide-til-boerns-huslige-ansvar-i-hverdagen): Alderssvarende opgaver og en fast rutine for børn derhjemme.
+- [Sådan fordeler I huslige pligter retfærdigt](https://www.voreshjem.dk/post/saadan-kan-i-fordele-huslige-pligter-retfaerdigt): Sådan gør I det synligt, hvem der gør hvad derhjemme.
+- [Sådan mindsker familien mental load](https://www.voreshjem.dk/post/saadan-kan-familien-mindske-mental-load-hjemme): Sådan fordeler I det, én person går og husker for alle.
+- [Begynderguide til digital husstandsplanlægning](https://www.voreshjem.dk/post/begynderguide-til-digital-husstandsplanlaegning): Sådan samler I kalender, madplan, indkøb og opgaver ét sted for første gang.
+
+## Kontakt
+
+Vores Hjem I/S, CVR 45804445, Middelfart, Danmark. E-mail: kontakt@vores-hjem.dk. Journalister finder fakta og pressekontakt under "Vores Hjem i medierne" ovenfor.
+
+## Optional
+
+- [Blog om familiens hverdag](https://www.voreshjem.dk/blog): Alle artikler om kalender, madplan, indkøb, opgaver og rutiner.
+- [Ugentlig madplan til børnefamilien](https://www.voreshjem.dk/post/ugentlig-madplan-til-boernefamilie-med-mindre-boevl): Enkle retter, genbrug af rester og en indkøbsliste, der følger madplanen.
+- [Sådan undgår familien glemte indkøb](https://www.voreshjem.dk/post/saadan-undgaar-familien-glemte-indkoeb-hjemme): Én fælles liste, madplanen og faste vaner.
+- [Del ansvaret mellem forældre](https://www.voreshjem.dk/post/del-ansvar-mellem-foraeldre-uden-flere-paamindelser): Fælles overblik i stedet for flere påmindelser og beskeder.
+- [Organisér familiens hverdagsrutiner](https://www.voreshjem.dk/post/organiser-familiens-hverdagsrutiner): Faste rutiner morgen, eftermiddag og aften.

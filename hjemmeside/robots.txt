@@ -1,3 +1,19 @@
+# robots.txt for www.voreshjem.dk
+# Vores Hjem - dansk familieapp fra Vores Hjem I/S (CVR 45804445), Middelfart.
+#
+# Alle offentlige sider maa crawles og bruges af soegemaskiner og AI-assistenter.
+# Kun interne arbejdsfiler er udelukket (samme liste i alle grupper nedenfor).
+#
+# Vigtigt: en bot med sin egen gruppe arver IKKE reglerne fra "User-agent: *".
+# Derfor er Disallow-linjerne gentaget i hver gruppe. Tilfoejes en ny intern
+# fil, skal den tilfoejes i ALLE grupper.
+#
+# Kort faktaoversigt til sprogmodeller: https://www.voreshjem.dk/llms.txt
+# Sitemap: se nederst i filen.
+
+# ---------------------------------------------------------------------------
+# Standard for alle crawlere
+# ---------------------------------------------------------------------------
 User-agent: *
 Allow: /
 
@@ -7,4 +23,130 @@ Disallow: /brand-guideline.html
 Disallow: /reklame_1.html
 Disallow: /graphify-out/
 
+# ---------------------------------------------------------------------------
+# OpenAI (ChatGPT-soegning, brugerhentning og traening)
+# ---------------------------------------------------------------------------
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /flyer.html
+Disallow: /brand-guideline.html
+Disallow: /reklame_1.html
+Disallow: /graphify-out/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /flyer.html
+Disallow: /brand-guideline.html
+Disallow: /reklame_1.html
+Disallow: /graphify-out/
+
+User-agent: GPTBot
+Allow: /
+Disallow: /flyer.html
+Disallow: /brand-guideline.html
+Disallow: /reklame_1.html
+Disallow: /graphify-out/
+
+# ---------------------------------------------------------------------------
+# Anthropic (Claude: soegning, brugerhentning og traening)
+# ---------------------------------------------------------------------------
+User-agent: Claude-SearchBot
+Allow: /
+Disallow: /flyer.html
+Disallow: /brand-guideline.html
+Disallow: /reklame_1.html
+Disallow: /graphify-out/
+
+User-agent: Claude-User
+Allow: /
+Disallow: /flyer.html
+Disallow: /brand-guideline.html
+Disallow: /reklame_1.html
+Disallow: /graphify-out/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /flyer.html
+Disallow: /brand-guideline.html
+Disallow: /reklame_1.html
+Disallow: /graphify-out/
+
+# ---------------------------------------------------------------------------
+# Perplexity (soegning og brugerhentning)
+# ---------------------------------------------------------------------------
+User-agent: PerplexityBot
+Allow: /
+Disallow: /flyer.html
+Disallow: /brand-guideline.html
+Disallow: /reklame_1.html
+Disallow: /graphify-out/
+
+User-agent: Perplexity-User
+Allow: /
+Disallow: /flyer.html
+Disallow: /brand-guideline.html
+Disallow: /reklame_1.html
+Disallow: /graphify-out/
+
+# ---------------------------------------------------------------------------
+# Microsoft Bing (driver ogsaa Copilot, ChatGPT-soegning og DuckDuckGo)
+# ---------------------------------------------------------------------------
+User-agent: Bingbot
+Allow: /
+Disallow: /flyer.html
+Disallow: /brand-guideline.html
+Disallow: /reklame_1.html
+Disallow: /graphify-out/
+
+# ---------------------------------------------------------------------------
+# Google Gemini / AI-funktioner (kontrol-token; Googlebot foelger "*")
+# ---------------------------------------------------------------------------
+User-agent: Google-Extended
+Allow: /
+Disallow: /flyer.html
+Disallow: /brand-guideline.html
+Disallow: /reklame_1.html
+Disallow: /graphify-out/
+
+# ---------------------------------------------------------------------------
+# Apple Intelligence (kontrol-token; Applebot foelger "*")
+# ---------------------------------------------------------------------------
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /flyer.html
+Disallow: /brand-guideline.html
+Disallow: /reklame_1.html
+Disallow: /graphify-out/
+
+# ---------------------------------------------------------------------------
+# DuckDuckGo AI-svar (Duck.ai / DuckAssist)
+# ---------------------------------------------------------------------------
+User-agent: DuckAssistBot
+Allow: /
+Disallow: /flyer.html
+Disallow: /brand-guideline.html
+Disallow: /reklame_1.html
+Disallow: /graphify-out/
+
+# ---------------------------------------------------------------------------
+# Meta AI
+# ---------------------------------------------------------------------------
+User-agent: Meta-ExternalAgent
+Allow: /
+Disallow: /flyer.html
+Disallow: /brand-guideline.html
+Disallow: /reklame_1.html
+Disallow: /graphify-out/
+
+# ---------------------------------------------------------------------------
+# Amazon (Alexa / Rufus)
+# ---------------------------------------------------------------------------
+User-agent: Amazonbot
+Allow: /
+Disallow: /flyer.html
+Disallow: /brand-guideline.html
+Disallow: /reklame_1.html
+Disallow: /graphify-out/
+
+# ---------------------------------------------------------------------------
 Sitemap: https://www.voreshjem.dk/sitemap.xml
