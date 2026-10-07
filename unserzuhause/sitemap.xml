@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://www.unserzuhauseapp.de/</loc><changefreq>monthly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/kalender</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/aufgaben</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/essenpl%C3%A4ne</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/einkaufsliste</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/einstellungen</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/synchronisierung</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/support</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/konto-loeschen</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/impressum</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
+</urlset>

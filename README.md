@@ -1,26 +1,34 @@
-# Vores Hjem – hjemmeside
+# Vores Hjem – web
 
-Hjemmesiden til [www.voreshjem.dk](https://www.voreshjem.dk), hostet på Netlify.
+Alle Vores Hjems sider på Netlify, hentet direkte fra Netlify den 7. oktober 2026.
+Hver mappe er præcis det, der ligger live.
 
-## Om denne kopi
+| Mappe | Adresse | Netlify-projekt |
+|---|---|---|
+| `hjemmeside/` | www.voreshjem.dk | `stirring-cactus-7010c5` |
+| `download/` | download.voreshjem.dk | `voreshjem-download` |
+| `unserzuhause/` | www.unserzuhauseapp.de | `verdant-strudel-af7a88` |
+| `unserzuhause-download/` | unserzuhause-download.netlify.app | `unserzuhause-download` |
+| `chatbot/` | voreshjem-bot.netlify.app | `voreshjem-bot` |
+| `backend/` | backend.voreshjem.dk | `voreshjem-backend` |
 
-Hentet direkte fra den live side den 7. oktober 2026, fordi kildekoden kun lå på én PC.
-Filerne er præcis det, Netlify serverer, så siden kan genudgives herfra som den er.
+## Udgiv
 
-Mangler (kan ikke hentes udefra – ligger i Netlify eller på den anden PC):
+Fra mappen der skal udgives (kræver `netlify login` én gang):
 
-- `_redirects` / `_headers` / `netlify.toml` (fx viderestilling af gamle Wix-adresser)
-- Eventuelle build-scripts, der genererer blogindlæg og billeder
-- App-koden (iPhone/Android) og backend (`backend.voreshjem.dk`)
-- Chatbotten (`voreshjem-bot.netlify.app`)
+```
+netlify deploy --no-build --dir . --site <netlify-projekt>          # testudgave
+netlify deploy --no-build --dir . --site <netlify-projekt> --prod   # live
+```
 
-## Struktur
+`netlify.toml` i hver mappe indeholder viderestillinger og headers og skal med.
 
-- `index.html` – forsiden
-- `kalender.html`, `madplan.html`, `opgaver.html`, `indkobsliste.html`, `synkronisering.html`, `indstillinger.html` – funktionssider
-- `blog.html` + `post/` – blog (28 indlæg)
-- `hent/`, `presse/`, `support.html`, `hvordan-*.html` – øvrige sider
-- `images/`, `fonts/`, `video/` – filer
-- `sitemap.xml`, `robots.txt`, `llms.txt` – til søgemaskiner og AI
+⚠️ **Udgiv aldrig `chatbot/` eller `backend/` herfra.** De mapper har kun de statiske filer.
+Funktionerne (chat-bot, admin, vagt, ugemail, webhook m.fl.) kan ikke hentes fra Netlify
+og ligger kun på Mac'en. En udgivelse herfra ville slette dem.
 
-Netlify viser `kalender.html` på adressen `/kalender` automatisk.
+## Mangler
+
+- Kildekoden til backend- og chatbot-funktionerne
+- App-koden (iPhone/Android)
+- `_redirects` til `hjemmeside/hent_rettelser.js` (scriptet, der henter rettelser fra backend-panelet før udgivelse)

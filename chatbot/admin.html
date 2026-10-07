@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Vores Hjem – support</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6C47FF">
+<link rel="apple-touch-icon" href="/avatar.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="VH Support">
+<style>
+  :root{ --pri:#6C47FF; --ink:#1B1633; --mut:#6b6685; --line:#e7e4f2; --bg:#F6F5FB; }
+  *{ box-sizing:border-box; margin:0; padding:0; font-family:"Plus Jakarta Sans",-apple-system,"Segoe UI",Roboto,Arial,sans-serif; }
+  body{ background:var(--bg); color:var(--ink); height:100vh; height:100dvh; overflow:hidden; }
+  .grad{ background:linear-gradient(135deg,#6C47FF,#4F7BFF,#FF6FB5); }
+
+  /* Login */
+  .login{ position:fixed; inset:0; display:flex; align-items:center; justify-content:center; padding:20px; }
+  .card{ background:#fff; border-radius:18px; padding:28px; width:100%; max-width:360px; box-shadow:0 20px 60px rgba(27,22,51,.18); }
+  .card h1{ font-size:19px; margin-bottom:6px; }
+  .card p{ font-size:13px; color:var(--mut); margin-bottom:16px; }
+  .card input{ width:100%; border:1px solid var(--line); border-radius:12px; padding:12px; font-size:15px; outline:none; }
+  .card input:focus{ border-color:var(--pri); }
+  .card button{ width:100%; border:none; border-radius:12px; padding:12px; color:#fff; font-weight:700; font-size:15px; cursor:pointer; margin-top:12px; }
+  .card .err{ color:#d64545; font-size:13px; margin-top:10px; display:none; }
+
+  /* App */
+  .app{ display:none; height:100vh; height:100dvh; }
+  .topbar{ height:56px; display:flex; align-items:center; gap:10px; padding:0 14px; color:#fff; }
+  .topbar .t{ font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .topbar .sp{ margin-left:auto; font-size:13px; opacity:.9; white-space:nowrap; }
+  .topbar button{ background:rgba(255,255,255,.2); border:none; color:#fff; padding:7px 12px; border-radius:9px; font-size:13px; cursor:pointer; white-space:nowrap; flex:0 0 auto; }
+
+  /* Skifter mellem de to markeder. Sidder yderst til venstre, hvor titlen stod,
+     for det er det første man skal vide: hvis kunder kigger jeg på? */
+  .siteSel{ display:flex; gap:3px; background:rgba(255,255,255,.16); border-radius:11px; padding:3px; flex:0 0 auto; }
+  .siteSel button{ background:transparent; border:none; color:rgba(255,255,255,.72); font-weight:700; font-size:13px;
+                   padding:6px 12px; border-radius:8px; cursor:pointer; position:relative; white-space:nowrap; }
+  .siteSel button.on{ background:#fff; color:#6C47FF; }
+  .siteSel button:not(.on):hover{ color:#fff; background:rgba(255,255,255,.14); }
+  .siteSel .kort{ display:none; }
+  /* Prik når der ligger ulæst på den side man IKKE kigger på */
+  .siteSel .sdot{ position:absolute; top:3px; right:4px; width:8px; height:8px; border-radius:50%;
+                  background:#FF5C7A; box-shadow:0 0 0 2px #6C47FF; display:none; }
+  /* uden ekstra plads lægger prikken sig oven på det sidste bogstav */
+  .siteSel button.harNyt{ padding-right:17px; }
+  .siteSel button.harNyt .sdot{ display:block; }
+  .siteSel button.on .sdot{ box-shadow:0 0 0 2px #fff; }
+
+  @media (max-width:600px){
+    .topbar{ gap:6px; padding:0 10px; }
+    .topbar .t{ font-size:14px; max-width:34vw; }
+    .topbar .sp{ display:none; }
+    .topbar button{ padding:7px 9px; font-size:12.5px; }
+    /* Fulde navne fylder for meget ved siden af de andre knapper */
+    .siteSel .lang{ display:none; }
+    .siteSel .kort{ display:inline; }
+    .siteSel button{ padding:6px 10px; }
+    /* Vælgeren siger allerede hvor man er, og "Support" blev alligevel klemt til 0px */
+    .topbar .t{ display:none; }
+  }
+  .shell{ display:flex; height:calc(100vh - 56px); height:calc(100dvh - 56px); }
+  .content{ flex:1; min-width:0; height:100%; position:relative; }
+  .main{ display:flex; height:100%; }
+  /* Sidebjælke */
+  .sidebar{ width:238px; flex:0 0 238px; background:#fff; border-right:1px solid var(--line); padding:20px 14px; display:flex; flex-direction:column; overflow-y:auto; }
+  .sb-group{ margin-bottom:20px; }
+  .sb-label{ font-size:11px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#a9a4bd; padding:0 10px; margin:0 0 9px; }
+  .sb-item{ display:flex; align-items:center; gap:11px; padding:9px 11px; border-radius:11px; cursor:pointer; color:#4a4560; font-size:14px; font-weight:600; text-decoration:none; user-select:none; }
+  .sb-item:hover{ background:#faf9ff; }
+  .sb-item.active{ background:#F1EDFF; color:var(--pri); }
+  .sb-ic{ width:20px; height:20px; display:flex; align-items:center; justify-content:center; flex:0 0 20px; }
+  .sb-ic svg{ width:19px; height:19px; }
+  .sb-txt{ flex:1; }
+  .sb-badge{ margin-left:auto; background:#EDE9FF; color:var(--pri); font-size:11px; font-weight:800; padding:2px 9px; border-radius:20px; }
+  .sb-help{ margin-top:auto; background:var(--bg); border:1px solid var(--line); border-radius:15px; padding:16px; }
+  .sb-help-ic{ width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,#6C47FF,#4F7BFF); display:flex; align-items:center; justify-content:center; color:#fff; margin-bottom:11px; }
+  .sb-help-ic svg{ width:18px; height:18px; }
+  .sb-help-t{ font-size:13px; font-weight:700; color:var(--ink); margin-bottom:5px; }
+  .sb-help-d{ font-size:12px; color:var(--mut); line-height:1.55; }
+  .page-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 20px; flex-wrap:wrap; }
+  .date-chip{ display:inline-flex; align-items:center; gap:8px; background:#fff; border:1px solid var(--line); border-radius:11px; padding:9px 13px; font-size:13px; font-weight:600; color:#4a4560; box-shadow:0 1px 2px rgba(27,22,51,.04); }
+  .range-sel{ border:none; background:transparent; font-family:inherit; font-size:13px; font-weight:600; color:#4a4560; cursor:pointer; outline:none; -webkit-appearance:menulist; }
+  @media(min-width:901px){ .topbar .tb-nav{ display:none; } }
+  @media(max-width:900px){ .sidebar{ display:none; } }
+
+  .list{ width:340px; border-right:1px solid var(--line); background:#fff; overflow-y:auto; flex:0 0 340px; }
+  .conv{ padding:13px 15px; border-bottom:1px solid var(--line); cursor:pointer; }
+  .conv:hover{ background:#faf9ff; }
+  .conv.active{ background:#f1edff; }
+  .conv .r1{ display:flex; align-items:center; gap:8px; }
+  .conv .em{ font-weight:600; font-size:13.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .conv.unread{ background:#faf9ff; }
+  .conv.unread .em{ font-weight:800; }
+  .undot{ width:8px; height:8px; border-radius:50%; background:var(--pri); flex:0 0 8px; box-shadow:0 0 0 3px rgba(108,71,255,.18); }
+  .conv .time{ margin-left:auto; font-size:11px; color:var(--mut); flex:0 0 auto; }
+  .conv .snip{ font-size:12.5px; color:var(--mut); margin-top:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .pill{ font-size:10px; font-weight:700; padding:2px 7px; border-radius:20px; flex:0 0 auto; }
+  .pill.need{ background:#FDECEC; color:#d64545; }
+  .pill.human{ background:#EAF7EE; color:#1B7A3D; }
+  .pill.mood{ background:#FFF1E6; color:#C2570F; }
+  .empty{ padding:30px 16px; text-align:center; color:var(--mut); font-size:13px; }
+
+  .conv-view{ flex:1; display:flex; flex-direction:column; background:var(--bg); min-width:0; }
+  .cv-head{ padding:12px 16px; background:#fff; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .cv-head .em{ font-weight:700; font-size:14px; }
+  .cv-head .actions{ margin-left:auto; display:flex; gap:8px; }
+  .cv-head button{ border:none; border-radius:9px; padding:8px 12px; font-size:13px; font-weight:600; cursor:pointer; }
+  .btn-take{ background:var(--pri); color:#fff; }
+  .btn-release{ background:#EAF7EE; color:#1B7A3D; }
+  .btn-del{ background:#FDECEC; color:#d64545; }
+
+  /* Statistik-modal */
+  /* Fulde sider (Analyse / Statistik), ikke popups */
+  .page{ display:none; height:100%; overflow-y:auto; background:var(--bg); }
+  .page.show{ display:block; }
+  .page-inner{ max-width:960px; margin:0 auto; padding:26px 22px 80px; }
+  /* ===== Premium dashboard (Analyse) ===== */
+  .dash{ display:flex; flex-direction:column; gap:16px; }
+  .dcard{ background:#fff; border:1px solid #ECEAF4; border-radius:18px; padding:22px; box-shadow:0 1px 2px rgba(27,22,51,.04),0 10px 30px rgba(27,22,51,.05); }
+  .dcard-h{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:18px; }
+  .dcard-t{ font-size:15px; font-weight:700; color:#1B1633; }
+  .dcard-s{ font-size:12.5px; color:#8b86a5; margin-top:3px; }
+  .hero-num{ font-size:13px; color:#8b86a5; text-align:right; white-space:nowrap; }
+  .hero-num b{ display:block; font-size:32px; font-weight:800; color:#1B1633; line-height:1; letter-spacing:-.5px; }
+  .chart svg{ width:100%; height:auto; display:block; }
+  .chart-x{ display:flex; justify-content:space-between; font-size:11px; color:#a9a4bd; margin-top:8px; }
+  .leg{ display:flex; gap:18px; margin-top:14px; font-size:12px; color:#6b6685; }
+  .leg span{ display:inline-flex; align-items:center; gap:7px; }
+  .leg i{ width:11px; height:11px; border-radius:4px; display:inline-block; }
+  .kgrid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(165px,1fr)); gap:14px; }
+  .kcard{ background:#fff; border:1px solid #ECEAF4; border-radius:18px; padding:18px 18px 16px; box-shadow:0 1px 2px rgba(27,22,51,.04),0 10px 30px rgba(27,22,51,.05); }
+  .krow{ display:flex; align-items:center; gap:13px; margin-bottom:12px; }
+  .kico{ width:40px; height:40px; border-radius:11px; display:flex; align-items:center; justify-content:center; flex:0 0 40px; }
+  .krow .knum{ margin:0; }
+  .kico svg{ width:20px; height:20px; }
+  .knum{ font-size:30px; font-weight:800; color:#1B1633; line-height:1; letter-spacing:-.6px; font-variant-numeric:tabular-nums; }
+  .knum small{ font-size:16px; font-weight:700; color:#6b6685; }
+  .klbl{ font-size:12.5px; color:#8b86a5; margin-top:6px; }
+  .kdelta{ display:inline-flex; align-items:center; gap:3px; font-size:11.5px; font-weight:700; margin-top:10px; padding:3px 8px; border-radius:20px; }
+  .kdelta.up{ background:#E9F9EF; color:#16a34a; } .kdelta.down{ background:#FDECEC; color:#d64545; } .kdelta.flat{ background:#F1EFF7; color:#8b86a5; }
+  .g2{ display:grid; grid-template-columns:1.4fr 1fr; gap:16px; }
+  @media(max-width:820px){ .g2{ grid-template-columns:1fr; } }
+  .bars{ display:flex; flex-direction:column; gap:13px; }
+  .brow{ display:grid; grid-template-columns:92px 1fr auto; align-items:center; gap:13px; }
+  .blabel{ font-size:13px; color:#3a3550; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .btrack{ height:9px; background:#F1EFF7; border-radius:6px; overflow:hidden; }
+  .bfill{ height:100%; border-radius:6px; transform-origin:left; animation:growx .8s cubic-bezier(.2,.75,.2,1) both; }
+  .bval{ font-size:12.5px; color:#6b6685; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .bval b{ color:#1B1633; font-weight:700; }
+  @keyframes growx{ from{ transform:scaleX(0); } to{ transform:scaleX(1); } }
+  .hfunnel{ display:flex; align-items:flex-start; justify-content:space-between; gap:4px; padding:6px 0; }
+  .hstep{ display:flex; flex-direction:column; align-items:center; gap:9px; flex:1; text-align:center; }
+  .hstep-ic{ width:46px; height:46px; border-radius:13px; display:flex; align-items:center; justify-content:center; }
+  .hstep-ic svg{ width:22px; height:22px; }
+  .hstep-lbl{ font-size:12.5px; color:#6b6685; font-weight:600; }
+  .hstep-num{ font-size:21px; font-weight:800; color:#1B1633; letter-spacing:-.5px; font-variant-numeric:tabular-nums; }
+  .hstep-arrow{ color:#c9c2e4; margin-top:12px; flex:0 0 auto; }
+  .hstep-arrow svg{ width:18px; height:18px; }
+  @media(max-width:620px){ .hstep-lbl{ font-size:10.5px } .hstep-num{ font-size:16px } .hstep-ic{ width:38px; height:38px } .hstep-arrow{ margin-top:9px } }
+  .funnel{ display:flex; flex-direction:column; gap:13px; }
+  .fsh{ display:flex; justify-content:space-between; font-size:13px; margin-bottom:7px; }
+  .fsh b{ color:#1B1633; font-weight:700; } .fsh span{ color:#8b86a5; }
+  .fbar{ height:38px; border-radius:11px; display:flex; align-items:center; padding:0 13px; color:#fff; font-weight:800; font-size:14px; transform-origin:left; animation:growx .8s cubic-bezier(.2,.75,.2,1) both; box-shadow:0 4px 14px rgba(108,71,255,.25); }
+  .fdrop{ text-align:center; font-size:12px; color:#8b86a5; margin:1px 0; }
+  .strack{ display:flex; height:13px; border-radius:7px; overflow:hidden; background:#F1EFF7; }
+  .sfill{ height:100%; animation:growx .8s cubic-bezier(.2,.75,.2,1) both; transform-origin:left; }
+  .rank{ display:flex; flex-direction:column; gap:12px; }
+  .rrow{ display:grid; grid-template-columns:24px 1fr auto; align-items:center; gap:13px; }
+  .rnum{ font-size:13px; font-weight:800; color:#c3bcdf; text-align:center; }
+  .rmid{ min-width:0; }
+  .rlabel{ font-size:13px; color:#1B1633; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:6px; }
+  .rtrack{ height:7px; background:#F1EFF7; border-radius:5px; overflow:hidden; }
+  .rfill{ height:100%; border-radius:5px; background:linear-gradient(90deg,#6C47FF,#4F7BFF); transform-origin:left; animation:growx .8s cubic-bezier(.2,.75,.2,1) both; }
+  .rval{ font-size:12.5px; color:#6b6685; font-variant-numeric:tabular-nums; font-weight:600; }
+  .tip{ font-size:12.5px; color:#8b86a5; line-height:1.6; padding:4px 2px 0; }
+  .enote{ font-size:13px; color:#a9a4bd; padding:6px 0; }
+  .page-back{ background:none; border:none; color:var(--pri); font-size:14px; font-weight:600; cursor:pointer; padding:0; margin:0 0 14px; }
+  .page-back:hover{ text-decoration:underline; }
+  .page-title{ font-size:21px; font-weight:800; color:var(--ink); margin:0 0 20px; }
+  .topbar button.active{ background:rgba(255,255,255,.45); }
+  .topbar .t{ cursor:pointer; }
+  .kpis{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
+  .kpi{ flex:1; min-width:110px; background:var(--bg); border-radius:12px; padding:13px 15px; }
+  .kpi .num{ font-size:24px; font-weight:800; color:var(--pri); }
+  .kpi .lbl{ font-size:12px; color:var(--mut); margin-top:2px; }
+  .statline{ font-size:13.5px; color:#3a3550; background:#f1edff; border-radius:10px; padding:11px 14px; margin-bottom:18px; }
+  .statline b{ color:var(--pri); }
+  .fbrow{ display:flex; gap:10px; margin-bottom:6px; flex-wrap:wrap; }
+  .fbpill{ font-size:13px; font-weight:600; padding:8px 14px; border-radius:20px; }
+  .fbpill.up{ background:#EAF7EE; color:#1B7A3D; }
+  .fbpill.down{ background:#FDECEC; color:#d64545; }
+  .fbpill.none{ background:var(--bg); color:var(--mut); }
+  .analyse-sub{ font-size:12.5px; color:var(--mut); margin:0 0 6px; }
+  .sec-title{ font-size:13px; font-weight:700; color:var(--ink); margin:16px 0 8px; }
+  .qlist, .dlist{ display:flex; flex-direction:column; gap:6px; }
+  .qitem{ font-size:13px; color:#3a3550; background:var(--bg); border-radius:8px; padding:8px 11px; }
+  .ditem{ font-size:12.5px; border:1px solid #f2d0d0; background:#fdf6f6; border-radius:8px; padding:9px 11px; }
+  .ditem .dq{ color:var(--mut); } .ditem .da{ color:#1B1633; margin-top:3px; }
+  .muted{ color:var(--mut); font-size:13px; }
+  .msgs{ flex:1; overflow-y:auto; padding:18px; display:flex; flex-direction:column; gap:10px; }
+  .m{ max-width:74%; padding:10px 13px; border-radius:14px; font-size:14px; line-height:1.5; white-space:pre-wrap; word-wrap:break-word; }
+  .m.user{ align-self:flex-start; background:#fff; box-shadow:0 1px 2px rgba(27,22,51,.06); }
+  .m.assistant{ align-self:flex-end; background:#EEF2FF; }
+  .m.agent{ align-self:flex-end; background:var(--pri); color:#fff; }
+  .m .who{ font-size:10.5px; font-weight:700; opacity:.7; margin-bottom:3px; }
+  .reply{ padding:12px; background:#fff; border-top:1px solid var(--line); display:flex; gap:8px; }
+  .reply textarea{ flex:1; resize:none; border:1px solid var(--line); border-radius:12px; padding:10px 12px; font-size:14px; outline:none; max-height:120px; }
+  .reply textarea:focus{ border-color:var(--pri); }
+  .reply button{ border:none; border-radius:12px; padding:0 18px; color:#fff; font-weight:700; cursor:pointer; }
+  .placeholder{ flex:1; display:flex; align-items:center; justify-content:center; color:var(--mut); font-size:14px; }
+
+  @media (max-width:720px){
+    .list{ width:100%; flex-basis:100%; display:block; }
+    .conv-view{ display:none; }
+    body.viewing .list{ display:none; }
+    body.viewing .conv-view{ display:flex; }
+
+    /* Topbaren havde fem knapper klemt sammen på 390px, og "← Liste" druknede
+       mellem dem. Er man inde i en samtale, er vejen tilbage det eneste der
+       betyder noget, resten kan vente til man er ude igen. */
+    body.viewing .topbar .t,
+    body.viewing .topbar .sp,
+    body.viewing .topbar #siteSel,
+    body.viewing .topbar #archBtn,
+    body.viewing .topbar .tb-nav,
+    body.viewing .topbar #logoutBtn{ display:none; }
+    /* .sp har margin-left:auto og ville ellers skubbe knappen over i højre side */
+    body.viewing #backBtn{ margin-right:auto; }
+    #backBtn{ font-size:14px; font-weight:700; padding:9px 15px; min-height:40px;
+              background:rgba(255,255,255,.28); }
+
+    /* alle knapper i toppen skal kunne rammes med en finger */
+    .topbar button{ min-height:38px; padding:8px 12px; }
+    .topbar .t{ font-size:14px; }
+
+    /* Hvem man skriver med skal blive stående, også når man ruller i beskederne */
+    .cv-head{ position:sticky; top:0; z-index:5; padding:11px 13px; }
+    .cv-head .em{ font-size:13.5px; }
+    .cv-head .actions{ width:100%; margin-left:0; }
+    .cv-head .actions button{ flex:1; }
+
+    /* beskedbobler må fylde mere på en smal skærm */
+    .msgs{ padding:14px 12px; gap:9px; }
+    .m{ max-width:88% !important; }
+
+    /* svar-feltet må ikke ligge under iPhonens hjemme-streg */
+    .reply{ padding:10px 12px calc(10px + env(safe-area-inset-bottom)); }
+    .reply textarea{ font-size:16px; }   /* under 16px zoomer iOS ind ved tastning */
+
+    /* listen: mere luft mellem samtalerne, så man rammer den rigtige */
+    .conv{ padding:14px 13px; }
+
+    /* statistik- og analysesiderne var for brede til skærmen */
+    .page-inner{ padding:16px 13px; }
+    .kgrid{ grid-template-columns:1fr 1fr; }
+    .kpi{ min-width:0; }
+  }
+
+  /* Redigér/slet egne (agent-)beskeder */
+  .m{ position:relative; }
+  .mtools{ position:absolute; top:-10px; right:8px; display:none; gap:5px; }
+  .m.agent:hover .mtools{ display:flex; }
+  .mtools button{ border:none; background:#fff; color:var(--pri); width:26px; height:26px; border-radius:8px; cursor:pointer; box-shadow:0 2px 7px rgba(27,22,51,.22); display:flex; align-items:center; justify-content:center; padding:0; }
+  .mtools button svg{ width:14px; height:14px; }
+  .mtools button:hover{ background:#F1EDFF; }
+  .mtools button.del:hover{ background:#FDECEC; color:#d64545; }
+  .medit{ width:100%; min-width:240px; border:none; border-radius:9px; padding:9px 10px; font-family:inherit; font-size:14px; line-height:1.45; color:#1B1633; resize:vertical; outline:none; }
+  .mrow{ display:flex; gap:6px; margin-top:7px; }
+  .mbtn{ border:none; border-radius:8px; padding:6px 12px; font-size:12.5px; font-weight:700; cursor:pointer; font-family:inherit; }
+  .mbtn.save{ background:#fff; color:var(--pri); }
+  .mbtn.cancel{ background:rgba(255,255,255,.22); color:#fff; }
+  .m .who{ display:flex; align-items:center; }
+  .m.agent .edited{ font-size:9.5px; opacity:.6; margin-left:6px; font-weight:600; }
+
+  /* Tosproget marked: dansk står som hovedtekst, og under den ligger den tekst
+     kunden faktisk så. Uden den kan man ikke kontrollere hvad der blev sendt. */
+  .morig{ margin-top:7px; padding-top:6px; border-top:1px solid rgba(27,22,51,.12);
+          font-size:12px; line-height:1.45; opacity:.62; }
+  .m.agent .morig{ border-top-color:rgba(255,255,255,.3); }
+  .morig .ml{ font-size:9.5px; font-weight:800; letter-spacing:.05em; text-transform:uppercase;
+              display:block; margin-bottom:2px; opacity:.75; }
+  .oversat-fejl{ background:#FDECEC; color:#d64545; font-size:12.5px; font-weight:600;
+                 padding:8px 11px; border-radius:9px; margin:0 0 8px; }
+</style>
+</head>
+<body>
+
+<div class="login">
+  <div class="card">
+    <h1>Vores Hjem – support</h1>
+    <p>Log ind for at se og svare på chat-henvendelser.</p>
+    <input id="pw" type="password" placeholder="Adgangskode" autocomplete="current-password">
+    <button class="grad" id="loginBtn">Log ind</button>
+    <div class="err" id="loginErr">Forkert adgangskode.</div>
+  </div>
+</div>
+
+<div class="app" id="app">
+  <div class="topbar grad">
+    <div class="siteSel" id="siteSel">
+      <button data-site="dk"><span class="lang">Vores Hjem</span><span class="kort">DK</span><i class="sdot"></i></button>
+      <button data-site="de"><span class="lang">Unser Zuhause</span><span class="kort">DE</span><i class="sdot"></i></button>
+    </div>
+    <span class="t" id="tbTitle">Support</span>
+    <span class="sp" id="stat"></span>
+    <button id="backBtn" style="display:none">← Liste</button>
+    <button id="archBtn">Arkiv</button>
+    <button id="analyseBtn" class="tb-nav">Analyse</button>
+    <button id="statsBtn" class="tb-nav">Statistik</button>
+    <button id="logoutBtn">Log ud</button>
+  </div>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="sb-group">
+        <div class="sb-label">Overblik</div>
+        <a class="sb-item" id="sbChats"><span class="sb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg></span><span class="sb-txt">Aktive samtaler</span><span class="sb-badge" id="sbCount">0</span></a>
+      </div>
+      <div class="sb-group">
+        <div class="sb-label">Indsigter</div>
+        <a class="sb-item" id="sbAnalyse"><span class="sb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 6-6 4 4 8-8"/><path d="M17 7h4v4"/></svg></span><span class="sb-txt">Analyse</span></a>
+        <a class="sb-item" id="sbStats"><span class="sb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12A9 9 0 1 1 12 3v9z"/><path d="M21 12a9 9 0 0 0-9-9v9z"/></svg></span><span class="sb-txt">Statistik</span></a>
+      </div>
+      <div class="sb-help">
+        <div class="sb-help-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 4.7L18 8l-4.4 1.3L12 14l-1.6-4.7L6 8l4.4-1.3L12 2z"/></svg></div>
+        <div class="sb-help-t">Har du brug for hjælp?</div>
+        <div class="sb-help-d">Se statistik, trafik og feedback for at forstå dine brugere bedre og forbedre oplevelsen.</div>
+      </div>
+    </aside>
+    <div class="content">
+      <div class="main">
+        <div class="list" id="list"><div class="empty">Henter…</div></div>
+        <div class="conv-view" id="view">
+          <div class="placeholder" id="ph">Vælg en samtale til venstre.</div>
+        </div>
+      </div>
+      <div class="page" id="statsPage">
+        <div class="page-inner"><button class="page-back">← Tilbage til samtaler</button><h2 class="page-title">Statistik</h2><div id="statsBody">Henter…</div></div>
+      </div>
+      <div class="page" id="analysePage">
+        <div class="page-inner"><button class="page-back">← Tilbage til samtaler</button>
+          <div class="page-head"><h2 class="page-title" style="margin:0">Analyse, links &amp; trafik</h2><label class="date-chip" style="cursor:pointer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><select id="rangeSel" class="range-sel"><option value="1">I dag</option><option value="2">Seneste 2 dage</option><option value="7">Seneste uge</option><option value="14" selected>Seneste 2 uger</option><option value="30">Seneste måned</option><option value="90">Seneste 3 måneder</option></select></label></div>
+          <div id="analyseBody">Henter…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const ENDPOINT = '/.netlify/functions/chat-bot';
+let PW = sessionStorage.getItem('vh-admin-pw') || '';
+let activeId = null;
+let listTimer = null, viewTimer = null;
+let lastListSig = '', lastViewSig = '';
+let viewCache = {}; // sidst viste samtaler → øjeblikkeligt skift mellem chats
+
+// Hvilket marked kigger vi på? ?site=de i linket (alarm-mailen bruger det)
+// vinder over det man sidst valgte.
+const SITE_NAVN = {dk:'Vores Hjem', de:'Unser Zuhause'};
+// "Besøg" tæller besøg på download-siden, ikke på selve hjemmesiden. Findes der
+// ingen download-side for et marked, er tallet altid 0, og så skal panelet sige
+// det i stedet for at vise en nul-graf der ligner et fald. Sidebesøg står i Wix.
+const SITE_DL   = {dk:'download.voreshjem.dk', de:null};
+const SITE_WEB  = {dk:'voreshjem.dk', de:'unserzuhauseapp.de'};
+let SITE = (function(){
+  const q = new URLSearchParams(location.search).get('site');
+  if(q && SITE_NAVN[q]) return q;
+  const gemt = localStorage.getItem('vh-admin-site');
+  return SITE_NAVN[gemt] ? gemt : 'dk';
+})();
+
+async function api(payload){
+  const res = await fetch(ENDPOINT, {method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify(Object.assign({password:PW, site:SITE}, payload))});
+  return res.json();
+}
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmtTime(iso){
+  if(!iso) return '';
+  const d = new Date(iso), now = new Date();
+  const sameDay = d.toDateString()===now.toDateString();
+  const hh = String(d.getHours()).padStart(2,'0'), mm = String(d.getMinutes()).padStart(2,'0');
+  if(sameDay) return hh+':'+mm;
+  return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+' '+hh+':'+mm;
+}
+
+// ---- login ----
+const loginBox = document.querySelector('.login');
+const app = document.getElementById('app');
+document.getElementById('loginBtn').addEventListener('click', doLogin);
+document.getElementById('pw').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+async function doLogin(){
+  PW = document.getElementById('pw').value;
+  const r = await api({action:'admin_login'});
+  if(r && r.ok){ sessionStorage.setItem('vh-admin-pw', PW); enterApp(); }
+  else { document.getElementById('loginErr').style.display='block'; }
+}
+function enterApp(){
+  loginBox.style.display='none'; app.style.display='block';
+  tegnSiteValg();
+  // Vis sidst kendte liste med det samme (friske data hentes straks efter)
+  try{ const cached = sessionStorage.getItem('vh-list-'+SITE); if(cached) renderList(JSON.parse(cached)); }catch(e){}
+  startList();
+}
+
+// ---- valg af marked (Vores Hjem / Unser Zuhause) ----
+const siteSel = document.getElementById('siteSel');
+function tegnSiteValg(){
+  siteSel.querySelectorAll('button').forEach(b=> b.classList.toggle('on', b.getAttribute('data-site')===SITE));
+  document.title = SITE_NAVN[SITE] + ' – support';
+}
+function skiftSite(nyt){
+  if(nyt===SITE || !SITE_NAVN[nyt]) return;
+  SITE = nyt;
+  localStorage.setItem('vh-admin-site', SITE);
+  // Alt hvad der lå i hukommelsen hører til det gamle marked
+  activeId = null; viewCache = {}; lastListSig = ''; lastViewSig = '';
+  showArchived = false;
+  document.getElementById('archBtn').textContent = 'Arkiv';
+  document.body.classList.remove('viewing');
+  document.getElementById('backBtn').style.display='none';
+  document.getElementById('view').innerHTML = '<div class="placeholder">Vælg en samtale til venstre.</div>';
+  document.getElementById('list').innerHTML = '<div class="empty">Henter…</div>';
+  tegnSiteValg();
+  // Stod man på Analyse eller Statistik, skal tallene hentes for det nye marked
+  if(currentView==='chats') loadList();
+  else { loadList(); showView(currentView); }
+}
+siteSel.querySelectorAll('button').forEach(b=>
+  b.addEventListener('click', ()=> skiftSite(b.getAttribute('data-site'))));
+tegnSiteValg();
+document.getElementById('logoutBtn').addEventListener('click', ()=>{ sessionStorage.removeItem('vh-admin-pw'); location.reload(); });
+document.getElementById('archBtn').addEventListener('click', ()=>{
+  if(typeof showView==='function' && currentView!=='chats') showView('chats');
+  showArchived = !showArchived;
+  document.getElementById('archBtn').textContent = showArchived ? '← Aktive' : 'Arkiv';
+  lastListSig=''; loadList();
+});
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('/sw.js').catch(()=>{}); } // PWA: installérbar som app
+function lukSamtale(){
+  document.body.classList.remove('viewing'); activeId=null;
+  document.getElementById('backBtn').style.display='none'; stopView();
+}
+document.getElementById('backBtn').addEventListener('click', ()=>{
+  // gå gennem historikken, så telefonens frem/tilbage følger med
+  if(history.state && history.state.vhConv) history.back(); else lukSamtale();
+});
+// Uden det her fører telefonens egen tilbage-gestus ud af hele admin-siden,
+// i stedet for blot tilbage til listen over samtaler.
+window.addEventListener('popstate', ()=>{
+  if(document.body.classList.contains('viewing')) lukSamtale();
+});
+// Genindlæser man siden mens man står i en samtale, bliver historikposten
+// liggende. Så ville knappen tro der var noget at gå tilbage til og sende én
+// helt ud af admin. Derfor ryddes den ved opstart.
+if(history.state && history.state.vhConv) history.replaceState(null, '');
+
+// ---- list ----
+let showArchived = false;
+function renderList(items){
+  const need = items.filter(c=>c.needsHuman).length;
+  const unread = items.filter(c=>c.unread).length;
+  document.getElementById('stat').textContent = (showArchived?'Arkiv: ':'')+items.length+' samtaler'+(unread?(' · '+unread+' ulæste'):'')+(need?(' · '+need+' venter'):'');
+  const sig = JSON.stringify([showArchived].concat(items.map(c=>[c.id,c.updatedAt,c.needsHuman,c.human,c.unread,c.mood])));
+  if(sig===lastListSig) return; lastListSig = sig;
+  const el = document.getElementById('list');
+  if(!items.length){ el.innerHTML = '<div class="empty">'+(showArchived?'Arkivet er tomt.':'Ingen samtaler endnu.')+'</div>'; return; }
+  el.innerHTML = items.map(c=>{
+    const pill = (c.needsHuman ? '<span class="pill need">Venter</span>' : (c.human ? '<span class="pill human">Overtaget</span>' : ''))
+      + (c.mood==='vred' ? '<span class="pill mood">Frustreret</span>' : '');
+    const dot = c.unread ? '<span class="undot" title="Ulæst"></span>' : '';
+    const snip = c.last ? (c.last.role==='user'?'':'↩ ')+esc(c.last.content) : '';
+    return '<div class="conv'+(c.id===activeId?' active':'')+(c.unread?' unread':'')+'" data-id="'+esc(c.id)+'" data-email="'+esc(c.email||'Besøgende (ingen email)')+'">'+
+      '<div class="r1">'+dot+'<span class="em">'+esc(c.email||'Besøgende (ingen email)')+'</span>'+pill+'<span class="time">'+fmtTime(c.updatedAt)+'</span></div>'+
+      '<div class="snip">'+snip+'</div></div>';
+  }).join('');
+  el.querySelectorAll('.conv').forEach(node=>node.addEventListener('click', ()=>openConv(node.getAttribute('data-id'), node.getAttribute('data-email'))));
+}
+// Forudindlæs de nyeste samtaler i baggrunden → klik på en chat = øjeblikkelig visning
+function prefetch(items){
+  items.slice(0, 6).forEach(c=>{
+    const cached = viewCache[c.id];
+    if(cached && cached._up === c.updatedAt) return; // uændret siden sidst
+    api({action:'admin_get', conversationId:c.id, peek:true}).then(v=>{
+      if(v && !v.error){ v._up = c.updatedAt; if(c.id !== activeId) viewCache[c.id] = v; }
+    }).catch(()=>{});
+  });
+}
+async function loadList(){
+  const r = await api({action:'admin_list', archived: showArchived});
+  if(r && r.error==='forkert adgangskode'){ sessionStorage.removeItem('vh-admin-pw'); location.reload(); return; }
+  if(r && r.site && r.site !== SITE) return; // svaret hører til det marked vi lige forlod
+  const items = (r && r.conversations) ? r.conversations : [];
+  try{ if(!showArchived) sessionStorage.setItem('vh-list-'+SITE, JSON.stringify(items)); }catch(e){}
+  const sbc = document.getElementById('sbCount'); if(sbc && !showArchived) sbc.textContent = items.length;
+  // Prik på det marked man IKKE kigger på, når der ligger noget ulæst der
+  const badges = (r && r.badges) || {};
+  siteSel.querySelectorAll('button').forEach(b=>{
+    const s = b.getAttribute('data-site'), d = badges[s] || {};
+    b.classList.toggle('harNyt', s!==SITE && ((d.unread||0) > 0 || (d.waiting||0) > 0));
+  });
+  renderList(items);
+  prefetch(items);
+}
+function startList(){ loadList(); if(listTimer) clearInterval(listTimer); listTimer=setInterval(loadList, 4000); }
+
+// ---- view ----
+function openConv(id, email){
+  activeId = id; lastViewSig=''; lastListSig='';
+  // kun én historik-post, også når man hopper mellem samtaler
+  if(!(history.state && history.state.vhConv)) history.pushState({vhConv:1}, '');
+  document.body.classList.add('viewing');
+  document.getElementById('backBtn').style.display='';
+  if(viewCache[id]){
+    // Set før → vis øjeblikkeligt fra hukommelsen; friske data hentes i baggrunden
+    renderView(viewCache[id]);
+  } else {
+    // Første gang → vis skelet med det samme, beskederne fylder på når de er hentet
+    document.getElementById('view').innerHTML =
+      '<div class="cv-head"><span class="em">'+esc(email||'')+'</span></div>'+
+      '<div class="msgs"><div class="m user" style="opacity:.45">Henter samtale…</div></div>'+
+      '<div class="reply"><textarea rows="1" placeholder="Skriv et svar…" disabled></textarea><button class="grad" disabled>Send</button></div>';
+  }
+  loadView(); if(viewTimer) clearInterval(viewTimer); viewTimer=setInterval(loadView, 3000);
+  loadList();
+}
+function stopView(){ if(viewTimer){ clearInterval(viewTimer); viewTimer=null; } }
+async function loadView(){
+  if(!activeId) return;
+  const reqId = activeId;
+  const c = await api({action:'admin_get', conversationId:reqId});
+  if(reqId !== activeId) return; // brugeren skiftede chat imens, smid det gamle svar væk
+  if(!c || c.error) return;
+  viewCache[reqId] = c;
+  const sig = JSON.stringify({n:(c.messages||[]).length, h:c.human});
+  if(sig===lastViewSig) return; lastViewSig=sig;
+  renderView(c);
+}
+let curConv = null;
+const ICON_EDIT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>';
+const ICON_DEL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></svg>';
+function editMsg(mid){
+  const m = curConv && (curConv.messages||[]).find(x=>String(x.id)===String(mid));
+  const bubble = document.querySelector('.m.agent[data-id="'+mid+'"]');
+  if(!m || !bubble) return;
+  const txt = bubble.querySelector('.mtext');
+  txt.innerHTML = '<textarea class="medit" rows="2"></textarea><div class="mrow"><button class="mbtn save" onclick="saveMsg('+mid+')">Gem</button><button class="mbtn cancel" onclick="renderView(curConv)">Annullér</button></div>';
+  // Man redigerer sin egen danske tekst, ikke maskinens oversættelse
+  const ta = txt.querySelector('textarea'); ta.value = m.da || m.content; ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
+  ta.addEventListener('keydown', e=>{ if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){ e.preventDefault(); saveMsg(mid); } else if(e.key==='Escape'){ renderView(curConv); } });
+}
+async function saveMsg(mid){
+  const bubble = document.querySelector('.m.agent[data-id="'+mid+'"]'); if(!bubble) return;
+  const val = (bubble.querySelector('textarea').value||'').trim();
+  if(!val) return delMsg(mid);
+  const c = await api({action:'admin_edit_msg', conversationId:activeId, messageId:mid, content:val});
+  if(c && c.messages){ c._up=''; viewCache[c.id||activeId]=c; lastViewSig=''; renderView(c); }
+  advarHvisIkkeOversat(c);
+}
+async function delMsg(mid){
+  if(!confirm('Slet denne besked? Det kan ikke fortrydes.')) return;
+  const c = await api({action:'admin_delete_msg', conversationId:activeId, messageId:mid});
+  if(c && c.messages){ c._up=''; viewCache[c.id||activeId]=c; lastViewSig=''; renderView(c); }
+}
+function renderView(c){
+  curConv = c;
+  const view = document.getElementById('view');
+  const whoLabel = {user:'Kunde', assistant:'Bot', agent:'Dig'};
+  const fmt = t => esc(t).replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>'); // render **fed** pænt
+  const sprogNavn = {de:'tysk'}[c.site] || 'kundens sprog';
+  const msgs = (c.messages||[]).map(m=>{
+    const tools = (m.role==='agent' && m.id) ? '<div class="mtools"><button title="Redigér" onclick="editMsg('+m.id+')">'+ICON_EDIT+'</button><button class="del" title="Slet" onclick="delMsg('+m.id+')">'+ICON_DEL+'</button></div>' : '';
+    // Findes en dansk udgave, er den hovedteksten, og originalen står som kvittering
+    const harBegge = !!m.da && m.da !== m.content;
+    const hoved = harBegge ? m.da : m.content;
+    const label = m.role==='agent' ? ('Sendt på '+sprogNavn) : ('Skrevet på '+sprogNavn);
+    const orig = harBegge ? '<div class="morig"><span class="ml">'+label+'</span>'+fmt(m.content)+'</div>' : '';
+    return '<div class="m '+m.role+'" data-id="'+(m.id||'')+'"><div class="who">'+whoLabel[m.role]+'</div><div class="mtext">'+fmt(hoved)+'</div>'+orig+tools+'</div>';
+  }).join('');
+  const takeBtn = c.human
+    ? '<button class="btn-release" id="releaseBtn">Giv tilbage til bot</button>'
+    : '<button class="btn-take" id="takeBtn">Tag over</button>';
+  view.innerHTML =
+    '<div class="cv-head"><span class="em">'+esc(c.email||'Besøgende (ingen email)')+'</span>'+
+      (c.human?'<span class="pill human">Du har overtaget</span>':'<span class="pill" style="background:#eef;color:#6C47FF">Bot svarer</span>')+
+      '<div class="actions">'+takeBtn+'<button class="btn-del" id="delBtn">Slet</button></div></div>'+
+    '<div class="msgs" id="msgs">'+msgs+'</div>'+
+    '<div class="reply"><textarea id="rt" rows="1" placeholder="'+
+      (SITE==='dk' ? 'Skriv et svar…' : 'Skriv på dansk, kunden får det på '+sprogNavn+'…')+
+    '"></textarea><button class="grad" id="rb">Send</button></div>';
+  const msgsEl = document.getElementById('msgs'); msgsEl.scrollTop = msgsEl.scrollHeight;
+  const rt = document.getElementById('rt'), rb = document.getElementById('rb');
+  rt.addEventListener('input', ()=>{ rt.style.height='auto'; rt.style.height=Math.min(rt.scrollHeight,120)+'px'; });
+  rt.addEventListener('keydown', e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendReply(); } });
+  rb.addEventListener('click', sendReply);
+  const tb = document.getElementById('takeBtn'); if(tb) tb.addEventListener('click', ()=>toggleTake(true));
+  const rl = document.getElementById('releaseBtn'); if(rl) rl.addEventListener('click', ()=>toggleTake(false));
+  const db = document.getElementById('delBtn'); if(db) db.addEventListener('click', deleteConv);
+}
+async function deleteConv(){
+  if(!confirm('Slet denne samtale permanent?')) return;
+  await api({action:'admin_delete', conversationId:activeId});
+  document.body.classList.remove('viewing'); stopView();
+  document.getElementById('backBtn').style.display='none';
+  document.getElementById('view').innerHTML='<div class="placeholder">Vælg en samtale til venstre.</div>';
+  activeId=null; lastListSig=''; loadList();
+}
+// oversat===false betyder at samtalen er på et fremmed marked, men at
+// oversættelsen ikke lykkedes. Så fik kunden dansk, og det skal man vide.
+function advarHvisIkkeOversat(c){
+  if(!c || c.oversat !== false) return;
+  const msgsEl = document.getElementById('msgs');
+  if(!msgsEl) return;
+  msgsEl.insertAdjacentHTML('beforeend',
+    '<div class="oversat-fejl">Oversættelsen slog fejl, så kunden fik din danske tekst. '+
+    'Redigér beskeden for at prøve igen.</div>');
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+}
+
+async function sendReply(){
+  const rt = document.getElementById('rt'); const text=(rt.value||'').trim(); if(!text) return;
+  rt.value=''; rt.style.height='auto';
+  // Vis svaret med det samme, serveren bekræfter i baggrunden
+  const msgsEl = document.getElementById('msgs');
+  if(msgsEl){ msgsEl.insertAdjacentHTML('beforeend','<div class="m agent"><div class="who">Dig</div>'+esc(text)+'</div>'); msgsEl.scrollTop = msgsEl.scrollHeight; }
+  const c = await api({action:'admin_reply', conversationId:activeId, content:text});
+  lastViewSig=''; if(c && c.messages){ c._up=''; viewCache[c.id||activeId]=c; renderView(c); }
+  advarHvisIkkeOversat(c);
+  lastListSig=''; loadList();
+}
+async function toggleTake(take){
+  const c = await api({action:'admin_takeover', conversationId:activeId, human:take});
+  lastViewSig=''; if(c && c.messages){ c._up=''; viewCache[c.id||activeId]=c; renderView(c); }
+  lastListSig=''; loadList();
+}
+
+// ---- statistik ----
+// ---- side-navigation (Analyse / Statistik som fulde sider) ----
+const statsPage = document.getElementById('statsPage');
+const analysePage = document.getElementById('analysePage');
+const statsBtn = document.getElementById('statsBtn');
+const analyseBtn = document.getElementById('analyseBtn');
+const sbChats = document.getElementById('sbChats');
+const sbAnalyse = document.getElementById('sbAnalyse');
+const sbStats = document.getElementById('sbStats');
+const mainEl = document.querySelector('.main');
+let currentView = 'chats';
+function showView(v){
+  currentView = v;
+  mainEl.style.display = (v==='chats') ? '' : 'none';
+  statsPage.classList.toggle('show', v==='stats');
+  analysePage.classList.toggle('show', v==='analyse');
+  statsBtn.classList.toggle('active', v==='stats');
+  analyseBtn.classList.toggle('active', v==='analyse');
+  sbChats.classList.toggle('active', v==='chats');
+  sbAnalyse.classList.toggle('active', v==='analyse');
+  sbStats.classList.toggle('active', v==='stats');
+  if(v!=='chats'){ document.getElementById('backBtn').style.display='none'; document.body.classList.remove('viewing'); }
+  if(v==='stats') loadStats();
+  if(v==='analyse') loadAnalyse();
+}
+statsBtn.addEventListener('click', ()=> showView(currentView==='stats' ? 'chats' : 'stats'));
+analyseBtn.addEventListener('click', ()=> showView(currentView==='analyse' ? 'chats' : 'analyse'));
+sbChats.addEventListener('click', ()=> showView('chats'));
+sbAnalyse.addEventListener('click', ()=> showView('analyse'));
+sbStats.addEventListener('click', ()=> showView('stats'));
+document.querySelector('.topbar .t').addEventListener('click', ()=> showView('chats'));
+document.querySelectorAll('.page-back').forEach(b=> b.addEventListener('click', ()=> showView('chats')));
+sbChats.classList.add('active');
+
+async function loadStats(){
+  document.getElementById('statsBody').innerHTML = 'Henter…';
+  const s = await api({action:'admin_stats'});
+  if(!s || s.error){ document.getElementById('statsBody').innerHTML = '<div class="muted">Kunne ikke hente statistik.</div>'; return; }
+  const fb = s.feedback || {up:0,down:0};
+  const botPct = s.total ? Math.round((1 - s.escalated/s.total)*100) : 100;
+  let html =
+    '<div class="kpis">'+
+      '<div class="kpi"><div class="num">'+s.total+'</div><div class="lbl">Samtaler i alt</div></div>'+
+      '<div class="kpi"><div class="num">'+(s.todayCount||0)+'</div><div class="lbl">Nye i dag</div></div>'+
+      '<div class="kpi"><div class="num">'+s.escalated+'</div><div class="lbl">Sendt videre til dig</div></div>'+
+    '</div>';
+  html += '<div class="statline">Botten klarede selv <b>'+botPct+'%</b> af samtalerne, resten blev sendt videre til dig.</div>';
+
+  html += '<div class="sec-title">Feedback på bot-svar</div>';
+  if((fb.up||0)+(fb.down||0) === 0){
+    html += '<div class="fbrow"><span class="fbpill none">Ingen feedback endnu</span></div>';
+  } else {
+    html += '<div class="fbrow"><span class="fbpill up">👍 '+(fb.up||0)+' nyttige</span><span class="fbpill down">👎 '+(fb.down||0)+' ikke nyttige</span></div>';
+  }
+
+  html += '<div class="sec-title">Svar folk ikke var tilfredse med (👎)</div>';
+  if(s.recentDowns && s.recentDowns.length){
+    html += '<div class="dlist">'+s.recentDowns.map(d=>'<div class="ditem"><div class="dq"><b>Spørgsmål:</b> '+esc(d.q||'(ukendt)')+'</div><div class="da"><b>Botten svarede:</b> '+esc(d.a||'(ukendt)')+'</div></div>').join('')+'</div>';
+  } else { html += '<div class="muted">Ingen endnu, godt tegn.</div>'; }
+
+  html += '<div class="sec-title">Hvad folk spørger om (seneste)</div>';
+  if(s.questions && s.questions.length){
+    html += '<div class="qlist">'+s.questions.map(q=>'<div class="qitem">'+esc(q)+'</div>').join('')+'</div>';
+  } else { html += '<div class="muted">Ingen spørgsmål endnu.</div>'; }
+  document.getElementById('statsBody').innerHTML = html;
+}
+
+// ---- premium analyse-dashboard ----
+const ICON = {
+  eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+  dl:'<path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/>',
+  trend:'<path d="m3 17 6-6 4 4 8-8"/><path d="M17 7h4v4"/>',
+  spark:'<path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>',
+  cursor:'<path d="m4 4 7.07 17 2.51-7.39L21 11.07 4 4z"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>'
+};
+function svgIco(name){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+ICON[name]+'</svg>'; }
+// Sammenligner sidste halvdel af perioden med halvdelen før (generisk for alle periodelængder)
+function delta(arr){ const n=arr.length; const h=Math.floor(n/2); if(h<1) return null; const recent=arr.slice(n-h).reduce((a,b)=>a+b,0); const prev=arr.slice(n-2*h,n-h).reduce((a,b)=>a+b,0); if(prev===0 && recent===0) return null; if(prev===0) return {pct:100,dir:'up'}; const p=Math.round((recent-prev)/prev*100); return {pct:Math.abs(p), dir:p>0?'up':(p<0?'down':'flat')}; }
+function deltaChip(d){ if(!d) return '<div class="kdelta flat">– ingen sammenligning</div>'; const arrow=d.dir==='up'?'▲':(d.dir==='down'?'▼':'–'); return '<div class="kdelta '+d.dir+'">'+arrow+' '+d.pct+'% vs. forrige periode</div>'; }
+// Valgt analyse-periode (huskes mellem besøg)
+let analyseDays = parseInt(localStorage.getItem('vh-days'),10) || 14;
+const PERIOD_TITLE = {1:'Besøg i dag',2:'Besøg de sidste 2 dage',7:'Besøg den seneste uge',14:'Besøg de sidste 2 uger',30:'Besøg den seneste måned',90:'Besøg de seneste 3 måneder'};
+(function(){
+  const sel = document.getElementById('rangeSel');
+  if(!sel) return;
+  sel.value = String(analyseDays);
+  if(sel.value !== String(analyseDays)){ analyseDays = 14; sel.value = '14'; } // ukendt gemt værdi → default
+  sel.addEventListener('change', ()=>{ analyseDays = parseInt(sel.value,10)||14; localStorage.setItem('vh-days', String(analyseDays)); loadAnalyse(); });
+})();
+function kcard(ico,tint,num,lbl,extra){ return '<div class="kcard"><div class="krow"><div class="kico" style="background:'+tint+'22;color:'+tint+'">'+svgIco(ico)+'</div><div class="knum">'+num+'</div></div><div class="klbl">'+lbl+'</div>'+(extra||'')+'</div>'; }
+function trendChart(trend){
+  const w=760,h=170,padT=14,padB=24,n=trend.length;
+  const visits=trend.map(t=>t.visits), clicks=trend.map(t=>t.clicks);
+  const max=Math.max(1, Math.max.apply(null, visits.concat(clicks)));
+  const X=i=> n<=1?w/2:(i/(n-1))*w;
+  const Y=v=> padT + (1 - v/max)*(h-padT-padB);
+  const line=vals=> vals.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join(' ');
+  const area='M0 '+(h-padB)+' '+visits.map((v,i)=>'L'+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join(' ')+' L'+w+' '+(h-padB)+' Z';
+  let grid=''; for(let g=0;g<=2;g++){ const y=padT+(g/2)*(h-padT-padB); grid+='<line x1="0" y1="'+y.toFixed(1)+'" x2="'+w+'" y2="'+y.toFixed(1)+'" stroke="#F1EFF7" stroke-width="1"/>'; }
+  const lastV=visits.length?visits[visits.length-1]:0;
+  const dot='<circle cx="'+X(n-1).toFixed(1)+'" cy="'+Y(lastV).toFixed(1)+'" r="4.5" fill="#6C47FF" stroke="#fff" stroke-width="2.5"/>';
+  return '<svg viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none"><defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6C47FF" stop-opacity=".22"/><stop offset="1" stop-color="#6C47FF" stop-opacity="0"/></linearGradient></defs>'+grid+'<path d="'+area+'" fill="url(#ga)"/><path d="'+line(clicks)+'" fill="none" stroke="#FF6FB5" stroke-width="2" stroke-linejoin="round" stroke-dasharray="1 5" stroke-linecap="round" opacity=".85"/><path d="'+line(visits)+'" fill="none" stroke="#6C47FF" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>'+dot+'</svg>';
+}
+function ddmm(d){ const p=String(d).split('-'); return p.length===3? p[2]+'/'+p[1] : d; }
+
+async function loadAnalyse(){
+  document.getElementById('analyseBody').innerHTML = '<div class="enote">Henter…</div>';
+  const s = await api({action:'admin_stats', days: analyseDays});
+  if(!s || s.error){ document.getElementById('analyseBody').innerHTML = '<div class="enote">Kunne ikke hente data.</div>'; return; }
+  const dl = s.dlClicks || {appstore:0,googleplay:0,website:0};
+  const sc = s.storeClicks || {appstore:0,googleplay:0};
+  const visits = s.pageTotal || 0;
+  const trend = s.trend || [];
+  const asTotal=(dl.appstore||0)+(sc.appstore||0), gpTotal=(dl.googleplay||0)+(sc.googleplay||0);
+  const storeTotal = asTotal+gpTotal;
+  const dlStore=(dl.appstore||0)+(dl.googleplay||0);
+  const conv = visits ? Math.round((dlStore/visits)*100) : 0;
+  const srcLabel={direkte:'Direkte',fb:'Facebook',facebook:'Facebook',ig:'Instagram',instagram:'Instagram',tiktok:'TikTok',flyer:'Flyer'};
+  const srcColor={direkte:'#b0aac9',fb:'#4F7BFF',facebook:'#4F7BFF',ig:'#FF6FB5',instagram:'#FF6FB5',tiktok:'#1B1633',flyer:'#F59E0B'};
+  const nice = x => srcLabel[x] || (x.charAt(0).toUpperCase()+x.slice(1));
+  const col = x => srcColor[x] || '#6C47FF';
+  const sources = (s.pageVisits||[]).slice().sort((a,b)=>b.n-a.n);
+  const topSrc = sources[0];
+
+  const dlSide = SITE_DL[SITE];   // null = intet sted at måle besøg for dette marked
+
+  let h = '<div class="dash">';
+
+  // HERO, trend for valgt periode
+  const trendTotal = trend.reduce((a,t)=>a+t.visits,0);
+  if(!dlSide){
+    // Uden en download-side er besøgstallet altid 0. En nul-graf ville se ud
+    // som om trafikken var faldet væk, så vi siger hvad der faktisk måles.
+    h += '<div class="dcard"><div class="dcard-h"><div><div class="dcard-t">Besøg måles ikke på dette marked</div>'+
+      '<div class="dcard-s">Der er ingen download-side for '+SITE_NAVN[SITE]+' endnu</div></div></div>'+
+      '<div class="tip" style="padding:0">Tallene her tæller besøg på download-siden, ikke på selve hjemmesiden. '+
+      'Antal besøgende på '+SITE_WEB[SITE]+' står i Wix under Analyser. '+
+      'Klik til app-butikken nedenfor tælles derimod korrekt, også herfra.</div></div>';
+  } else {
+    h += '<div class="dcard">'+
+      '<div class="dcard-h"><div><div class="dcard-t">'+(PERIOD_TITLE[analyseDays]||('Besøg de sidste '+analyseDays+' dage'))+'</div><div class="dcard-s">'+dlSide+'</div></div>'+
+      '<div class="hero-num"><b>'+trendTotal+'</b>besøg</div></div>'+
+      '<div class="chart">'+(trend.length? trendChart(trend) : '<div class="enote">Ingen data endnu.</div>')+'</div>';
+    if(trend.length){
+      h += '<div class="chart-x"><span>'+ddmm(trend[0].d)+'</span><span>'+ddmm(trend[Math.floor(trend.length/2)].d)+'</span><span>'+ddmm(trend[trend.length-1].d)+'</span></div>';
+    }
+    h += '<div class="leg"><span><i style="background:#6C47FF"></i>Besøg</span><span><i style="background:#FF6FB5"></i>Klik til app-butik</span></div></div>';
+  }
+
+  // KPI-kort
+  const vDelta = delta(trend.map(t=>t.visits));
+  const cDelta = delta(trend.map(t=>t.clicks));
+  // Uden en download-side giver besøg, konvertering og kilde ingen mening.
+  // Så viser vi kun det der faktisk måles, i stedet for tre nuller.
+  h += '<div class="kgrid">'+
+    (dlSide ? kcard('eye','#6C47FF', visits, 'Besøg i alt', deltaChip(vDelta)) : '')+
+    kcard('dl','#4F7BFF', storeTotal, 'Klik til app-butik', deltaChip(cDelta))+
+    (dlSide ? kcard('trend','#16a34a', conv+'<small>%</small>', 'Konvertering (besøg → butik)', '<div class="kdelta flat">'+dlStore+' af '+visits+' besøg</div>') : '')+
+    (dlSide ? kcard('spark','#F59E0B', topSrc? nice(topSrc.source):'ingen endnu', 'Bedste kilde', topSrc? '<div class="kdelta flat">'+topSrc.n+' besøg</div>':'') : '')+
+  '</div>';
+
+  // GRID: kilder + tragt. Alt herunder bygger på download-sidens tal, så det
+  // udelades helt på et marked hvor der ikke er nogen download-side at måle på.
+  if(dlSide){
+  h += '<div class="g2">';
+  // Trafik-kilder (bar chart)
+  h += '<div class="dcard"><div class="dcard-h"><div><div class="dcard-t">Trafik-kilder</div><div class="dcard-s">Hvor besøgene kommer fra</div></div></div>';
+  if(sources.length){
+    const smax=sources[0].n||1; const stot=sources.reduce((a,x)=>a+x.n,0)||1;
+    h += '<div class="bars">'+sources.map(p=>{
+      const pct=Math.round(p.n/stot*100), wpct=Math.max(4,Math.round(p.n/smax*100));
+      return '<div class="brow"><div class="blabel">'+esc(nice(p.source))+'</div><div class="btrack"><div class="bfill" style="width:'+wpct+'%;background:'+col(p.source)+'"></div></div><div class="bval"><b>'+p.n+'</b> · '+pct+'%</div></div>';
+    }).join('')+'</div>';
+  } else { h += '<div class="enote">Ingen besøg registreret endnu.</div>'; }
+  h += '</div>';
+  // Tragt: besøg → klik
+  h += '<div class="dcard"><div class="dcard-h"><div><div class="dcard-t">Fra besøg til download</div><div class="dcard-s">Konverterings-tragt</div></div></div>';
+  function hstep(ico,tint,lbl,num){ return '<div class="hstep"><div class="hstep-ic" style="background:'+tint+'22;color:'+tint+'">'+svgIco(ico)+'</div><div class="hstep-lbl">'+lbl+'</div><div class="hstep-num">'+num+'</div></div>'; }
+  const arrow = '<div class="hstep-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>';
+  if(visits){
+    h += '<div class="hfunnel">'+
+      hstep('eye','#6C47FF','Besøg',visits)+arrow+
+      hstep('cursor','#FF6FB5','Klik til butik',storeTotal)+arrow+
+      hstep('dl','#4F7BFF','Download',dlStore)+arrow+
+      hstep('check','#16a34a','Installeret','ukendt')+
+    '</div>'+
+    '<div style="text-align:center;margin-top:16px;font-size:12.5px;color:#8b86a5">Ca. <b style="color:var(--pri)">'+conv+'%</b> af de besøgende klikkede videre til en app-butik.</div>';
+  } else { h += '<div class="enote">Ingen besøg registreret endnu.</div>'; }
+  h += '</div></div>';
+
+  // Download-siden: besøg + klik på hver knap derinde
+  h += '<div class="dcard"><div class="dcard-h"><div><div class="dcard-t">Download-siden</div><div class="dcard-s">Klik på knapperne på '+SITE_DL[SITE]+'</div></div><div class="hero-num"><b>'+visits+'</b>besøg på siden</div></div>';
+  const btns=[{k:'App Store',n:(dl.appstore||0),c:'#6C47FF'},{k:'Google Play',n:(dl.googleplay||0),c:'#4F7BFF'},{k:'Besøg '+SITE_WEB[SITE],n:(dl.website||0),c:'#FF6FB5'}];
+  const bmax=Math.max(1,...btns.map(b=>b.n));
+  h += '<div class="bars">'+btns.map(b=>{
+    const ctr=visits?Math.round(b.n/visits*100):0, wpct=Math.max(4,Math.round(b.n/bmax*100));
+    return '<div class="brow" style="grid-template-columns:150px 1fr auto"><div class="blabel">'+b.k+'</div><div class="btrack"><div class="bfill" style="width:'+wpct+'%;background:'+b.c+'"></div></div><div class="bval"><b>'+b.n+'</b> klik · '+ctr+'%</div></div>';
+  }).join('')+'</div>';
+  h += '<div class="analyse-sub" style="margin-top:13px">"· %" viser hvor stor en andel af de besøgende der trykkede på knappen.</div>';
+  const chatTotal=(sc.appstore||0)+(sc.googleplay||0);
+  if(chatTotal){ h += '<div class="analyse-sub" style="margin-top:6px">Derudover: <b style="color:#1B1633">'+chatTotal+'</b> klik til butikkerne direkte fra chat-boblen ('+(sc.appstore||0)+' App Store, '+(sc.googleplay||0)+' Google Play).</div>'; }
+  h += '</div>';
+  }
+
+  // Populære hurtig-svar
+  h += '<div class="dcard"><div class="dcard-h"><div><div class="dcard-t">Populære spørgsmål</div><div class="dcard-s">Mest brugte hurtig-svar i chatten</div></div></div>';
+  if(s.chips && s.chips.length){
+    const cmax=s.chips[0].n||1;
+    h += '<div class="rank">'+s.chips.map((c,i)=>'<div class="rrow"><div class="rnum">'+(i+1)+'</div><div class="rmid"><div class="rlabel">'+esc(c.label)+'</div><div class="rtrack"><div class="rfill" style="width:'+Math.max(4,Math.round(c.n/cmax*100))+'%"></div></div></div><div class="rval">'+c.n+'</div></div>').join('')+'</div>';
+  } else { h += '<div class="enote">Ingen klik endnu.</div>'; }
+  h += '</div>';
+
+  if(dlSide) h += '<div class="tip">Tip: sæt <b>?utm_source=tiktok</b> (eller instagram, facebook, flyer) bag download-linket i dine bios, så kan du se præcis her hvor besøgene kommer fra. Uden mærke tælles de som "Direkte".</div>';
+
+  h += '</div>';
+  document.getElementById('analyseBody').innerHTML = h;
+}
+
+// auto-login hvis gemt
+if(PW){ (async()=>{ const r=await api({action:'admin_login'}); if(r&&r.ok) enterApp(); else document.querySelector('.login').style.display='flex'; })(); }
+</script>
+</body>
+</html>

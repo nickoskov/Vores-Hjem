@@ -1,0 +1,128 @@
+functionsDirectory = "/Users/nickoskovgaard/voreshjem-admin/netlify/functions"
+functionsDirectoryOrigin = "config-v1"
+headersOrigin = "config"
+redirectsOrigin = "config"
+plugins = []
+
+[build]
+publish = "/Users/nickoskovgaard/voreshjem-admin/public"
+publishOrigin = "config"
+functions = "/Users/nickoskovgaard/voreshjem-admin/netlify/functions"
+
+  [build.environment]
+
+  [build.processing]
+
+    [build.processing.css]
+
+    [build.processing.html]
+
+    [build.processing.images]
+
+    [build.processing.js]
+
+  [build.services]
+
+[functions]
+
+  [functions.vagt]
+  schedule = "0 * * * *"
+
+  [functions.dagvagt]
+  schedule = "0 7 * * *"
+
+  [functions.seovagt]
+  schedule = "0 5 * * 1"
+
+  [functions.ryd]
+  schedule = "0 3 * * *"
+
+  [functions.ugemail]
+  schedule = "0 6 * * 1"
+
+  [functions.sorovagt]
+  schedule = "10 * * * *"
+
+  [functions."*"]
+  node_bundler = "esbuild"
+
+[[headers]]
+for = "/*"
+
+  [headers.values]
+  X-Frame-Options = "DENY"
+  X-Content-Type-Options = "nosniff"
+  Referrer-Policy = "same-origin"
+  Cache-Control = "no-cache"
+
+[[redirects]]
+from = "https://voreshjem-backend.netlify.app/t"
+to = "https://voreshjem-backend.netlify.app/.netlify/functions/taeller"
+status = 200
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "https://voreshjem-backend.netlify.app/*"
+to = "https://backend.voreshjem.dk/:splat"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/t"
+to = "/.netlify/functions/taeller"
+status = 200
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/api/*"
+to = "/.netlify/functions/admin/:splat"
+status = 200
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/webhook/*"
+to = "/.netlify/functions/webhook/:splat"
+status = 200
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/formular/kontakt"
+to = "/.netlify/functions/kontakt"
+status = 200
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]

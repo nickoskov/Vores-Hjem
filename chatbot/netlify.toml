@@ -1,0 +1,65 @@
+functionsDirectory = "/Users/nickoskovgaard/voreshjem-bot/netlify/functions"
+functionsDirectoryOrigin = "config-v1"
+headersOrigin = "config"
+redirectsOrigin = "config"
+plugins = []
+
+[build]
+publish = "/Users/nickoskovgaard/voreshjem-bot/public"
+publishOrigin = "config"
+functions = "/Users/nickoskovgaard/voreshjem-bot/netlify/functions"
+
+  [build.environment]
+
+  [build.processing]
+
+    [build.processing.css]
+
+    [build.processing.html]
+
+    [build.processing.images]
+
+    [build.processing.js]
+
+  [build.services]
+
+[functions]
+
+  [functions."*"]
+  node_bundler = "esbuild"
+
+[[headers]]
+for = "/*"
+
+  [headers.values]
+  X-Robots-Tag = "noindex"
+
+[[headers]]
+for = "/admin.html"
+
+  [headers.values]
+  Cache-Control = "no-cache"
+
+[[headers]]
+for = "/sw.js"
+
+  [headers.values]
+  Cache-Control = "no-cache"
+
+[[headers]]
+for = "/widget.js"
+
+  [headers.values]
+  Cache-Control = "no-cache"
+
+[[redirects]]
+from = "/hent/*"
+to = "/.netlify/functions/chat-bot?go=:splat"
+status = 200
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]

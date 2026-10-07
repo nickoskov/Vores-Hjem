@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unser Zuhause herunterladen | App Store &amp; Google Play</title>
+<meta name="description" content="Lade Unser Zuhause herunter, der ganze Familienalltag in einer App. 14 Tage kostenlos testen. Für iPhone und Android.">
+<!-- Vorschau beim Teilen (Facebook/Messenger/Instagram/LinkedIn) -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://unserzuhause-download.netlify.app/">
+<meta property="og:site_name" content="Unser Zuhause">
+<meta property="og:title" content="Unser Zuhause, die App für die ganze Familie">
+<meta property="og:description" content="Der ganze Familienalltag in einer App: Kalender, Essensplan, Einkauf und Aufgaben. 14 Tage kostenlos testen.">
+<meta property="og:image" content="https://unserzuhause-download.netlify.app/og-billede.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="de_DE">
+<!-- Vorschau beim Teilen (X/Twitter) -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Unser Zuhause, die App für die ganze Familie">
+<meta name="twitter:description" content="Der ganze Familienalltag in einer App. 14 Tage kostenlos testen.">
+<meta name="twitter:image" content="https://unserzuhause-download.netlify.app/og-billede.png">
+<link rel="icon" href="logo.png">
+<link rel="canonical" href="https://unserzuhause-download.netlify.app/">
+<!-- Structured data: sagt Google und der KI-Suche genau, was die App ist -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "MobileApplication",
+  "name": "Unser Zuhause",
+  "url": "https://unserzuhause-download.netlify.app/",
+  "description": "Familien-App, die den Alltag des ganzen Haushalts an einem Ort bündelt: gemeinsamer Kalender, Essensplan, Einkaufsliste und Aufgaben. Bis zu 7 Personen pro Konto.",
+  "operatingSystem": "iOS, Android",
+  "applicationCategory": "LifestyleApplication",
+  "inLanguage": "de",
+  "image": "https://unserzuhause-download.netlify.app/og-billede.png",
+  "installUrl": "https://unserzuhause-download.netlify.app/",
+  "offers": [
+    { "@type": "Offer", "price": "5.99", "priceCurrency": "EUR", "description": "5,99 € pro Monat für die ganze Familie (bis zu 7 Personen). 14 Tage kostenlos testen, keine Bindung." },
+    { "@type": "Offer", "price": "24.99", "priceCurrency": "EUR", "description": "24,99 € pro Halbjahr für die ganze Familie (bis zu 7 Personen). 14 Tage kostenlos testen, keine Bindung." }
+  ],
+  "publisher": { "@type": "Organization", "name": "Vores Hjem I/S", "url": "https://www.unserzuhauseapp.de/" }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family:'Plus Jakarta Sans', -apple-system, sans-serif;
+    background:linear-gradient(160deg, #F8F7FF 0%, #EEF0FF 40%, #F5F0FF 100%);
+    color:#1B1633;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px 20px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .card {
+    width:100%;
+    max-width:440px;
+    text-align:center;
+    background:#fff;
+    border-radius:32px;
+    padding:40px 28px 34px;
+    box-shadow:0 24px 60px rgba(76,71,180,.16);
+  }
+  .logo { display:block; height:44px; width:auto; margin:0 auto 18px; }
+  /* Deutliches "kostenlos testen"-Abzeichen */
+  .free-badge {
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:linear-gradient(135deg, #6C47FF 0%, #3B82F6 55%, #EC4899 100%);
+    color:#fff;
+    font-size:14px;
+    font-weight:800;
+    letter-spacing:.02em;
+    padding:10px 22px;
+    border-radius:999px;
+    margin:0 auto 22px;
+    box-shadow:0 8px 22px rgba(108,71,255,.35);
+  }
+  .free-badge svg { width:16px; height:16px; flex-shrink:0; }
+  /* Telefonrahmen mit App-Video (gleicher Stil wie unserzuhauseapp.de) */
+  .phone-frame {
+    position:relative;
+    width:200px;
+    max-width:64%;
+    margin:0 auto 26px;
+    background:#12101F;
+    border-radius:32px;
+    padding:8px;
+    box-shadow:0 24px 55px rgba(76,71,180,.30), inset 0 0 0 2px rgba(255,255,255,.06);
+  }
+  .phone-frame video {
+    display:block;
+    width:100%;
+    /* height:auto ist Pflicht. Ohne sie gewinnt das height-Attribut (960),
+       und das Video wird auf volle 960px gestreckt statt maßstabsgetreu. */
+    height:auto;
+    aspect-ratio:540/960;   /* reserviert den Platz, damit die Seite beim Laden nicht springt */
+    border-radius:25px;
+    background:#EEF0FF;
+  }
+  h1 {
+    font-size:26px;
+    font-weight:800;
+    line-height:1.2;
+    letter-spacing:-.02em;
+    margin-bottom:12px;
+  }
+  h1 .grad {
+    background:linear-gradient(135deg, #6C47FF 0%, #3B82F6 55%, #EC4899 100%);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  }
+  p.sub {
+    font-size:16px;
+    line-height:1.5;
+    color:#5B5470;
+    margin-bottom:28px;
+  }
+  .store-btns {
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    align-items:stretch;
+  }
+  .store-btn {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    text-decoration:none;
+    background:#12101F;
+    color:#fff;
+    padding:14px 22px;
+    border-radius:16px;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .store-btn:hover { transform:translateY(-2px); box-shadow:0 12px 28px rgba(18,16,31,.28); }
+  .store-btn svg { width:26px; height:26px; flex-shrink:0; }
+  .store-btn-text { text-align:left; line-height:1.15; }
+  .store-btn-sub { font-size:11px; font-weight:500; opacity:.8; }
+  .store-btn-name { font-size:18px; font-weight:700; letter-spacing:-.01em; }
+  .web-btn {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    text-decoration:none;
+    background:#F1EEFF;
+    color:#4B2FD6;
+    font-size:16px;
+    font-weight:700;
+    padding:14px 22px;
+    border-radius:16px;
+    border:1.5px solid #E1DAFF;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .web-btn:hover { transform:translateY(-2px); background:#E9E4FF; }
+  .web-btn svg { width:20px; height:20px; flex-shrink:0; }
+  .trial {
+    margin-top:24px;
+    font-size:14px;
+    font-weight:600;
+    color:#6C47FF;
+  }
+  .trial span { display:block; font-weight:500; color:#8B849B; font-size:13px; margin-top:4px; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <img src="logo.png" alt="Unser Zuhause" class="logo" width="647" height="512">
+    <div class="free-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.3L19 9l-5.2 1.7L12 16l-1.8-5.3L5 9l5.2-1.7L12 2z"/></svg>14 TAGE KOSTENLOS TESTEN</div>
+    <div class="phone-frame">
+      <video autoplay muted loop playsinline preload="auto" poster="video-poster.webp" width="540" height="960" aria-label="Demo der App Unser Zuhause">
+        <source src="app-demo.mp4" type="video/mp4">
+      </video>
+    </div>
+    <h1>Hol dir <span class="grad">Unser Zuhause</span></h1>
+    <p class="sub">Der ganze Familienalltag in einer App: Kalender, Essensplan, Einkauf und Aufgaben.</p>
+    <div class="store-btns">
+      <a href="https://voreshjem-bot.netlify.app/hent/appstore-de?src=download" target="_blank" rel="noopener" class="store-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        <div class="store-btn-text"><div class="store-btn-sub">Laden im</div><div class="store-btn-name">App Store</div></div>
+      </a>
+      <a href="https://voreshjem-bot.netlify.app/hent/googleplay-de?src=download" target="_blank" rel="noopener" class="store-btn">
+        <svg viewBox="0 0 512 512"><path fill="#4CAF50" d="M325.3 234.3L104.6 13l280.8 161.2z"/><path fill="#4285F4" d="M47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l249.2-249.1z"/><path fill="#FFC107" d="M461.2 219.8l-67.6-39.1-68.5 68.5 68.5 68.5 67.6-39.1c19.3-11.1 19.3-40.6-.1-58.8z"/><path fill="#F44336" d="M104.6 499L325.3 277.7l-60.1-60.1z"/></svg>
+        <div class="store-btn-text"><div class="store-btn-sub">Jetzt bei</div><div class="store-btn-name">Google Play</div></div>
+      </a>
+      <a href="https://voreshjem-bot.netlify.app/hent/website-de?src=download" target="_blank" rel="noopener" class="web-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        unserzuhauseapp.de besuchen
+      </a>
+    </div>
+    <div class="trial">14 Tage kostenlos, keine Bindung<span>5,99 €/Monat · bis zu 7 Personen</span></div>
+  </div>
+  <script>
+  // Besuchsstatistik: Besuch zählen und woher er kam (utm_source aus Bio-Links).
+  // site:'de' ist entscheidend, sonst landet der Besuch beim dänischen Markt.
+  (function(){
+    try{
+      var src=(new URLSearchParams(location.search).get('utm_source')||'direkte').toLowerCase().replace(/[^a-z0-9_-]/g,'').slice(0,30)||'direkte';
+      fetch('https://voreshjem-bot.netlify.app/.netlify/functions/chat-bot',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action:'track',kind:'page',label:'dl:'+src,site:'de'})});
+    }catch(e){}
+  })();
+  </script>
+</body>
+</html>

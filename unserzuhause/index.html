@@ -1,0 +1,3071 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<link rel="preload" href="/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>@font-face{font-family:'Plus Jakarta Sans';font-style:normal;font-weight:200 800;font-display:swap;src:url(/fonts/plus-jakarta-sans-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}</style>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
+<script>window.__uzT = Date.now();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unser Zuhause App | Mehr Ruhe im Alltag</title>
+<!-- SEO til eget domæne (tilføjet ved flytningen fra Wix) -->
+<link rel="canonical" href="https://www.unserzuhauseapp.de/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="de_DE">
+<meta property="og:site_name" content="Unser Zuhause">
+<meta property="og:title" content="Unser Zuhause App | Mehr Ruhe im Alltag">
+<meta property="og:description" content="Unser Zuhause App bringt den ganzen Alltag der Familie in eine App: Kalender, Essensplan, Einkauf und Aufgaben für bis zu 7 Personen. 14 Tage kostenlos testen.">
+<meta property="og:url" content="https://www.unserzuhauseapp.de/">
+<meta property="og:image" content="https://www.unserzuhauseapp.de/images/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Unser Zuhause App | Mehr Ruhe im Alltag">
+<meta name="twitter:description" content="Unser Zuhause App bringt den ganzen Alltag der Familie in eine App: Kalender, Essensplan, Einkauf und Aufgaben für bis zu 7 Personen. 14 Tage kostenlos testen.">
+<meta name="twitter:image" content="https://www.unserzuhauseapp.de/images/og.jpg">
+<link rel="alternate" hreflang="de" href="https://www.unserzuhauseapp.de/">
+<link rel="alternate" hreflang="da" href="https://www.voreshjem.dk/">
+<link rel="alternate" hreflang="x-default" href="https://www.unserzuhauseapp.de/">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "MobileApplication", "name": "Unser Zuhause", "applicationCategory": "LifestyleApplication", "operatingSystem": "iOS, Android", "inLanguage": "de", "description": "Unser Zuhause App bringt den ganzen Alltag der Familie in eine App: Kalender, Essensplan, Einkauf und Aufgaben für bis zu 7 Personen. 14 Tage kostenlos testen.", "url": "https://www.unserzuhauseapp.de/", "image": "https://www.unserzuhauseapp.de/images/og.jpg", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR", "description": "14 Tage kostenlos testen, danach Abo im App Store oder bei Google Play."}, "sameAs": ["https://apps.apple.com/de/app/unser-zuhause/id6771931999", "https://play.google.com/store/apps/details?id=com.unserzuhause.app"], "publisher": {"@type": "Organization", "name": "Vores Hjem I/S", "url": "https://www.unserzuhauseapp.de/", "logo": "https://www.unserzuhauseapp.de/favicon.png", "address": {"@type": "PostalAddress", "streetAddress": "Tværgade 5", "postalCode": "5500", "addressLocality": "Middelfart", "addressCountry": "DK"}}}</script>
+
+<meta name="description" content="Unser Zuhause App bringt den ganzen Alltag der Familie in eine App: Kalender, Essensplan, Einkauf und Aufgaben für bis zu 7 Personen. 14 Tage kostenlos testen.">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --purple: #6C47FF;
+  --purple-light: #8B6AFF;
+  --purple-dark: #4F32CC;
+  --blue: #3B82F6;
+  --pink: #EC4899;
+  --success: #10B981;
+  --gradient: linear-gradient(135deg, #6C47FF 0%, #3B82F6 55%, #EC4899 100%);
+  --bg: #FFFFFF;
+  --bg-subtle: #F8F7FF;
+  --bg-muted: #F1F0FA;
+  --text: #0F0E1A;
+  --text-secondary: #5E5A7A;
+  --text-muted: #9B97B5;
+  --border: #E8E5FF;
+  --border-light: #F0EEF9;
+  --font: 'Plus Jakarta Sans', sans-serif;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow-sm: 0 2px 8px rgba(108,71,255,0.08);
+  --shadow: 0 8px 32px rgba(108,71,255,0.12);
+  --shadow-lg: 0 24px 80px rgba(108,71,255,0.18);
+  --shadow-xl: 0 40px 120px rgba(108,71,255,0.22);
+}
+
+html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100%; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+
+/* ─── CANVAS ─── */
+#hero-canvas {
+  position: absolute; inset: 0; z-index: 0;
+  pointer-events: none;
+}
+
+/* ─── UTILITIES ─── */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+.section { padding: 120px 0; }
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px;
+  background: rgba(108,71,255,0.08);
+  border: 1px solid rgba(108,71,255,0.18);
+  border-radius: 100px;
+  font-size: 13px; font-weight: 600; color: var(--purple);
+}
+.badge svg { width: 13px; height: 13px; }
+.section-h2 { font-size: clamp(30px, 3.1vw, 42px); font-weight: 800; letter-spacing: -1.5px; line-height: 1.12; }
+.section-sub { font-size: 18px; color: var(--text-secondary); margin-top: 14px; line-height: 1.65; }
+
+/* ─── BUTTONS ─── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px 28px; border-radius: 14px;
+  font-family: var(--font); font-size: 15px; font-weight: 700;
+  cursor: pointer; border: none; transition: all 0.2s ease; white-space: nowrap;
+}
+.btn-primary {
+  background: var(--gradient); color: #fff;
+  box-shadow: 0 4px 24px rgba(108,71,255,0.4), 0 1px 2px rgba(108,71,255,0.2);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 36px rgba(108,71,255,0.5), 0 2px 4px rgba(108,71,255,0.2); }
+.btn-secondary { background: rgba(255,255,255,0.9); color: var(--text); border: 1.5px solid var(--border); backdrop-filter: blur(10px); }
+.btn-secondary:hover { border-color: var(--purple); color: var(--purple); }
+.btn-lg { padding: 17px 36px; font-size: 16px; border-radius: 16px; }
+.btn-sm { padding: 10px 20px; font-size: 13px; border-radius: 10px; }
+.btn-white { background: #fff; color: var(--purple); font-weight: 700; box-shadow: 0 4px 20px rgba(0,0,0,0.12); }
+.btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.18); }
+.btn-outline-white { background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.4); color: #fff; font-weight: 600; backdrop-filter: blur(10px); }
+.btn-outline-white:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.7); }
+
+/* ─── LAUNCH BANNER ─── */
+#launch-banner {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: flex-start; justify-content: center;
+  background: rgba(10,8,30,0.55);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  padding: 60px 24px 24px;
+}
+.launch-card {
+  background: var(--gradient);
+  border-radius: 28px;
+  padding: 56px 48px 44px;
+  text-align: center;
+  max-width: 560px; width: 100%;
+  box-shadow: 0 40px 120px rgba(108,71,255,0.45), 0 8px 32px rgba(0,0,0,0.2);
+  position: relative;
+  animation: launchCardIn 0.5s cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes launchCardIn {
+  from { opacity: 0; transform: scale(0.88) translateY(20px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.launch-flag { font-size: 48px; margin-bottom: 16px; display: block; }
+.launch-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.7); margin-bottom: 14px; }
+.launch-title { font-size: clamp(32px,6vw,52px); font-weight: 800; color: #fff; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 12px; }
+.launch-date { font-size: 22px; font-weight: 700; color: rgba(255,255,255,0.9); margin-bottom: 32px; }
+.launch-countdown { display: flex; justify-content: center; gap: 16px; margin-bottom: 36px; }
+.cd-block { background: rgba(255,255,255,0.15); border-radius: 14px; padding: 14px 20px; min-width: 72px; backdrop-filter: blur(10px); }
+.cd-num { font-size: 32px; font-weight: 800; color: #fff; line-height: 1; display: block; }
+.cd-label { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.65); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; display: block; }
+.launch-close {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.18); border: 1.5px solid rgba(255,255,255,0.3);
+  color: #fff; border-radius: 12px; padding: 12px 28px;
+  font-family: var(--font); font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s; backdrop-filter: blur(10px);
+}
+.launch-close:hover { background: rgba(255,255,255,0.28); transform: translateY(-1px); }
+@media (max-width: 600px) {
+  .launch-card { padding: 40px 24px 32px; }
+  .launch-countdown { gap: 10px; }
+  .cd-block { padding: 12px 14px; min-width: 60px; }
+  .cd-num { font-size: 26px; }
+}
+
+/* ─── NAV ─── */
+nav {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(108,71,255,0.08);
+  transition: box-shadow 0.3s;
+}
+.nav-inner { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+.nav-logo { display: flex; align-items: center; gap: 10px; }
+.logo-icon {
+  width: 36px; height: 36px; background: var(--gradient);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 12px rgba(108,71,255,0.35);
+}
+.logo-icon svg { width: 20px; height: 20px; color: #fff; }
+.logo-text { font-size: 17px; font-weight: 800; }
+.logo-text span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.nav-links { display: flex; align-items: center; gap: 32px; }
+.nav-links a { font-size: 14px; font-weight: 500; color: var(--text-secondary); transition: color 0.2s; }
+.nav-links a:hover { color: var(--purple); }
+.nav-cta { display: flex; align-items: center; gap: 12px; }
+.nav-flag { font-size: 20px; cursor: pointer; }
+
+/* ─── HERO ─── */
+#hero {
+  position: relative;
+  padding: 0 0 80px;
+  display: flex; align-items: flex-start;
+  overflow: hidden;
+  background: linear-gradient(160deg, #F8F7FF 0%, #EEF0FF 40%, #F5F0FF 100%);
+}
+
+/* Floating gradient blobs (CSS) */
+.blob {
+  position: absolute; border-radius: 50%;
+  filter: blur(80px); pointer-events: none; will-change: transform;
+}
+.blob-1 {
+  width: 600px; height: 600px; top: -200px; right: -100px;
+  background: radial-gradient(circle, rgba(108,71,255,0.18) 0%, rgba(59,130,246,0.08) 60%, transparent 100%);
+  animation: blobFloat 12s ease-in-out infinite alternate;
+}
+.blob-2 {
+  width: 500px; height: 500px; bottom: -150px; left: -100px;
+  background: radial-gradient(circle, rgba(236,72,153,0.12) 0%, rgba(108,71,255,0.06) 60%, transparent 100%);
+  animation: blobFloat 15s ease-in-out infinite alternate-reverse;
+}
+.blob-3 {
+  width: 300px; height: 300px; top: 30%; left: 35%;
+  background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%);
+  animation: blobFloat 10s ease-in-out infinite alternate;
+}
+@keyframes blobFloat {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(30px, -40px) scale(1.06); }
+}
+
+.hero-inner {
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  grid-template-rows: auto auto;
+  gap: 0 20px;
+  position: relative; z-index: 10;
+  width: 100%;
+  padding-top: 80px;
+}
+.hero-text-top { grid-column: 1; grid-row: 1; align-self: end; padding-bottom: 10px; }
+.hero-text-bottom { grid-column: 1; grid-row: 2; align-self: start; }
+.hero-3d-scene { grid-column: 2; grid-row: 1 / 3; }
+
+.hero-label { margin-bottom: 20px; }
+.hero-h1 {
+  font-size: clamp(38px, 4.4vw, 54px);
+  font-weight: 800; line-height: 1.06; letter-spacing: -2px;
+  margin-bottom: 22px;
+}
+.hero-h1 .gradient-text { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: block; }
+.hero-tagline { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 18px; white-space: nowrap; }
+
+/* Hero feature grid */
+.hero-features { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 28px; }
+.hf-item {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.7); border: 1px solid var(--border-light);
+  border-radius: 10px; padding: 8px 10px;
+}
+.hf-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.hf-icon svg { width: 14px; height: 14px; }
+.hf-text { flex: 1; }
+.hf-title { font-size: 12px; font-weight: 700; color: var(--text); }
+.hf-desc { display: none; }
+.hf-check { width: 14px; height: 14px; color: var(--success); flex-shrink: 0; }
+.hero-sub { font-size: 18px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 36px; max-width: 460px; }
+.hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 22px; }
+.trust-line { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 10px; flex-wrap: nowrap; }
+.trust-item { display: flex; align-items: center; gap: 5px; }
+.trust-item svg { width: 13px; height: 13px; color: var(--success); }
+.trust-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border); }
+
+/* ─── 3D PHONE SCENE ─── */
+.hero-3d-scene {
+  position: relative;
+  perspective: 1200px;
+  height: 620px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Floating platform/shadow */
+.scene-platform {
+  position: absolute;
+  bottom: 30px; left: 50%; transform: translateX(-50%);
+  width: 340px; height: 50px;
+  background: radial-gradient(ellipse, rgba(108,71,255,0.18) 0%, transparent 70%);
+  filter: blur(20px);
+  border-radius: 50%;
+  animation: platformFloat 6s ease-in-out infinite alternate;
+}
+@keyframes platformFloat {
+  from { transform: translateX(-50%) scaleX(1) scaleY(1); opacity: 0.8; }
+  to   { transform: translateX(-50%) scaleX(0.9) scaleY(0.7); opacity: 0.5; }
+}
+
+/* Center phone (main) */
+.phone-center {
+  position: absolute; z-index: 3;
+  left: 50%; top: 50%;
+  transform: translateX(-25%) translateY(-52%) rotateY(-6deg) rotateX(3deg);
+  transform-style: preserve-3d;
+  animation: phoneFloat 6s ease-in-out infinite alternate;
+  transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes phoneFloat {
+  from { transform: translateX(-25%) translateY(-52%) rotateY(-6deg) rotateX(3deg) translateZ(0); }
+  to   { transform: translateX(-25%) translateY(-57%) rotateY(-6deg) rotateX(3deg) translateZ(16px); }
+}
+
+/* Left phone */
+.phone-left {
+  position: absolute; z-index: 2;
+  left: 50%; top: 50%;
+  transform: translateX(-89%) translateY(-44%) rotateY(16deg) rotateX(4deg) scale(0.86);
+  transform-style: preserve-3d;
+  animation: phoneFloatLeft 7s ease-in-out infinite alternate-reverse;
+  opacity: 0.92;
+  transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes phoneFloatLeft {
+  from { transform: translateX(-89%) translateY(-44%) rotateY(16deg) rotateX(4deg) scale(0.86) translateZ(0); }
+  to   { transform: translateX(-89%) translateY(-49%) rotateY(16deg) rotateX(4deg) scale(0.86) translateZ(-6px); }
+}
+
+/* Right phone */
+.phone-right {
+  position: absolute; z-index: 2;
+  left: 50%; top: 50%;
+  transform: translateX(35%) translateY(-44%) rotateY(-18deg) rotateX(4deg) scale(0.86);
+  transform-style: preserve-3d;
+  animation: phoneFloatRight 8s ease-in-out infinite alternate;
+  opacity: 0.92;
+  transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes phoneFloatRight {
+  from { transform: translateX(35%) translateY(-44%) rotateY(-18deg) rotateX(4deg) scale(0.86) translateZ(0); }
+  to   { transform: translateX(35%) translateY(-49%) rotateY(-18deg) rotateX(4deg) scale(0.86) translateZ(-6px); }
+}
+
+/* Floating card, top left of scene */
+.floating-card-1 {
+  position: absolute;
+  top: 29px; left: 90px; z-index: 5;
+  background: #fff;
+  border-radius: 18px;
+  padding: 14px 18px;
+  box-shadow: 0 20px 60px rgba(108,71,255,0.18), 0 4px 12px rgba(108,71,255,0.1);
+  display: flex; align-items: center; gap: 10px;
+  animation: card1Float 6s ease-in-out infinite;
+  min-width: 180px;
+  transform-style: preserve-3d;
+}
+@keyframes card1Float {
+  0%, 12%  { transform: translateY(0)    rotate(-2deg); }
+  35%      { transform: translateY(-6px)  rotate(-2deg); }
+  46%      { transform: translateY(-14px) rotate(-1.5deg) rotateY(12deg) scale(1.07); }
+  56%      { transform: translateY(-11px) rotate(-1.8deg) rotateY(-1deg)  scale(1.03); }
+  75%      { transform: translateY(-9px)  rotate(-1.5deg); }
+  90%      { transform: translateY(-3px)  rotate(-2deg); }
+  100%     { transform: translateY(0)    rotate(-2deg); }
+}
+
+/* Animated check circle */
+.fc-check-wrap {
+  width: 36px; height: 36px;
+  position: relative; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.fc-check-bg-svg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+}
+.fc-ring-anim {
+  animation: ringFill 6s ease-in-out infinite;
+}
+.fc-mark-anim {
+  width: 16px; height: 16px;
+  position: relative; z-index: 1;
+  stroke-dasharray: 25;
+  stroke-dashoffset: 25;
+  animation: markDraw 6s ease-in-out infinite;
+}
+.fc-strike-wrap { position: relative; display: inline-block; }
+.fc-strike-line {
+  position: absolute;
+  left: 0; top: 50%; transform: translateY(-50%);
+  height: 1.5px; background: #9B97B5; border-radius: 1px;
+  width: 0;
+  animation: strikeExpand 6s ease-in-out infinite;
+}
+
+@keyframes ringFill {
+  0%, 12%  { stroke-dashoffset: 94.25; opacity: 0.2; }
+  32%      { stroke-dashoffset: 0;     opacity: 1; }
+  75%      { stroke-dashoffset: 0;     opacity: 1; }
+  90%, 100%{ stroke-dashoffset: 94.25; opacity: 0.2; }
+}
+@keyframes markDraw {
+  0%, 18%  { stroke-dashoffset: 25; }
+  36%      { stroke-dashoffset: 0; }
+  75%      { stroke-dashoffset: 0; }
+  90%, 100%{ stroke-dashoffset: 25; }
+}
+@keyframes strikeExpand {
+  0%, 33%  { width: 0; }
+  50%      { width: 100%; }
+  75%      { width: 100%; }
+  90%, 100%{ width: 0; }
+}
+.fc-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.fc-icon svg { width: 18px; height: 18px; }
+.fc-icon-purple { background: rgba(108,71,255,0.1); color: var(--purple); }
+.fc-icon-green { background: rgba(16,185,129,0.1); color: var(--success); }
+.fc-icon-blue { background: rgba(59,130,246,0.1); color: var(--blue); }
+.fc-label { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+.fc-value { font-size: 14px; font-weight: 700; color: var(--text); }
+
+/* Floating card, bottom right */
+.floating-card-2 {
+  position: absolute;
+  bottom: 90px; right: -30px; z-index: 5;
+  background: #fff;
+  border-radius: 18px;
+  padding: 14px 18px;
+  box-shadow: 0 20px 60px rgba(16,185,129,0.15), 0 4px 12px rgba(16,185,129,0.08);
+  display: flex; align-items: center; gap: 10px;
+  animation: card2Float 6s ease-in-out infinite alternate-reverse;
+  min-width: 190px;
+}
+@keyframes card2Float {
+  from { transform: translateY(0) rotate(2deg); }
+  to   { transform: translateY(-14px) rotate(1deg); }
+}
+
+/* Floating badge top-right */
+.floating-badge {
+  position: absolute;
+  top: 20px; right: -20px; z-index: 5;
+  background: var(--gradient);
+  border-radius: 100px;
+  padding: 8px 16px;
+  display: flex; align-items: center; gap: 7px;
+  box-shadow: 0 8px 30px rgba(108,71,255,0.35);
+  animation: badgeFloat 4s ease-in-out infinite alternate;
+  font-size: 13px; font-weight: 700; color: #fff;
+  white-space: nowrap;
+}
+@keyframes badgeFloat {
+  from { transform: translateY(0) rotate(1deg); }
+  to   { transform: translateY(-10px) rotate(-0.5deg); }
+}
+.floating-badge svg { width: 15px; height: 15px; }
+
+/* Family avatar tree, upward, used on features badge */
+/* Badge icon anchor, lines shoot upward from icon */
+.badge-icon-anchor {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.bt-above {
+  position: absolute;
+  bottom: 50%;
+  left: 50%; transform: translateX(-50%);
+  display: flex; align-items: flex-end; gap: 18px;
+  pointer-events: none;
+}
+.bt-branch {
+  display: flex; flex-direction: column; align-items: center;
+}
+.bt-branch.bt-b1 { transform: rotate(-22deg); transform-origin: bottom center; }
+.bt-branch.bt-b3 { transform: rotate(22deg);  transform-origin: bottom center; }
+.bt-stem {
+  width: 2px; height: 0; border-radius: 1px;
+  background: rgba(108,71,255,0.4);
+  animation: btStemGrow 5s ease-in-out infinite;
+}
+.bt-b1 .bt-stem { animation-delay: 0s; }
+.bt-b2 .bt-stem { animation-delay: 0.18s; }
+.bt-b3 .bt-stem { animation-delay: 0.36s; }
+.bt-node {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 800; color: #fff;
+  border: 2px solid #fff;
+  box-shadow: 0 4px 12px rgba(108,71,255,0.28);
+  transform: scale(0); opacity: 0;
+  animation: btNodeAppear 5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+.bt-b1 .bt-node { animation-delay: 0s; }
+.bt-b2 .bt-node { animation-delay: 0.18s; }
+.bt-b3 .bt-node { animation-delay: 0.36s; }
+
+@keyframes btStemGrow {
+  0%, 8%    { height: 0;    opacity: 0; }
+  30%       { height: 60px; opacity: 1; }
+  70%       { height: 60px; opacity: 1; }
+  88%, 100% { height: 0;    opacity: 0; }
+}
+@keyframes btNodeAppear {
+  0%, 28%   { transform: scale(0);    opacity: 0; }
+  44%       { transform: scale(1.2);  opacity: 1; }
+  52%       { transform: scale(1);    opacity: 1; }
+  70%       { transform: scale(1);    opacity: 1; }
+  86%, 100% { transform: scale(0);    opacity: 0; }
+}
+
+/* 3D floating orbs */
+.orb {
+  position: absolute; border-radius: 50%; pointer-events: none;
+  animation: orbFloat linear infinite;
+}
+.orb-1 {
+  width: 80px; height: 80px; top: 10%; left: 5%;
+  background: radial-gradient(circle at 35% 35%, rgba(108,71,255,0.5), rgba(59,130,246,0.15));
+  box-shadow: inset -8px -8px 20px rgba(0,0,0,0.1), 0 8px 32px rgba(108,71,255,0.2);
+  animation: orbFloat 8s ease-in-out infinite alternate;
+}
+.orb-2 {
+  width: 48px; height: 48px; bottom: 18%; right: 2%;
+  background: radial-gradient(circle at 35% 35%, rgba(236,72,153,0.6), rgba(108,71,255,0.15));
+  box-shadow: inset -5px -5px 12px rgba(0,0,0,0.1), 0 6px 20px rgba(236,72,153,0.25);
+  animation: orbFloat 6s ease-in-out infinite alternate-reverse;
+}
+.orb-3 {
+  width: 32px; height: 32px; top: 55%; left: -2%;
+  background: radial-gradient(circle at 35% 35%, rgba(16,185,129,0.6), rgba(59,130,246,0.1));
+  box-shadow: inset -3px -3px 8px rgba(0,0,0,0.1), 0 4px 14px rgba(16,185,129,0.25);
+  animation: orbFloat 7s ease-in-out infinite alternate;
+}
+@keyframes orbFloat {
+  from { transform: translateY(0) scale(1); }
+  to   { transform: translateY(-20px) scale(1.05); }
+}
+
+/* ─── PHONE IMAGE ─── */
+.phone-img { aspect-ratio: 2 / 3; height: auto;
+  width: 330px;
+  display: block;
+  filter: drop-shadow(0 28px 50px rgba(79,71,255,0.22)) drop-shadow(0 8px 22px rgba(0,0,0,0.16));
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ─── SHARED: STATUS BAR ─── */
+.app-status-bar {
+  height: 52px; display: flex; align-items: flex-end;
+  justify-content: space-between; padding: 0 18px 6px;
+  flex-shrink: 0; background: transparent;
+}
+.status-time { font-size: 11px; font-weight: 700; color: #1C1C1E; letter-spacing: -0.2px; }
+.status-icons { display: flex; align-items: center; gap: 4px; }
+.sb-wifi { width: 14px; height: 10px; }
+.sb-battery { width: 20px; height: 10px; background: #1C1C1E; border-radius: 2px; position: relative; }
+.sb-battery::after { content: ''; position: absolute; right: -3px; top: 2.5px; width: 2px; height: 5px; background: #1C1C1E; border-radius: 0 1px 1px 0; }
+
+/* App mini logo */
+.app-mini-logo { width: 26px; height: 26px; background: transparent; border-radius: 0; display: flex; align-items: center; justify-content: center; }
+
+/* Login tagline fallback */
+.login-tagline { font-size: 10px; color: #8E8E93; }
+.app-mini-logo svg { width: 26px; height: 26px; }
+
+/* Shared add button */
+.app-add-btn { font-size: 8px; font-weight: 700; color: #fff; background: #4F7FDB; border-radius: 8px; padding: 4px 7px; display: flex; align-items: center; gap: 2px; white-space: nowrap; }
+.app-add-btn svg { width: 8px; height: 8px; }
+
+/* Shared tab bar */
+.app-tab-bar { display: flex; padding: 5px 0 0; background: #fff; border-top: 1px solid rgba(0,0,0,0.08); }
+.tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 1px; font-size: 6.5px; font-weight: 600; color: #8E8E93; padding-bottom: 4px; }
+.tab-item.active { color: #4F7FDB; }
+.tab-item svg { width: 15px; height: 15px; }
+.home-bar { height: 20px; background: #fff; display: flex; align-items: center; justify-content: center; }
+.home-bar-indicator { width: 72px; height: 4px; background: #1C1C1E; border-radius: 4px; opacity: 0.18; }
+
+/* ─── CALENDAR SCREEN ─── */
+.app-screen { height: 100%; display: flex; flex-direction: column; background: #F2F2F7; }
+.app-header { padding: 6px 12px 6px; background: #F2F2F7; }
+.app-header-top { display: flex; justify-content: space-between; align-items: center; }
+.app-header-left { display: flex; align-items: center; gap: 6px; }
+.app-header-title { font-size: 17px; font-weight: 700; color: #1C1C1E; }
+.app-date-sub { font-size: 9px; color: #8E8E93; }
+
+/* Calendar card */
+.cal-card { margin: 0 10px 6px; background: #fff; border-radius: 14px; overflow: hidden; padding: 8px 8px 6px; }
+.cal-month-row { display: flex; align-items: center; justify-content: space-between; padding: 0 4px 6px; }
+.cal-month-label { font-size: 12px; font-weight: 700; color: #1C1C1E; }
+.cal-nav { font-size: 14px; color: #4F7FDB; font-weight: 600; cursor: pointer; }
+.app-cal-days { display: grid; grid-template-columns: repeat(7,1fr); gap: 1px; }
+.cal-day-label { text-align: center; font-size: 7.5px; font-weight: 600; color: #8E8E93; padding-bottom: 3px; }
+.cal-day { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 9.5px; font-weight: 400; color: #1C1C1E; position: relative; margin: 0 auto; }
+.cal-day.today { border: 1.5px solid #4F7FDB; color: #4F7FDB; font-weight: 700; border-radius: 4px; }
+.cal-day.has-event::after { content: ''; position: absolute; bottom: 1px; left: 50%; transform: translateX(-50%); width: 3.5px; height: 3.5px; border-radius: 50%; background: #E84040; }
+.cal-day.today.has-event::after { background: #E84040; }
+.cal-day.other-month { color: #C7C7CC; }
+
+/* Events section */
+.app-events { padding: 0 10px; flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+.events-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.event-label { font-size: 10px; font-weight: 700; color: #1C1C1E; }
+.filter-pills-row { display: flex; gap: 4px; }
+.filter-pill { font-size: 8px; font-weight: 600; padding: 3px 7px; border-radius: 12px; border: none; cursor: pointer; }
+.filter-pill.active { background: #4F7FDB; color: #fff; }
+.filter-pill.inactive { background: #E5E5EA; color: #8E8E93; }
+.event-item { display: flex; align-items: center; gap: 0; padding: 7px 10px; background: #fff; border-radius: 10px; margin-bottom: 5px; border-left: 3px solid #E84040; }
+.event-info { flex: 1; padding-left: 8px; }
+.event-name { font-size: 10px; font-weight: 700; color: #1C1C1E; }
+.event-time { font-size: 8.5px; color: #8E8E93; margin-top: 1px; }
+.event-trash { width: 14px; height: 14px; color: #E84040; flex-shrink: 0; }
+
+/* ─── LOGIN SCREEN ─── */
+.app-login-screen { height: 100%; display: flex; flex-direction: column; background: #F2F2F7; }
+.login-status-bar { height: 52px; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 18px 6px; flex-shrink: 0; }
+.login-logo-area { display: flex; flex-direction: column; align-items: center; padding: 10px 20px 10px; flex-shrink: 0; }
+.login-brand { font-size: 16px; font-weight: 800; color: #4F7FDB; margin-top: 6px; }
+.login-sub { font-size: 10px; color: #8E8E93; margin-top: 2px; margin-bottom: 0; }
+.login-title-text { font-size: 11px; font-weight: 600; color: #1C1C1E; text-align: center; padding: 8px 20px 10px; }
+.login-options-list { padding: 0 12px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.login-opt {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 14px 12px 12px;
+  background: #fff; border: 1px solid #E5E5EA; border-radius: 16px;
+  text-align: center;
+}
+.login-opt-icon { margin-bottom: 6px; display: flex; align-items: center; justify-content: center; }
+.login-opt-icon.loi-email svg { color: #4F7FDB; width: 24px; height: 24px; }
+.login-opt-icon.loi-code svg { color: #34C759; width: 24px; height: 24px; }
+.login-opt-title { font-size: 11px; font-weight: 700; color: #4F7FDB; }
+.login-opt-sub { font-size: 9px; color: #8E8E93; margin-top: 2px; }
+.login-footer { padding: 10px 20px 0; text-align: center; margin-top: auto; }
+.login-footer-text { font-size: 8.5px; color: #C7C7CC; line-height: 1.5; }
+.login-home-bar { height: 20px; display: flex; align-items: center; justify-content: center; }
+.login-home-bar .home-bar-indicator { width: 72px; height: 4px; background: #1C1C1E; border-radius: 4px; opacity: 0.18; }
+
+/* ─── OPGAVER SCREEN (right phone) ─── */
+.app-opgaver-screen { height: 100%; display: flex; flex-direction: column; background: #fff; }
+.opgaver-header { padding: 6px 12px 8px; background: #fff; }
+.opgaver-header-row { display: flex; justify-content: space-between; align-items: center; }
+.opgaver-title { display: flex; align-items: center; gap: 6px; font-size: 17px; font-weight: 700; color: #1C1C1E; }
+.opgaver-info-banner { margin: 0 10px 7px; padding: 7px 10px; background: #EBF0FF; border-radius: 10px; font-size: 8.5px; color: #4F7FDB; line-height: 1.4; }
+.opgaver-tabs { display: flex; gap: 6px; padding: 0 10px 6px; }
+.opgaver-tab { font-size: 10px; font-weight: 600; padding: 5px 12px; border-radius: 20px; }
+.opgaver-tab.active { background: #4F7FDB; color: #fff; }
+.opgaver-tab.inactive { color: #8E8E93; }
+.sorter-row { padding: 0 10px 6px; display: flex; align-items: center; gap: 5px; font-size: 9px; color: #8E8E93; }
+.sorter-pill { font-size: 8.5px; font-weight: 600; padding: 3px 8px; border-radius: 12px; }
+.sorter-pill.active { background: #4F7FDB; color: #fff; }
+.sorter-pill.inactive { color: #8E8E93; }
+.task-list { flex: 1; overflow: hidden; display: flex; flex-direction: column; background: #F2F2F7; border-radius: 10px; margin: 0 10px; }
+.task-item { display: flex; align-items: center; gap: 7px; padding: 7px 10px; background: #fff; border-bottom: 1px solid #F2F2F7; }
+.task-circle { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #C7C7CC; flex-shrink: 0; }
+.task-content { flex: 1; }
+.task-name { font-size: 10px; font-weight: 700; color: #1C1C1E; }
+.task-deadline { font-size: 8px; color: #8E8E93; margin-top: 1px; }
+.task-right { display: flex; align-items: center; gap: 4px; }
+.task-person { font-size: 8.5px; color: #8E8E93; font-weight: 500; }
+.task-edit-icon { width: 12px; height: 12px; color: #4F7FDB; }
+.task-del-icon { width: 12px; height: 12px; color: #E84040; }
+
+/* ─── PRICE BAND ─── */
+#price-band {
+  background: linear-gradient(135deg, #EEF0FF 0%, #F0EAFF 50%, #EBF3FF 100%);
+  border-top: 1px solid rgba(108,71,255,0.1);
+  border-bottom: 1px solid rgba(108,71,255,0.1);
+  padding: 32px 0;
+}
+.price-band-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+.price-main { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.price-tag { display: flex; align-items: baseline; gap: 4px; }
+.price-amount { font-size: 38px; font-weight: 800; color: var(--text); }
+.price-period { font-size: 15px; color: var(--text-secondary); }
+.price-or { font-size: 14px; color: var(--text-muted); }
+.price-alt { display: flex; align-items: baseline; gap: 4px; }
+.price-alt-amount { font-size: 30px; font-weight: 700; color: var(--text); }
+.price-save { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); border-radius: 100px; font-size: 12px; font-weight: 700; color: var(--success); margin-left: 6px; }
+.price-save svg { width: 11px; height: 11px; }
+.price-details { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+.price-details strong { color: var(--text); }
+.price-compare { display: flex; align-items: center; gap: 8px; padding: 12px 18px; background: #fff; border: 1px solid var(--border); border-radius: 12px; font-size: 13px; color: var(--text-secondary); box-shadow: var(--shadow-sm); }
+.price-compare .c-label { font-weight: 600; color: var(--text-muted); }
+.price-compare .c-strike { text-decoration: line-through; color: var(--text-muted); }
+.price-compare .c-save { font-weight: 700; color: var(--success); }
+
+/* ─── TESTIMONIALS ─── */
+#testimonials { padding: 80px 0; background: #fff; }
+.testimonial-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 22px; margin-top: 48px; }
+.testimonial-card {
+  padding: 28px; background: var(--bg-subtle);
+  border: 1px solid var(--border-light); border-radius: 20px;
+  position: relative; transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transform-style: preserve-3d;
+  perspective: 800px;
+  display: flex; flex-direction: column;
+}
+.t-spacer { flex: 1; }
+.t-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 18px; }
+.tts-btn {
+  width: 34px; height: 34px; border-radius: 50%; border: none; cursor: pointer;
+  background: rgba(108,71,255,0.08); color: var(--purple);
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, transform 0.2s;
+  flex-shrink: 0;
+}
+.tts-btn:hover { background: rgba(108,71,255,0.16); transform: scale(1.1); }
+.tts-btn.playing { background: var(--gradient); color: #fff; animation: speakerPulse 1s ease-in-out infinite; }
+.tts-btn svg { width: 16px; height: 16px; }
+@keyframes speakerPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(108,71,255,0.4); }
+  50%       { box-shadow: 0 0 0 7px rgba(108,71,255,0); }
+}
+.testimonial-card:hover { transform: translateY(-6px) rotateX(3deg); box-shadow: var(--shadow); }
+.testimonial-card::before { content: '"'; position: absolute; top: 14px; right: 18px; font-size: 64px; font-weight: 800; color: rgba(108,71,255,0.09); line-height: 1; }
+.stars { display: flex; gap: 2px; margin-bottom: 14px; }
+.star-icon { width: 15px; height: 15px; color: #F59E0B; }
+.t-text { font-size: 15px; line-height: 1.65; color: var(--text); margin-bottom: 18px; font-style: italic; }
+.t-author { display: flex; align-items: center; gap: 10px; }
+.t-avatar { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; color: #fff; flex-shrink: 0; }
+.ta1 { background: var(--gradient); }
+.ta2 { background: linear-gradient(135deg,#10B981,#3B82F6); }
+.ta3 { background: linear-gradient(135deg,#EC4899,#8B5CF6); }
+.t-name { font-size: 14px; font-weight: 700; }
+.t-loc { font-size: 12px; color: var(--text-muted); }
+
+/* ─── FEATURES ─── */
+#features { background: var(--bg-subtle); }
+.features-header { text-align: center; margin-bottom: 64px; }
+.features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+.feature-card {
+  background: #fff; border: 1px solid var(--border-light);
+  border-radius: 20px; padding: 32px 28px;
+  transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+  transform-style: preserve-3d; perspective: 600px;
+  position: relative; overflow: hidden;
+}
+.feature-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--gradient-bg, radial-gradient(ellipse at 0% 0%, rgba(108,71,255,0.06), transparent 60%));
+  opacity: 0; transition: opacity 0.4s; border-radius: 20px;
+}
+.feature-card:hover { transform: translateY(-8px) rotateX(4deg) rotateY(-2deg); box-shadow: var(--shadow-lg); border-color: rgba(108,71,255,0.2); }
+.feature-card:hover::before { opacity: 1; }
+.f-icon { width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+.f-icon svg { width: 24px; height: 24px; }
+.f-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+.f-desc { font-size: 15px; line-height: 1.65; color: var(--text-secondary); }
+.fi-purple { background: rgba(108,71,255,0.1); color: var(--purple); }
+.fi-orange { background: rgba(249,115,22,0.1); color: #F97316; }
+.fi-blue { background: rgba(59,130,246,0.1); color: var(--blue); }
+.fi-green { background: rgba(16,185,129,0.1); color: var(--success); }
+.fi-pink { background: rgba(236,72,153,0.1); color: var(--pink); }
+.fi-teal { background: rgba(20,184,166,0.1); color: #14B8A6; }
+
+/* ─── FAMILIEKODE ─── */
+#familiekode { padding: 120px 0; background: #fff; }
+.fk-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.fk-visual { display: flex; justify-content: center; }
+.code-demo {
+  background: linear-gradient(145deg, #fff 0%, var(--bg-subtle) 100%);
+  border: 1px solid var(--border);
+  border-radius: 28px; padding: 44px 36px; text-align: center;
+  box-shadow: var(--shadow-xl);
+  transform: perspective(800px) rotateY(6deg) rotateX(-2deg);
+  transition: transform 0.4s ease;
+  position: relative; overflow: hidden;
+}
+.code-demo::before {
+  content: ''; position: absolute; top: -60px; right: -60px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(108,71,255,0.08), transparent 70%);
+  border-radius: 50%; pointer-events: none;
+}
+.code-demo:hover { transform: perspective(800px) rotateY(2deg) rotateX(-1deg); }
+.c-icon { width: 64px; height: 64px; background: var(--gradient); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 8px 24px rgba(108,71,255,0.35); }
+.c-icon svg { width: 32px; height: 32px; color: #fff; }
+.c-label { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+.c-digits { display: flex; gap: 8px; justify-content: center; margin-bottom: 24px; }
+.code-dash { font-size: 26px; font-weight: 800; color: var(--text-muted); padding: 0 2px; display: flex; align-items: center; }
+.digit {
+  width: 46px; height: 58px; background: #fff; border: 2px solid var(--border);
+  border-radius: 14px; display: flex; align-items: center; justify-content: center;
+  font-size: 26px; font-weight: 800; color: var(--purple);
+  box-shadow: 0 4px 12px rgba(108,71,255,0.1), inset 0 1px 0 rgba(255,255,255,0.9);
+  transition: all 0.1s ease;
+}
+.c-members { display: flex; align-items: center; justify-content: center; margin: 16px 0 8px; }
+.m-avatar { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; margin-left: -8px; }
+.m-avatar:first-child { margin-left: 0; }
+.ma1 { background: linear-gradient(135deg,var(--purple),var(--blue)); }
+.ma2 { background: linear-gradient(135deg,#EC4899,#8B5CF6); }
+.ma3 { background: linear-gradient(135deg,#10B981,#3B82F6); }
+.ma4 { background: linear-gradient(135deg,#F59E0B,#EF4444); }
+.ma5 { background: #E5E3FF; color: var(--purple) !important; font-size: 11px !important; }
+.c-count { font-size: 13px; color: var(--text-secondary); font-weight: 500; margin-bottom: 14px; }
+.c-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+.fk-h2 { font-size: clamp(26px,2.9vw,37px); font-weight: 800; letter-spacing: -1px; line-height: 1.12; margin-bottom: 18px; }
+.fk-text { font-size: 16px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 28px; }
+.fk-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+.fk-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; color: var(--text-secondary); line-height: 1.5; }
+.fk-check { width: 22px; height: 22px; background: rgba(16,185,129,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.fk-check svg { width: 12px; height: 12px; color: var(--success); }
+.fk-list li strong { color: var(--text); }
+
+/* ─── FOUNDER ─── */
+#founder { background: var(--bg-subtle); padding: 120px 0; }
+.founder-inner { display: grid; grid-template-columns: auto 1fr; gap: 64px; align-items: center; max-width: 900px; margin: 0 auto; }
+.founder-photo {
+  width: 200px; height: 200px; border-radius: 28px;
+  background: var(--gradient); display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; position: relative; overflow: visible;
+  box-shadow: 0 20px 60px rgba(108,71,255,0.3);
+  transform: perspective(600px) rotateY(8deg) rotateX(-4deg);
+  transition: transform 0.4s ease;
+}
+.founder-photo:hover { transform: perspective(600px) rotateY(3deg) rotateX(-2deg); }
+.founder-initials { font-size: 60px; font-weight: 800; color: #fff; }
+.founder-badge-float {
+  position: absolute; bottom: -14px; left: 50%; transform: translateX(-50%);
+  background: #fff; border-radius: 20px; padding: 6px 14px;
+  font-size: 11px; font-weight: 700; color: var(--text); white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+.founder-label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--purple); margin-bottom: 16px; }
+.founder-quote { font-size: clamp(18px,2.2vw,22px); line-height: 1.55; color: var(--text); margin-bottom: 18px; }
+.founder-quote strong { font-weight: 700; }
+.founder-sig { font-size: 14px; color: var(--text-secondary); }
+.founder-sig strong { color: var(--text); }
+.founder-sig a { color: var(--purple); }
+
+/* ─── COMPARISON ─── */
+#comparison { background: #fff; }
+.comparison-header { text-align: center; margin-bottom: 48px; }
+.comparison-wrap { overflow-x: auto; border-radius: 20px; box-shadow: var(--shadow); }
+table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; min-width: 560px; }
+thead th { padding: 18px 22px; text-align: left; font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 2px solid var(--border-light); background: var(--bg-subtle); }
+thead th:first-child { border-radius: 20px 0 0 0; }
+thead th:last-child { border-radius: 0 20px 0 0; }
+thead th.col-ours { background: rgba(108,71,255,0.05); border-bottom-color: var(--purple); color: var(--purple); }
+.th-brand { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 800; color: var(--text); text-transform: none; letter-spacing: 0; }
+.th-brand-icon { width: 26px; height: 26px; background: var(--gradient); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
+.th-brand-icon svg { width: 13px; height: 13px; color: #fff; }
+tbody tr:hover { background: var(--bg-subtle); }
+td { padding: 15px 22px; border-bottom: 1px solid var(--border-light); vertical-align: middle; color: var(--text-secondary); }
+td.col-ours { background: rgba(108,71,255,0.03); }
+td:first-child { font-weight: 600; color: var(--text); }
+.check-yes { display: flex; align-items: center; gap: 6px; color: var(--success); font-weight: 600; }
+.check-yes svg { width: 16px; height: 16px; }
+.check-no { color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+.check-no svg { width: 16px; height: 16px; }
+.price-cell { font-weight: 700; color: var(--text); }
+.price-cell.ours { color: var(--purple); font-size: 16px; }
+.comparison-note { text-align: center; margin-top: 22px; font-size: 14px; color: var(--text-muted); font-style: italic; }
+
+/* ─── FINAL CTA ─── */
+#cta {
+  background: var(--gradient);
+  padding: 120px 0; text-align: center;
+  position: relative; overflow: hidden;
+}
+#cta::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 30%, rgba(255,255,255,0.06) 0%, transparent 50%);
+  pointer-events: none;
+}
+/* 3D floating shapes in CTA */
+.cta-shape {
+  position: absolute; border-radius: 50%; pointer-events: none; opacity: 0.15;
+}
+.cta-shape-1 { width: 300px; height: 300px; top: -100px; left: -80px; background: rgba(255,255,255,0.3); filter: blur(60px); animation: ctaShapeFloat 10s ease-in-out infinite alternate; }
+.cta-shape-2 { width: 200px; height: 200px; bottom: -60px; right: -40px; background: rgba(255,255,255,0.25); filter: blur(50px); animation: ctaShapeFloat 8s ease-in-out infinite alternate-reverse; }
+@keyframes ctaShapeFloat { from { transform: translate(0,0); } to { transform: translate(20px,-30px); } }
+
+.cta-inner { position: relative; z-index: 1; }
+.cta-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); border-radius: 100px; font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 24px; backdrop-filter: blur(10px); }
+.cta-h2 { font-size: clamp(34px,4.6vw,54px); font-weight: 800; letter-spacing: -2px; line-height: 1.08; color: #fff; margin-bottom: 18px; }
+.cta-sub { font-size: 18px; color: rgba(255,255,255,0.75); margin-bottom: 44px; line-height: 1.6; }
+.cta-buttons { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 24px; }
+.cta-trust { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 36px; }
+.cta-trust span { color: rgba(255,255,255,0.9); font-weight: 600; }
+.store-buttons { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+.store-btn { display: flex; align-items: center; gap: 10px; padding: 13px 22px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); border-radius: 14px; color: #fff; transition: all 0.2s; cursor: pointer; backdrop-filter: blur(10px); }
+.store-btn:hover { background: rgba(255,255,255,0.22); transform: translateY(-2px); }
+.store-btn svg { width: 22px; height: 22px; }
+.store-btn-sub { font-size: 10px; opacity: 0.7; }
+.store-btn-name { font-size: 15px; font-weight: 700; }
+
+/* ─── FOOTER ─── */
+footer { background: var(--text); color: rgba(255,255,255,0.45); padding: 56px 0 32px; }
+.footer-inner { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px; margin-bottom: 48px; }
+.footer-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.footer-logo-icon { width: 32px; height: 32px; background: var(--gradient); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+.footer-logo-icon svg { width: 16px; height: 16px; color: #fff; }
+.footer-logo-text { font-size: 16px; font-weight: 800; color: #fff; }
+.footer-tagline { font-size: 13px; color: rgba(255,255,255,0.35); line-height: 1.6; max-width: 200px; }
+.footer-links h4 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.35); margin-bottom: 14px; }
+.footer-links ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer-links li a { font-size: 14px; color: rgba(255,255,255,0.55); transition: color 0.2s; }
+.footer-links li a:hover { color: #fff; }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,0.07); font-size: 13px; }
+.footer-bottom a { color: rgba(255,255,255,0.4); transition: color 0.2s; }
+.footer-bottom a:hover { color: rgba(255,255,255,0.7); }
+
+/* ─── FORDELE ─── */
+.fordele-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 860px; margin: 0 auto; }
+.fordel-item {
+  display: flex; align-items: flex-start; gap: 18px;
+  background: #fff; border: 1px solid var(--border-light);
+  border-radius: 20px; padding: 26px 28px;
+  box-shadow: 0 4px 20px rgba(108,71,255,0.07), 0 1px 4px rgba(108,71,255,0.04);
+  transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+  transform-style: preserve-3d; perspective: 600px;
+  position: relative; overflow: hidden;
+}
+.fordel-item::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 0% 0%, rgba(16,185,129,0.05), transparent 60%);
+  opacity: 0; transition: opacity 0.4s; border-radius: 20px;
+}
+.fordel-item:hover { transform: translateY(-6px) rotateX(4deg) rotateY(-2deg); box-shadow: 0 20px 60px rgba(108,71,255,0.14), 0 4px 16px rgba(108,71,255,0.08); border-color: rgba(108,71,255,0.25); }
+.fordel-item:hover::before { opacity: 1; }
+.fordel-icon {
+  width: 48px; height: 48px; border-radius: 14px; flex-shrink: 0;
+  background: var(--gradient);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 20px rgba(108,71,255,0.35), 0 2px 6px rgba(108,71,255,0.2);
+}
+.fordel-icon svg { width: 22px; height: 22px; stroke: #fff; stroke-width: 3; }
+.fordel-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+.fordel-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.55; }
+@media (max-width: 600px) { .fordele-grid { grid-template-columns: 1fr; } }
+
+/* ─── SAMMENLIGNING ─── */
+.compare-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 20px; max-width: 780px; margin: 0 auto;
+}
+.compare-card {
+  background: #fff; border: 1.5px solid var(--border);
+  border-radius: 24px; padding: 32px 28px;
+  position: relative;
+}
+.compare-card-featured {
+  border-color: var(--purple);
+  box-shadow: 0 8px 40px rgba(108,71,255,0.15);
+}
+.compare-recommended {
+  position: absolute; top: -14px; right: 20px;
+  background: #BFFD60; color: #1a1a1a;
+  font-size: 11px; font-weight: 800; letter-spacing: 0.06em;
+  padding: 5px 12px; border-radius: 100px;
+}
+.compare-card-header { margin-bottom: 24px; }
+.compare-card-title { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+.compare-card-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; }
+.compare-price-row { display: flex; align-items: baseline; gap: 2px; }
+.compare-price { font-size: 36px; font-weight: 800; color: var(--text); }
+.compare-period { font-size: 14px; color: var(--text-secondary); }
+.compare-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.compare-list li { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text-secondary); }
+.compare-list li svg { width: 16px; height: 16px; flex-shrink: 0; }
+.compare-list li.has svg { color: var(--success); }
+.compare-list li.has { color: var(--text); }
+.compare-list li.hasnt svg { color: #D1D5DB; }
+.compare-list li.hasnt { color: #9CA3AF; }
+@media (max-width: 600px) {
+  .compare-grid { grid-template-columns: 1fr; gap: 16px; max-width: 100%; }
+  .compare-card { padding: 24px 20px; }
+  .compare-price { font-size: 28px; }
+  .compare-card-title { font-size: 17px; }
+}
+
+/* ─── NOT LAUNCHED TOAST ─── */
+#not-launched-toast {
+  position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px);
+  z-index: 2000; background: #1C1B2E; color: #fff;
+  border-radius: 16px; padding: 16px 24px;
+  display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+  font-size: 14px; font-weight: 600;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16,1,0.3,1);
+  white-space: nowrap;
+}
+#not-launched-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+.toast-icon { width: 32px; height: 32px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.toast-icon svg { width: 16px; height: 16px; }
+.toast-text { line-height: 1.4; }
+.toast-text span { display: block; font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.55); margin-top: 2px; }
+
+/* ─── SCROLL REVEAL ─── */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.65s cubic-bezier(0.16,1,0.3,1); }
+.reveal.visible { opacity: 1; transform: none; }
+.reveal-delay-1 { transition-delay: 0.08s; }
+.reveal-delay-2 { transition-delay: 0.16s; }
+/* Slå reveal-animationer fra på mobil så scrolling er flydende */
+@media (max-width: 768px) {
+  .reveal, .reveal.visible { opacity: 1; transform: none; transition: none; }
+  .reveal-delay-1, .reveal-delay-2 { transition-delay: 0s; }
+}
+.reveal-delay-3 { transition-delay: 0.24s; }
+.reveal-delay-4 { transition-delay: 0.32s; }
+
+/* ─── LARGE SCREENS ─── */
+@media (min-width: 1400px) {
+  .container { max-width: 1240px; }
+  .hero-inner { gap: 80px; }
+  .section { padding: 140px 0; }
+  .headline { font-size: clamp(52px, 5vw, 80px); }
+}
+@media (min-width: 1800px) {
+  .container { max-width: 1320px; }
+  .headline { font-size: clamp(60px, 5vw, 96px); }
+  .section { padding: 160px 0; }
+}
+
+/* ─── RESPONSIVE ─── */
+/* ─── TABLET ─── */
+@media (max-width: 960px) {
+  .container { padding: 0 24px; }
+  .nav-links { display: none; }
+  .hero-inner { grid-template-columns: 1fr; grid-template-rows: auto; text-align: center; }
+  .hero-text-top { grid-column: 1; grid-row: auto; order: 1; }
+  .hero-3d-scene { grid-column: 1; grid-row: auto; order: 2; height: 400px; margin-top: 10px; }
+  .hero-text-bottom { grid-column: 1; grid-row: auto; order: 3; }
+  .phone-img { aspect-ratio: 2 / 3; height: auto; width: 200px; }
+  .phone-left { transform: translateX(-110%) translateY(-42%) rotateY(16deg) rotateX(4deg) scale(0.68); }
+  .phone-right { transform: translateX(14%) translateY(-42%) rotateY(-18deg) rotateX(4deg) scale(0.68); }
+  .hero-ctas { justify-content: center; }
+  .trust-line { justify-content: center; }
+  .hero-features { max-width: 440px; margin-left: auto; margin-right: auto; }
+  .features-grid { grid-template-columns: repeat(2,1fr); }
+  .testimonial-grid { grid-template-columns: 1fr; }
+  .fk-inner { grid-template-columns: minmax(0, 1fr); gap: 48px; }
+  .fk-visual { order: -1; }
+  .founder-inner { grid-template-columns: 1fr; text-align: center; }
+  .founder-photo { margin: 0 auto; }
+  .price-band-inner { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .price-compare { align-self: flex-start; }
+  .store-buttons { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+}
+
+/* ─── MOBIL ─── */
+@media (max-width: 600px) {
+  .container { padding: 0 18px; }
+  #hero { padding: 30px 0 24px; min-height: auto; }
+
+  /* Hero tekst */
+  .hero-inner { display: flex; flex-direction: column; align-items: center; gap: 0; }
+  .hero-text-top { order: 1; width: 100%; text-align: center; padding-bottom: 0; }
+  .hero-3d-scene { order: 2; width: 100%; }
+  .hero-text-bottom { order: 3; width: 100%; text-align: center; }
+  .hero-label { margin-bottom: 16px; }
+  .hero-h1 { font-size: 36px; letter-spacing: -1.5px; margin-bottom: 14px; }
+  .hero-tagline { font-size: 17px; margin-bottom: 16px; white-space: normal; }
+  .hero-features { grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 28px; max-width: 100%; }
+  .hf-item { padding: 7px 8px; }
+  .hf-title { font-size: 11px; }
+  .hf-icon { width: 24px; height: 24px; }
+  .hf-check { width: 12px; height: 12px; }
+  .btn-lg { padding: 15px 28px; font-size: 15px; }
+  .trust-line { font-size: 11px; gap: 7px; flex-wrap: wrap; justify-content: center; }
+
+  /* 3D scene, alle tre telefoner, bare mindre */
+  .hero-3d-scene { height: 260px; margin-top: 10px; margin-bottom: 10px; }
+  .phone-img { aspect-ratio: 2 / 3; height: auto; width: 200px; }
+  .phone-left { display: block; transform: translateX(-102%) translateY(-50%) rotateY(16deg) rotateX(4deg) scale(0.75) !important; opacity: 0.88; }
+  .phone-right { display: block; transform: translateX(2%) translateY(-50%) rotateY(-18deg) rotateX(4deg) scale(0.75) !important; opacity: 0.88; }
+  .phone-center { transform: translateX(-50%) translateY(-50%) rotateY(-4deg) rotateX(2deg) !important; }
+  .floating-card-1, .floating-card-2, .floating-badge { display: none; }
+  .scene-platform { display: none; }
+  .orb { display: none; }
+
+  /* Sektioner */
+  .section { padding: 64px 0; }
+  .section-h2 { font-size: 22px; letter-spacing: -0.5px; }
+  .section-sub { font-size: 15px; }
+  .features-grid { grid-template-columns: 1fr; gap: 10px; }
+  .feature-card { padding: 16px 18px; border-radius: 16px; }
+  .f-icon { width: 44px; height: 44px; border-radius: 12px; margin-bottom: 10px; }
+  .f-icon svg { width: 20px; height: 20px; }
+  .f-title { font-size: 16px; margin-bottom: 4px; }
+  .f-desc { font-size: 14px; line-height: 1.5; }
+
+  /* Pris */
+  #price-band { padding: 24px 0; }
+  .price-band-inner { gap: 14px; align-items: center; text-align: center; }
+  .price-amount { font-size: 18px; }
+  .price-alt-amount { font-size: 17px; }
+  .price-compare { flex-wrap: nowrap; gap: 4px; white-space: nowrap; padding: 10px 14px; margin: 0 auto; width: fit-content; }
+  .price-period { font-size: 12px; }
+  .price-or { font-size: 12px; }
+  .price-save { font-size: 11px; padding: 3px 8px; }
+
+  /* Anmeldelser */
+  .testimonial-grid { gap: 16px; }
+  .testimonial-card { padding: 22px 20px; }
+  .t-text { font-size: 14px; }
+
+  /* Familiekode */
+  #familiekode { padding: 64px 0; }
+  .fk-inner { gap: 36px; }
+  .fk-h2 { font-size: 24px; white-space: nowrap; }
+  .code-demo { padding: 30px 24px; transform: none; }
+  .c-digits { gap: 4px; }
+  .digit { width: 30px; height: 40px; font-size: 15px; border-radius: 9px; }
+  .code-dash { font-size: 15px; padding: 0 1px; }
+
+  /* Founder */
+  .founder-photo { width: 100px; height: 100px; font-size: 36px; }
+  .founder-quote { font-size: 15px !important; }
+
+  /* CTA */
+  .cta-h2 { font-size: 26px !important; white-space: nowrap; word-spacing: 4px; }
+  .store-buttons { flex-direction: column; align-items: center; gap: 12px; }
+  .store-btn { width: 100%; max-width: 280px; justify-content: center; }
+
+  /* Nav */
+  .nav-inner { height: 58px; }
+  .logo-text { font-size: 15px; }
+}
+
+/* Syv kort giver en skæv sidste række. Det sidste, om DSGVO og hosting i EU,
+   fylder derfor hele bredden og bliver en afslutning i stedet for en rest. */
+@media (min-width: 901px) {
+  #features .features-grid > .feature-card:last-child { grid-column: 1 / -1; }
+}
+</style>
+<style>
+/* MOBIL-FIX: tysk tekst er længere, fjern nowrap så lange linjer ombrydes i stedet for at klippes */
+@media (max-width: 600px) {
+  .hero-h1, .hero-tagline, .section-h2, .step-h3, .stjerne-h2, .fk-h2, .cta-h2, .cta-sub {
+    white-space: normal !important; word-spacing: normal !important; overflow-wrap: break-word; hyphens: auto;
+  }
+  .price-compare { white-space: normal !important; width: auto !important; max-width: 100% !important; flex-wrap: wrap !important; justify-content: center; }
+  .trust-line, .price-band-inner { flex-wrap: wrap !important; }
+  .trust-item, footer p { white-space: normal !important; }
+  .nav-logo img { height: 46px !important; }
+}
+@media (max-width: 900px) {
+  .hero-store-btns { margin-left: auto !important; margin-right: auto !important; }
+  .hero-ctas { justify-content: center !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="https://www.unserzuhauseapp.de" target="_top" class="nav-logo">
+        <img src="/images/logo.webp" alt="Unser Zuhause" style="height:58px;width:auto;display:block;">
+      </a>
+      <div class="nav-links">
+        <a href="#features">Funktionen</a>
+        <a href="#familiekode">Familiencode</a>
+        <a href="#comparison">Vergleich</a>
+        <a href="#cta">Preis</a>
+      </div>
+      <div class="nav-cta">
+        <span class="nav-flag">🇩🇪</span>
+        <a target="_blank" rel="noopener" href="https://voreshjem-bot.netlify.app/hent/app-de" class="btn btn-primary btn-sm">Kostenlos testen</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- NOT LAUNCHED TOAST -->
+<div id="not-launched-toast">
+  <div class="toast-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+  <div class="toast-text">Die App ist noch nicht erschienen<span>Erscheint am 21. Juli 2026 🇩🇪</span></div>
+</div>
+
+<!-- LAUNCH BANNER -->
+<div id="launch-banner">
+  <div class="launch-card">
+    <span class="launch-flag">🇩🇪</span>
+    <div class="launch-eyebrow">Neue Familien-App</div>
+    <div class="launch-title">Unser Zuhause App</div>
+    <div class="launch-date">Erscheint am 21. Juli 2026</div>
+    <div class="launch-countdown">
+      <div class="cd-block"><span class="cd-num" id="cd-days"></span><span class="cd-label">Tage</span></div>
+      <div class="cd-block"><span class="cd-num" id="cd-hours"></span><span class="cd-label">Stunden</span></div>
+      <div class="cd-block"><span class="cd-num" id="cd-mins"></span><span class="cd-label">Min</span></div>
+      <div class="cd-block"><span class="cd-num" id="cd-secs"></span><span class="cd-label">Sek</span></div>
+    </div>
+    <button class="launch-close" onclick="closeLaunchBanner()">Schließen</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <!-- CSS Blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <div class="container">
+    <div class="hero-inner">
+      <!-- Left top: badge + titel -->
+      <div class="hero-text-top">
+        <div class="hero-label">
+          <span class="badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Neue Familien-App, jetzt verfügbar
+          </span>
+        </div>
+        <h1 class="hero-h1">Unser Zuhause App</h1>
+        <p class="hero-tagline">Mehr Ruhe im Alltag</p>
+      </div>
+
+      <!-- Left bottom: features + CTA -->
+      <div class="hero-text-bottom">
+        <div class="hero-features">
+          <div class="hf-item">
+            <div class="hf-icon" style="background:rgba(108,71,255,0.1);color:#6C47FF;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>
+            </div>
+            <div class="hf-text">
+              <div class="hf-title">Kalender</div>
+              <div class="hf-desc">Gemeinsamer Überblick für die ganze Familie</div>
+            </div>
+            <svg class="hf-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="hf-item">
+            <div class="hf-icon" style="background:rgba(249,115,22,0.1);color:#F97316;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+            </div>
+            <div class="hf-text">
+              <div class="hf-title">Essensplan</div>
+              <div class="hf-desc">Plant die Mahlzeiten der Woche ganz einfach</div>
+            </div>
+            <svg class="hf-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="hf-item">
+            <div class="hf-icon" style="background:rgba(59,130,246,0.1);color:#3B82F6;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+            </div>
+            <div class="hf-text">
+              <div class="hf-title">Einkauf</div>
+              <div class="hf-desc">Geteilte Liste, in Echtzeit aktualisiert</div>
+            </div>
+            <svg class="hf-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="hf-item">
+            <div class="hf-icon" style="background:rgba(16,185,129,0.1);color:#10B981;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            </div>
+            <div class="hf-text">
+              <div class="hf-title">Aufgaben</div>
+              <div class="hf-desc">Verteilt die Hausarbeit ganz entspannt</div>
+            </div>
+            <svg class="hf-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        </div>
+        <div style="text-align:center; margin-bottom: 28px;">
+          <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-bottom:14px;"><a href="https://apps.apple.com/de/app/unser-zuhause/id6771931999" target="_blank" rel="noopener" style="display:flex; align-items:center; gap:11px; background:#12101F; color:#fff; text-decoration:none; padding:12px 22px; border-radius:14px; transition:transform .15s ease, box-shadow .15s ease;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 28px rgba(18,16,31,.28)'" onmouseout="this.style.transform='';this.style.boxShadow=''"><svg viewBox="0 0 24 24" fill="currentColor" style="width:24px;height:24px;flex-shrink:0;"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg><span style="text-align:left; line-height:1.15;"><span style="display:block; font-size:10px; font-weight:500; opacity:.75;">Laden im</span><span style="display:block; font-size:16px; font-weight:700;">App Store</span></span></a><a href="https://play.google.com/store/apps/details?id=com.unserzuhause.app&hl=de&gl=DE" target="_blank" rel="noopener" style="display:flex; align-items:center; gap:11px; background:#12101F; color:#fff; text-decoration:none; padding:12px 22px; border-radius:14px; transition:transform .15s ease, box-shadow .15s ease;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 28px rgba(18,16,31,.28)'" onmouseout="this.style.transform='';this.style.boxShadow=''"><svg viewBox="0 0 512 512" style="width:22px;height:22px;flex-shrink:0;"><path fill="#4CAF50" d="M325.3 234.3L104.6 13l280.8 161.2z"/><path fill="#4285F4" d="M47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l249.2-249.1z"/><path fill="#FFC107" d="M461.2 219.8l-67.6-39.1-68.5 68.5 68.5 68.5 67.6-39.1c19.3-11.1 19.3-40.6-.1-58.8z"/><path fill="#F44336" d="M104.6 499L325.3 277.7l-60.1-60.1z"/></svg><span style="text-align:left; line-height:1.15;"><span style="display:block; font-size:10px; font-weight:500; opacity:.75;">Jetzt bei</span><span style="display:block; font-size:16px; font-weight:700;">Google Play</span></span></a></div><a href="https://apps.apple.com/de/app/unser-zuhause/id6771931999" target="_blank" rel="noopener" style="display:block; text-align:center; font-size:15px; font-weight:700; color:var(--purple); text-decoration:none;">14 Tage kostenlos testen</a>
+        </div>
+        <div class="trust-line" style="margin-bottom: 8px;">
+          <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Keine Bindung</span>
+          <span class="trust-dot"></span>
+          <span class="trust-item" style="white-space:nowrap;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>5,99 €/Monat oder 24,99 €/Halbjahr</span>
+          <span class="trust-dot"></span>
+          <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Entwickelt in Dänemark</span>
+        </div>
+      </div><!-- /hero-text-bottom -->
+
+      <!-- Right: 3D phone scene -->
+      <div class="hero-3d-scene" id="scene3d">
+
+        <!-- Floating ambient orbs -->
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+
+        <!-- Platform shadow -->
+        <div class="scene-platform"></div>
+
+        <!-- Floating notification card -->
+        <div class="floating-card-1">
+          <div class="fc-check-wrap">
+            <svg class="fc-check-bg-svg" viewBox="0 0 36 36">
+              <circle cx="18" cy="18" r="15" fill="none" stroke="#E5E5EA" stroke-width="2.5"/>
+              <circle class="fc-ring-anim" cx="18" cy="18" r="15" fill="none" stroke="#10B981" stroke-width="2.5"
+                stroke-dasharray="94.25" stroke-dashoffset="94.25" stroke-linecap="round"
+                transform="rotate(-90 18 18)"/>
+            </svg>
+            <svg class="fc-mark-anim" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <div>
+            <div class="fc-label">Aufgabe erledigt</div>
+            <div class="fc-value"><span class="fc-strike-wrap">Einkauf, Freya<span class="fc-strike-line"></span></span></div>
+          </div>
+        </div>
+
+        <div class="floating-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          7 Familienmitglieder
+        </div>
+
+        <!-- LEFT phone: login -->
+        <div class="phone-left" id="phone-left">
+          <img src="screen-login.webp" alt="Login-Bildschirm" class="phone-img">
+        </div>
+
+        <!-- CENTER phone: kalender -->
+        <div class="phone-center" id="phone-center">
+          <img src="screen-kalender.webp" alt="Kalender-Bildschirm" class="phone-img">
+        </div>
+
+        <!-- RIGHT phone: opgaver -->
+        <div class="phone-right" id="phone-right">
+          <img src="screen-opgaver.webp" alt="Aufgaben-Bildschirm" class="phone-img">
+        </div>
+
+      </div><!-- /hero-3d-scene -->
+    </div>
+  </div>
+</section>
+
+<!-- PRICE BAND -->
+<div id="price-band">
+  <div class="container">
+    <div class="price-band-inner">
+      <div class="price-compare">
+        <div class="price-tag"><span class="price-amount">5,99 €</span><span class="price-period">/Monat</span></div>
+        <span class="price-or">oder</span>
+        <div class="price-alt">
+          <span class="price-alt-amount">24,99 €</span><span class="price-period">/Halbjahr</span>
+          <span class="price-save"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Spare 30 %</span>
+        </div>
+      </div>
+      <div class="price-details"><strong>Bis zu 7 Personen in einem Konto.</strong><br>Keine zusätzlichen Gebühren. Keine Werbung. Keine Überraschungen.</div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- FAMILIEKODE -->
+<section id="familiekode">
+  <div class="container">
+    <div class="fk-inner">
+      <div class="fk-visual reveal">
+        <div class="code-demo" id="code-demo">
+          <div class="c-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+          <div class="c-label">Euer Familiencode</div>
+          <div class="c-digits">
+            <div class="digit">T</div><div class="digit">R</div><div class="code-dash">-</div><div class="digit">3</div><div class="digit">1</div><div class="digit">0</div><div class="digit">4</div><div class="digit">5</div><div class="digit">0</div>
+          </div>
+          <div class="c-members">
+            <div class="m-avatar ma1">N</div><div class="m-avatar ma2">F</div><div class="m-avatar ma3">E</div><div class="m-avatar ma4">L</div><div class="m-avatar ma5">+3</div>
+          </div>
+          <div class="c-count">7 Familienmitglieder</div>
+          <div class="c-desc">Teile den Code, alle sind in unter 30 Sekunden eingeloggt.</div>
+        </div>
+      </div>
+      <div class="fk-content reveal reveal-delay-2">
+        <span class="badge" style="margin-bottom:20px;">Nur in Unser Zuhause App</span>
+        <h2 class="fk-h2">Lade die ganze Familie mit einem Code ein</h2>
+        <p class="fk-text">Unser Zuhause App gibt euch einen 6-stelligen Familiencode, schick ihn per SMS und alle sind dabei.</p>
+        <ul class="fk-list">
+          <li><span class="fk-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Kinder loggen sich mit dem Code ein</strong><span class="mob-kort"><br>keine E-Mail-Adresse erforderlich</span></span></li>
+          <li><span class="fk-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Großeltern in 30 Sekunden dabei</strong><span class="mob-kort"><br>Code per SMS schicken</span></span></li>
+          <li><span class="fk-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Bis zu 7 Personen pro Haushalt</strong><span class="mob-kort"><br>Eltern, Kinder, Großeltern</span></span></li>
+          <li><span class="fk-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Zugang mit einem Klick entfernen</strong><span class="mob-kort"><br>volle Kontrolle darüber, wer was sieht</span></span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="kal-demo-sektion">
+<style>
+#kal-demo-sektion { padding: 96px 0 104px; background: var(--bg-subtle); }
+.kd-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 68px; align-items: center; }
+.kd-visual { display: flex; justify-content: center; }
+
+.kal-demo {
+  background: linear-gradient(145deg, #fff 0%, var(--bg-subtle) 100%);
+  border: 1px solid var(--border); border-radius: 26px;
+  padding: 26px 24px 22px; width: 100%; max-width: 400px;
+  box-shadow: var(--shadow-lg); position: relative; overflow: hidden;
+  cursor: pointer; transition: transform 0.4s ease;
+}
+.kal-demo::before {
+  content: ''; position: absolute; top: -70px; right: -70px; width: 210px; height: 210px;
+  background: radial-gradient(circle, rgba(108,71,255,0.12) 0%, transparent 70%);
+  border-radius: 50%; pointer-events: none;
+}
+.kal-demo:hover { transform: perspective(800px) rotateY(2deg) rotateX(-1deg); }
+
+.kd-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; position:relative; z-index:2; }
+.kd-month { font-size:15px; font-weight:800; color:var(--text); }
+.kd-arrows { display:flex; gap:6px; color:var(--text-muted); }
+.kd-arrows svg { width:15px; height:15px; }
+
+.kd-grid { position:relative; z-index:2; }
+.kd-wd { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; margin-bottom:5px; }
+.kd-wd span { text-align:center; font-size:10.5px; font-weight:800; color:var(--text-muted); }
+.kd-days { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+.kd-day {
+  aspect-ratio:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  font-size:12px; font-weight:700; color:var(--text); border-radius:8px; position:relative;
+}
+.kd-day.mute { color:#CFCBE0; }
+.kd-day.today { background:rgba(108,71,255,0.10); color:var(--purple); font-weight:800; }
+.kd-dots { display:flex; gap:2px; height:5px; margin-top:2px; }
+.kd-dot {
+  width:4px; height:4px; border-radius:50%; opacity:0; transform:scale(0);
+  transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.34,1.56,0.64,1);
+}
+.kd-dot.on { opacity:1; transform:scale(1); }
+
+.kd-sep { height:1px; background:var(--border-light); margin:15px 0 12px; position:relative; z-index:2; }
+.kd-listtop { display:flex; align-items:center; justify-content:space-between; margin-bottom:9px; position:relative; z-index:2; }
+.kd-listtop b { font-size:12.5px; font-weight:800; color:var(--text-secondary); }
+.kd-count { font-size:11px; font-weight:800; color:var(--text-muted); font-variant-numeric:tabular-nums; }
+
+.kd-list { display:flex; flex-direction:column; gap:7px; position:relative; z-index:2; min-height:196px; }
+.kd-ev {
+  display:flex; align-items:center; gap:10px;
+  background:#fff; border:1px solid var(--border); border-left:3px solid var(--purple);
+  border-radius:10px; padding:9px 12px;
+  opacity:0; transform:translateX(-14px);
+  transition: opacity 0.45s ease, transform 0.55s cubic-bezier(0.22,1,0.36,1);
+}
+.kd-ev.on { opacity:1; transform:translateX(0); }
+.kd-ev-body { flex:1; min-width:0; }
+.kd-ev-t { font-size:13px; font-weight:700; color:var(--text); }
+.kd-ev-m { font-size:11px; color:var(--text-muted); margin-top:1px; }
+.kd-who {
+  width:22px; height:22px; border-radius:50%; flex:none;
+  display:flex; align-items:center; justify-content:center;
+  font-size:10px; font-weight:800; color:#fff;
+}
+.kd-hint { text-align:center; font-size:12px; color:var(--text-muted); margin-top:14px; position:relative; z-index:2; }
+
+.kd-header { text-align:center; max-width:720px; margin:0 auto 46px; }
+.kd-header .kd-text { margin:14px auto 0; max-width:520px; }
+.kd-h2 { font-size:35px; font-weight:800; letter-spacing:-0.03em; line-height:1.14; margin-bottom:16px; }
+.kd-text { font-size:17px; color:var(--text-secondary); margin-bottom:26px; }
+.kd-list2 { list-style:none; display:flex; flex-direction:column; gap:16px; }
+.kd-list2 li { display:flex; gap:13px; align-items:flex-start; font-size:15px; color:var(--text-secondary); }
+.kd-check {
+  width:23px; height:23px; border-radius:50%; background:rgba(108,71,255,0.11);
+  display:flex; align-items:center; justify-content:center; flex:none; margin-top:1px;
+}
+.kd-check svg { width:12px; height:12px; stroke:var(--purple); }
+.kd-list2 strong { color:var(--text); font-weight:700; }
+
+@media (max-width: 900px) {
+  #kal-demo-sektion { padding: 52px 0 58px; }
+  .kd-inner { grid-template-columns:1fr; gap:24px; }
+  .kd-header { margin-bottom:22px; }
+  .kd-h2 { font-size:25px; }
+  .kal-demo { padding:22px 18px 18px; }
+}
+
+/* Telefon: hold kortet nede i højde, så det ikke fylder hele skærmen */
+@media (max-width: 640px) {
+  .kal-demo { padding:16px 13px 12px; border-radius:20px; }
+  .kd-head { margin-bottom:10px; }
+  .kd-month { font-size:13.5px; }
+  .kd-wd span { font-size:9px; }
+  .kd-day { aspect-ratio:auto; height:21px; font-size:11px; border-radius:6px; }
+  .kd-dots { height:4px; margin-top:1px; }
+  .kd-dot { width:3.5px; height:3.5px; }
+  .kd-sep { margin:9px 0 8px; }
+  .kd-listtop { margin-bottom:6px; }
+  /* kun 3 aftaler på telefon, se scriptet nederst i afsnittet */
+  .kd-list { gap:6px; min-height:126px; }
+  .kd-ev { padding:8px 10px; border-radius:9px; gap:8px; }
+  /* titel og tid på samme linje, halverer rækkehøjden */
+  .kd-ev-body { display:flex; align-items:baseline; gap:6px; overflow:hidden; }
+  .kd-ev-t { font-size:12.5px; white-space:nowrap; }
+  .kd-ev-m { font-size:10.5px; margin-top:0; white-space:nowrap;
+             overflow:hidden; text-overflow:ellipsis; }
+  .kd-ev-m::before { content:'· '; }
+  .kd-who { width:20px; height:20px; font-size:9.5px; }
+  .kd-hint { margin-top:10px; font-size:11.5px; }
+}
+
+/* Forsiden: mindre kort, så det passer til tekstkolonnen ved siden af
+   (på kalender-siden er kalenderen hovedemnet og må gerne fylde mere) */
+@media (min-width: 901px) {
+  #kal-demo-sektion .kal-demo { max-width: 344px; padding: 20px 18px 16px; }
+  #kal-demo-sektion .kd-day { aspect-ratio: auto; height: 34px; font-size: 11.5px; border-radius: 7px; }
+  #kal-demo-sektion .kd-wd span { font-size: 10px; }
+  #kal-demo-sektion .kd-dots { height: 4px; margin-top: 1px; }
+  #kal-demo-sektion .kd-month { font-size: 14px; }
+  #kal-demo-sektion .kd-head { margin-bottom: 12px; }
+  #kal-demo-sektion .kd-sep { margin: 12px 0 9px; }
+  #kal-demo-sektion .kd-list { gap: 6px; min-height: 168px; }
+  #kal-demo-sektion .kd-ev { padding: 8px 11px; border-radius: 9px; }
+  #kal-demo-sektion .kd-ev-t { font-size: 12.5px; }
+  #kal-demo-sektion .kd-ev-m { font-size: 10.5px; }
+  #kal-demo-sektion .kd-who { width: 20px; height: 20px; font-size: 9.5px; }
+  #kal-demo-sektion .kd-hint { margin-top: 10px; font-size: 11.5px; }
+}
+</style>
+
+  <div class="container">
+    <div class="kd-header reveal">
+        <span class="badge" style="margin-bottom:20px;">Ein Kalender, alle dabei</span>
+        <h2 class="kd-h2">Alle Termine an einem Ort</h2>
+        <p class="kd-text">Alle tragen ihre Termine am selben Ort ein, und alle sehen sie sofort.</p>
+      </div>
+
+      <div class="kd-inner">
+
+      <div class="kd-visual reveal">
+        <div class="kal-demo" id="kal-demo">
+          <div class="kd-head">
+            <span class="kd-month">August 2026</span>
+            <span class="kd-arrows">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </span>
+          </div>
+
+          <div class="kd-grid">
+            <div class="kd-wd"><span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span></div>
+            <div class="kd-days" id="kd-days"></div>
+          </div>
+
+          <div class="kd-sep"></div>
+          <div class="kd-listtop">
+            <b>Termine der Familie</b>
+            <span class="kd-count"><span id="kd-n">0</span> Termine</span>
+          </div>
+          <div class="kd-list" id="kd-list"></div>
+
+        </div>
+      </div>
+
+      <div class="kd-content reveal reveal-delay-2">
+        <ul class="kd-list2">
+          <li><span class="kd-check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Alle können eintragen</strong><span class="mob-kort"><br>auch Kinder und Großeltern</span></span></li>
+                    <li><span class="kd-check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Termine aus deinem eigenen Kalender holen</strong><span class="mob-kort"><br>Google, Outlook und der Kalender deines Handys, ganz automatisch</span></span></li>
+          <li><span class="kd-check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Private Termine bleiben privat</strong><span class="mob-kort"><br>markiere sie, dann sehen die Kinder nur „🔒 Privat“</span></span></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+(function () {
+  var demo = document.getElementById('kal-demo');
+  if (!demo) return;
+  var elDays = document.getElementById('kd-days'),
+      elList = document.getElementById('kd-list'),
+      elN    = document.getElementById('kd-n');
+
+  // August 2026 starter på en lørdag -> 5 tomme felter (man..fre)
+  var TOM_FOER = 5, DAGE = 31, IDAG = 5;
+  var EVENTS = [
+    { d: 5,  t: 'Fußball',        m: 'Mittwoch · 16:30',        who: 'E', c: '#3B82F6' },
+    { d: 12, t: 'Zahnarzt',       m: 'Mittwoch · 09:00',        who: 'F', c: '#EF4444' },
+    { d: 18, t: 'Oma kommt',  m: 'Dienstag · ganztägig',  who: 'B', c: '#22C55E' },
+    { d: 21, t: 'Elternabend',   m: 'Freitag · 19:00',        who: 'N', c: '#F59E0B' }
+  ];
+  // Auf dem Handy füllt die Karte sonst den ganzen Bildschirm, drei Termine
+  // reichen. Die Höhe der Liste ist im CSS entsprechend angepasst.
+  if (window.matchMedia('(max-width: 640px)').matches) EVENTS = EVENTS.slice(0, 3);
+
+  // byg måneden én gang
+  var celler = {};
+  (function byg() {
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < TOM_FOER; i++) {
+      var t = document.createElement('div');
+      t.className = 'kd-day mute';
+      t.innerHTML = (27 + i) + '<span class="kd-dots"></span>';
+      frag.appendChild(t);
+    }
+    for (var d = 1; d <= DAGE; d++) {
+      var c = document.createElement('div');
+      c.className = 'kd-day' + (d === IDAG ? ' today' : '');
+      c.innerHTML = d + '<span class="kd-dots"></span>';
+      celler[d] = c.querySelector('.kd-dots');
+      frag.appendChild(c);
+    }
+    elDays.appendChild(frag);
+  })();
+
+  // looper af sig selv, men kun mens afsnittet er på skærmen, og ikke hvis
+  // brugeren har slået bevægelse fra i telefonens indstillinger.
+  var LOOP = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var koerer = false, synlig = false, timere = [];
+  function ryd() { timere.forEach(clearTimeout); timere = []; }
+  function vent(ms, fn) { timere.push(setTimeout(fn, ms)); }
+
+  function nulstil() {
+    elList.innerHTML = '';
+    elN.textContent = '0';
+    Object.keys(celler).forEach(function (k) { celler[k].innerHTML = ''; });
+  }
+
+  function spil() {
+    if (koerer) return;
+    koerer = true; ryd(); nulstil();
+
+    EVENTS.forEach(function (ev, i) {
+      vent(600 + i * 1050, function () {
+        // aftalen glider ind i listen
+        var row = document.createElement('div');
+        row.className = 'kd-ev';
+        row.style.borderLeftColor = ev.c;
+        row.innerHTML =
+          '<span class="kd-ev-body"><span class="kd-ev-t"></span>' +
+          '<div class="kd-ev-m"></div></span>' +
+          '<span class="kd-who" style="background:' + ev.c + '"></span>';
+        row.querySelector('.kd-ev-t').textContent = ev.t;
+        row.querySelector('.kd-ev-m').textContent = ev.m;
+        row.querySelector('.kd-who').textContent = ev.who;
+        elList.appendChild(row);
+        requestAnimationFrame(function () { row.classList.add('on'); });
+        vent(30, function () { row.classList.add('on'); });   // sikring hvis rAF holder pause
+
+        // prikken popper på datoen
+        var dot = document.createElement('span');
+        dot.className = 'kd-dot';
+        dot.style.background = ev.c;
+        celler[ev.d].appendChild(dot);
+        vent(240, function () { dot.classList.add('on'); });
+
+        elN.textContent = i + 1;
+        if (i === EVENTS.length - 1) vent(2600, function () { koerer = false; if (LOOP && synlig) vent(2200, spil); });
+      });
+    });
+  }
+
+  var obs = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { synlig = e.isIntersecting; if (synlig) spil(); });
+  }, { threshold: 0.35 });
+  obs.observe(demo);
+  demo.addEventListener('click', function () { koerer = false; spil(); });
+})();
+</script>
+</section>
+
+<section id="opg-demo-sektion">
+<style>
+#opg-demo-sektion { padding: 96px 0 104px; background: var(--bg-subtle); }
+.og-header { text-align:center; max-width:720px; margin:0 auto 46px; }
+.og-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 68px; align-items: center; }
+.og-visual { display: flex; justify-content: center; }
+
+.opg-demo {
+  background: linear-gradient(145deg, #fff 0%, var(--bg-subtle) 100%);
+  border: 1px solid var(--border); border-radius: 26px;
+  padding: 24px 22px 20px; width: 100%; max-width: 400px;
+  box-shadow: var(--shadow-lg); position: relative; overflow: hidden;
+  cursor: pointer; transition: transform 0.4s ease;
+}
+.opg-demo::before {
+  content: ''; position: absolute; top: -70px; right: -70px; width: 210px; height: 210px;
+  background: radial-gradient(circle, rgba(34,197,94,0.13) 0%, transparent 70%);
+  border-radius: 50%; pointer-events: none;
+}
+.opg-demo:hover { transform: perspective(800px) rotateY(2deg) rotateX(-1deg); }
+
+.og-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:13px; position:relative; z-index:2; }
+.og-titel { font-size:15px; font-weight:800; color:var(--text); }
+.og-chips { display:flex; gap:5px; }
+.og-chip {
+  font-size:10px; font-weight:800; padding:3px 9px; border-radius:100px;
+  background:var(--bg-subtle); color:var(--text-muted); border:1px solid var(--border);
+}
+.og-chip.aktiv { background:rgba(34,197,94,0.13); color:#16A34A; border-color:rgba(34,197,94,0.3); }
+
+.og-liste { display:flex; flex-direction:column; gap:8px; position:relative; z-index:2; }
+.og-raekke {
+  display:flex; align-items:center; gap:11px;
+  background:#fff; border:1px solid var(--border); border-radius:12px; padding:11px 13px;
+  transition: background 0.35s ease, border-color 0.35s ease;
+}
+.og-raekke.faerdig { background:#F6FBF7; border-color:#CFEBD8; }
+.og-cirkel {
+  width:20px; height:20px; border-radius:50%; border:2px solid #D5D2E8; flex:none;
+  display:flex; align-items:center; justify-content:center;
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+.og-cirkel svg { width:11px; height:11px; stroke:#fff; stroke-width:3.5; opacity:0; transition:opacity .25s ease; }
+.og-raekke.faerdig .og-cirkel { background:#22C55E; border-color:#22C55E; transform:scale(1.08); }
+.og-raekke.faerdig .og-cirkel svg { opacity:1; }
+
+.og-midt { flex:1; min-width:0; }
+.og-navn { font-size:13.5px; font-weight:700; color:var(--text); transition:color .35s ease; }
+.og-raekke.faerdig .og-navn { color:var(--text-muted); text-decoration:line-through; text-decoration-color:rgba(0,0,0,.2); }
+.og-frist { font-size:10.5px; color:var(--text-muted); margin-top:2px; }
+
+/* avataren skifter person midt i animationen, den lille puls gør skiftet synligt */
+.og-hvem {
+  width:24px; height:24px; border-radius:50%; flex:none;
+  display:flex; align-items:center; justify-content:center;
+  font-size:10.5px; font-weight:800; color:#fff;
+  /* farven skifter med det samme sammen med bogstavet, glider den, kan man nå at se
+     et "F" på Nickos blå cirkel. Det er pulsen nedenfor der markerer skiftet. */
+  transition: transform 0.45s cubic-bezier(.34,1.56,.64,1);
+}
+.og-hvem.skifter { transform:scale(1.32); }
+
+.og-hint { text-align:center; font-size:12px; color:var(--text-muted); margin-top:13px; position:relative; z-index:2; }
+
+.og-h2 { font-size:35px; font-weight:800; letter-spacing:-0.03em; line-height:1.12; margin-bottom:16px; }
+.og-text { font-size:17px; color:var(--text-secondary); }
+.og-header .og-text { margin:14px auto 0; max-width:520px; }
+.og-list2 { list-style:none; display:flex; flex-direction:column; gap:16px; }
+.og-list2 li { display:flex; gap:13px; align-items:flex-start; font-size:15px; color:var(--text-secondary); }
+.og-c { width:23px; height:23px; border-radius:50%; background:rgba(34,197,94,0.13);
+        display:flex; align-items:center; justify-content:center; flex:none; margin-top:1px; }
+.og-c svg { width:12px; height:12px; stroke:#22C55E; }
+.og-list2 strong { color:var(--text); font-weight:700; }
+
+@media (max-width: 900px) {
+  #opg-demo-sektion { padding: 52px 0 58px; }
+  .og-inner { grid-template-columns:1fr; gap:22px; }
+  .og-header { margin-bottom:20px; }
+  .og-h2 { font-size:25px; }
+}
+@media (max-width: 640px) {
+  .opg-demo { padding:18px 15px 15px; border-radius:22px; }
+  .og-liste { gap:6px; }
+  .og-raekke { padding:9px 11px; border-radius:10px; gap:9px; }
+  .og-navn { font-size:13px; }
+  .og-cirkel { width:18px; height:18px; }
+  .og-hvem { width:22px; height:22px; font-size:10px; }
+}
+</style>
+
+  <div class="container">
+
+    <div class="og-header reveal">
+      <span class="badge" style="margin-bottom:20px;">Aufgaben</span>
+      <h2 class="og-h2">Schluss damit, dass einer alles trägt</h2>
+      <p class="og-text">Schreibt die Aufgaben auf und setzt Namen dazu. So sieht jeder, was er selbst zu tun hat, und was die anderen übernommen haben.</p>
+    </div>
+
+    <div class="og-inner">
+      <div class="og-visual reveal">
+        <div class="opg-demo" id="opg-demo">
+          <div class="og-top">
+            <span class="og-titel">Aufgaben</span>
+            <span class="og-chips"><span class="og-chip aktiv">Aktiv</span><span class="og-chip">Erledigt</span></span>
+          </div>
+
+          <div class="og-liste" id="og-liste"></div>
+        </div>
+      </div>
+
+      <div class="og-content reveal reveal-delay-2">
+        <ul class="og-list2">
+          <li><span class="og-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Einer Person zuweisen oder der ganzen Familie</strong><span class="mob-kort"><br>so ist klar, wer was macht</span></span></li>
+                    <li><span class="og-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Wiederkehrende Aufgaben kommen von selbst</strong><span class="mob-kort"><br>der Abwasch muss nicht jeden Tag neu eingetragen werden</span></span></li>
+          <li><span class="og-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Erledigte Aufgaben räumen sich selbst auf</strong><span class="mob-kort"><br>sie bleiben eine Woche stehen und verschwinden dann automatisch</span></span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function () {
+  var demo = document.getElementById('opg-demo');
+  if (!demo) return;
+  var liste = document.getElementById('og-liste');
+
+  var LENA = { bogstav: 'L', farve: '#22C55E' };
+  var MAX  = { bogstav: 'M', farve: '#3B82F6' };
+
+  var OPGAVER = [
+    { navn: 'Abwasch machen',   frist: 'Heute' },
+    { navn: 'Mit dem Hund raus', frist: 'Heute · 17:00' },
+    { navn: 'Wohnzimmer saugen', frist: 'Morgen' },
+    { navn: 'Wäsche waschen',    frist: 'Donnerstag' },
+    { navn: 'Müll rausbringen',  frist: 'Freitag' }
+  ];
+  // Auf dem Handy sind fünf Zeilen zu viel, vier zeigen dasselbe.
+  // Die Animation nutzt nur Zeile 0-3 und läuft unverändert.
+  if (window.matchMedia('(max-width: 640px)').matches) OPGAVER = OPGAVER.slice(0, 4);
+
+  // byg rækkerne én gang
+  var raekker = OPGAVER.map(function (o) {
+    var r = document.createElement('div');
+    r.className = 'og-raekke';
+    r.innerHTML =
+      '<span class="og-cirkel"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>' +
+      '<span class="og-midt"><span class="og-navn"></span><div class="og-frist"></div></span>' +
+      '<span class="og-hvem"></span>';
+    r.querySelector('.og-navn').textContent = o.navn;
+    r.querySelector('.og-frist').textContent = o.frist;
+    liste.appendChild(r);
+    return r;
+  });
+
+  function saetHvem(i, person) {
+    var a = raekker[i].querySelector('.og-hvem');
+    a.style.background = person.farve;
+    a.textContent = person.bogstav;
+  }
+  function pulsHvem(i) {
+    var a = raekker[i].querySelector('.og-hvem');
+    a.classList.add('skifter');
+    vent(430, function () { a.classList.remove('skifter'); });
+  }
+  // looper af sig selv, men kun mens afsnittet er på skærmen, og ikke hvis
+  // brugeren har slået bevægelse fra i telefonens indstillinger.
+  var LOOP = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var koerer = false, synlig = false, timere = [];
+  function ryd() { timere.forEach(clearTimeout); timere = []; }
+  function vent(ms, fn) { timere.push(setTimeout(fn, ms)); }
+
+  function nulstil() {
+    raekker.forEach(function (r, i) { r.classList.remove('faerdig'); saetHvem(i, LENA); });
+  }
+
+  function spil() {
+    if (koerer) return;
+    koerer = true; ryd(); nulstil();
+
+    // 1) alt ligger hos Freya, så flytter to opgaver over til Nicko
+    vent(1000, function () { saetHvem(1, MAX); pulsHvem(1); });
+    vent(1850, function () { saetHvem(3, MAX); pulsHvem(3); });
+
+    // 2) …og så bliver de faktisk lavet
+    vent(2950, function () { raekker[1].classList.add('faerdig'); });
+    vent(3800, function () { raekker[0].classList.add('faerdig'); });
+
+    vent(6600, function () { koerer = false; if (LOOP && synlig) vent(2200, spil); });
+  }
+
+  new IntersectionObserver(function (es) {
+    es.forEach(function (e) { synlig = e.isIntersecting; if (synlig) spil(); });
+  }, { threshold: 0.35 }).observe(demo);
+  demo.addEventListener('click', function () { koerer = false; spil(); });
+})();
+</script>
+</section>
+
+<section id="lommepenge">
+<style>
+#lommepenge { padding: 120px 0; background: var(--bg-subtle); }
+.lp-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center; }
+.lp-visual { display: flex; justify-content: center; }
+
+.star-demo {
+  background: linear-gradient(145deg, #fff 0%, var(--bg-subtle) 100%);
+  border: 1px solid var(--border); border-radius: 26px;
+  padding: 30px 28px 26px; width: 100%; max-width: 400px;
+  box-shadow: var(--shadow-lg, 0 24px 80px rgba(108,71,255,0.16));
+  position: relative; overflow: hidden; cursor: pointer;
+  transition: transform 0.4s ease;
+}
+.star-demo::before {
+  content: ''; position: absolute; top: -70px; right: -70px; width: 210px; height: 210px;
+  background: radial-gradient(circle, rgba(245,158,11,0.13) 0%, transparent 70%);
+  border-radius: 50%; pointer-events: none;
+}
+.star-demo:hover { transform: perspective(800px) rotateY(2deg) rotateX(-1deg); }
+
+.sd-top { display:flex; align-items:center; justify-content:space-between; margin-bottom: 20px; position:relative; z-index:2; }
+.sd-who { display:flex; align-items:center; gap:9px; }
+.sd-dot { width:11px; height:11px; border-radius:50%; background:#3B82F6; flex:none; }
+.sd-name { font-size:15px; font-weight:800; color:var(--text); }
+.sd-score { display:flex; align-items:baseline; gap:5px; }
+.sd-star { font-size:19px; line-height:1; color:#F59E0B; }
+.sd-points { font-size:27px; font-weight:800; color:var(--text); font-variant-numeric: tabular-nums; letter-spacing:-0.02em; }
+.sd-kr { font-size:13px; font-weight:700; color:var(--text-muted); font-variant-numeric: tabular-nums; }
+
+.sd-tasks { display:flex; flex-direction:column; gap:9px; position:relative; z-index:2; }
+.sd-task {
+  display:flex; align-items:center; gap:11px;
+  background:#fff; border:1px solid var(--border); border-radius:13px;
+  padding:12px 14px; transition: background 0.35s ease, border-color 0.35s ease, opacity 0.35s ease;
+}
+.sd-task.done { background:#F6FBF7; border-color:#CFEBD8; }
+.sd-check {
+  width:21px; height:21px; border-radius:50%; border:2px solid #D5D2E8; flex:none;
+  display:flex; align-items:center; justify-content:center;
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+.sd-check svg { width:12px; height:12px; stroke:#fff; stroke-width:3.5; opacity:0; transition:opacity 0.25s ease; }
+.sd-task.done .sd-check { background:#22C55E; border-color:#22C55E; transform:scale(1.08); }
+.sd-task.done .sd-check svg { opacity:1; }
+.sd-body { flex:1; min-width:0; }
+.sd-title { font-size:14px; font-weight:700; color:var(--text); transition: color 0.35s ease; }
+.sd-task.done .sd-title { color:var(--text-muted); text-decoration: line-through; text-decoration-color: rgba(0,0,0,0.2); }
+.sd-meta { font-size:11.5px; font-weight:700; color:#F59E0B; margin-top:2px; }
+
+.sd-pop {
+  position:absolute; right:16px; font-size:13px; font-weight:800; color:#22C55E;
+  opacity:0; pointer-events:none; transform: translateY(0);
+}
+.sd-pop.fly { animation: lpFly 0.85s ease-out forwards; }
+@keyframes lpFly {
+  0%   { opacity:0; transform: translateY(4px) scale(0.9); }
+  22%  { opacity:1; transform: translateY(-2px) scale(1.06); }
+  100% { opacity:0; transform: translateY(-30px) scale(1); }
+}
+
+.sd-goal { margin-top:22px; position:relative; z-index:2; }
+.sd-goal-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.sd-goal-name { font-size:12.5px; font-weight:800; color:var(--text-secondary); display:flex; align-items:center; gap:6px; }
+.sd-goal-name svg { width:14px; height:14px; stroke:var(--purple); }
+.sd-goal-num { font-size:12px; font-weight:800; color:var(--text-muted); font-variant-numeric: tabular-nums; }
+.sd-bar { height:9px; border-radius:100px; background:#EAE7F7; overflow:hidden; }
+.sd-fill {
+  height:100%; width:100%; border-radius:100px;
+  background: linear-gradient(90deg, #6C47FF 0%, #3B82F6 55%, #EC4899 100%);
+  /* scaleX i stedet for width: width tvinger browseren til at regne layout om
+     hver frame, scaleX kører på compositoren og rører ikke layoutet. */
+  transform: scaleX(0); transform-origin: left center;
+  transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.sd-hint { text-align:center; font-size:12px; color:var(--text-muted); margin-top:16px; position:relative; z-index:2; }
+
+.lp-header { text-align:center; max-width:720px; margin:0 auto 52px; }
+.lp-header .lp-text { margin:14px auto 0; max-width:520px; }
+.lp-h2 { font-size:36px; font-weight:800; letter-spacing:-0.03em; line-height:1.12; }
+.lp-text { font-size:17px; color:var(--text-secondary); margin-bottom:26px; }
+.lp-list { list-style:none; display:flex; flex-direction:column; gap:16px; }
+.lp-list li { display:flex; gap:13px; align-items:flex-start; font-size:15px; color:var(--text-secondary); }
+.lp-check {
+  width:23px; height:23px; border-radius:50%; background:rgba(34,197,94,0.12);
+  display:flex; align-items:center; justify-content:center; flex:none; margin-top:1px;
+}
+.lp-check svg { width:12px; height:12px; stroke:#22C55E; }
+.lp-list strong { color:var(--text); font-weight:700; }
+
+@media (max-width: 900px) {
+  #lommepenge { padding: 56px 0; }
+  .lp-inner { grid-template-columns: 1fr; gap: 36px; }
+  .lp-header { margin-bottom: 30px; }
+  .lp-h2 { font-size: 28px; }
+  .star-demo { padding: 24px 20px 22px; }
+  .sd-points { font-size: 23px; }
+}
+
+/* Telefon: hold kortet nede i højde, så det ikke fylder hele skærmen */
+@media (max-width: 640px) {
+  .star-demo { padding:18px 14px 15px; border-radius:22px; }
+  .sd-top { margin-bottom:14px; }
+  .sd-points { font-size:21px; }
+  .sd-tasks { gap:7px; }
+  .sd-task { padding:9px 12px; border-radius:11px; gap:9px; }
+  /* titel og point på samme linje, halverer rækkehøjden */
+  .sd-body { display:flex; align-items:baseline; gap:7px; overflow:hidden; }
+  .sd-title { font-size:13px; white-space:nowrap; }
+  .sd-meta { font-size:11px; margin-top:0; white-space:nowrap;
+             overflow:hidden; text-overflow:ellipsis; }
+  .sd-check { width:19px; height:19px; }
+  .sd-check svg { width:11px; height:11px; }
+  .sd-goal { margin-top:16px; }
+  .sd-hint { margin-top:12px; font-size:11.5px; }
+}
+</style>
+
+  <div class="container">
+
+    <div class="lp-header reveal">
+      <span class="badge" style="margin-bottom:16px;">Neu in Unser Zuhause</span>
+      <h2 class="lp-h2">Taschengeld, das sich von selbst ergibt</h2>
+      <p class="lp-text">Vergebt Punkte für Aufgaben. Das Kind bekommt sie in dem Moment, in dem die Aufgabe abgehakt wird.</p>
+    </div>
+
+    <div class="lp-inner">
+
+      <div class="lp-visual reveal">
+        <div class="star-demo" id="star-demo">
+          <div class="sd-top">
+            <div class="sd-who"><span class="sd-dot"></span><span class="sd-name">Emil</span></div>
+            <div class="sd-score">
+              <span class="sd-star">★</span>
+              <span class="sd-points" id="sd-points">0</span>
+              <span class="sd-kr" id="sd-kr">0 Cent</span>
+            </div>
+          </div>
+
+          <div class="sd-tasks" id="sd-tasks">
+            <div class="sd-task" data-p="15">
+              <span class="sd-check"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="sd-body"><span class="sd-title">Staubsaugen</span><div class="sd-meta">★ 15 Punkte · 15 Cent</div></span>
+              <span class="sd-pop">+15</span>
+            </div>
+            <div class="sd-task" data-p="20">
+              <span class="sd-check"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="sd-body"><span class="sd-title">Beim Abendessen helfen</span><div class="sd-meta">★ 20 Punkte · 20 Cent</div></span>
+              <span class="sd-pop">+20</span>
+            </div>
+            <div class="sd-task" data-p="25">
+              <span class="sd-check"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="sd-body"><span class="sd-title">Zimmer aufräumen</span><div class="sd-meta">★ 25 Punkte · 25 Cent</div></span>
+              <span class="sd-pop">+25</span>
+            </div>
+            <div class="sd-task" data-p="50">
+              <span class="sd-check"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="sd-body"><span class="sd-title">Bad putzen</span><div class="sd-meta">★ 50 Punkte · 50 Cent</div></span>
+              <span class="sd-pop">+50</span>
+            </div>
+          </div>
+
+          <div class="sd-goal">
+            <div class="sd-goal-row">
+              <span class="sd-goal-name">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
+                Spart auf: Kinobesuch
+              </span>
+              <span class="sd-goal-num"><span id="sd-have">0</span> / 200</span>
+            </div>
+            <div class="sd-bar"><div class="sd-fill" id="sd-fill"></div></div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="lp-content reveal reveal-delay-2">
+        <ul class="lp-list">
+          <li><span class="lp-check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Ihr bestimmt den Kurs</strong><span class="mob-kort"><br>1 Punkt kann 1 Cent sein oder gar kein Geld</span></span></li>
+          <li><span class="lp-check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Die Kinder sparen auf etwas, das sie sich wünschen</strong><span class="mob-kort"><br>setzt ein Ziel, und sie sehen, wie weit es noch ist</span></span></li>
+                    <li><span class="lp-check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Nur Erwachsene zahlen aus</strong><span class="mob-kort"><br>und wenn ihr es euch anders überlegt, gehen die Punkte zurück</span></span></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+(function () {
+  var demo = document.getElementById('star-demo');
+  if (!demo) return;
+  var tasks = [].slice.call(document.querySelectorAll('#sd-tasks .sd-task'));
+  var elP = document.getElementById('sd-points'),
+      elK = document.getElementById('sd-kr'),
+      elH = document.getElementById('sd-have'),
+      elF = document.getElementById('sd-fill');
+  // looper af sig selv, men kun mens afsnittet er på skærmen, og ikke hvis
+  // brugeren har slået bevægelse fra i telefonens indstillinger.
+  var LOOP = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var MAAL = 200, koerer = false, synlig = false, timere = [];
+
+  function ryd() { timere.forEach(clearTimeout); timere = []; }
+  function vent(ms, fn) { timere.push(setTimeout(fn, ms)); }
+
+  function saet(v) {
+    elP.textContent = v; elK.textContent = v + ' Cent'; elH.textContent = v;
+  }
+
+  function taelTil(fra, til, ms) {
+    var start = null;
+    function step(t) {
+      if (!start) start = t;
+      var p = Math.min((t - start) / ms, 1);
+      saet(Math.round(fra + (til - fra) * (1 - Math.pow(1 - p, 3))));   // blødt ud
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+    // sikring: requestAnimationFrame holder pause i baggrundsfaner, sæt sluttallet uanset
+    vent(ms + 80, function () { saet(til); });
+  }
+
+  function nulstil() {
+    tasks.forEach(function (t) {
+      t.classList.remove('done');
+      t.querySelector('.sd-pop').classList.remove('fly');
+      t.style.opacity = '';
+    });
+    saet(0);
+    elF.style.transform = 'scaleX(0)';
+  }
+
+  function spil() {
+    if (koerer) return;
+    koerer = true; ryd(); nulstil();
+    var sum = 0;
+    tasks.forEach(function (t, i) {
+      vent(650 + i * 1000, function () {
+        var p = parseInt(t.dataset.p, 10);
+        t.classList.add('done');
+        var pop = t.querySelector('.sd-pop');
+        pop.classList.remove('fly');
+        void pop.offsetWidth;                       // genstart animationen
+        pop.classList.add('fly');
+        taelTil(sum, sum + p, 700);
+        sum += p;
+        elF.style.transform = 'scaleX(' + (Math.min(100, sum / MAAL * 100) / 100) + ')';
+        if (i === tasks.length - 1) vent(2600, function () { koerer = false; if (LOOP && synlig) vent(2200, spil); });
+      });
+    });
+  }
+
+  var obs = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { synlig = e.isIntersecting; if (synlig) spil(); });
+  }, { threshold: 0.45 });
+  obs.observe(demo);
+  demo.addEventListener('click', function () { koerer = false; spil(); });
+})();
+</script>
+</section>
+
+<section id="ind-demo-sektion">
+<style>
+#ind-demo-sektion { padding: 96px 0 104px; background: var(--bg-subtle); }
+.id-header { text-align:center; max-width:720px; margin:0 auto 46px; }
+.id-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 68px; align-items: center; }
+.id-visual { display: flex; justify-content: center; }
+
+.ind-demo {
+  background: linear-gradient(145deg, #fff 0%, var(--bg-subtle) 100%);
+  border: 1px solid var(--border); border-radius: 26px;
+  padding: 24px 22px 20px; width: 100%; max-width: 400px;
+  box-shadow: var(--shadow-lg); position: relative; overflow: hidden;
+  cursor: pointer; transition: transform 0.4s ease;
+}
+.ind-demo::before {
+  content: ''; position: absolute; top: -70px; right: -70px; width: 210px; height: 210px;
+  background: radial-gradient(circle, rgba(59,130,246,0.13) 0%, transparent 70%);
+  border-radius: 50%; pointer-events: none;
+}
+.ind-demo:hover { transform: perspective(800px) rotateY(2deg) rotateX(-1deg); }
+
+.id-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; position:relative; z-index:2; }
+.id-title { font-size:15px; font-weight:800; color:var(--text); }
+.id-count { font-size:12px; font-weight:800; color:var(--text-muted); font-variant-numeric:tabular-nums; }
+
+.id-list { display:flex; flex-direction:column; gap:8px; position:relative; z-index:2; }
+.id-row {
+  display:flex; align-items:center; gap:11px;
+  background:#fff; border:1px solid var(--border); border-radius:12px; padding:11px 13px;
+  transition: background 0.35s ease, border-color 0.35s ease;
+}
+.id-row.kobt { background:#F6FBF7; border-color:#CFEBD8; }
+.id-check {
+  width:20px; height:20px; border-radius:50%; border:2px solid #D5D2E8; flex:none;
+  display:flex; align-items:center; justify-content:center;
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+.id-check svg { width:11px; height:11px; stroke:#fff; stroke-width:3.5; opacity:0; transition:opacity .25s ease; }
+.id-row.kobt .id-check { background:#22C55E; border-color:#22C55E; transform:scale(1.08); }
+.id-row.kobt .id-check svg { opacity:1; }
+.id-navn { flex:1; font-size:13.5px; font-weight:700; color:var(--text); transition:color .35s ease; }
+.id-row.kobt .id-navn { color:var(--text-muted); text-decoration:line-through; text-decoration-color:rgba(0,0,0,.2); }
+.id-hvem {
+  font-size:11px; font-weight:800; color:#fff; border-radius:100px; padding:3px 9px;
+  opacity:0; transform:translateX(6px); transition:opacity .35s ease, transform .45s cubic-bezier(.22,1,.36,1);
+}
+.id-row.kobt .id-hvem { opacity:1; transform:translateX(0); }
+
+.id-live {
+  display:flex; align-items:center; justify-content:center; gap:7px;
+  margin-top:15px; font-size:12px; font-weight:700; color:var(--text-muted);
+  position:relative; z-index:2;
+}
+.id-prik { width:7px; height:7px; border-radius:50%; background:#22C55E; animation: idPuls 1.8s ease-in-out infinite; }
+@keyframes idPuls { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.35; transform:scale(.8); } }
+.id-hint { text-align:center; font-size:12px; color:var(--text-muted); margin-top:10px; position:relative; z-index:2; }
+
+.id-h2 { font-size:35px; font-weight:800; letter-spacing:-0.03em; line-height:1.14; margin-bottom:16px; }
+.id-text { font-size:17px; color:var(--text-secondary); }
+.id-header .id-text { margin:14px auto 0; max-width:520px; }
+.id-list2 { list-style:none; display:flex; flex-direction:column; gap:16px; }
+.id-list2 li { display:flex; gap:13px; align-items:flex-start; font-size:15px; color:var(--text-secondary); }
+.id-c { width:23px; height:23px; border-radius:50%; background:rgba(59,130,246,0.12);
+        display:flex; align-items:center; justify-content:center; flex:none; margin-top:1px; }
+.id-c svg { width:12px; height:12px; stroke:#3B82F6; }
+.id-list2 strong { color:var(--text); font-weight:700; }
+
+@media (max-width: 900px) {
+  #ind-demo-sektion { padding: 52px 0 58px; }
+  .id-inner { grid-template-columns:1fr; gap:22px; }
+  .id-header { margin-bottom:20px; }
+  .id-h2 { font-size:25px; }
+}
+@media (max-width: 640px) {
+  .ind-demo { padding:18px 15px 15px; border-radius:22px; }
+  .id-list { gap:6px; }
+  .id-row { padding:9px 11px; border-radius:10px; gap:9px; }
+  .id-navn { font-size:13px; }
+  .id-hvem { font-size:10px; padding:2px 7px; }
+  .id-check { width:18px; height:18px; }
+}
+</style>
+
+  <div class="container">
+
+    <div class="id-header reveal">
+      <span class="badge" style="margin-bottom:20px;">Sofort aktualisiert</span>
+      <h2 class="id-h2">Eine Liste, alle haken ab</h2>
+      <p class="id-text">Mama ist bei Aldi, Papa bei Rewe. Beide haken in derselben Liste ab, und niemand kommt mit zwei Litern Milch nach Hause.</p>
+    </div>
+
+    <div class="id-inner">
+      <div class="id-visual reveal">
+        <div class="ind-demo" id="ind-demo">
+          <div class="id-top">
+            <span class="id-title">Einkaufsliste</span>
+            <span class="id-count"><span id="id-n">0</span> von 6 gekauft</span>
+          </div>
+          <div class="id-list" id="id-list"></div>
+          <div class="id-live"><span class="id-prik"></span>Für alle sofort aktualisiert</div>
+        </div>
+      </div>
+
+      <div class="id-content reveal reveal-delay-2">
+        <ul class="id-list2">
+          <li><span class="id-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Alle können hinzufügen und abhaken</strong><span class="mob-kort"><br>auch die Kinder, wenn sie mit im Laden sind</span></span></li>
+          <li><span class="id-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Foto von der Ware machen</strong><span class="mob-kort"><br>damit nicht die falsche Marke im Wagen landet</span></span></li>
+          <li><span class="id-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Gekauftes bleibt einen Tag stehen</strong><span class="mob-kort"><br>so könnt ihr es zurücksetzen, falls etwas schiefging</span></span></li>
+                  </ul>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function () {
+  var demo = document.getElementById('ind-demo');
+  if (!demo) return;
+  var liste = document.getElementById('id-list'), elN = document.getElementById('id-n');
+  var VARER = [
+    { v: 'Milch',    hvem: 'Lena', farve: '#22C55E' },
+    { v: 'Brot',     hvem: 'Max', farve: '#3B82F6' },
+    { v: 'Eier',     hvem: 'Lena', farve: '#22C55E' },
+    { v: 'Kaffee',   hvem: 'Max', farve: '#3B82F6' },
+    { v: 'Bananen',  hvem: 'Lena', farve: '#22C55E' },
+    { v: 'Käse',     hvem: 'Max', farve: '#3B82F6' }
+  ];
+  VARER.forEach(function (x) {
+    var r = document.createElement('div');
+    r.className = 'id-row';
+    r.innerHTML = '<span class="id-check"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>' +
+                  '<span class="id-navn"></span>' +
+                  '<span class="id-hvem" style="background:' + x.farve + '"></span>';
+    r.querySelector('.id-navn').textContent = x.v;
+    r.querySelector('.id-hvem').textContent = x.hvem;
+    liste.appendChild(r);
+  });
+  var raekker = [].slice.call(liste.children);
+
+  // looper af sig selv, men kun mens afsnittet er på skærmen, og ikke hvis
+  // brugeren har slået bevægelse fra i telefonens indstillinger.
+  var LOOP = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var koerer = false, synlig = false, timere = [];
+  function ryd() { timere.forEach(clearTimeout); timere = []; }
+  function vent(ms, fn) { timere.push(setTimeout(fn, ms)); }
+  function nulstil() { raekker.forEach(function (r) { r.classList.remove('kobt'); }); elN.textContent = '0'; }
+
+  function spil() {
+    if (koerer) return;
+    koerer = true; ryd(); nulstil();
+    // to personer krydser af på skift, ikke i rækkefølge, som i virkeligheden
+    var orden = [0, 3, 1, 4, 2, 5];
+    orden.forEach(function (idx, i) {
+      vent(600 + i * 780, function () {
+        raekker[idx].classList.add('kobt');
+        elN.textContent = i + 1;
+        if (i === orden.length - 1) vent(2400, function () { koerer = false; if (LOOP && synlig) vent(2200, spil); });
+      });
+    });
+  }
+
+  new IntersectionObserver(function (es) {
+    es.forEach(function (e) { synlig = e.isIntersecting; if (synlig) spil(); });
+  }, { threshold: 0.35 }).observe(demo);
+  demo.addEventListener('click', function () { koerer = false; spil(); });
+})();
+</script>
+</section>
+
+<section id="mad-demo-sektion">
+<style>
+#mad-demo-sektion { padding: 96px 0 104px; background: var(--bg-subtle); }
+.md-header { text-align:center; max-width:720px; margin:0 auto 46px; }
+.md-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 68px; align-items: center; }
+.md-visual { display: flex; justify-content: center; }
+
+.mad-demo {
+  background: linear-gradient(145deg, #fff 0%, var(--bg-subtle) 100%);
+  border: 1px solid var(--border); border-radius: 26px;
+  padding: 24px 22px 20px; width: 100%; max-width: 400px;
+  box-shadow: var(--shadow-lg); position: relative; overflow: hidden;
+  cursor: pointer; transition: transform 0.4s ease;
+}
+.mad-demo::before {
+  content: ''; position: absolute; top: -70px; right: -70px; width: 210px; height: 210px;
+  background: radial-gradient(circle, rgba(249,115,22,0.13) 0%, transparent 70%);
+  border-radius: 50%; pointer-events: none;
+}
+.mad-demo:hover { transform: perspective(800px) rotateY(2deg) rotateX(-1deg); }
+
+.md-uge { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; position:relative; z-index:2; }
+.md-uge b { font-size:14.5px; font-weight:800; color:var(--text); }
+.md-uge span { font-size:11.5px; color:var(--text-muted); font-weight:700; }
+
+.md-dage { display:flex; flex-direction:column; gap:9px; position:relative; z-index:2; min-height:250px; }
+.md-dag { }
+.md-dagnavn { font-size:11.5px; font-weight:800; color:var(--text-secondary); margin-bottom:5px; letter-spacing:.02em; }
+.md-tom {
+  border:1px dashed var(--border); border-radius:10px; padding:9px 12px;
+  font-size:11.5px; color:var(--text-muted); font-style:italic;
+  transition: opacity .4s ease;
+}
+.md-maaltid {
+  display:flex; align-items:center; gap:9px;
+  background:#fff; border:1px solid var(--border); border-left:3px solid var(--purple);
+  border-radius:10px; padding:8px 11px; margin-bottom:5px;
+  opacity:0; transform:translateY(-6px) scale(.98);
+  transition: opacity .4s ease, transform .5s cubic-bezier(.22,1,.36,1);
+}
+.md-maaltid.on { opacity:1; transform:none; }
+.md-type {
+  font-size:9.5px; font-weight:800; letter-spacing:.06em; text-transform:uppercase;
+  padding:2px 7px; border-radius:100px; flex:none;
+}
+.md-ret { font-size:12.5px; font-weight:700; color:var(--text); }
+.md-hint { text-align:center; font-size:12px; color:var(--text-muted); margin-top:12px; position:relative; z-index:2; }
+
+.md-h2 { font-size:35px; font-weight:800; letter-spacing:-0.03em; line-height:1.14; margin-bottom:16px; }
+.md-text { font-size:17px; color:var(--text-secondary); }
+.md-header .md-text { margin:14px auto 0; max-width:520px; }
+.md-list2 { list-style:none; display:flex; flex-direction:column; gap:16px; }
+.md-list2 li { display:flex; gap:13px; align-items:flex-start; font-size:15px; color:var(--text-secondary); }
+.md-c { width:23px; height:23px; border-radius:50%; background:rgba(249,115,22,0.13);
+        display:flex; align-items:center; justify-content:center; flex:none; margin-top:1px; }
+.md-c svg { width:12px; height:12px; stroke:#F97316; }
+.md-list2 strong { color:var(--text); font-weight:700; }
+
+@media (max-width: 900px) {
+  #mad-demo-sektion { padding: 52px 0 58px; }
+  .md-inner { grid-template-columns:1fr; gap:22px; }
+  .md-header { margin-bottom:20px; }
+  .md-h2 { font-size:25px; }
+}
+@media (max-width: 640px) {
+  .mad-demo { padding:18px 15px 15px; border-radius:22px; }
+  .md-dage { gap:7px; min-height:228px; }
+  .md-maaltid { padding:7px 10px; }
+  .md-ret { font-size:12px; }
+}
+</style>
+
+  <div class="container">
+
+    <div class="md-header reveal">
+      <span class="badge" style="margin-bottom:20px;">Schluss mit „Was gibt es heute?“</span>
+      <h2 class="md-h2">Das Essen der Woche, einmal geplant</h2>
+      <p class="md-text">Plant das Essen am Sonntagabend. Den Rest der Woche weiß jeder, was es gibt, ohne zu fragen.</p>
+    </div>
+
+    <div class="md-inner">
+      <div class="md-visual reveal">
+        <div class="mad-demo" id="mad-demo">
+          <div class="md-uge"><b>KW 16</b><span>13. – 19. April</span></div>
+          <div class="md-dage" id="md-dage"></div>
+        </div>
+      </div>
+
+      <div class="md-content reveal reveal-delay-2">
+        <ul class="md-list2">
+          <li><span class="md-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Frühstück, Mittag- und Abendessen</strong><span class="mob-kort"><br>oder nur das, was ihr wirklich planen wollt</span></span></li>
+          <li><span class="md-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Gerichte wiederverwenden, die ihr oft kocht</strong><span class="mob-kort"><br>aus der Liste wählen statt neu zu tippen</span></span></li>
+          <li><span class="md-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Rezept dazuschreiben</strong><span class="mob-kort"><br>so kann anfangen, wer zuerst zu Hause ist</span></span></li>
+                  </ul>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function () {
+  var demo = document.getElementById('mad-demo');
+  if (!demo) return;
+  var boks = document.getElementById('md-dage');
+
+  var TYPER = {
+    frokost:   { navn: 'Mittagessen',   bg: 'rgba(168,85,247,.13)', fg: '#A855F7', kant: '#A855F7' },
+    aftensmad: { navn: 'Abendessen', bg: 'rgba(108,71,255,.13)', fg: '#6C47FF', kant: '#6C47FF' }
+  };
+  var UGE = [
+    { dag: 'Montag',  maal: [['frokost','Brot mit Thunfisch'], ['aftensmad','Spaghetti Bolognese']] },
+    { dag: 'Dienstag', maal: [['frokost','Tapas'], ['aftensmad','Burger']] },
+    { dag: 'Mittwoch',  maal: [['aftensmad','Wraps']] }
+  ];
+
+  // byg dagene én gang, måltiderne ligger klar, men usynlige
+  var alle = [];
+  UGE.forEach(function (d) {
+    var wrap = document.createElement('div');
+    wrap.className = 'md-dag';
+    var n = document.createElement('div');
+    n.className = 'md-dagnavn'; n.textContent = d.dag;
+    wrap.appendChild(n);
+    d.maal.forEach(function (m) {
+      var t = TYPER[m[0]];
+      var el = document.createElement('div');
+      el.className = 'md-maaltid';
+      el.style.borderLeftColor = t.kant;
+      el.innerHTML = '<span class="md-type" style="background:' + t.bg + ';color:' + t.fg + '"></span><span class="md-ret"></span>';
+      el.querySelector('.md-type').textContent = t.navn;
+      el.querySelector('.md-ret').textContent = m[1];
+      wrap.appendChild(el);
+      alle.push(el);
+    });
+    boks.appendChild(wrap);
+  });
+
+  // looper af sig selv, men kun mens afsnittet er på skærmen, og ikke hvis
+  // brugeren har slået bevægelse fra i telefonens indstillinger.
+  var LOOP = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var koerer = false, synlig = false, timere = [];
+  function ryd() { timere.forEach(clearTimeout); timere = []; }
+  function vent(ms, fn) { timere.push(setTimeout(fn, ms)); }
+
+  function spil() {
+    if (koerer) return;
+    koerer = true; ryd();
+    alle.forEach(function (el) { el.classList.remove('on'); });
+    alle.forEach(function (el, i) {
+      vent(550 + i * 620, function () {
+        el.classList.add('on');
+        if (i === alle.length - 1) vent(2500, function () { koerer = false; if (LOOP && synlig) vent(2200, spil); });
+      });
+    });
+  }
+
+  new IntersectionObserver(function (es) {
+    es.forEach(function (e) { synlig = e.isIntersecting; if (synlig) spil(); });
+  }, { threshold: 0.35 }).observe(demo);
+  demo.addEventListener('click', function () { koerer = false; spil(); });
+})();
+</script>
+</section>
+
+<!-- VIDEO-DEMO -->
+<section id="video-demo" class="section" style="padding-top:20px;">
+  <style>
+    .demo-phone { position:relative; width:min(270px,70vw); background:#12101F; border-radius:38px; padding:10px; box-shadow:0 30px 70px rgba(76,71,180,.30), inset 0 0 0 2px rgba(255,255,255,.06); }
+    /* Uden aspect-ratio bruger browseren 300x150 indtil videoen er hentet, og så
+       tegnes telefonen kun i halv højde et øjeblik. Her er pladsen reserveret fra
+       første streg, videoen er 540x960. */
+    .demo-phone video { display:block; width:100%; aspect-ratio: 540 / 960; height:auto;
+                        border-radius:29px; background:#EEF0FF; object-fit:cover; }
+    .demo-side { display:none; }
+    @media (min-width: 900px) {
+      #video-demo .demo-fan { perspective:1500px; }
+      .demo-side { display:block; z-index:1; }
+      .demo-side:first-child { transform:scale(0.86) translateY(26px) rotateY(28deg); margin-right:-70px; }
+      .demo-side:last-child { transform:scale(0.86) translateY(26px) rotateY(-28deg); margin-left:-70px; }
+      .demo-main { position:relative; z-index:2; transform:rotateY(0deg); }
+    }
+  </style>
+  <div class="container" style="text-align:center;">
+    <h2 class="section-h2 reveal" style="margin-bottom:36px;">Sieh dir die App an</h2>
+    <div class="demo-fan" style="display:flex; justify-content:center; align-items:flex-start; gap:34px;">
+      <div class="demo-phone demo-side">
+        <video muted loop playsinline preload="metadata" width="540" height="960" poster="/video/poster.webp"><source src="/video/app-demo.mp4" type="video/mp4"></video>
+      </div>
+      <div class="demo-phone demo-main">
+        <video muted loop playsinline preload="metadata" width="540" height="960" poster="/video/poster.webp"><source src="/video/app-demo.mp4" type="video/mp4"></video>
+      </div>
+      <div class="demo-phone demo-side">
+        <video muted loop playsinline preload="metadata" width="540" height="960" poster="/video/poster.webp"><source src="/video/app-demo.mp4" type="video/mp4"></video>
+      </div>
+    </div>
+    <script>
+    (function(){
+      var vids=document.querySelectorAll('#video-demo video');
+      var main=document.querySelector('#video-demo .demo-main video');
+      function visible(v){ return v.offsetParent!==null; }
+      function go(){
+        vids.forEach(function(v){
+          if(!visible(v)) return;
+          if(v!==main){ try{ if(Math.abs(v.currentTime-main.currentTime)>0.3) v.currentTime=main.currentTime; }catch(e){} }
+          if(v.paused){ var p=v.play(); if(p&&p.catch) p.catch(function(){}); }
+        });
+      }
+      setInterval(function(){
+        if(main.paused) return;
+        vids.forEach(function(v){
+          if(v===main||!visible(v)||v.paused) return;
+          try{ if(Math.abs(v.currentTime-main.currentTime)>0.3) v.currentTime=main.currentTime; }catch(e){}
+        });
+      },4000);
+      var started=false;
+      function maybeStart(){
+        var sec=document.getElementById('video-demo');
+        var r=sec.getBoundingClientRect();
+        if(r.top < (window.innerHeight||document.documentElement.clientHeight) + 250 && r.bottom > -250){ started=true; go(); }
+      }
+      if('IntersectionObserver' in window){
+        new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting) go(); }); },{rootMargin:'250px 0px'}).observe(document.getElementById('video-demo'));
+      }
+      window.addEventListener('scroll', maybeStart, {passive:true});
+      document.addEventListener('visibilitychange',function(){ if(!document.hidden && started) go(); });
+      window.addEventListener('resize',go);
+      maybeStart();
+    })();
+    </script>
+  </div>
+</section>
+
+
+<!-- FEATURES -->
+<section id="features" class="section">
+  <div class="container">
+    <div class="features-header reveal">
+      <span class="badge" style="margin-bottom:14px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:13px;height:13px;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Alles in einer App</span>
+      <h2 class="section-h2">Alles, was die Familie braucht</h2>
+      <p class="section-sub" style="max-width:520px;margin:14px auto 0;">Nie wieder „Wer holt wen ab?"<br>: alle haben denselben Überblick, immer.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal reveal-delay-1">
+<div class="f-icon fi-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <h3 class="f-title">Gemeinsamer Kalender</h3>
+        <p class="f-desc">Alle Termine, Abholzeiten und Freizeitaktivitäten an einem Ort. Nach Tag, Woche oder Monat filtern.</p>
+            <a href="https://www.unserzuhauseapp.de/kalender" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/kalender';return false;" style="display:inline-flex; align-items:center; gap:5px; margin-top:16px; font-size:13px; font-weight:700; color:var(--purple); text-decoration:none; transition:gap 0.2s; position:relative; z-index:10;" onmouseover="this.style.gap='8px'" onmouseout="this.style.gap='5px'">Alle Kalender-Funktionen ansehen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><polyline points="9 18 15 12 9 6"/></svg></a>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+<div class="f-icon fi-orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg></div>
+        <h3 class="f-title">Smarter Essensplan</h3>
+        <p class="f-desc">Erstelle einen Überblick für die Familie</p>
+            <a href="https://www.unserzuhauseapp.de/essenpläne" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/essenpläne';return false;" style="display:inline-flex; align-items:center; gap:5px; margin-top:16px; font-size:13px; font-weight:700; color:var(--purple); text-decoration:none; transition:gap 0.2s; position:relative; z-index:10;" onmouseover="this.style.gap='8px'" onmouseout="this.style.gap='5px'">Alle Essensplan-Funktionen ansehen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><polyline points="9 18 15 12 9 6"/></svg></a>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+<div class="f-icon fi-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></div>
+        <h3 class="f-title">Geteilte Einkaufsliste</h3>
+        <p class="f-desc">Artikel hinzufügen, einem Familienmitglied zuweisen und im Laden abhaken, alle sehen es in Echtzeit.</p>
+            <a href="https://www.unserzuhauseapp.de/einkaufsliste" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/einkaufsliste';return false;" style="display:inline-flex; align-items:center; gap:5px; margin-top:16px; font-size:13px; font-weight:700; color:var(--purple); text-decoration:none; transition:gap 0.2s; position:relative; z-index:10;" onmouseover="this.style.gap='8px'" onmouseout="this.style.gap='5px'">Alle Einkaufslisten-Funktionen ansehen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><polyline points="9 18 15 12 9 6"/></svg></a>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+<div class="f-icon fi-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+        <h3 class="f-title">Aufgaben die verteilt werden</h3>
+        <p class="f-desc">Aufgaben mit Deadline zuweisen. Schluss damit, dass immer dieselbe Person alles trägt. Wird automatisch nach 1 Woche gelöscht.</p>
+            <a href="https://www.unserzuhauseapp.de/aufgaben" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/aufgaben';return false;" style="display:inline-flex; align-items:center; gap:5px; margin-top:16px; font-size:13px; font-weight:700; color:var(--purple); text-decoration:none; transition:gap 0.2s; position:relative; z-index:10;" onmouseover="this.style.gap='8px'" onmouseout="this.style.gap='5px'">Alle Aufgaben-Funktionen ansehen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><polyline points="9 18 15 12 9 6"/></svg></a>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+<div class="f-icon fi-teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>
+        <h3 class="f-title">Einstellungen</h3>
+        <p class="f-desc">Verwalte das Konto der Familie: Profile, Rollen, Familienkode, Abo, Sprache und vieles mehr an einem Ort.</p>
+            <a href="https://www.unserzuhauseapp.de/einstellungen" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/einstellungen';return false;" style="display:inline-flex; align-items:center; gap:5px; margin-top:16px; font-size:13px; font-weight:700; color:var(--purple); text-decoration:none; transition:gap 0.2s; position:relative; z-index:10;" onmouseover="this.style.gap='8px'" onmouseout="this.style.gap='5px'">Alle Einstellungen ansehen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><polyline points="9 18 15 12 9 6"/></svg></a>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+<div class="f-icon fi-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg></div>
+        <h3 class="f-title">Kalender-Synchronisierung</h3>
+        <p class="f-desc">Hol Termine aus dem Kalender deines Handys in den der Familie, automatisch oder mit Bestätigung. Nur eine Richtung, dein Kalender bleibt deiner.</p>
+            <a href="https://www.unserzuhauseapp.de/synchronisierung" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/synchronisierung';return false;" style="display:inline-flex; align-items:center; gap:5px; margin-top:16px; font-size:13px; font-weight:700; color:var(--purple); text-decoration:none; transition:gap 0.2s; position:relative; z-index:10;" onmouseover="this.style.gap='8px'" onmouseout="this.style.gap='5px'">So funktioniert die Synchronisierung <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><polyline points="9 18 15 12 9 6"/></svg></a>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+<div class="f-icon fi-teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h3 class="f-title">Privat &amp; dänisch</h3>
+        <p class="f-desc">Entwickelt und gehostet in Dänemark. DSGVO-konform. Eure Familiendaten verlassen niemals die EU.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- FORDELE -->
+<section id="comparison" class="section" style="background:var(--bg-subtle);">
+  <div class="container">
+    <div class="comparison-header reveal" style="text-align:center;margin-bottom:48px;">
+      <span class="badge" style="margin-bottom:14px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:13px;height:13px;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Warum Unser Zuhause App</span>
+      <h2 class="section-h2">Für Familien gemacht</h2>
+      <p class="section-sub" style="max-width:480px;margin:14px auto 0;">Alles was ihr braucht, nichts was ihr nicht braucht.</p>
+    </div>
+    <div class="compare-grid reveal">
+      <div class="compare-card">
+        <div class="compare-card-header">
+          <div class="compare-card-title">Andere Apps</div>
+          <div class="compare-card-sub">Typische Familien-App</div>
+        </div>
+        <ul class="compare-list">
+          <li class="has"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Gemeinsamer Kalender</li>
+          <li class="hasnt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Essensplan</li>
+          <li class="hasnt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Geteilte Einkaufsliste</li>
+          <li class="hasnt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Aufgaben mit Namen</li>
+          <li class="hasnt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Familiencode (keine E-Mail)<li>
+          <li class="hasnt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Dansk & GDPR-compliant</li>
+          <li class="hasnt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>14 Tage kostenlos testen</li>
+        </ul>
+      </div>
+      <div class="compare-card compare-card-featured">
+        <div class="compare-recommended">EMPFOHLEN</div>
+        <div class="compare-card-header">
+          <div class="compare-card-title">Unser Zuhause App</div>
+          <div class="compare-card-sub">Dänische Familien-App</div>
+          <div class="compare-price-row"><span class="compare-price">5,99 €</span><span class="compare-period">/Monat &nbsp;·&nbsp; 24,99 €/Halbjahr</span></div>
+        </div>
+        <ul class="compare-list">
+          <li class="has"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Gemeinsamer Kalender</li>
+          <li class="has"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Essensplan</li>
+          <li class="has"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Geteilte Einkaufsliste</li>
+          <li class="has"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Aufgaben mit Namen</li>
+          <li class="has"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Familiencode (keine E-Mail)<li>
+          <li class="has"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Dansk & GDPR-compliant</li>
+          <li class="has"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>14 Tage kostenlos testen</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDER -->
+<section id="founder">
+  <div class="container">
+    <div class="founder-inner reveal">
+      <div class="founder-photo" id="founder-photo">
+        <span class="founder-initials">N</span>
+        <div class="founder-badge-float">Mitgründer, Aarhus</div>
+      </div>
+      <div class="founder-content">
+        <div class="founder-label">Die Geschichte hinter Unser Zuhause App</div>
+        <p class="founder-quote">"Freya und ich haben drei verschiedene Apps benutzt, um unseren Alltag zu organisieren. <strong>Wir haben etwas vermisst, das einfach funktioniert</strong>, also haben wir es gebaut."</p>
+        <p class="founder-quote" style="font-size:16px;margin-bottom:20px;">Wir sind Nicko, Haris und Brigitte: drei Gründer, die die App gebaut haben, die wir selbst vermisst haben. Wir sind echte Menschen mit echten Familien, die die App jeden Tag testen.</p>
+        <div class="founder-sig">- <strong>Nicko Skovgaard</strong>, Mitgründer · <a href="mailto:support@unserzuhauseapp.de">support@unserzuhauseapp.de</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section id="cta">
+  <div class="cta-shape cta-shape-1"></div>
+  <div class="cta-shape cta-shape-2"></div>
+  <div class="container">
+    <div class="cta-inner reveal">
+      <div class="cta-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:13px;height:13px;"><polyline points="20 6 9 17 4 12"/></svg>14 Tage kostenlos testen, keine Bindung</div>
+      <h2 class="cta-h2">Bereit für mehr Ruhe im Alltag?</h2>
+      <div class="cta-buttons">
+        <a target="_blank" rel="noopener" href="https://voreshjem-bot.netlify.app/hent/app-de" class="btn btn-white btn-lg">Kostenlos starten</a>
+        <a href="mailto:support@unserzuhauseapp.de" class="btn btn-outline-white btn-lg">Kontakt aufnehmen</a>
+      </div>
+      <p class="cta-trust">Nach 14 Tagen: <span>5,99 €/Monat</span> oder <span>24,99 €/Halbjahr</span> · Jederzeit kündbar</p>
+      <div class="store-buttons">
+        <a href="https://apps.apple.com/de/app/unser-zuhause/id6771931999" target="_blank" rel="noopener" class="store-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg><div class="store-btn-text"><div class="store-btn-sub">Laden im</div><div class="store-btn-name">App Store</div></div></a>
+        <a href="https://play.google.com/store/apps/details?id=com.unserzuhause.app&hl=de&gl=DE" target="_blank" rel="noopener" class="store-btn"><svg viewBox="0 0 512 512" style="width:22px;height:22px;flex-shrink:0;"><path fill="#4CAF50" d="M325.3 234.3L104.6 13l280.8 161.2z"/><path fill="#4285F4" d="M47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l249.2-249.1z"/><path fill="#FFC107" d="M461.2 219.8l-67.6-39.1-68.5 68.5 68.5 68.5 67.6-39.1c19.3-11.1 19.3-40.6-.1-58.8z"/><path fill="#F44336" d="M104.6 499L325.3 277.7l-60.1-60.1z"/></svg><div class="store-btn-text"><div class="store-btn-sub">Jetzt bei</div><div class="store-btn-name">Google Play</div></div></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+
+<script>
+// ─── NOT LAUNCHED TOAST ───
+let toastTimer;
+function showNotLaunched(e) {
+  // Appen er live i DE, send brugeren til butikken der passer til deres enhed
+  if (e && e.preventDefault) e.preventDefault();
+  var ua = navigator.userAgent || '';
+  var android = /Android/i.test(ua);
+  window.open(android ? 'https://play.google.com/store/apps/details?id=com.unserzuhause.app&hl=de&gl=DE' : 'https://apps.apple.com/de/app/unser-zuhause/id6771931999', '_blank', 'noopener');
+}
+
+// ─── LAUNCH BANNER ───
+(function() {
+  const launchDate = new Date('2026-07-21T10:00:00+02:00');
+  const banner = document.getElementById('launch-banner');
+  if (!banner) return;
+
+  // Skjul banneret automatisk efter lancering
+  if (new Date() >= launchDate) {
+    banner.style.display = 'none';
+    return;
+  }
+
+  // Countdown
+  function updateCountdown() {
+    const now = new Date();
+    const diff = launchDate - now;
+    if (diff <= 0) { banner.style.display = 'none'; return; }
+    const days  = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins  = Math.floor((diff % 3600000) / 60000);
+    const secs  = Math.floor((diff % 60000) / 1000);
+    document.getElementById('cd-days').textContent  = String(days).padStart(2,'0');
+    document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
+    document.getElementById('cd-mins').textContent  = String(mins).padStart(2,'0');
+    document.getElementById('cd-secs').textContent  = String(secs).padStart(2,'0');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+})();
+
+function closeLaunchBanner() {
+  const banner = document.getElementById('launch-banner');
+  banner.style.animation = 'none';
+  banner.style.opacity = '0';
+  banner.style.transition = 'opacity 0.3s ease';
+  setTimeout(() => banner.style.display = 'none', 300);
+}
+
+// ─── SCROLL REVEAL ───
+const reveals = document.querySelectorAll('.reveal');
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+reveals.forEach(el => revealObs.observe(el));
+
+// ─── MOUSE PARALLAX ON HERO (3 phones) ───
+const phoneCenter = document.getElementById('phone-center');
+const phoneLeft   = document.getElementById('phone-left');
+const phoneRight  = document.getElementById('phone-right');
+let mx = 0, my = 0, targetMx = 0, targetMy = 0;
+
+document.addEventListener('mousemove', e => {
+  targetMx = (e.clientX / window.innerWidth - 0.5) * 2;
+  targetMy = (e.clientY / window.innerHeight - 0.5) * 2;
+});
+
+function lerp(a, b, t) { return a + (b - a) * t; }
+
+// Løkken herunder skrev transforms på tre telefoner 60 gange i sekundet, for evigt
+//, også langt nede på siden hvor hero ikke er i nærheden, og på telefon hvor
+// værdierne er faste og aldrig ændrer sig. Det holdt hovedtråden i gang under
+// scroll. Nu står den stille når der ikke er noget at lave.
+let parallaxKoerer = false;
+let heroSynlig = true;
+let mobilSat = false;
+
+function animateParallax() {
+  const isMobile = window.innerWidth <= 600;
+
+  // På telefon er værdierne konstante: sæt dem én gang og stop løkken helt.
+  if (isMobile) {
+    if (!mobilSat) {
+      if (phoneCenter) phoneCenter.style.transform = 'translateX(-50%) translateY(-50%) rotateY(-4deg) rotateX(2deg)';
+      if (phoneLeft)   phoneLeft.style.transform   = 'translateX(-102%) translateY(-50%) rotateY(18deg) rotateX(4deg) scale(0.75)';
+      if (phoneRight)  phoneRight.style.transform  = 'translateX(2%) translateY(-50%) rotateY(-18deg) rotateX(4deg) scale(0.75)';
+      mobilSat = true;
+    }
+    parallaxKoerer = false;
+    return;
+  }
+  mobilSat = false;
+
+  // På computer: kun mens hero faktisk er på skærmen.
+  if (!heroSynlig) { parallaxKoerer = false; return; }
+
+  mx = lerp(mx, targetMx, 0.06);
+  my = lerp(my, targetMy, 0.06);
+
+  if (phoneCenter) {
+    if (isMobile) {
+      phoneCenter.style.transform = 'translateX(-50%) translateY(-50%) rotateY(-4deg) rotateX(2deg)';
+    } else {
+      phoneCenter.style.transform = `
+        translateX(-25%) translateY(-52%)
+        rotateY(${-6 + mx * 6}deg)
+        rotateX(${3 - my * 4}deg)
+      `;
+    }
+  }
+  if (phoneLeft) {
+    if (isMobile) {
+      phoneLeft.style.transform = 'translateX(-102%) translateY(-50%) rotateY(16deg) rotateX(4deg) scale(0.75)';
+    } else {
+      phoneLeft.style.transform = `
+        translateX(-89%) translateY(-44%)
+        rotateY(${16 + mx * 5}deg)
+        rotateX(${4 - my * 3}deg)
+        scale(0.86)
+      `;
+    }
+  }
+  if (phoneRight) {
+    if (isMobile) {
+      phoneRight.style.transform = 'translateX(2%) translateY(-50%) rotateY(-18deg) rotateX(4deg) scale(0.75)';
+    } else {
+      phoneRight.style.transform = `
+        translateX(35%) translateY(-44%)
+        rotateY(${-18 + mx * 5}deg)
+        rotateX(${4 - my * 3}deg)
+        scale(0.86)
+      `;
+    }
+  }
+  requestAnimationFrame(animateParallax);
+}
+
+function startParallax() {
+  if (parallaxKoerer) return;
+  parallaxKoerer = true;
+  // Kør med det samme i stedet for at vente på næste frame. Var fanen i
+  // baggrunden ved indlæsning, kom den frame aldrig, og så stod flaget som
+  // true for evigt uden at telefonerne nogensinde fik deres position.
+  animateParallax();
+}
+// musen rører kun noget på computer, så løkken vækkes derfra
+document.addEventListener('mousemove', startParallax, { passive: true });
+window.addEventListener('resize', function () { mobilSat = false; startParallax(); }, { passive: true });
+// og kun mens hero er i nærheden
+(function () {
+  var hero = document.getElementById('hero');
+  if (!hero || !('IntersectionObserver' in window)) return;
+  new IntersectionObserver(function (es) {
+    es.forEach(function (e) { heroSynlig = e.isIntersecting; if (heroSynlig) startParallax(); });
+  }, { rootMargin: '200px 0px' }).observe(hero);
+})();
+// Stop CSS float-animations so parallax JS can control transforms unhindered
+if (phoneCenter) phoneCenter.style.animation = 'none';
+if (phoneLeft)   phoneLeft.style.animation   = 'none';
+if (phoneRight)  phoneRight.style.animation  = 'none';
+startParallax();
+
+// ─── TEXT-TO-SPEECH ───
+const speakerIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/><path d="M19.07 4.93a10 10 0 010 14.14"/></svg>`;
+const stopIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="23" y2="15"/><line x1="20" y1="7" x2="20" y2="17"/></svg>`;
+let activeBtn = null;
+document.querySelectorAll('.tts-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (!('speechSynthesis' in window)) return;
+    if (activeBtn && activeBtn !== btn) {
+      speechSynthesis.cancel();
+      activeBtn.classList.remove('playing');
+      activeBtn.innerHTML = speakerIcon;
+      activeBtn = null;
+    }
+    if (btn.classList.contains('playing')) {
+      speechSynthesis.cancel();
+      btn.classList.remove('playing');
+      btn.innerHTML = speakerIcon;
+      activeBtn = null;
+      return;
+    }
+    const utt = new SpeechSynthesisUtterance(btn.dataset.text);
+    utt.lang = 'de-DE';
+    utt.rate = 0.95;
+    utt.onend = () => { btn.classList.remove('playing'); btn.innerHTML = speakerIcon; activeBtn = null; };
+    btn.classList.add('playing');
+    btn.innerHTML = stopIcon;
+    activeBtn = btn;
+    speechSynthesis.speak(utt);
+  });
+});
+
+// ─── 3D TILT ON FEATURE CARDS ───
+document.querySelectorAll('.feature-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    card.style.transform = `
+      perspective(600px)
+      rotateX(${-y * 10}deg)
+      rotateY(${x * 10}deg)
+      translateY(-8px)
+    `;
+    card.style.boxShadow = `
+      ${-x * 20}px ${-y * 20}px 40px rgba(108,71,255,0.12),
+      0 24px 60px rgba(108,71,255,0.1)
+    `;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+    card.style.boxShadow = '';
+  });
+});
+
+// ─── 3D TILT PÅ FORDEL-KORT ───
+document.querySelectorAll('.fordel-item').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    card.style.transform = `perspective(600px) rotateX(${-y * 10}deg) rotateY(${x * 10}deg) translateY(-6px)`;
+    card.style.boxShadow = `${-x * 20}px ${-y * 20}px 40px rgba(16,185,129,0.12), 0 20px 50px rgba(108,71,255,0.1)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+    card.style.boxShadow = '';
+  });
+});
+
+// ─── DIGIT ANIMATION ───
+const digits = document.querySelectorAll('.digit');
+let animating = false;
+function randomCode() {
+  const L = () => String.fromCharCode(65 + Math.floor(Math.random() * 26));
+  const D = () => Math.floor(Math.random() * 10);
+  return [L(), L(), D(), D(), D(), D(), D(), D()];
+}
+
+function animateDigits() {
+  if (animating) return; animating = true;
+  const finalVals = randomCode();
+  let count = 0;
+  const interval = setInterval(() => {
+    digits.forEach((d, i) => {
+      d.textContent = i < 2 ? String.fromCharCode(65 + Math.floor(Math.random() * 26)) : Math.floor(Math.random() * 10);
+      d.style.color = `hsl(${Math.random()*60+240},70%,60%)`;
+    });
+    count++;
+    if (count > 10) {
+      clearInterval(interval);
+      digits.forEach((d, i) => { d.textContent = finalVals[i]; d.style.color = ''; });
+      animating = false;
+    }
+  }, 70);
+}
+const codeObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) animateDigits(); });
+}, { threshold: 0.5 });
+const codeDemo = document.getElementById('code-demo');
+if (codeDemo) { codeObs.observe(codeDemo); codeDemo.addEventListener('click', animateDigits); }
+
+// ─── CODE DEMO 3D TILT ───
+if (codeDemo) {
+  codeDemo.addEventListener('mousemove', e => {
+    const r = codeDemo.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    codeDemo.style.transform = `perspective(800px) rotateY(${x * 12}deg) rotateX(${-y * 8}deg)`;
+  });
+  codeDemo.addEventListener('mouseleave', () => {
+    codeDemo.style.transform = 'perspective(800px) rotateY(6deg) rotateX(-2deg)';
+  });
+}
+
+// ─── FOUNDER PHOTO 3D TILT ───
+const founderPhoto = document.getElementById('founder-photo');
+if (founderPhoto) {
+  founderPhoto.addEventListener('mousemove', e => {
+    const r = founderPhoto.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    founderPhoto.style.transform = `perspective(600px) rotateY(${x * 16}deg) rotateX(${-y * 12}deg)`;
+  });
+  founderPhoto.addEventListener('mouseleave', () => {
+    founderPhoto.style.transform = 'perspective(600px) rotateY(8deg) rotateX(-4deg)';
+  });
+}
+
+// ─── NAV SCROLL EFFECT ───
+window.addEventListener('scroll', () => {
+  document.getElementById('main-nav').style.boxShadow =
+    window.scrollY > 20 ? '0 4px 24px rgba(108,71,255,0.08)' : 'none';
+});
+</script>
+
+<!-- ─── FOOTER ─── -->
+<style>
+@media (max-width: 700px) {
+  .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 32px !important; }
+}
+@media (max-width: 420px) {
+  .footer-grid { grid-template-columns: 1fr !important; gap: 28px !important; }
+}
+
+/* ── Zigzag ned ad siden: hver anden sektion har teksten først og billedet til højre.
+      Kun på computer, på telefon stables alt alligevel, og der skal boksen
+      blive lige under overskriften. ── */
+@media (min-width: 901px) {
+  /* Reihenfolge der Seite: Familienkode(Karte LINKS) → Kalender(RECHTS)
+     → Aufgaben(LINKS) → Taschengeld(RECHTS) → Einkauf(LINKS) → Essensplan(RECHTS)
+     → Gründer(LINKS). Wird ein Abschnitt verschoben, muss er in ALLEN vier
+     Blöcken unten die Gruppe wechseln, sonst stehen zwei Karten auf derselben Seite. */
+
+  /* A) kort til HØJRE: teksten skal stå først i griddet */
+  #kal-demo-sektion .kd-visual  { order: 2; }
+  #kal-demo-sektion .kd-content { order: 1; }
+  #lommepenge .lp-visual  { order: 2; }
+  #lommepenge .lp-content { order: 1; }
+  #mad-demo-sektion .md-visual  { order: 2; }
+  #mad-demo-sektion .md-content { order: 1; }
+  /* grid respekterer order når børnene placeres automatisk */
+  #kal-demo-sektion .kd-inner,
+  #lommepenge .lp-inner,
+  #mad-demo-sektion .md-inner { grid-auto-flow: row; }
+  /* når teksten står til venstre, rykkes den ind så punkterne ikke klistrer til kanten */
+  #kal-demo-sektion .kd-content,
+  #lommepenge .lp-content,
+  #mad-demo-sektion .md-content { padding-left: 64px; }
+
+  /* B) Kortene flugter ind mod midten i stedet for at svømme i deres kolonne.
+     Ellers vokser hullet mellem tekst og kort jo bredere skærmen bliver. */
+  #familiekode .fk-visual,
+  #opg-demo-sektion .og-visual,
+  #ind-demo-sektion .id-visual,
+  #founder .founder-visual    { justify-content: flex-end; }
+  #kal-demo-sektion .kd-visual,
+  #lommepenge .lp-visual,
+  #mad-demo-sektion .md-visual { justify-content: flex-start; }
+
+  /* C) …og teksten gør det samme. Uden dette bliver punktlisten strakt ud i hele
+     kolonnen, mens selve teksten stopper langt før, det giver et stort synligt hul. */
+  #lommepenge .lp-content,
+  #mad-demo-sektion .md-content { max-width: 470px; margin-left: auto; padding-left: 0; }
+  /* kalenderens punkter har kortere linjer end de andres, og kortet er smallere,
+     så den skal strammes ekstra for at hullet bliver lige så lille */
+  #kal-demo-sektion .kd-content { max-width: 400px; margin-left: auto; padding-left: 0; }
+  #familiekode .fk-content,
+  #opg-demo-sektion .og-content,
+  #ind-demo-sektion .id-content,
+  #founder .founder-content   { max-width: 470px; margin-right: auto; }
+}
+
+/* ── Handy: weniger Text und mehr Luft ── */
+@media (max-width: 600px) {
+  /* Jeder Punkt hat eine Überschrift und eine erklärende Zeile darunter.
+     Die Überschrift trägt die Aussage, die Erklärung entfällt auf dem Handy. */
+  .mob-kort { display: none; }
+}
+@media (max-width: 640px) {
+  /* Der Link schrumpft auf dem Handy zu einem Pfeil von 21x15 px. Das ist 1% der
+     Karte, und man traf jedes Mal daneben. Hier wird die Klickfläche auf die
+     ganze Karte gestreckt. ::before ist reine Deko und darf den Tipp nicht abfangen. */
+  #features .feature-card { position: relative; }
+  #features .feature-card::before { pointer-events: none; }
+  #features .feature-card > a { position: static !important; }
+  #features .feature-card > a::after { content: ''; position: absolute; inset: 0; z-index: 6; }
+  #features .feature-card:active { background: #FAF9FF; }
+}
+</style>
+<footer style="background:#0F0E1A; color:#fff; padding: 64px 0 32px; font-family:'Plus Jakarta Sans',sans-serif;">
+  <div style="max-width:1200px; margin:0 auto; padding:0 32px;">
+
+    <!-- Top: logo + kolonner -->
+    <div class="footer-grid" style="display:grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap:48px; margin-bottom:56px;">
+
+      <!-- Logo + tagline -->
+      <div>
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+          <img src="/images/logo.webp" alt="Unser Zuhause" style="height:56px; width:auto; display:block; filter:brightness(0) invert(1);">
+        </div>
+        <p style="font-size:14px; color:rgba(255,255,255,0.45); line-height:1.6;">Mehr Ruhe im Alltag, für die ganze Familie.</p>
+      </div>
+
+      <!-- Informationssider -->
+      <div>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Infoseiten</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <a href="https://www.unserzuhauseapp.de/kalender" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/kalender';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Kalender</a>
+          <a href="https://www.unserzuhauseapp.de/essenpläne" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/essenpläne';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Essenpläne</a>
+          <a href="https://www.unserzuhauseapp.de/einkaufsliste" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/einkaufsliste';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Einkaufsliste</a>
+          <a href="https://www.unserzuhauseapp.de/aufgaben" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/aufgaben';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Aufgaben</a>
+          <a href="https://www.unserzuhauseapp.de/einstellungen" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Einstellungen</a>
+          <a href="https://www.unserzuhauseapp.de/synchronisierung" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Synchronisierung</a>
+          <a href="https://www.unserzuhauseapp.de/konto-loeschen" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/konto-loeschen';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">konto-loeschen</a>
+        </div>
+      </div>
+
+      <!-- Sociale medier + Kontakt -->
+      <div>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Soziale Medien</p>
+        <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:28px;">
+          <a href="https://www.facebook.com/profile.php?id=61590361744172" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Facebook</a>
+          <a href="https://www.tiktok.com/@unserzuhause?_r=1&amp;_t=ZG-97Tx5A9mGki" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">TikTok</a>
+        </div>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Kontakt</p>
+        <a href="https://www.unserzuhauseapp.de/support" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/support';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Support</a>
+      </div>
+
+      <!-- Politikker -->
+      <div>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Politikker</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <a href="https://www.unserzuhauseapp.de/impressum" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Impressum</a> <a href="https://www.iubenda.com/privacy-policy/77031753" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Datenschutzerklärung</a>
+          <a href="https://www.iubenda.com/privacy-policy/77031753/cookie-policy" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Cookie-Richtlinie</a>
+          <a href="https://www.iubenda.com/terms-and-conditions/77031753" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Nutzungsbedingungen</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom: copyright -->
+    <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+      <p style="font-size:12px; color:rgba(255,255,255,0.3); white-space:nowrap;">© 2026 Vores Hjem I/S · CVR 45804445 · Alle Rechte vorbehalten.</p>
+      <p style="font-size:12px; color:rgba(255,255,255,0.3); white-space:nowrap;">Entwickelt in Dänemark 🇩🇰</p>
+    </div>
+
+  </div>
+</footer>
+
+<script>
+/* Wix-iframe: hold interne links i SAMME fane (top-navigation); eksterne (_blank) urørt */
+document.addEventListener('click',function(e){
+  var a=e.target&&e.target.closest?e.target.closest('a'):null;
+  if(!a) return;
+  if(a.getAttribute('target')==='_blank') return;            // ekstern -> ny fane (uændret)
+  var href=a.getAttribute('href');
+  if(!href||href.charAt(0)==='#'||href.indexOf('javascript:')===0) return; // knapper/anchors
+  e.preventDefault();
+  try{ (window.top||window).location.href=href; }            // samme fane, bryd ud af iframe
+  catch(err){ window.location.href=href; }
+},true);
+</script>
+</body>
+</html>

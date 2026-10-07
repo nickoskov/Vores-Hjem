@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vores Hjem | Flyer</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: #e8e8e8;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 40px;
+}
+
+.flyer {
+  width: 1080px; height: 1080px;
+  background: linear-gradient(145deg, #F0EEFF 0%, #EAF0FF 50%, #F5EEFF 100%);
+  border-radius: 32px;
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 72px;
+  box-shadow: 0 40px 120px rgba(0,0,0,0.15);
+}
+
+/* Blobs */
+.blob {
+  position: absolute; border-radius: 50%;
+  filter: blur(80px); pointer-events: none;
+}
+.blob-1 { width: 500px; height: 500px; top: -150px; right: -100px; background: radial-gradient(circle, rgba(108,71,255,0.2), transparent 70%); }
+.blob-2 { width: 400px; height: 400px; bottom: -100px; left: -80px; background: radial-gradient(circle, rgba(236,72,153,0.15), transparent 70%); }
+.blob-3 { width: 300px; height: 300px; top: 40%; left: 30%; background: radial-gradient(circle, rgba(59,130,246,0.12), transparent 70%); }
+
+/* Top badge */
+.top-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(108,71,255,0.1); border: 1px solid rgba(108,71,255,0.2);
+  border-radius: 100px; padding: 8px 20px;
+  font-size: 15px; font-weight: 700; color: #6C47FF;
+  margin-bottom: 32px; position: relative; z-index: 1;
+}
+.badge-dot { width: 8px; height: 8px; border-radius: 50%; background: #6C47FF; animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.7)} }
+
+/* Logo */
+.logo-area { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; position: relative; z-index: 1; }
+.logo-icon { width: 56px; height: 56px; }
+.logo-text { font-size: 36px; font-weight: 800; color: #0F0E1A; }
+.logo-text span { background: linear-gradient(135deg, #6C47FF, #3B82F6, #EC4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+/* Headline */
+.headline {
+  font-size: 64px; font-weight: 800; line-height: 1.08;
+  letter-spacing: -2.5px; text-align: center;
+  color: #0F0E1A; margin-bottom: 20px;
+  position: relative; z-index: 1;
+}
+.headline .grad { background: linear-gradient(135deg, #6C47FF, #3B82F6, #EC4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+/* Sub */
+.sub {
+  font-size: 22px; color: #5E5A7A; text-align: center;
+  line-height: 1.5; margin-bottom: 48px;
+  max-width: 680px; position: relative; z-index: 1;
+}
+
+/* Features row */
+.features {
+  display: flex; gap: 14px; margin-bottom: 52px;
+  position: relative; z-index: 1;
+}
+.feat {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,0.75); border: 1px solid rgba(108,71,255,0.12);
+  border-radius: 14px; padding: 12px 18px;
+  backdrop-filter: blur(10px);
+}
+.feat-icon { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.feat-icon svg { width: 16px; height: 16px; }
+.feat-label { font-size: 14px; font-weight: 700; color: #0F0E1A; }
+
+/* CTA box */
+.cta-box {
+  background: linear-gradient(135deg, #6C47FF, #3B82F6 55%, #EC4899);
+  border-radius: 20px; padding: 24px 48px;
+  text-align: center; position: relative; z-index: 1;
+  box-shadow: 0 16px 48px rgba(108,71,255,0.4);
+}
+.cta-main { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+.cta-sub { font-size: 15px; color: rgba(255,255,255,0.8); }
+.cta-url { font-size: 18px; font-weight: 700; color: #fff; margin-top: 10px; opacity: 0.9; letter-spacing: 0.02em; }
+
+/* Launch ribbon */
+.launch-ribbon {
+  position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 600; color: #9B97B5;
+  z-index: 1; white-space: nowrap;
+}
+.launch-ribbon span { color: #6C47FF; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="flyer">
+  <!-- Blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <!-- Badge -->
+  <div class="top-badge">
+    <div class="badge-dot"></div>
+    🇩🇰 Ny dansk familieapp
+  </div>
+
+  <!-- Logo -->
+  <div class="logo-area">
+    <svg class="logo-icon" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="220" y2="220" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#7B3FE4"/><stop offset="30%" stop-color="#4F6BFF"/><stop offset="65%" stop-color="#D93BAA"/><stop offset="100%" stop-color="#EF3030"/></linearGradient></defs>
+      <rect x="50" y="50" width="24" height="38" stroke="url(#lg)" stroke-width="9" stroke-linejoin="round" fill="none"/>
+      <polyline points="18,107 110,36 202,107" stroke="url(#lg)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <polyline points="33,107 33,188 187,188 187,107" stroke="url(#lg)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>
+    <div class="logo-text">Vores <span>Hjem</span></div>
+  </div>
+
+  <!-- Headline -->
+  <div class="headline">Mere ro<br><span class="grad">i hverdagen</span></div>
+
+  <!-- Sub -->
+  <p class="sub">Samler hele familiens kalender, madplan, indkøb og opgaver i én delt app</p>
+
+  <!-- Features -->
+  <div class="features">
+    <div class="feat">
+      <div class="feat-icon" style="background:rgba(108,71,255,0.1);color:#6C47FF;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <span class="feat-label">Kalender</span>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background:rgba(249,115,22,0.1);color:#F97316;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+      </div>
+      <span class="feat-label">Madplan</span>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background:rgba(59,130,246,0.1);color:#3B82F6;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+      </div>
+      <span class="feat-label">Indkøb</span>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background:rgba(16,185,129,0.1);color:#10B981;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      </div>
+      <span class="feat-label">Opgaver</span>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-box">
+    <div class="cta-main">Prøv gratis i 14 dage, ingen binding</div>
+    <div class="cta-sub">39 kr/md · Op til 7 familiemedlemmer</div>
+    <div class="cta-url">voreshjem.dk</div>
+  </div>
+
+  <!-- Launch -->
+  <div class="launch-ribbon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Lanceres <span>22. juni 2026</span>
+  </div>
+</div>
+</body>
+</html>

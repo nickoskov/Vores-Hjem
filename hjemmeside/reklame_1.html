@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vores Hjem | Instagram Reklame</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: #c8c8c8;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 40px;
+}
+
+.ad {
+  width: 1080px; height: 1080px;
+  background: #F7F6FF;
+  position: relative; overflow: hidden;
+  display: flex;
+}
+
+/* ── LEFT COLUMN ── */
+.left {
+  width: 510px; flex-shrink: 0;
+  display: flex; flex-direction: column;
+  padding: 56px 0 48px 56px;
+  position: relative; z-index: 2;
+}
+
+/* Logo */
+.logo {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 36px;
+}
+.logo-icon { width: 48px; height: 48px; }
+.logo-wordmark { display: flex; flex-direction: column; line-height: 1; }
+.logo-wordmark .w1 { font-size: 18px; font-weight: 900; color: #0F0E1A; letter-spacing: -0.5px; }
+.logo-wordmark .w2 { font-size: 18px; font-weight: 900; background: linear-gradient(135deg,#6C47FF,#3B82F6,#EC4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent; letter-spacing: -0.5px; }
+
+/* Headline */
+.headline {
+  font-size: 62px; font-weight: 900; line-height: 1.0;
+  letter-spacing: -2.5px; color: #0F0E1A;
+  margin-bottom: 10px;
+}
+.headline .accent {
+  background: linear-gradient(135deg, #6C47FF 0%, #EC4899 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+/* Sub */
+.sub {
+  font-size: 17px; color: #5E5A7A; line-height: 1.5;
+  margin-bottom: 32px; font-weight: 500; max-width: 360px;
+}
+.sub strong { color: #6C47FF; font-weight: 700; }
+
+/* Features */
+.features { display: flex; flex-direction: column; gap: 16px; margin-bottom: 36px; }
+.feat { display: flex; align-items: center; gap: 14px; }
+.feat-icon {
+  width: 44px; height: 44px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.feat-icon svg { width: 20px; height: 20px; }
+.feat-copy { display: flex; flex-direction: column; gap: 1px; }
+.feat-title { font-size: 15px; font-weight: 800; color: #0F0E1A; }
+.feat-desc { font-size: 13px; color: #9996B5; font-weight: 500; }
+
+/* CTA */
+.cta-btn {
+  display: flex; align-items: center; justify-content: space-between;
+  background: linear-gradient(135deg, #6C47FF 0%, #F97316 100%);
+  color: #fff; font-size: 20px; font-weight: 800;
+  border-radius: 18px; padding: 20px 28px;
+  margin-bottom: 14px;
+  box-shadow: 0 10px 30px rgba(108,71,255,0.35);
+  max-width: 400px;
+}
+.cta-arrow {
+  width: 36px; height: 36px; background: rgba(255,255,255,0.25);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+/* App badges */
+.badges { display: flex; gap: 10px; }
+.badge {
+  display: flex; align-items: center; gap: 8px;
+  background: #0F0E1A; border-radius: 12px; padding: 10px 16px;
+}
+.badge-icon { width: 20px; height: 20px; flex-shrink: 0; }
+.badge-text { display: flex; flex-direction: column; line-height: 1.2; }
+.badge-text .bt { font-size: 10px; color: rgba(255,255,255,0.6); font-weight: 500; }
+.badge-text .bb { font-size: 13px; color: #fff; font-weight: 700; }
+
+/* ── RIGHT COLUMN ── */
+.right {
+  flex: 1;
+  position: relative;
+}
+
+/* Family photo */
+.family-photo {
+  position: absolute; top: 0; right: 0;
+  width: 100%; height: 55%;
+  overflow: hidden;
+}
+.family-photo img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center 20%;
+}
+.family-photo::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, #F7F6FF 100%),
+              linear-gradient(to left, transparent 20%, #F7F6FF 100%);
+}
+
+/* Phone mockup */
+.phone-wrap {
+  position: absolute; bottom: 40px; right: 30px;
+  z-index: 3;
+}
+.phone {
+  width: 240px; height: 490px;
+  background: #1A1A2E;
+  border-radius: 40px;
+  border: 8px solid #2A2A3E;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.08);
+  overflow: hidden; position: relative;
+  display: flex; flex-direction: column;
+}
+/* Notch */
+.phone-notch {
+  width: 80px; height: 22px; background: #1A1A2E;
+  border-radius: 0 0 16px 16px;
+  margin: 0 auto; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  z-index: 2;
+}
+/* Status bar */
+.status-bar {
+  padding: 12px 20px 6px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-shrink: 0;
+}
+.status-time { font-size: 11px; font-weight: 700; color: #fff; }
+.status-icons { display: flex; gap: 4px; align-items: center; }
+.status-icons svg { width: 12px; height: 12px; stroke: #fff; fill: none; }
+
+/* App content */
+.app-content {
+  flex: 1; background: #fff; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+/* App header */
+.app-header {
+  padding: 12px 14px 10px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid #F0EEFF;
+  flex-shrink: 0;
+}
+.app-title { font-size: 14px; font-weight: 800; color: #0F0E1A; }
+.app-add-btn {
+  font-size: 9px; font-weight: 700; color: #fff;
+  background: linear-gradient(135deg,#6C47FF,#3B82F6);
+  border-radius: 8px; padding: 5px 8px;
+}
+/* Month nav */
+.month-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px 4px; flex-shrink: 0;
+}
+.month-label { font-size: 11px; font-weight: 700; color: #0F0E1A; }
+.month-arrow { font-size: 11px; color: #6C47FF; }
+/* Day headers */
+.day-headers {
+  display: grid; grid-template-columns: repeat(7,1fr);
+  padding: 0 8px; flex-shrink: 0;
+}
+.day-hdr { text-align: center; font-size: 8px; font-weight: 600; color: #9996B5; padding: 3px 0; }
+/* Calendar grid */
+.cal-grid {
+  display: grid; grid-template-columns: repeat(7,1fr);
+  padding: 0 8px; gap: 1px; flex-shrink: 0;
+}
+.cal-day {
+  text-align: center; font-size: 9px; font-weight: 600; color: #0F0E1A;
+  padding: 4px 2px; border-radius: 50%; cursor: default;
+  aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+}
+.cal-day.muted { color: #C5C3D6; }
+.cal-day.today { background: #6C47FF; color: #fff; border-radius: 8px; }
+.cal-day.has-dot { position: relative; }
+.cal-day.has-dot::after { content:''; position:absolute; bottom:1px; left:50%; transform:translateX(-50%); width:3px; height:3px; border-radius:50%; background:#EC4899; }
+
+/* Events */
+.events-header {
+  padding: 8px 14px 4px; flex-shrink: 0;
+  font-size: 9px; font-weight: 700; color: #9996B5; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.event-list { flex: 1; padding: 0 14px; display: flex; flex-direction: column; gap: 6px; overflow: hidden; }
+.event-item {
+  display: flex; align-items: center; gap: 8px;
+  border-left: 3px solid;
+  padding: 6px 8px; background: #F9F8FF; border-radius: 0 8px 8px 0;
+}
+.event-info { display: flex; flex-direction: column; gap: 1px; flex: 1; }
+.event-name { font-size: 9px; font-weight: 700; color: #0F0E1A; }
+.event-time { font-size: 8px; color: #9996B5; }
+.event-del { width: 10px; height: 10px; color: #C5C3D6; }
+
+/* Bottom nav */
+.app-bottom-nav {
+  display: flex; justify-content: space-around; align-items: center;
+  padding: 8px 0 10px; border-top: 1px solid #F0EEFF;
+  background: #fff; flex-shrink: 0;
+}
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.nav-item svg { width: 16px; height: 16px; }
+.nav-item span { font-size: 7px; font-weight: 600; }
+.nav-item.active svg { stroke: #6C47FF; }
+.nav-item.active span { color: #6C47FF; }
+.nav-item:not(.active) svg { stroke: #C5C3D6; }
+.nav-item:not(.active) span { color: #C5C3D6; }
+
+/* 14-day badge on phone */
+.phone-badge {
+  position: absolute; top: -16px; left: -20px;
+  background: linear-gradient(135deg, #6C47FF, #EC4899);
+  color: #fff; font-size: 11px; font-weight: 800;
+  border-radius: 20px; padding: 8px 14px;
+  box-shadow: 0 6px 20px rgba(108,71,255,0.4);
+  white-space: nowrap;
+}
+
+</style>
+</head>
+<body>
+<div class="ad">
+
+  <!-- LEFT -->
+  <div class="left">
+
+    <!-- Logo -->
+    <div class="logo">
+      <svg class="logo-icon" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="lg" x1="0" y1="0" x2="220" y2="220" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#7B3FE4"/><stop offset="35%" stop-color="#4F6BFF"/>
+          <stop offset="70%" stop-color="#D93BAA"/><stop offset="100%" stop-color="#EF3030"/>
+        </linearGradient></defs>
+        <rect x="50" y="50" width="24" height="38" stroke="url(#lg)" stroke-width="9" stroke-linejoin="round" fill="none"/>
+        <polyline points="18,107 110,36 202,107" stroke="url(#lg)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <polyline points="33,107 33,188 187,188 187,107" stroke="url(#lg)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      <div class="logo-wordmark">
+        <span class="w1">VORES</span>
+        <span class="w2">HJEM</span>
+      </div>
+    </div>
+
+    <!-- Headline -->
+    <div class="headline">
+      Få styr på<br>familiens<br>hverdag på<br><span class="accent">2 minutter</span>
+    </div>
+
+    <!-- Sub -->
+    <p class="sub">Alt til familiens hverdag<br><strong>samlet ét sted</strong></p>
+
+    <!-- Features -->
+    <div class="features">
+      <div class="feat">
+        <div class="feat-icon" style="background:#EEE8FF;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#6C47FF" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>
+        </div>
+        <div class="feat-copy">
+          <span class="feat-title">Fælles kalender</span>
+          <span class="feat-desc">Ingen flere glemte aftaler</span>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#FEE9DC;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        </div>
+        <div class="feat-copy">
+          <span class="feat-title">Klar fordeling af opgaver</span>
+          <span class="feat-desc">Alle ved hvad der skal gøres</span>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#DBEAFE;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+        </div>
+        <div class="feat-copy">
+          <span class="feat-title">Indkøb &amp; madplaner</span>
+          <span class="feat-desc">Spar tid og undgå stress</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-btn">
+      <span>Start på 2 minutter</span>
+      <div class="cta-arrow">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+
+    <!-- App badges -->
+    <div class="badges">
+      <div class="badge">
+        <svg class="badge-icon" viewBox="0 0 24 24" fill="white"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        <div class="badge-text"><span class="bt">Hent i</span><span class="bb">App Store</span></div>
+      </div>
+      <div class="badge">
+        <svg class="badge-icon" viewBox="0 0 24 24" fill="none"><path d="M3 20.5v-17l17.5 8.5L3 20.5z" fill="#4CAF50"/><path d="M3 3.5l10 10L3 20.5V3.5z" fill="#00BCD4"/><path d="M3 3.5l17.5 8.5H3V3.5z" fill="#F44336"/><path d="M3 12h17.5L3 20.5V12z" fill="#FFEB3B"/></svg>
+        <div class="badge-text"><span class="bt">NU PÅ</span><span class="bb">Google Play</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+
+    <!-- Family photo -->
+    <div class="family-photo">
+      <img src="https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?w=600&q=85&auto=format&fit=crop" alt="Familie" crossorigin="anonymous"/>
+    </div>
+
+    <!-- Phone mockup -->
+    <div class="phone-wrap">
+      <div class="phone-badge">Gratis i 14 dage ✓</div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <!-- Status bar -->
+        <div class="status-bar">
+          <span class="status-time">14.25</span>
+          <div class="status-icons">
+            <svg viewBox="0 0 24 24" stroke-width="2"><path d="M1 6s4-2 11-2 11 2 11 2"/><path d="M5 10s3-1.5 7-1.5 7 1.5 7 1.5"/><path d="M9 14s1.5-1 3-1 3 1 3 1"/><circle cx="12" cy="18" r="1" fill="white"/></svg>
+            <svg viewBox="0 0 24 24" stroke-width="2"><rect x="2" y="7" width="16" height="11" rx="2"/><path d="M22 11v3"/></svg>
+          </div>
+        </div>
+        <!-- App content -->
+        <div class="app-content">
+          <!-- Header -->
+          <div class="app-header">
+            <span class="app-title">Kalender</span>
+            <span class="app-add-btn">+ Tilføj begivenhed</span>
+          </div>
+          <!-- Month nav -->
+          <div class="month-nav">
+            <span class="month-arrow">‹</span>
+            <span class="month-label">Maj 2026</span>
+            <span class="month-arrow">›</span>
+          </div>
+          <!-- Day headers -->
+          <div class="day-headers">
+            <div class="day-hdr">Man</div><div class="day-hdr">Tir</div><div class="day-hdr">Ons</div>
+            <div class="day-hdr">Tor</div><div class="day-hdr">Fre</div><div class="day-hdr">Lør</div><div class="day-hdr">Søn</div>
+          </div>
+          <!-- Calendar grid -->
+          <div class="cal-grid">
+            <div class="cal-day muted">28</div><div class="cal-day muted">29</div><div class="cal-day muted">30</div>
+            <div class="cal-day has-dot">1</div><div class="cal-day">2</div><div class="cal-day">3</div><div class="cal-day">4</div>
+            <div class="cal-day">5</div><div class="cal-day has-dot">6</div><div class="cal-day">7</div>
+            <div class="cal-day">8</div><div class="cal-day">9</div><div class="cal-day has-dot">10</div><div class="cal-day">11</div>
+            <div class="cal-day">12</div><div class="cal-day">13</div><div class="cal-day">14</div>
+            <div class="cal-day">15</div><div class="cal-day">16</div><div class="cal-day has-dot">17</div><div class="cal-day">18</div>
+            <div class="cal-day today">20</div><div class="cal-day">21</div><div class="cal-day">22</div>
+            <div class="cal-day has-dot">23</div><div class="cal-day">24</div><div class="cal-day">25</div><div class="cal-day">26</div>
+            <div class="cal-day">27</div><div class="cal-day has-dot">28</div><div class="cal-day">29</div>
+            <div class="cal-day">30</div><div class="cal-day">31</div><div class="cal-day muted">1</div><div class="cal-day muted">2</div>
+          </div>
+          <!-- Events -->
+          <div class="events-header">Begivenheder: 20. maj</div>
+          <div class="event-list">
+            <div class="event-item" style="border-color:#6C47FF;">
+              <div class="event-info">
+                <span class="event-name">Fodbold, Lucas</span>
+                <span class="event-time">20. maj 2026 · 15:00</span>
+              </div>
+              <svg class="event-del" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+            </div>
+            <div class="event-item" style="border-color:#F97316;">
+              <div class="event-info">
+                <span class="event-name">Tandlæge, Maja</span>
+                <span class="event-time">21. maj 2026 · 10:30</span>
+              </div>
+              <svg class="event-del" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+            </div>
+            <div class="event-item" style="border-color:#10B981;">
+              <div class="event-info">
+                <span class="event-name">Mor kommer på besøg</span>
+                <span class="event-time">22. maj 2026 · 18:00</span>
+              </div>
+              <svg class="event-del" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+            </div>
+          </div>
+          <!-- Bottom nav -->
+          <div class="app-bottom-nav">
+            <div class="nav-item active">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span>Kalender</span>
+            </div>
+            <div class="nav-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              <span>Opgaver</span>
+            </div>
+            <div class="nav-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+              <span>Madplaner</span>
+            </div>
+            <div class="nav-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+              <span>Indkøb</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

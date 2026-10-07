@@ -1,0 +1,939 @@
+plugins = []
+
+[functions]
+
+  [functions."*"]
+
+[build]
+
+  [build.environment]
+
+  [build.processing]
+
+    [build.processing.css]
+
+    [build.processing.html]
+
+    [build.processing.images]
+
+    [build.processing.js]
+
+  [build.services]
+
+[[headers]]
+for = "/fonts/*"
+
+  [headers.values]
+  Cache-Control = "public, max-age=31536000, immutable"
+
+[[redirects]]
+from = "https://vores-hjem.dk/*"
+to = "https://www.voreshjem.dk/:splat"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "https://www.vores-hjem.dk/*"
+to = "https://www.voreshjem.dk/:splat"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "http://vores-hjem.dk/*"
+to = "https://www.voreshjem.dk/:splat"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "http://www.vores-hjem.dk/*"
+to = "https://www.voreshjem.dk/:splat"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "http://voreshjem.dk/*"
+to = "https://www.voreshjem.dk/:splat"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "https://voreshjem.dk/*"
+to = "https://www.voreshjem.dk/:splat"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/de"
+to = "https://www.unserzuhauseapp.de/"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/de/"
+to = "https://www.unserzuhauseapp.de/"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/de/index.html"
+to = "https://www.unserzuhauseapp.de/"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/de/kalender"
+to = "https://www.unserzuhauseapp.de/kalender"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/de/kalender.html"
+to = "https://www.unserzuhauseapp.de/kalender"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/de/opgaver"
+to = "https://www.unserzuhauseapp.de/aufgaben"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/de/opgaver.html"
+to = "https://www.unserzuhauseapp.de/aufgaben"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/de/madplan"
+to = "https://www.unserzuhauseapp.de/essenpl%C3%A4ne"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/de/madplan.html"
+to = "https://www.unserzuhauseapp.de/essenpl%C3%A4ne"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/de/indkob"
+to = "https://www.unserzuhauseapp.de/einkaufsliste"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/de/indkob.html"
+to = "https://www.unserzuhauseapp.de/einkaufsliste"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/de/kontakt"
+to = "https://www.unserzuhauseapp.de/support"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/de/kontakt.html"
+to = "https://www.unserzuhauseapp.de/support"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/de/slet-konto"
+to = "https://www.unserzuhauseapp.de/konto-loeschen"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/de/slet-konto.html"
+to = "https://www.unserzuhauseapp.de/konto-loeschen"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/de/*"
+to = "https://www.unserzuhauseapp.de/"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/"
+to = "/index.html"
+status = 200
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/kalender"
+to = "/kalender.html"
+status = 200
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/madplan"
+to = "/madplan.html"
+status = 200
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/opgaver"
+to = "/opgaver.html"
+status = 200
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/indstillinger"
+to = "/indstillinger.html"
+status = 200
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/synkronisering"
+to = "/synkronisering.html"
+status = 200
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/indkobsliste"
+to = "/indkob.html"
+status = 200
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/kalender-informationsside"
+to = "/kalender"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/madplan-informationsside"
+to = "/madplan"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/opgaver-informationsside"
+to = "/opgaver"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/indstillinger-informationsside"
+to = "/indstillinger"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/synkronisering-informationsside"
+to = "/synkronisering"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/hvordan-sletter-man-sin-konto"
+to = "/slet-konto.html"
+status = 200
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/support"
+to = "/kontakt.html"
+status = 200
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/hvordan-bruger-jeg-appen"
+to = "/hvordan-bruger-jeg-appen.html"
+status = 200
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/blog"
+to = "/blog.html"
+status = 200
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/referral"
+to = "/"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/refer-friends"
+to = "/"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/post/app-til-at-samle-familiens-aftaler-%C3%A9t-sted"
+to = "/post/app-til-at-samle-familiens-aftaler-et-sted"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/post/begynderguide-til-digital-husstandsplanl%C3%A6gning"
+to = "/post/begynderguide-til-digital-husstandsplanlaegning"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/post/b%C3%B8rneopgaver-og-bel%C3%B8nning-i-en-travl-hverdag"
+to = "/post/boerneopgaver-og-beloenning-i-en-travl-hverdag"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/post/b%C3%B8rnepoint-til-daglige-opgaver-med-god-mening"
+to = "/post/boernepoint-til-daglige-opgaver-med-god-mening"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/post/del-ansvar-mellem-for%C3%A6ldre-uden-flere-p%C3%A5mindelser"
+to = "/post/del-ansvar-mellem-foraeldre-uden-flere-paamindelser"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/post/familieapp-med-gratis-pr%C3%B8veperiode-i-14-dage"
+to = "/post/familieapp-med-gratis-proeveperiode-i-14-dage"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/post/familiekalender-for-travle-for%C3%A6ldre-med-overblik"
+to = "/post/familiekalender-for-travle-foraeldre-med-overblik"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/post/f%C3%A6lles-familiekalender-giver-ro-i-hverdagen"
+to = "/post/faelles-familiekalender-giver-ro-i-hverdagen"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/post/f%C3%A6lles-indk%C3%B8bsliste-app-til-en-lettere-hverdag"
+to = "/post/faelles-indkoebsliste-app-til-en-lettere-hverdag"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/post/guide-til-b%C3%B8rns-huslige-ansvar-i-hverdagen"
+to = "/post/guide-til-boerns-huslige-ansvar-i-hverdagen"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/post/kan-b%C3%B8rn-optjene-lommepenge-hjemme-hver-uge"
+to = "/post/kan-boern-optjene-lommepenge-hjemme-hver-uge"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/post/koordinere-b%C3%B8rnenes-fritidsaktiviteter-uden-kaos"
+to = "/post/koordinere-boernenes-fritidsaktiviteter-uden-kaos"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/post/organis%C3%A9r-familiens-hverdagsrutiner"
+to = "/post/organiser-familiens-hverdagsrutiner"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/post/s%C3%A5dan-deler-du-indk%C3%B8bsliste-med-familien"
+to = "/post/saadan-deler-du-indkoebsliste-med-familien"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/post/s%C3%A5dan-kan-familien-mindske-mental-load-hjemme"
+to = "/post/saadan-kan-familien-mindske-mental-load-hjemme"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/post/s%C3%A5dan-kan-i-fordele-huslige-pligter-retf%C3%A6rdigt"
+to = "/post/saadan-kan-i-fordele-huslige-pligter-retfaerdigt"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/post/s%C3%A5dan-undg%C3%A5r-familien-glemte-indk%C3%B8b-hjemme"
+to = "/post/saadan-undgaar-familien-glemte-indkoeb-hjemme"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/post/ugentlig-madplan-til-b%C3%B8rnefamilie-med-mindre-b%C3%B8vl"
+to = "/post/ugentlig-madplan-til-boernefamilie-med-mindre-boevl"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/indk%C3%B8bsliste-informationsside"
+to = "/indkobsliste"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/post/*"
+to = "/blog/post/:splat.html"
+status = 200
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/blank"
+to = "/"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/contact"
+to = "/support"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/kontakt"
+to = "/support"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/fortrydelse-opsigelse"
+to = "/support"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/portfolio"
+to = "/"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/about"
+to = "/"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/om-os"
+to = "/"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/priser"
+to = "/"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/pris"
+to = "/"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/hent"
+to = "/hent/"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/download"
+to = "/hent/"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/en"
+to = "/"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/en/*"
+to = "/"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/blog/tags/*"
+to = "/blog"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/blog/categories/*"
+to = "/blog"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/blog/page/*"
+to = "/blog"
+status = 301
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]

@@ -1,0 +1,257 @@
+{
+  "/Users/nickoskovgaard/voreshjem-site/.claude/launch.json": {
+    "mtime": 1778605059.1263056,
+    "ast_hash": "0fdd79e640a5c2c84667e7746eedbe23",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/make_brand_doc.py": {
+    "mtime": 1779287244.3996453,
+    "ast_hash": "a4fc7d094406981f75b076ad7152d8d4",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/minbolighandel/admin/_auth.php": {
+    "mtime": 1779040361.3753178,
+    "ast_hash": "a7b24c35ca89b28cec464c646081794d",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/minbolighandel/admin/_db.php": {
+    "mtime": 1779041026.5154257,
+    "ast_hash": "ca064bd58872da6a6558e6791cbc3f39",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/minbolighandel/admin/_header.php": {
+    "mtime": 1779040920.6600785,
+    "ast_hash": "31c932679b13472dd003d942baae09a8",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/minbolighandel/admin/bolig-opret.php": {
+    "mtime": 1779041050.5244606,
+    "ast_hash": "61857d6594479f1fe3631f028ad90731",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/minbolighandel/admin/bolig-rediger.php": {
+    "mtime": 1779041039.6749988,
+    "ast_hash": "a3df1af45a2ccd68f05c44d7b317c91b",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/minbolighandel/admin/boliger.php": {
+    "mtime": 1779040394.264305,
+    "ast_hash": "34e8cdcf50d8f72abea23ab7c9084e56",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/minbolighandel/admin/brugere.php": {
+    "mtime": 1779036058.4234786,
+    "ast_hash": "1793bcf5fd8646233777a4fa6d87b3ee",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/minbolighandel/admin/index.php": {
+    "mtime": 1779041075.534806,
+    "ast_hash": "ed8c830726410beeb25f54368c366fc2",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/minbolighandel/admin/leads.php": {
+    "mtime": 1779040845.4903057,
+    "ast_hash": "68496c78555fa499b64f50688bd0c012",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/minbolighandel/admin/login.php": {
+    "mtime": 1779036058.4201634,
+    "ast_hash": "fa17e228f8e5f932db6b1990d110f170",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/minbolighandel/admin/logout.php": {
+    "mtime": 1779036058.4227467,
+    "ast_hash": "8c32244f0612bffabe1fac163f5d00dd",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/minbolighandel/admin/statistik.php": {
+    "mtime": 1779040870.2905586,
+    "ast_hash": "0a251b1e348e7bbddfc033094ce9b0b0",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/minbolighandel/admin/sync.php": {
+    "mtime": 1779040229.3445537,
+    "ast_hash": "4784e08ba43e7db21a0dde2de341b342",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/minbolighandel/api/cache/meta.json": {
+    "mtime": 1779039691.8452976,
+    "ast_hash": "268092401de6fda25568524dc9f80a4b",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/minbolighandel/api/cache/properties.json": {
+    "mtime": 1779039691.8449204,
+    "ast_hash": "0c9bb596bce9003be4648e42c6de84a7",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/minbolighandel/api/lead.php": {
+    "mtime": 1779040818.7610142,
+    "ast_hash": "02b97d0ccc67941d18c830f350d26149",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/minbolighandel/api/properties.php": {
+    "mtime": 1779035298.5259948,
+    "ast_hash": "17263a89938ff18b8d0c82663c585519",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/minbolighandel/api/track.php": {
+    "mtime": 1779040807.7279737,
+    "ast_hash": "0fc7cab8fe7ad44aac09221407aec6ed",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/minbolighandel/properties.js": {
+    "mtime": 1779022090.313975,
+    "ast_hash": "07dc6d208cef2c1e6bb478e308a8dc40",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/brand-guideline.html": {
+    "mtime": 1779287026.0988376,
+    "ast_hash": "ace9e00b00fe604d0d1a64bdd0e0c039",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/de/index.html": {
+    "mtime": 1779442928.5180361,
+    "ast_hash": "a671887f60a565b92217b2622422f5d0",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/de/kontakt.html": {
+    "mtime": 1780355413.0196474,
+    "ast_hash": "0dc4629ce9637869ddaa28ab10cfde53",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/de/slet-konto.html": {
+    "mtime": 1779442801.939842,
+    "ast_hash": "2067d4d9ed462bf1dd9d74a9ec0119cc",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/flyer.html": {
+    "mtime": 1778924061.2279844,
+    "ast_hash": "43bea9f9e54208811464e4f09aa16c57",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/hvordan-bruger-jeg-appen.html": {
+    "mtime": 1780355413.0006871,
+    "ast_hash": "f1bb39e328cc58b496f158c1216e45e5",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/index.html": {
+    "mtime": 1780355412.9616423,
+    "ast_hash": "32cae84899bbcff0fb941626405b9ab2",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/kalender.html": {
+    "mtime": 1780355413.0116632,
+    "ast_hash": "1c02c5a49b8f55348c0db84992778751",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/kontakt.html": {
+    "mtime": 1780409571.1972494,
+    "ast_hash": "62e4dd07f38a288a922153e5c2f2d4b5",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/madplan.html": {
+    "mtime": 1780355412.9794228,
+    "ast_hash": "3b4a69cfdf786c4babfbf4bcc4b4c0ce",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/minbolighandel/bolig.html": {
+    "mtime": 1779040998.0412009,
+    "ast_hash": "3c993c4f56a2612245dabe12855a1b5c",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/minbolighandel/index.html": {
+    "mtime": 1779039935.2686114,
+    "ast_hash": "4115a63070e81455dfd4a3a34fd563a0",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/reklame_1.html": {
+    "mtime": 1779275554.1202319,
+    "ast_hash": "3aea28071e46c8c383dd79d02207dd7c",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/slet-konto.html": {
+    "mtime": 1780355412.9901114,
+    "ast_hash": "1ae3947d18e429d535a8dfdf221df803",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/images/kal_1.png": {
+    "mtime": 1779450310.3797133,
+    "ast_hash": "d6171522eb35d952dbfee993e024f497",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/images/kal_2.png": {
+    "mtime": 1779450310.3836331,
+    "ast_hash": "11519c89252d731583f71bc5f8e31a48",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/images/kal_3.png": {
+    "mtime": 1779450310.386135,
+    "ast_hash": "ffcff72957175962d58ca865d7d51d02",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/images/kal_4.png": {
+    "mtime": 1779450310.3889182,
+    "ast_hash": "98c37003e87741c1088640e9a9aa3646",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/images/kal_indstillinger.png": {
+    "mtime": 1779451387.7332218,
+    "ast_hash": "c55b10783c609a80e44884ca0dc8e7f8",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/images/kal_notif.png": {
+    "mtime": 1779451095.3147237,
+    "ast_hash": "17649074142aef96cf5bc3b5403fad75",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/images/mad_1.webp": {
+    "mtime": 1779817505.8214757,
+    "ast_hash": "a9b9e07897dd9be1f2529b5c4fb498ec",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/images/mad_2.webp": {
+    "mtime": 1779817505.8221912,
+    "ast_hash": "1a2b36c8ceb1c71f170930240490cb47",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/images/mad_3.webp": {
+    "mtime": 1779817505.8225958,
+    "ast_hash": "da5f5ed11f58ad764a108f1c4e051402",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/logo.svg": {
+    "mtime": 1778136135.4632452,
+    "ast_hash": "4d6fa0cddaf9874fbe1e805e05b3b007",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/screen-kalender.jpg": {
+    "mtime": 1778139476.262523,
+    "ast_hash": "76106cae3a26daa61a04679963244af3",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/screen-kalender.png": {
+    "mtime": 1778141333.9184096,
+    "ast_hash": "35e6b0ee352d6b3199b0bdb6af2af10e",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/screen-login.jpg": {
+    "mtime": 1778139476.2512417,
+    "ast_hash": "7c47869dc82a0fed47e06e3f1d4f75a1",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/screen-login.png": {
+    "mtime": 1778141333.8314188,
+    "ast_hash": "a175c0ea731409e812aa8de891ea6cc0",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/screen-opgaver.jpg": {
+    "mtime": 1778139476.2664502,
+    "ast_hash": "845d3a2634b8ae41069ad1fd85b19b82",
+    "semantic_hash": ""
+  },
+  "/Users/nickoskovgaard/voreshjem-site/screen-opgaver.png": {
+    "mtime": 1778141334.0070531,
+    "ast_hash": "ffa7ecc8ce314eb7452bd4132e8cf53c",
+    "semantic_hash": ""
+  }
+}
