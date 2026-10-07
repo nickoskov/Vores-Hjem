@@ -26,6 +26,25 @@ for = "/fonts/*"
   [headers.values]
   Cache-Control = "public, max-age=31536000, immutable"
 
+# Gamle Wix-adresser fra Search Console (404), okt. 2026
+[[redirects]]
+from = "/home"
+to = "/"
+status = 301
+force = false
+
+[[redirects]]
+from = "/no"
+to = "/"
+status = 301
+force = false
+
+[[redirects]]
+from = "/no/*"
+to = "/"
+status = 301
+force = false
+
 # GEO, okt. 2026
 [[redirects]]
 from = "https://info.voreshjem.dk/*"
