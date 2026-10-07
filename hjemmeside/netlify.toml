@@ -28,6 +28,18 @@ for = "/fonts/*"
 
 # GEO, okt. 2026
 [[redirects]]
+from = "https://info.voreshjem.dk/*"
+to = "https://www.voreshjem.dk/:splat"
+status = 301
+force = true
+
+[[redirects]]
+from = "http://info.voreshjem.dk/*"
+to = "https://www.voreshjem.dk/:splat"
+status = 301
+force = true
+
+[[redirects]]
 from = "/om-vores-hjem"
 to = "/om-vores-hjem.html"
 status = 200
