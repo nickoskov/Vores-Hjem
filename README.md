@@ -14,18 +14,15 @@ Hver mappe er præcis det, der ligger live.
 
 ## Udgiv
 
-Fra mappen der skal udgives (kræver `netlify login` én gang):
+www.voreshjem.dk og www.unserzuhauseapp.de er låst i Netlify, så `netlify deploy --prod` ikke virker.
+Udgiv med scriptet fra repoets rod (kræver `netlify login` én gang):
 
 ```
-netlify deploy --no-build --dir . --site <netlify-projekt>          # testudgave
-netlify deploy --no-build --dir . --site <netlify-projekt> --prod   # live
+node vaerktoej/udgiv.mjs hjemmeside          # testudgave + test
+node vaerktoej/udgiv.mjs hjemmeside --live   # live, låst og pushet til GitHub
 ```
 
-`netlify.toml` i hver mappe indeholder viderestillinger og headers og skal med.
-
-⚠️ **Udgiv aldrig `chatbot/` eller `backend/` herfra.** De mapper har kun de statiske filer.
-Funktionerne (chat-bot, admin, vagt, ugemail, webhook m.fl.) kan ikke hentes fra Netlify
-og ligger kun på Mac'en. En udgivelse herfra ville slette dem.
+Se også CLAUDE.md. ⚠️ **Udgiv aldrig `chatbot/` eller `backend/` herfra.** Funktionerne ligger kun på Mac'en.
 
 ## Mangler
 
@@ -33,14 +30,9 @@ og ligger kun på Mac'en. En udgivelse herfra ville slette dem.
 - App-koden (iPhone/Android)
 - `_redirects` til `hjemmeside/hent_rettelser.js` (scriptet, der henter rettelser fra backend-panelet før udgivelse)
 
-## Før hver udgivelse
-
-Backend-panelet kan rette titler og beskrivelser direkte på live-sitet. Tjek derfor, at live
-ikke er ændret siden sidste udgivelse fra repoet, ellers overskrives rettelserne.
-Udgiv altid en testudgave først, og læg den live, når den er tjekket.
-
 ## Værktøjer
 
+- `vaerktoej/udgiv.mjs`: sikker udgivelse (se ovenfor).
 - `vaerktoej/vh-blog.js`: vedligehold af blogindlæg (brødkrumme, dateModified, sitemap-lastmod,
   sammenlægning af indlæg). Kør uden `--skriv` først. Fx
   `node ../vaerktoej/vh-blog.js . opdateret post/<slug> --skriv` inde fra `hjemmeside/`.
@@ -52,3 +44,4 @@ Udgiv altid en testudgave først, og læg den live, når den er tjekket.
   ny side /om-vores-hjem, llms.txt + llms-full.txt, robots.txt, JSON-LD (Organization, app, FAQ,
   brødkrummer), beskrivende H1 på funktionssider, footer-links, viderestillinger, sitemap, IndexNow.
   Ingen konkurrentnavne og ingen "Kort fortalt"-/faktabokse (ejerens ønske).
+- 2026-10-07: Live-siderne låst i Netlify; udgivelse kun via vaerktoej/udgiv.mjs. CLAUDE.md med regler.
