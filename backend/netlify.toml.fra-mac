@@ -1,0 +1,76 @@
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# oppetidsvagten, hver time
+[functions.vagt]
+  schedule = "0 * * * *"
+
+# ugemailen, mandag kl. 06:00 UTC, altsaa 08:00 dansk sommertid
+# dagvagten, hver morgen kl. 07:00 UTC. Opdager om maalingen er doed.
+[functions.dagvagt]
+  schedule = "0 7 * * *"
+
+# seo-hjulet, mandag kl. 05:00 UTC, foer ugemailen
+[functions.seovagt]
+  schedule = "0 5 * * 1"
+
+# oprydning af persondata, hver nat kl. 03:00 UTC
+[functions.ryd]
+  schedule = "0 3 * * *"
+
+[functions.ugemail]
+  schedule = "0 6 * * 1"
+
+# nye blogindlaeg fra Soros RSS-feed, hver time ti minutter over
+[functions.sorovagt]
+  schedule = "10 * * * *"
+
+# Panelet er én side. Alt arbejde sker i funktionen bagved.
+# egen besoegstaeller, siden sender hertil
+# den gamle adresse sender videre til backend.voreshjem.dk, undtagen taelleren,
+# som gamle kopier af hentknap.js stadig kan sende til
+[[redirects]]
+  from = "https://voreshjem-backend.netlify.app/t"
+  to   = "https://voreshjem-backend.netlify.app/.netlify/functions/taeller"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "https://voreshjem-backend.netlify.app/*"
+  to   = "https://backend.voreshjem.dk/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/t"
+  to   = "/.netlify/functions/taeller"
+  status = 200
+
+[[redirects]]
+  from = "/api/*"
+  to   = "/.netlify/functions/admin/:splat"
+  status = 200
+
+# Soro og andre skrivende tjenester rammer denne adresse
+[[redirects]]
+  from = "/webhook/*"
+  to   = "/.netlify/functions/webhook/:splat"
+  status = 200
+
+# Kontaktformularen paa voreshjem.dk
+[[redirects]]
+  from = "/formular/kontakt"
+  to   = "/.netlify/functions/kontakt"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "same-origin"
+    Cache-Control = "no-cache"

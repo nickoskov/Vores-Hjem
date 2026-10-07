@@ -1,0 +1,15 @@
+{
+ "/": "index.html",
+ "/kalender-informationsside": "kalender.html",
+ "/madplan-informationsside": "madplan.html",
+ "/opgaver-informationsside": "opgaver.html",
+ "/indkøbsliste-informationsside": "indkob.html",
+ "/indstillinger-informationsside": "indstillinger.html",
+ "/synkronisering-informationsside": "synkronisering.html",
+ "/hvordan-sletter-man-sin-konto": "slet-konto.html",
+ "/support": "kontakt.html",
+ "/blog": "blog.html          (skal bygges)",
+ "/referral": "301 til forsiden, tom Wix-modulside",
+ "/refer-friends": "301 til forsiden, tom Wix-modulside",
+ "/blank": "udgår, tom side"
+}

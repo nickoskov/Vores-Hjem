@@ -1,0 +1,78 @@
+<!doctype html><html lang="da"><head><meta charset="utf-8"><title>Proeve</title>
+<!-- ══ SPORING ══ Skal ligge oeverst i <head> paa alle sider.
+     Genskaber de otte blokke fra Wix. Alt startes fra ét script, som foerst
+     tjekker, om siden vises for sig selv. Inde i en ramme (som Wix bruger i
+     overgangen) starter INTET, saa der aldrig staar to cookiebannere oven paa
+     hinanden. Raekkefoelgen er ikke tilfaeldig: samtykketilstanden saettes,
+     FOER noget andet loader. -->
+<script>
+(function () {
+  var iRamme = false;
+  try { iRamme = window.self !== window.top; } catch (e) { iRamme = true; }
+  if (iRamme) return;
+
+  /* 1. Samtykketilstand. Alt er afvist, indtil brugeren siger ja. Var blok 6. */
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function () { dataLayer.push(arguments); };
+  gtag('consent', 'default', {
+    'ad_storage': 'denied', 'ad_user_data': 'denied', 'ad_personalization': 'denied',
+    'analytics_storage': 'denied', 'functionality_storage': 'granted', 'security_storage': 'granted',
+    'wait_for_update': 500
+  });
+  gtag('set', 'ads_data_redaction', true);
+  gtag('set', 'url_passthrough', true);
+
+  /* scripts indsaettes i raekkefoelge, ét ad gangen */
+  function hent(src, valg) {
+    var s = document.createElement('script'); s.src = src; s.async = false;
+    if (valg && valg.charset) s.charset = valg.charset;
+    document.head.appendChild(s); return s;
+  }
+
+  /* 2. Cookiebanner, iubenda. Samme widget som paa Wix, siteId 4517758, cookiePolicyId 85951957. */
+  hent('https://embeds.iubenda.com/widgets/c4881ab1-9037-47e2-b5ce-d1950889d637.js');
+  hent('https://cdn.iubenda.com/cs/gpp/stub.js');
+  hent('https://cdn.iubenda.com/cs/iubenda_cs.js', { charset: 'UTF-8' });
+
+  /* 3. Google Tag Manager. Var blok 4. */
+  dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+  hent('https://www.googletagmanager.com/gtm.js?id=GTM-TQ39D7RM');
+
+  /* 4. Google Analytics 4. Var blok 5. */
+  hent('https://www.googletagmanager.com/gtag/js?id=G-Y9249CY9TV');
+  gtag('js', new Date());
+  gtag('config', 'G-Y9249CY9TV');
+
+  /* 4b. Google Ads. Der er ingen Ads-kode endnu. Naar I opretter en konvertering
+         i Google Ads, faar I et id som AW-123456789. Saet det ind og fjern //
+     gtag('config', 'AW-XXXXXXXXX'); */
+
+  /* 5. Meta-pixel. Var blok 1 og 2. */
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+  document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '697476623339056');
+  fbq('track', 'PageView');
+
+  /* 6. OpenAI, saa ChatGPT kan se hvor trafikken kommer fra. Var blok 8. debug er false. */
+  !function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};
+  q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;
+  var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}
+  (window,document,'script','https://bzrcdn.openai.com/sdk/oaiq.min.js');
+  oaiq('init', { pixelId: 'QZwgYr1hiBh3USt1vsSytt', debug: false });
+
+  /* 7 og 8. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>,
+     saa de venter til siden er laest faerdig. */
+  function naarKlar(fn) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
+  naarKlar(function () {
+    hent('https://voreshjem-bot.netlify.app/widget.js');
+    hent('https://voreshjem-bot.netlify.app/hentknap.js');
+  });
+})();
+</script>
+<noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=697476623339056&ev=PageView&noscript=1"></noscript>
+<!-- ══ SPORING SLUT ══ -->
+</head><body style="min-height:2000px"><h1>Proeve</h1></body></html>

@@ -1,0 +1,28 @@
+# Adressekort til voreshjem.dk efter flytningen fra Wix.
+# Reglen: adresserne bliver praecis som i dag, saa Google ikke skal laere
+# noget nyt. Linjerne herunder peger de gamle adresser paa de rigtige filer.
+
+/                                  /index.html                200
+/kalender-informationsside         /kalender.html             200
+/madplan-informationsside          /madplan.html              200
+/opgaver-informationsside          /opgaver.html              200
+/indkøbsliste-informationsside     /indkob.html               200
+/indstillinger-informationsside    /indstillinger.html        200
+/synkronisering-informationsside   /synkronisering.html       200
+/hvordan-sletter-man-sin-konto     /slet-konto.html           200
+/support                           /kontakt.html              200
+/blog                              /blog.html                 200
+# De to henvisningssider er Wix' eget modul, som aldrig blev sat op.
+# Der staar kun "Henvisningsprogrammet er ikke tilgaengeligt", saa der er
+# intet at flytte. De sendes til forsiden.
+/referral                          /                          301
+/refer-friends                     /                          301
+
+# Bloggen. Hvert indlaeg beholder sin adresse.
+/post/*                            /blog/post/:splat.html     200
+
+# Den tomme side, der aldrig blev brugt
+/blank                             /                          301
+
+# Underdomaenet samles paa hovedsiden, saa indholdet tæller ét sted
+# (saettes foerst op naar domaenet er flyttet)

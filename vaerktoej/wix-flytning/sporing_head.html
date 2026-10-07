@@ -1,0 +1,88 @@
+<!-- ══ SPORING ══ Skal ligge oeverst i <head> paa alle sider.
+     Alt startes fra ét script, som foerst tjekker, om siden vises for sig selv.
+     Inde i en ramme starter INTET, saa der aldrig staar to cookiebannere oven paa
+     hinanden. Raekkefoelgen er ikke tilfaeldig: samtykketilstanden saettes,
+     FOER noget andet loader.
+     16. sept. 2026: Google Tag Manager fjernet (containeren var tom og kostede
+     115 KB). Meta og OpenAI starter foerst, naar den besoegende siger ja til
+     markedsfoering i cookiebanneret. -->
+<script>
+(function () {
+  var iRamme = false;
+  try { iRamme = window.self !== window.top; } catch (e) { iRamme = true; }
+  if (iRamme) return;
+
+  /* 1. Samtykketilstand. Alt er afvist, indtil brugeren siger ja. */
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function () { dataLayer.push(arguments); };
+  gtag('consent', 'default', {
+    'ad_storage': 'denied', 'ad_user_data': 'denied', 'ad_personalization': 'denied',
+    'analytics_storage': 'denied', 'functionality_storage': 'granted', 'security_storage': 'granted',
+    'wait_for_update': 500
+  });
+  gtag('set', 'ads_data_redaction', true);
+  gtag('set', 'url_passthrough', true);
+
+  /* scripts indsaettes i raekkefoelge, ét ad gangen */
+  function hent(src, valg) {
+    var s = document.createElement('script'); s.src = src; s.async = false;
+    if (valg && valg.charset) s.charset = valg.charset;
+    document.head.appendChild(s); return s;
+  }
+
+  /* 2. Cookiebanner, iubenda. siteId 4517758, cookiePolicyId 85951957. */
+  hent('https://embeds.iubenda.com/widgets/c4881ab1-9037-47e2-b5ce-d1950889d637.js');
+  hent('https://cdn.iubenda.com/cs/gpp/stub.js');
+  hent('https://cdn.iubenda.com/cs/iubenda_cs.js', { charset: 'UTF-8' });
+
+  /* 3. Google Analytics 4. Maaler kun, naar samtykket er givet. */
+  hent('https://www.googletagmanager.com/gtag/js?id=G-ZFW1KE91LV');
+  gtag('js', new Date());
+  gtag('config', 'G-ZFW1KE91LV');
+
+  /* 3b. Google Ads. Der er ingen Ads-kode endnu. Naar I opretter en konvertering
+         i Google Ads, faar I et id som AW-123456789. Saet det ind og fjern //
+     gtag('config', 'AW-XXXXXXXXX'); */
+
+  /* 4. Markedsfoering: Meta-pixel og OpenAI. Hentes foerst, naar cookiebanneret
+        melder ja til markedsfoering (ad_storage granted). Siger den besoegende nej,
+        hentes de slet ikke. Har den besoegende sagt ja tidligere, melder banneret
+        det med det samme, og de starter straks. */
+  var reklameStartet = false;
+  function startReklame() {
+    if (reklameStartet) return; reklameStartet = true;
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '697476623339056');
+    fbq('track', 'PageView');
+
+    !function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};
+    q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;
+    var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}
+    (window,document,'script','https://bzrcdn.openai.com/sdk/oaiq.min.js');
+    oaiq('init', { pixelId: 'QZwgYr1hiBh3USt1vsSytt', debug: false });
+  }
+  /* Banneret skriver sit svar i dataLayer. Vi kigger kun paa nye linjer. */
+  var set = 0, vagt = setInterval(function () {
+    for (; set < dataLayer.length; set++) {
+      var a = dataLayer[set];
+      if (a && a[0] === 'consent' && a[2] && a[2].ad_storage === 'granted') {
+        startReklame(); clearInterval(vagt); return;
+      }
+    }
+  }, 400);
+
+  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>,
+     saa de venter til siden er laest faerdig. Hent-knappens script taeller ogsaa
+     besoeget til backenden, uden cookies. */
+  function naarKlar(fn) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
+  naarKlar(function () {
+    hent('https://voreshjem-bot.netlify.app/widget.js');
+    hent('https://voreshjem-bot.netlify.app/hentknap.js');
+  });
+})();
+</script>
+<!-- ══ SPORING SLUT ══ -->

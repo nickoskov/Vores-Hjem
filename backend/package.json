@@ -1,0 +1,10 @@
+{
+  "name": "voreshjem-admin",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Backend til voreshjem.dk. Erstatter Wix' panel.",
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.4",
+    "nodemailer": "^10.0.9"
+  }
+}

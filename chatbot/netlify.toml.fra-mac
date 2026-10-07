@@ -1,0 +1,34 @@
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Klik-tæller: /hent/appstore + /hent/googleplay → funktion der tæller og viderestiller
+[[redirects]]
+  from = "/hent/*"
+  to = "/.netlify/functions/chat-bot?go=:splat"
+  status = 200
+
+# Botten er et vaerktoej, ikke en side. Google skal ikke vise den.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex"
+
+# Sørg for at browsere ALTID henter nyeste version (revaliderer med etag — billigt)
+[[headers]]
+  for = "/admin.html"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/widget.js"
+  [headers.values]
+    Cache-Control = "no-cache"

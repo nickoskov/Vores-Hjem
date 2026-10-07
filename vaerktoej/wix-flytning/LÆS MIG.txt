@@ -1,0 +1,12 @@
+Flytning af voreshjem.dk fra Wix
+
+  indlaeg.json  listen over alle 28 blogindlaeg, og hvilke der er hentet
+  raa/          den raa tekst fra hvert indlaeg, som den staar paa Wix
+  blog/         de faerdige html-sider, klar til Netlify
+
+Blogteksten staar ikke i siden, naar man henter den med curl. Wix
+henter den bagefter med JavaScript. Derfor skal hvert indlaeg aabnes
+i en browser og laeses derfra.
+
+Adresserne skal bevares praecis som de er, /post/<navn>, ellers
+mister vi placeringerne i Google.
