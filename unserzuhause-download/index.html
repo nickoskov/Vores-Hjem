@@ -183,30 +183,22 @@
     <h1>Hol dir <span class="grad">Unser Zuhause</span></h1>
     <p class="sub">Der ganze Familienalltag in einer App: Kalender, Essensplan, Einkauf und Aufgaben.</p>
     <div class="store-btns">
-      <a href="https://voreshjem-bot.netlify.app/hent/appstore-de?src=download" target="_blank" rel="noopener" class="store-btn">
+      <a href="https://backend.unserzuhauseapp.de/hent/appstore" target="_blank" rel="noopener" class="store-btn">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
         <div class="store-btn-text"><div class="store-btn-sub">Laden im</div><div class="store-btn-name">App Store</div></div>
       </a>
-      <a href="https://voreshjem-bot.netlify.app/hent/googleplay-de?src=download" target="_blank" rel="noopener" class="store-btn">
+      <a href="https://backend.unserzuhauseapp.de/hent/googleplay" target="_blank" rel="noopener" class="store-btn">
         <svg viewBox="0 0 512 512"><path fill="#4CAF50" d="M325.3 234.3L104.6 13l280.8 161.2z"/><path fill="#4285F4" d="M47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l249.2-249.1z"/><path fill="#FFC107" d="M461.2 219.8l-67.6-39.1-68.5 68.5 68.5 68.5 67.6-39.1c19.3-11.1 19.3-40.6-.1-58.8z"/><path fill="#F44336" d="M104.6 499L325.3 277.7l-60.1-60.1z"/></svg>
         <div class="store-btn-text"><div class="store-btn-sub">Jetzt bei</div><div class="store-btn-name">Google Play</div></div>
       </a>
-      <a href="https://voreshjem-bot.netlify.app/hent/website-de?src=download" target="_blank" rel="noopener" class="web-btn">
+      <a href="https://www.unserzuhauseapp.de/" target="_blank" rel="noopener" class="web-btn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
         unserzuhauseapp.de besuchen
       </a>
     </div>
     <div class="trial">14 Tage kostenlos, keine Bindung<span>5,99 €/Monat · bis zu 7 Personen</span></div>
   </div>
-  <script>
-  // Besuchsstatistik: Besuch zählen und woher er kam (utm_source aus Bio-Links).
-  // site:'de' ist entscheidend, sonst landet der Besuch beim dänischen Markt.
-  (function(){
-    try{
-      var src=(new URLSearchParams(location.search).get('utm_source')||'direkte').toLowerCase().replace(/[^a-z0-9_-]/g,'').slice(0,30)||'direkte';
-      fetch('https://voreshjem-bot.netlify.app/.netlify/functions/chat-bot',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action:'track',kind:'page',label:'dl:'+src,site:'de'})});
-    }catch(e){}
-  })();
-  </script>
+  <!-- Besuchsstatistik: derselbe cookiefreie Zähler wie auf unserzuhauseapp.de. Die Seite zählt dort als /download. -->
+  <script src="https://www.unserzuhauseapp.de/taeller.js" defer></script>
 </body>
 </html>
