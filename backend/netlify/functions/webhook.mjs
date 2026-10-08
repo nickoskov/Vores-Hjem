@@ -1,0 +1,5 @@
+// webhook: Netlifys nye funktionsformat. Selve koden ligger uaendret i ../handlers/webhook.js.
+import h from '../handlers/webhook.js';
+import { tilV2 } from '../lib/v2.mjs';
+
+export default tilV2(h.handler);

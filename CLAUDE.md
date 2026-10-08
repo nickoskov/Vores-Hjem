@@ -13,8 +13,10 @@ Gælder på alle computere (Windows-PC og Mac). Repoet er den eneste kilde til, 
   - Samme for `unserzuhause`, `download` og `unserzuhause-download`.
 - Scriptet stopper, hvis repoet er bagud for GitHub, eller hvis live er nyere end repoet (`vh-version.txt`).
 - Kør altid `git pull`, før du ændrer noget, og push bagefter.
-- `chatbot/` og `backend/` må **ikke** udgives herfra. De har kun de statiske filer. Deres Netlify-funktioner
-  ligger endnu ikke i repoet, og en udgivelse ville slette dem.
+- `backend/` udgives kun med `node vaerktoej/udgiv-backend.mjs` (prøveudgave) og `--live`. Scriptet samler
+  de udgivne filer og bundter funktionerne (Netlifys nye format, fordi det gamle højst tillader 4 KB
+  miljøvariabler). Brug aldrig `netlify deploy` direkte i `backend/`.
+- `chatbot/` må **ikke** udgives herfra endnu. Funktionskoden ligger i repoet, men der er intet udgivelsesscript.
 
 ## Flytning fra Mac'ens gamle mappe (`~/voreshjem-site` m.fl.)
 

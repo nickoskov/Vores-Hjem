@@ -2,32 +2,22 @@
   publish = "public"
   functions = "netlify/functions"
 
+# De planlagte job (vagt, dagvagt, seovagt, ryd, ugemail, sorovagt) har deres tidsplan i
+# netlify/functions/<navn>.mjs (export const config), fordi funktionerne bruger Netlifys nye format.
 [functions]
   node_bundler = "esbuild"
 
 # oppetidsvagten, hver time
-[functions.vagt]
-  schedule = "0 * * * *"
 
 # ugemailen, mandag kl. 06:00 UTC, altsaa 08:00 dansk sommertid
 # dagvagten, hver morgen kl. 07:00 UTC. Opdager om maalingen er doed.
-[functions.dagvagt]
-  schedule = "0 7 * * *"
 
 # seo-hjulet, mandag kl. 05:00 UTC, foer ugemailen
-[functions.seovagt]
-  schedule = "0 5 * * 1"
 
 # oprydning af persondata, hver nat kl. 03:00 UTC
-[functions.ryd]
-  schedule = "0 3 * * *"
 
-[functions.ugemail]
-  schedule = "0 6 * * 1"
 
 # nye blogindlaeg fra Soros RSS-feed, hver time ti minutter over
-[functions.sorovagt]
-  schedule = "10 * * * *"
 
 # Panelet er én side. Alt arbejde sker i funktionen bagved.
 # egen besoegstaeller, siden sender hertil
