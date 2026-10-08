@@ -185,7 +185,7 @@ body > nav {
 .btn-white { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 16px 32px; border-radius: 16px; background: #fff; color: var(--purple); font-size: 16px; font-weight: 800; box-shadow: 0 4px 20px rgba(0,0,0,0.12); transition: transform 0.2s, box-shadow 0.2s; }
 .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.18); }
 .cta-trust { font-size: 14px; color: rgba(255,255,255,0.7); margin-top: 18px; }
-.cta-trust span { color: #fff; font-weight: 700; }
+.cta-trust span { color: #fff; font-weight: 700; white-space: nowrap; }
 
 /* ─── WEITERLESEN / KARTEN ─── */
 .weiter { padding: 8px 0 88px; }
@@ -212,6 +212,9 @@ body > nav {
 .uebersicht-kopf .lead { max-width: 580px; margin: 0 auto; }
 .uebersicht { padding: 64px 0 32px; }
 .uebersicht #cta { padding: 48px 0 88px; }
+.uebersicht .karte:first-child { grid-column: span 2; padding: 32px 32px 28px; background: linear-gradient(160deg, #FFFFFF 0%, #F8F7FF 100%); }
+.uebersicht .karte:first-child h2 { font-size: 24px; letter-spacing: -0.6px; }
+.uebersicht .karte:first-child p { font-size: 16px; max-width: 520px; }
 
 @media (max-width: 900px) {
   .karten { grid-template-columns: 1fr 1fr; }
@@ -226,8 +229,19 @@ body > nav {
   .artikel h2 { font-size: 24px; margin-top: 40px; }
   .artikel p, .artikel li { font-size: 17px; }
   .karten, .weiter .karten { grid-template-columns: 1fr; }
-  .cta-karte { padding: 36px 22px; border-radius: 24px; }
+  .uebersicht .karte:first-child { grid-column: auto; padding: 26px 26px 24px; }
+  .uebersicht .karte:first-child h2 { font-size: 19px; }
+  .cta-karte { padding: 36px 20px; border-radius: 24px; }
+  .cta-badge { font-size: 12px; padding: 6px 12px; }
   .tabelle td:first-child { white-space: normal; }
+  /* Paa telefonen stables tabellen: en blok pr. raekke, saa intet skal rulles sidelaens */
+  .tabelle thead { display: none; }
+  .tabelle table, .tabelle tbody, .tabelle tr, .tabelle td { display: block; }
+  .tabelle tr { padding: 14px 18px; border-bottom: 1px solid var(--border); }
+  .tabelle tr:last-child { border-bottom: 0; }
+  .tabelle td { padding: 0; border: 0; }
+  .tabelle td:first-child { margin-bottom: 4px; }
+  .tabelle td:nth-child(3) { font-size: 14.5px; color: var(--text-secondary); margin-top: 4px; }
   .uebersicht-kopf { padding: 64px 0 52px; }
   .uebersicht-kopf h1 { letter-spacing: -1.5px; }
   .faq details { padding: 18px 18px; }
@@ -350,7 +364,7 @@ body > nav {
       <div class="cta-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>14 Tage kostenlos testen, keine Bindung</div>
       <h2>Weniger im Kopf, mehr an einem Ort</h2>
       <p>Unser Zuhause holt Termine, Essen, Einkauf und Aufgaben an einen Ort, den die ganze Familie sieht.</p>
-      <a class="btn-white" href="https://backend.unserzuhauseapp.de/hent/app" target="_blank" rel="noopener">Unser Zuhause kostenlos testen</a>
+      <a class="btn-white" href="https://backend.unserzuhauseapp.de/hent/app" target="_blank" rel="noopener">Kostenlos testen</a>
       <p class="cta-trust">Danach <span>5,99 €/Monat</span> oder <span>24,99 €/Halbjahr</span> für die ganze Familie.<br>Bis zu 7 Personen, keine Werbung, jederzeit kündbar.</p>
     </div>
   </div>
