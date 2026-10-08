@@ -6,7 +6,9 @@
  *
  * Trykket taelles i vh_klik, i backendens egen database, ligesom taelleren goer, uden cookies og
  * med samme gaeste-id. Kun tryk fra sidens egne sider taelles (henvisningen skal vaere profilens),
- * og robotter taelles ikke. Siden kan give ?sted= med (afsnittet, knappen sad i).
+ * og robotter taelles ikke. Siden sender kun sit domaene som henvisning til en anden adresse
+ * (strict-origin-when-cross-origin), saa sidens taeller.js haefter ?sti= (siden) og ?sted=
+ * (afsnittet, knappen sad i) paa ved trykket. Uden dem bruges henvisningens sti.
  * Viderestillingen sker altid, ogsaa hvis taellingen fejler.
  */
 const { sql } = require('../lib/db.js');
@@ -29,7 +31,9 @@ exports.handler = async (ev) => {
   if (sql && !robot && profil.tilladt.test(vaert(fra))) {
     try {
       await tabel();
-      let sti = '/'; try { sti = decodeURIComponent(new URL(fra).pathname || '/').slice(0, 200); } catch (e) {}
+      let sti = '/'; try { sti = decodeURIComponent(new URL(fra).pathname || '/'); } catch (e) {}
+      if (/^\/[^\s]*$/.test(String(q.sti || ''))) sti = String(q.sti);
+      sti = profil.sti(vaert(fra), sti).slice(0, 200);
       const sted = String(q.sted || '').replace(/[^\wÀ-ſ .:-]/g, '').slice(0, 60);
       await sql`INSERT INTO vh_klik (sti, sted, butik, enhed, gaest) VALUES (${sti}, ${sted}, ${butik}, ${enhed}, ${gaest})`;
     } catch (e) { /* knappen maa aldrig fejle for den besoegende */ }

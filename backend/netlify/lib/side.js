@@ -44,8 +44,10 @@ const PROFILER = {
     kode: 'de', brand: 'Unser Zuhause', navn: 'unserzuhauseapp.de',
     site: 'https://www.unserzuhauseapp.de', backend: 'https://backend.unserzuhauseapp.de',
     netlifySiteId: 'dee37d6a-eb69-4f6c-a2e9-ef20e9076531', backendSiteId: '571ab434-e15f-4851-a728-a3ed7169b3d1',
-    tilladt: /(^|\.)unserzuhauseapp\.de$|^verdant-strudel-af7a88\.netlify\.app$/i,
-    egen: /(^|\.)unserzuhauseapp\.de$|^verdant-strudel-af7a88\.netlify\.app$/i,
+    // download-siden (unserzuhause-download.netlify.app, hvor bio-links peger hen) taelles med som /download
+    tilladt: /(^|\.)unserzuhauseapp\.de$|^verdant-strudel-af7a88\.netlify\.app$|^unserzuhause-download\.netlify\.app$/i,
+    egen: /(^|\.)unserzuhauseapp\.de$|^verdant-strudel-af7a88\.netlify\.app$|^unserzuhause-download\.netlify\.app$/i,
+    foran: { 'unserzuhause-download.netlify.app': '/download' },
     chat: 'de',
     appStoreId: '6771931999', playPakke: 'com.unserzuhause.app',
     butik: { appstore: 'https://apps.apple.com/de/app/unser-zuhause/id6771931999',
@@ -78,6 +80,10 @@ module.exports = {
   // det Netlify-site, funktionen koerer paa, hvis Netlify fortaeller det (v2.mjs gemmer det fra context.site)
   netlifySite: () => process.env.VH_NETLIFY_SITE || process.env.SITE_ID || '',
   // det panelet maa se (status er offentlig, saa kun det, der alligevel staar paa siden)
+  // stien, som den gemmes: en side paa en anden vaert end selve siden (fx download-siden) faar sit
+  // eget stykke foran, saa dens forside ikke blandes med sidens forside
+  sti: (vaert, sti) => { const f = (profil.foran || {})[String(vaert || '').toLowerCase().replace(/^www\./, '')];
+    return f ? f + (sti === '/' ? '' : sti) : sti; },
   offentlig: () => ({ kode: profil.kode, brand: profil.brand, navn: profil.navn, site: profil.site, backend: profil.backend,
     chat: profil.chat, skjul: profil.skjul.slice() })
 };

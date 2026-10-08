@@ -114,7 +114,7 @@ exports.handler = async (ev) => {
     let k = {}; try { k = JSON.parse(ev.body || '{}'); } catch (e) {}
     let side; try { side = new URL(String(k.u || '')); } catch (e) { return svar(204, oprindelse); }
     if (!TILLADT.test(side.hostname)) return svar(204, oprindelse);
-    const sti = decodeURIComponent(side.pathname || '/').slice(0, 200);
+    const sti = profil.sti(side.hostname, decodeURIComponent(side.pathname || '/')).slice(0, 200);
     const utm = { source: side.searchParams.get('utm_source') || '', medium: side.searchParams.get('utm_medium') || '' };
     let kilde = vaert(String(k.r || ''));
     // kom de fra en anden side paa samme site, er det et klik inde paa siden og ikke en kilde.
