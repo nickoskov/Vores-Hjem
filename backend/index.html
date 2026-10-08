@@ -362,6 +362,11 @@ td.d{color:var(--daemp);font-weight:500}
 .bsk .hvem{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;opacity:.65;margin-bottom:3px;display:block;background:none;border:none;padding:0}
 .bsk .da{display:block;margin-top:6px;padding-top:6px;border-top:1px solid rgba(0,0,0,.08);font-size:12.5px;opacity:.8}
 .bsk.agent .da{border-color:rgba(255,255,255,.3)}
+/* support: et svar, der ikke naaede ud til kunden */
+.bsk.agent.ikke-sendt{background:#FEF2F2;color:#991B1B;border:1px dashed #FECACA}
+.bsk.agent.ikke-sendt .da{border-color:rgba(153,27,27,.18)}
+#sag-vis .bsk .hvem{color:inherit}
+.sag-emne{padding:10px 16px;border-bottom:1px solid var(--kant-blod);font-size:13px;line-height:1.6}
 .bsk .vk{position:absolute;top:6px;right:8px;display:none;gap:4px}
 .bsk.agent:hover .vk{display:flex}
 .bsk .vk button{font-size:11px;font-weight:700;color:#fff;opacity:.75;padding:2px 5px;border-radius:6px;background:rgba(0,0,0,.18)}
@@ -511,7 +516,7 @@ const TT = (n, form) => mangler(n) ? '–' : (form || T)(n);
    kildeLinje giver den lille grå linje under en overskrift, fx "Egen tæller, alle besøgende, 17. sep. til 5. okt." */
 const KILDEKORT = { egen:'Egen tæller, alle besøgende', ga4:'Google Analytics, kun cookie-ja', gsc:'Search Console', play:'Google Play',
   appstore:'App Store', meta:'Meta', googleads:'Google Ads', bot:'Chatbotten', oppetid:'Oppetidsvagten', psi:'Google PageSpeed',
-  seo:'Egen gennemgang af siden', db:'Databasen' };
+  seo:'Egen gennemgang af siden', db:'Databasen', support:'Support-mailen', blokvagt:'Blokeringsvagten' };
 function kildeTekst(k, daek, ekstra) {
   const navn = Array.isArray(k) ? k.map(x => KILDEKORT[x] || x).join(' og ') : (KILDEKORT[k] || k || '');
   let t = navn;
@@ -744,6 +749,7 @@ const SIDER = [
   {id:'downloads',navn:'Downloads', gruppe:'Statistik', ikon:'M12 3v12m0 0-4-4m4 4 4-4M4 17v3h16v-3'},
   {id:'seo',      navn:'SEO og GEO',gruppe:'Statistik', ikon:'M12 2a10 10 0 100 20 10 10 0 000-20zm0 4v6l4 2'},
   {id:'chat',     navn:'Chat',      gruppe:'Siden',     ikon:'M4 4h16v11H8l-4 4V4z'},
+  {id:'support',  navn:'Support',   gruppe:'Siden',     ikon:'M3 5h18v14H3V5zm0 1 9 7 9-7'},
   {id:'blog',     navn:'Blog',      gruppe:'Siden',     ikon:'M4 3h16v18H4V3zm3 4h10M7 11h10M7 15h6'},
   {id:'links',    navn:'Links',     gruppe:'Siden',     ikon:'M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1'},
   {id:'indhold',  navn:'Indhold',   gruppe:'Siden',     ikon:'M4 4h16v2H4V4zm0 5h16v2H4V9zm0 5h10v2H4v-2zm0 5h10v2H4v-2z'},
@@ -754,7 +760,8 @@ const SIDER = [
    Samme panel koerer paa backend.voreshjem.dk og backend.unserzuhauseapp.de. Status (offentlig) siger hvilken
    (side), og saa skiftes navnene, og sider der kun giver mening for den danske side, skjules. Uden svar: den danske. */
 let profil = { kode:'dk', brand:'Vores Hjem', navn:'voreshjem.dk', site:'https://www.voreshjem.dk', backend:'https://backend.voreshjem.dk', chat:'dk', skjul:[] };
-const skjult = id => (profil.skjul || []).includes(id);
+// Support findes kun, hvor backenden har support-mail (status siger det i opsat.support, i dag den tyske)
+const skjult = id => (profil.skjul || []).includes(id) || (id === 'support' && !(opsat && opsat.support));
 const synligeSider = () => SIDER.filter(s => !skjult(s.id));
 // teksterne er skrevet til voreshjem.dk; paa en anden side skiftes navnet og adressen ud
 const paaSiden = t => profil.kode === 'dk' || t == null ? t : String(t).replace(/https:\/\/www\.voreshjem\.dk/g, profil.site).replace(/voreshjem\.dk/g, profil.navn);
@@ -1405,6 +1412,10 @@ const HJAELP = {
   'Stemning': 'Hvordan kunderne lød i samtaler startet i perioden: glade, neutrale eller sure. Vurderet af botten.',
   'Mest trykkede spørgsmål': 'De færdige spørgsmål i chatten, som flest har trykket på i perioden. Fortæller, hvad folk er i tvivl om.',
   'Svar folk gav tommel ned': 'De svar, kunder gav tommel ned i perioden, nyeste først. Læs dem, og ret bottens viden, hvis den tog fejl.',
+  // Support
+  'Åbne sager': 'Alle supportsager, der stadig er gemt. Der er ingen knap til at lukke en sag: den slettes af sig selv, når der har været stille i sagen længe nok. Under tallet står hvor længe. Er tallet –, har support-mailen ikke kørt endnu, og så kendes det ikke.',
+  'Venter på jer': 'Sager, hvor den nyeste besked er fra kunden. Et svar, der ikke nåede ud til kunden, tæller ikke som svar. I svarer ved at svare på den danske mail i jeres indbakke, med sagsnummeret, fx [UZ-12], i emnet. Så oversættes svaret til tysk og sendes til kunden. Panelet kan ikke svare.',
+  'Svartid, median': 'Hvor lang tid kunderne typisk ventede på jeres første svar, de seneste 30 dage. Uret starter, når kundens første besked i en runde kommer ind i backenden, og stopper, når jeres svar er sendt til kunden på tysk. Medianen er den midterste svartid, så ét langsomt svar ikke trækker hele tallet. Henvendelser, der stadig venter, er ikke med, og antallet står under tallet.',
   // Links
   'Nyt link': 'Lav et link med mærke, så I bagefter kan se præcis, hvor besøgene kom fra, fx en flyer, et opslag eller en mail.',
   'Gemte links': 'Alle links, I har lavet, med QR-kode. Hvor mange besøg en kampagne har givet, står under Annoncer.',
@@ -1416,6 +1427,7 @@ const HJAELP = {
   'Alarm': 'Om I får en mail, hvis siden holder op med at svare. Kræver at mail er sat op.',
   'Sidehastighed, målt af Google': 'Googles egen test af, hvor hurtigt siden loader på telefon og computer. Over 90 er grønt. Tallet svinger meget fra gang til gang, så hver enhed måles tre gange. Under boksene står, hvilken måling der vises: midterværdien, eller den laveste, hvis kun to lykkedes.',
   'Gange siden ikke svarede': 'Hver gang vores tjek ikke fik svar fra siden, med tidspunkt og fejl.',
+  'Blokeringsvagt': 'Hver morgen slår backenden sidens adresser op hos de offentlige sikkerhedsfiltre, som internetudbydere, firmaer og skoler bygger deres filtre på, og hos Google Safe Browsing. Står en adresse som blokeret, kan folk bag det filter ikke åbne siden, og I får en mail samme morgen. Internetudbydernes egne filtre (fx YouSee) kan ikke spørges udefra, kun de offentlige. Har vagten ikke kørt, står der det, ikke at alt er i orden.',
   // Opsaetning
   'Forbindelserne, testet lige nu': 'Backenden prøver at hente tal fra hver kilde og fortæller, om det lykkedes. Rødt betyder, at nøglen eller adgangen er forkert.',
   'Grundlaget': 'De ting, panelet selv har brug for: adgangskode, database, mail og udgivelse.',
@@ -2119,6 +2131,103 @@ async function udgivRettelser() {
     if (fejl.length) console.warn(fejl); vis(); } catch (e) { flash(e.message, 'slem'); }
 }
 
+/* ══ SUPPORT ══
+   Kun paa en backend med support-mail (i dag den tyske). Kun laesning: listen over sager og én sag ad gangen.
+   Teamet svarer paa den danske mail i sin indbakke, saa her er ingen svarboks. Mangler en oversaettelse,
+   sender backenden null og en grund, og grunden staar i stedet for teksten. */
+let sagValgt = null;
+const SAG_KILDE = { mail:'Mail', formular:'Kontaktformularen' };
+// sekunder som "45 min", "3 t 20 min" eller "2,5 doegn". null bliver null, saa kpi viser en streg
+const varighed = s => { if (mangler(s)) return null; const min = Math.max(1, Math.round(Number(s) / 60));
+  if (min < 60) return min + ' min';
+  if (min < 48 * 60) return Math.floor(min / 60) + ' t' + (min % 60 ? ' ' + (min % 60) + ' min' : '');
+  return P(min / 1440, 1) + ' døgn'; };
+const sagStatus = x => x.status === 'venter' ? '<span class="maerke" style="background:#FEF2F2;color:#991B1B">venter på jer</span>'
+  : x.status === 'besvaret' ? '<span class="maerke m-udgivet">besvaret</span>'
+  : '<span class="maerke m-pause">' + sik(x.statusGrund || 'ukendt') + '</span>';
+async function visSupport(m) {
+  const top = 'Kundernes mails til support-postkassen, oversat til dansk';
+  m.innerHTML = hoved('Support', top) + skeletKort(3);
+  let d; try { d = await kald('support'); } catch (e) { m.innerHTML = hoved('Support', top) + '<div class="besked slem">' + sik(e.message) + '</div>'; return; }
+  const t = d.tal || {}, a = t.aabne || {}, v = t.venter || {}, sv = t.svartid || {}, l = d.sager || [];
+  const eks = l[0] ? l[0].maerke : '';
+  const rk = x => '<div class="samt-rk' + (sagValgt === x.id ? ' valgt' : '') + '" data-sag="' + Number(x.id) + '" onclick="aabnSag(' + Number(x.id) + ')">' +
+    '<span class="prik' + (x.status === 'venter' ? '' : ' laest') + '"></span><div class="ind">' +
+    '<b>' + sik(x.maerke) + ' ' + sik(x.navn || x.email) + '</b>' + (x.navn ? '<small>' + sik(x.email) + '</small>' : '') +
+    '<small style="color:var(--blaek)">' + sik(x.emneDe || '(intet emne)') + '</small>' +
+    '<small>' + (x.emneDa ? sik(x.emneDa) : '<i>' + sik(x.emneDaGrund || '') + '</i>') + '</small>' +
+    '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:5px">' + sagStatus(x) +
+      '<span style="font-size:11px;color:var(--svag);font-weight:700">' + sik(SAG_KILDE[x.kilde] || x.kilde) + ' · ' + T(x.beskeder) + (x.beskeder === 1 ? ' besked' : ' beskeder') + '</span></div>' +
+    (x.note ? '<small style="color:var(--roed);white-space:normal">' + sik(x.note) + '</small>' : '') +
+    '</div><time>' + tidKort(x.sidst) + '</time></div>';
+  m.innerHTML = hoved('Support', top, vaerktoej('<button class="knap grim lille" onclick="vis()">Hent igen</button>')) +
+    (d.mangler && d.mangler.length ? '<div class="besked advar"><b>Support-mailen er ikke sat op,</b> så nye mails hentes ikke. Mangler ' + d.mangler.map(sik).join(', ') + '. Se Opsætning.</div>' : '') +
+    '<div class="besked info">Her kan I kun læse. I svarer ved at svare på den danske mail i jeres indbakke og lade sagsnummeret' + (eks ? ', fx ' + sik(eks) + ',' : '') + ' stå i emnet. Så oversættes svaret til tysk og sendes til kunden.</div>' +
+    '<div class="net n3">' +
+      kpi('Åbne sager', TT(a.nu), '', '', a.grund, kildeTekst(a.kilde || 'support')) +
+      kpi('Venter på jer', TT(v.nu), '', '', v.grund, kildeTekst(v.kilde || 'support')) +
+      kpi('Svartid, median', varighed(sv.nu), sv.antal ? '<span class="aendring flad">' + T(sv.antal) + ' svar talt med</span>' : '', '', sv.grund, kildeTekst(sv.kilde || 'support', null, 'seneste 30 dage')) +
+    '</div>' +
+    '<div class="samt"><div class="samt-liste"><div class="samt-top"><b style="font-size:13px">Sager</b><span style="font-size:12px;color:var(--svag);margin-left:auto">seneste aktivitet først</span></div>' +
+      '<div style="flex:1;overflow-y:auto">' + (l.length ? l.map(rk).join('') : '<div class="samt-tom">' + sik(a.nu == null ? (a.grund || 'Ingen sager') : 'Ingen sager endnu') + '</div>') +
+      (d.flere ? '<div class="samt-tom" style="padding:14px">og ' + T(d.flere) + ' ældre sager, som ikke vises her</div>' : '') + '</div></div>' +
+      '<div class="samt-vis" id="sag-vis"><div class="samt-tom">Vælg en sag til venstre</div></div></div>';
+  if (sagValgt && l.some(x => x.id === sagValgt)) aabnSag(sagValgt, true); else sagValgt = null;
+}
+async function aabnSag(id, stille) {
+  sagValgt = id;
+  document.querySelectorAll('.samt-rk[data-sag]').forEach(e => e.classList.toggle('valgt', e.dataset.sag === String(id)));
+  const v = document.getElementById('sag-vis'); if (!v) return;
+  if (!stille) v.innerHTML = '<div class="skelet" style="height:300px;margin:16px"></div>';
+  let d; try { d = await kald('support-sag', { id }); } catch (e) { v.innerHTML = '<div class="besked slem" style="margin:16px">' + sik(e.message) + '</div>'; return; }
+  if (sagValgt === id) tegnSag(d);
+}
+/* Traaden i raekkefoelge. Kunden: den danske oversaettelse, med den tyske original under.
+   Teamet: den danske tekst, de skrev, med den tyske, der blev sendt, under. Et svar, der ikke naaede ud, er roedt. */
+function tegnSag(d) {
+  const v = document.getElementById('sag-vis'); if (!v) return;
+  const s = d.sag || {}, bs = d.beskeder || [];
+  const tom = t => '<i>' + sik(t) + '</i>';
+  const besked = b => {
+    const ind = b.retning === 'ind';
+    const hvem = '<span class="hvem">' + (ind ? 'Kunden' : 'Jeres svar' + (b.fra ? ', <span style="text-transform:none">' + sik(b.fra) + '</span>' : '')) + ' · ' + sik(datoTidDk(b.ts)) + '</span>';
+    const dansk = b.dansk ? sik(b.dansk) : tom(ind ? b.danskGrund || '(ingen tekst)' : '(ingen tekst)');
+    const tysk = b.tysk ? sik(b.tysk) : tom(ind ? '(ingen tekst)' : b.tyskGrund || '(ingen tysk tekst)');
+    return '<div class="bsk ' + (ind ? 'user' : 'agent' + (b.sendt ? '' : ' ikke-sendt')) + '">' + hvem + dansk +
+      '<span class="da">' + (ind ? 'Original på tysk' : b.sendt ? 'Sendt til kunden på tysk' : 'På tysk, ikke sendt') + ':\n' + tysk + '</span>' +
+      (b.bilag ? '<span class="da">Vedhæftet: ' + sik(b.bilag) + '</span>' : '') +
+      (b.note ? '<span class="da"><b>' + sik(b.note) + '</b></span>' : '') + '</div>';
+  };
+  v.innerHTML = '<div class="samt-hoved"><b>' + sik(s.maerke) + ' ' + sik(s.navn || s.email) + '</b>' +
+      (s.navn ? '<span style="font-size:12.5px;color:var(--daemp)">' + sik(s.email) + '</span>' : '') + sagStatus(s) +
+      '<span class="maerke m-pause">' + sik(SAG_KILDE[s.kilde] || s.kilde) + '</span></div>' +
+    '<div class="sag-emne"><b>' + sik(s.emneDe || '(intet emne)') + '</b><div style="color:var(--daemp)">' + (s.emneDa ? 'På dansk: ' + sik(s.emneDa) : tom(s.emneDaGrund || '')) + '</div>' +
+      '<div style="color:var(--svag);font-size:12px">Oprettet ' + sik(datoTidDk(s.oprettet)) + ' · ' + T(s.fraKunden) + ' fra kunden, ' + T(s.tilKunden) + ' sendt til kunden' +
+      (s.note ? ' · <b style="color:var(--roed)">' + sik(s.note) + '</b>' : '') + '</div></div>' +
+    '<div class="beskeder" id="sag-beskeder">' + (bs.length ? bs.map(besked).join('') : '<div class="samt-tom">' + sik(s.statusGrund || 'Ingen beskeder') + '</div>') + '</div>' +
+    '<div class="svar" style="display:block;color:var(--svag);font-size:13px;line-height:1.6">Svar ved at svare på den danske mail om ' + sik(s.maerke) + ' i jeres indbakke, og lad sagsnummeret stå i emnet. Panelet kan ikke sende.</div>';
+  const bk = document.getElementById('sag-beskeder'); if (bk) bk.scrollTop = bk.scrollHeight;
+}
+
+/* Blokeringsvagtens seneste koersel (oppetid.blokvagt). koert null: den har ikke koert, og det staar der,
+   ikke "ingen blokeringer". filtre og adresser er null, naar koerslen ikke gemte dem. */
+function blokvagtIndhold(b) {
+  if (!b) return '<div class="tom">Backenden sendte intet om blokeringsvagten.</div>';
+  if (!b.koert) return kildeLinje(b.kilde || 'blokvagt', null, 'kører hver morgen') + '<div class="besked advar" style="margin:0">' + sik(b.grund || 'Blokeringsvagten har ikke kørt endnu.') + '</div>';
+  const f = b.fund, u = b.usikre || [], sp = b.sprunget || [];
+  const tjekket = mangler(b.filtre) || mangler(b.adresser) ? (b.antalGrund || 'Ukendt, hvor meget der blev tjekket.')
+    : T(b.adresser) + (b.adresser === 1 ? ' adresse' : ' adresser') + ' tjekket hos ' + T(b.filtre) + ' filtre.';
+  return kildeLinje(b.kilde || 'blokvagt', null, 'kørte ' + tidDk(b.koert)) +
+    (b.gammel ? '<div class="besked advar" style="margin:0 0 10px">' + sik(b.gammel) + '</div>' : '') +
+    (f == null ? '<div class="besked advar" style="margin:0 0 10px">' + sik(b.grund || 'Ukendt, hvad vagten fandt.') + '</div>'
+      : f.length ? '<div class="besked slem" style="margin:0 0 10px"><b>' + (f.length === 1 ? 'Én aktiv blokering' : f.length + ' aktive blokeringer') + '</b><br>' +
+          f.map(x => '<b>' + sik(x.navn) + '</b> hos ' + sik(x.filter) + ': ' + sik(x.hvordan)).join('<br>') + '</div>'
+      : '<div class="besked godt" style="margin:0 0 10px">Ingen blokeringer.</div>') +
+    '<div style="font-size:12.5px;color:var(--svag);line-height:1.6">' + sik(tjekket) +
+      (u.length ? ' ' + T(u.length) + ' tjek kunne ikke gennemføres: ' + sik(u.slice(0, 3).join('; ')) + (u.length > 3 ? ' og ' + T(u.length - 3) + ' til' : '') + '.' : '') +
+      (sp.length ? ' Sprunget over: ' + sik(sp.join('; ')) + '.' : '') + '</div>';
+}
+
 /* ══ OPPETID ══ */
 async function visOppetid(m) {
   m.innerHTML = hoved('Oppetid','Svarer voreshjem.dk') + skeletKort(3);
@@ -2139,6 +2248,7 @@ async function visOppetid(m) {
       (d.uge && d.uge.ms ? ' · ' + T(d.uge.ms) + ' ms over ugen' : '') + '. Brug tallet til at se udsving, ikke som besøgendes ventetid.</div></div>' +
       '<div class="kort"><h3>Alarm</h3><div style="font-size:14px;line-height:1.7;color:var(--daemp)">' + (opsat.mail ? 'Mail sendes til <b>' + sik(opsat.mailTil||'den adresse der står i ALERT_TO') + '</b>, når siden går ned, og igen når den er oppe.' :
       '<span style="color:var(--gul);font-weight:700">Mail er ikke sat op.</span> Går siden ned, får ingen besked. Sæt SMTP-variablerne og ALERT_TO under Opsætning.') + '</div></div></div>' +
+    '<div class="kort" style="margin-bottom:14px"><h3>Blokeringsvagt</h3>' + blokvagtIndhold(d.blokvagt) + '</div>' +
     '<div class="kort" style="margin-bottom:14px"><h3>Sidehastighed, målt af Google <span class="ret" style="font-weight:500">dagvagtens måling, Mål nu gemmes et døgn</span>' +
       (erEjer() ? '<button class="ret knap grim lille" onclick="maalHastighed()">Mål igen</button>' : '') + '</h3><div id="hast"><div class="skelet" style="height:90px"></div></div></div>' +
     '<div class="kort"><h3>Gange siden ikke svarede</h3>' + ((d.haendelser||[]).length ? '<table><thead><tr><th>Hvornår</th><th>Fejl</th><th style="text-align:right">Svar</th></tr></thead><tbody>' +
@@ -2306,7 +2416,7 @@ function tegnNav() { let ud = '', g = '';
 function gaaTil(id) { side = id; location.hash = id; sidsteTabel = {}; vis(); }
 async function vis() { if (skjult(side)) side = 'oversigt'; tegnNav(); const m = document.getElementById('main');
   const f = { oversigt:visOversigt, tragt:visTragt, trafik:visTrafik, soegeord:visSoegeord, annoncer:visAnnoncer, downloads:visDownloads,
-              seo:visSeo, chat:visChat, blog:visBlog, links:visLinks, indhold:visIndhold, oppetid:visOppetid, opsaetning:visOpsaetning }[side] || visOversigt;
+              seo:visSeo, chat:visChat, support:visSupport, blog:visBlog, links:visLinks, indhold:visIndhold, oppetid:visOppetid, opsaetning:visOpsaetning }[side] || visOversigt;
   try { await f(m); saetHjaelp(m); } catch (e) { m.innerHTML = hoved('Noget gik galt','') + '<div class="besked slem">' + sik(e.message) + '</div>'; } }
 async function start() {
   document.getElementById('login').style.display = 'none'; document.getElementById('app').classList.add('vis');

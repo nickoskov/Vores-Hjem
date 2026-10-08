@@ -49,7 +49,9 @@ async function husk(noegle, levetid, lav) {
     try { await sql`INSERT INTO vh_cache (noegle, vaerdi, udloeber)
       VALUES (${n}, ${JSON.stringify(vaerdi)}, ${new Date(nu + liv).toISOString()})
       ON CONFLICT (noegle) DO UPDATE SET vaerdi = EXCLUDED.vaerdi, udloeber = EXCLUDED.udloeber`;
-      await sql`DELETE FROM vh_cache WHERE noegle NOT LIKE ${UDGAVE + '%'}`; } catch (e) {}
+      // kun gemte svar fra en aeldre udgave ('u4:...'). Noegler uden udgave er ikke cache, men noget en
+      // planlagt funktion gemmer (fx 'blokvagt-sidst' fra blokvagt.js) og skal blive. Udloebne fjernes af ryd.js.
+      await sql`DELETE FROM vh_cache WHERE noegle ~ '^u[0-9]+:' AND noegle NOT LIKE ${UDGAVE + '%'}`; } catch (e) {}
   } else mem.set(n, { vaerdi, udloeber: nu + liv });
   return vaerdi;
 }

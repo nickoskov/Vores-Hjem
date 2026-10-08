@@ -64,10 +64,11 @@ async function safeBrowsing(navn) {
 
 /** Alle adresser gennem alle filtre. Returnerer fundne blokeringer og hvad der ikke kunne tjekkes. */
 async function tjekAlt() {
-  const fund = [], usikre = [], sprunget = [];
+  const fund = [], usikre = [], sprunget = [], tjekket = [];
   await Promise.all(profil.vagtAdresser.map(async navn => {
     const kontrol = await opslag(KONTROL, navn);
     if (!kontrol.ip) { sprunget.push(navn + ' (findes ikke i almindelig DNS: ' + kontrol.fejl + ')'); return; }
+    tjekket.push(navn);
     const svar = await Promise.all(FILTRE.map(f => opslag(f.ip, navn).then(s => ({ f, s }))));
     for (const { f, s } of svar) {
       if (!s.ip) {
@@ -83,7 +84,8 @@ async function tjekAlt() {
     if (sb.blokeret) fund.push({ navn, filter: 'Google Safe Browsing', hvordan: 'markerer siden som farlig (status ' + sb.status + ')' });
     else if (sb.fejl) usikre.push(navn + ' hos Google Safe Browsing: ' + sb.fejl);
   }));
-  return { fund, usikre, sprunget };
+  // i profilens raekkefoelge, ikke i den raekkefoelge opslagene blev faerdige
+  return { fund, usikre, sprunget, tjekket: profil.vagtAdresser.filter(n => tjekket.includes(n)) };
 }
 
 const noegle = f => f.navn + '|' + f.filter;
@@ -99,8 +101,12 @@ exports.handler = async () => {
   try { const g = await sql`SELECT vaerdi FROM vh_cache WHERE noegle = 'blokvagt-sidst'`; foer = (g[0] && g[0].vaerdi && g[0].vaerdi.fund) || []; } catch (e) {}
   const nu = new Set(r.fund.map(noegle)), gl = new Set(foer.map(noegle));
   const nye = r.fund.filter(f => !gl.has(noegle(f))), fri = foer.filter(f => !nu.has(noegle(f)));
+  // panelets Oppetid viser det gemte: hvornaar, hvad der blev tjekket (filtre og adresser), hvad der blev fundet,
+  // og hvad der ikke kunne tjekkes. Noeglen har ingen udgave foran, saa cache.js ikke rydder den som en gammel cache.
+  const gem = { fund: r.fund, hvornaar: new Date().toISOString(), filtre: [...FILTRE.map(f => f.navn), 'Google Safe Browsing'],
+    adresser: r.tjekket, usikre: r.usikre, sprunget: r.sprunget };
   try {
-    await sql`INSERT INTO vh_cache (noegle, vaerdi, udloeber) VALUES ('blokvagt-sidst', ${JSON.stringify({ fund: r.fund, hvornaar: new Date().toISOString() })}::jsonb, now() + interval '400 days')
+    await sql`INSERT INTO vh_cache (noegle, vaerdi, udloeber) VALUES ('blokvagt-sidst', ${JSON.stringify(gem)}::jsonb, now() + interval '400 days')
       ON CONFLICT (noegle) DO UPDATE SET vaerdi = EXCLUDED.vaerdi, udloeber = EXCLUDED.udloeber`;
   } catch (e) {}
   if (nye.length) await mail.send(profil.navn + ' er blokeret hos ' + [...new Set(nye.map(f => f.filter))].join(', '),
