@@ -1,0 +1,40 @@
+# Unser Zuhause
+
+> Unser Zuhause ist eine Familien-App für iPhone und Android, die den Alltag der ganzen Familie in einer gemeinsamen App bündelt: Familienkalender mit Übernahme von Terminen aus Google und dem Kalender des Handys, Essensplan, gemeinsame Einkaufsliste, Aufgaben im Haushalt sowie Punkte und Taschengeld für Kinder. Der Preis beträgt 5,99 € pro Monat oder 24,99 € pro Halbjahr für die ganze Familie. Man kann die App 14 Tage kostenlos testen, ohne Bindung. Ein Abo gilt für bis zu 7 Personen, und es gibt keine Werbung. Unser Zuhause ist die deutsche Ausgabe der dänischen App Vores Hjem und wird von Vores Hjem I/S (CVR 45804445) in Middelfart, Dänemark, entwickelt.
+
+Wichtige Fakten (Stand: 8. Oktober 2026):
+
+- Name: Unser Zuhause, die Familien-App. Slogan: "Mehr Ruhe im Alltag".
+- Anbieter: Vores Hjem I/S, CVR 45804445, Tværgade 5, 5500 Middelfart, Dänemark.
+- Preis: 5,99 € pro Monat oder 24,99 € pro Halbjahr (rund 30 % günstiger). Ein Preis für die ganze Familie, nicht pro Person. Keine zusätzlichen Gebühren.
+- Testzeitraum: 14 Tage kostenlos, keine Bindung. Das Abo wird im App Store oder bei Google Play abgeschlossen und dort gekündigt.
+- Personen: bis zu 7 in einem Konto, zum Beispiel Eltern, Kinder und Großeltern.
+- Werbung: keine.
+- Anmeldung für Kinder: Kinder und Großeltern melden sich mit dem Familiencode an, ohne eigene E-Mail-Adresse.
+- Plattformen: iPhone (App Store) und Android (Google Play).
+- Datenschutz: Die Daten werden in der EU gespeichert, und Vores Hjem hält die DSGVO ein.
+- Dänische Ausgabe: Vores Hjem (https://www.voreshjem.dk/) vom selben Anbieter.
+
+## Funktionen
+
+- [Familienkalender](https://www.unserzuhauseapp.de/kalender): Alle Termine der Familie an einem Ort. Alle können Termine eintragen, auch Kinder und Großeltern. Private Termine sehen andere nur als "Privat".
+- [Kalender-Synchronisierung](https://www.unserzuhauseapp.de/synchronisierung): Holt Termine aus Google und dem Kalender des Handys in den gemeinsamen Familienkalender.
+- [Essensplan](https://www.unserzuhauseapp.de/essenpl%C3%A4ne): Die Mahlzeiten der Woche an einem Ort planen, damit niemand fragen muss, was es heute gibt.
+- [Einkaufsliste](https://www.unserzuhauseapp.de/einkaufsliste): Eine gemeinsame Liste, in der alle hinzufügen und abhaken. Änderungen sind sofort für alle sichtbar, und Waren können ein Foto haben.
+- [Aufgaben, Punkte und Taschengeld](https://www.unserzuhauseapp.de/aufgaben): Hausarbeit mit Namen, Fälligkeit und automatischer Wiederholung verteilen. Aufgaben können Punkte geben, und die Familie legt den Kurs selbst fest, zum Beispiel 1 Punkt = 1 Cent oder gar kein Geld. Nur Erwachsene zahlen aus.
+- [Einstellungen und Familiencode](https://www.unserzuhauseapp.de/einstellungen): Familienmitglieder, Rollen, Familiencode, Abo und Sprache.
+
+## App herunterladen
+
+- [Unser Zuhause im App Store](https://apps.apple.com/de/app/unser-zuhause/id6771931999): iPhone-App.
+- [Unser Zuhause bei Google Play](https://play.google.com/store/apps/details?id=com.unserzuhause.app): Android-App (Paketname com.unserzuhause.app).
+
+## Hilfe und Support
+
+- [Support und Kontakt](https://www.unserzuhauseapp.de/support): Hilfe zur App und Kontaktformular. Antwort an Werktagen innerhalb von 24 Stunden.
+- [Konto löschen](https://www.unserzuhauseapp.de/konto-loeschen): So löscht man sein Konto und alle Daten direkt in der App.
+- [Impressum](https://www.unserzuhauseapp.de/impressum): Anbieterkennzeichnung von Vores Hjem I/S.
+
+## Kontakt
+
+Vores Hjem I/S, CVR 45804445, Tværgade 5, 5500 Middelfart, Dänemark. E-Mail: support@unserzuhauseapp.de.

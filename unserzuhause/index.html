@@ -28,7 +28,8 @@
 <link rel="alternate" hreflang="de" href="https://www.unserzuhauseapp.de/">
 <link rel="alternate" hreflang="da" href="https://www.voreshjem.dk/">
 <link rel="alternate" hreflang="x-default" href="https://www.unserzuhauseapp.de/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"MobileApplication","name":"Unser Zuhause","applicationCategory":"LifestyleApplication","operatingSystem":"iOS, Android","inLanguage":"de","description":"Unser Zuhause App bringt den ganzen Alltag der Familie in eine App: Kalender, Essensplan, Einkauf und Aufgaben für bis zu 7 Personen. 14 Tage kostenlos testen.","url":"https://www.unserzuhauseapp.de/","image":"https://www.unserzuhauseapp.de/images/og.jpg","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR","description":"14 Tage kostenlos testen, danach Abo im App Store oder bei Google Play."},"sameAs":["https://apps.apple.com/de/app/unser-zuhause/id6771931999","https://play.google.com/store/apps/details?id=com.unserzuhause.app"],"publisher":{"@type":"Organization","@id":"https://www.voreshjem.dk/#org","name":"Vores Hjem I/S","url":"https://www.voreshjem.dk/"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "MobileApplication", "name": "Unser Zuhause", "applicationCategory": "LifestyleApplication", "operatingSystem": "iOS, Android", "inLanguage": "de", "description": "Unser Zuhause App bringt den ganzen Alltag der Familie in eine App: Kalender, Essensplan, Einkauf und Aufgaben für bis zu 7 Personen. 14 Tage kostenlos testen.", "url": "https://www.unserzuhauseapp.de/", "image": "https://www.unserzuhauseapp.de/images/og.jpg", "offers": [{"@type": "Offer", "price": "5.99", "priceCurrency": "EUR", "description": "Pro Monat für die ganze Familie (bis zu 7 Personen). 14 Tage kostenlos testen, keine Bindung."}, {"@type": "Offer", "price": "24.99", "priceCurrency": "EUR", "description": "Pro Halbjahr für die ganze Familie (bis zu 7 Personen). 14 Tage kostenlos testen, keine Bindung."}], "sameAs": ["https://apps.apple.com/de/app/unser-zuhause/id6771931999", "https://play.google.com/store/apps/details?id=com.unserzuhause.app"], "publisher": {"@id": "https://www.unserzuhauseapp.de/#organisation"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "@id": "https://www.unserzuhauseapp.de/#organisation", "name": "Vores Hjem I/S", "brand": {"@type": "Brand", "name": "Unser Zuhause"}, "url": "https://www.unserzuhauseapp.de/", "logo": "https://www.unserzuhauseapp.de/favicon.png", "email": "support@unserzuhauseapp.de", "identifier": {"@type": "PropertyValue", "propertyID": "CVR", "value": "45804445"}, "address": {"@type": "PostalAddress", "streetAddress": "Tværgade 5", "postalCode": "5500", "addressLocality": "Middelfart", "addressCountry": "DK"}, "sameAs": ["https://www.voreshjem.dk/", "https://apps.apple.com/de/app/unser-zuhause/id6771931999", "https://play.google.com/store/apps/details?id=com.unserzuhause.app"]}</script>
 
 <meta name="description" content="Unser Zuhause App bringt den ganzen Alltag der Familie in eine App: Kalender, Essensplan, Einkauf und Aufgaben für bis zu 7 Personen. 14 Tage kostenlos testen.">
 <style>
@@ -1145,28 +1146,6 @@ footer { background: var(--text); color: rgba(255,255,255,0.45); padding: 56px 0
   </div>
 </nav>
 
-<!-- NOT LAUNCHED TOAST -->
-<div id="not-launched-toast">
-  <div class="toast-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-  <div class="toast-text">Die App ist noch nicht erschienen<span>Erscheint am 21. Juli 2026 🇩🇪</span></div>
-</div>
-
-<!-- LAUNCH BANNER -->
-<div id="launch-banner">
-  <div class="launch-card">
-    <span class="launch-flag">🇩🇪</span>
-    <div class="launch-eyebrow">Neue Familien-App</div>
-    <div class="launch-title">Unser Zuhause App</div>
-    <div class="launch-date">Erscheint am 21. Juli 2026</div>
-    <div class="launch-countdown">
-      <div class="cd-block"><span class="cd-num" id="cd-days"></span><span class="cd-label">Tage</span></div>
-      <div class="cd-block"><span class="cd-num" id="cd-hours"></span><span class="cd-label">Stunden</span></div>
-      <div class="cd-block"><span class="cd-num" id="cd-mins"></span><span class="cd-label">Min</span></div>
-      <div class="cd-block"><span class="cd-num" id="cd-secs"></span><span class="cd-label">Sek</span></div>
-    </div>
-    <button class="launch-close" onclick="closeLaunchBanner()">Schließen</button>
-  </div>
-</div>
 
 <!-- HERO -->
 <section id="hero">
@@ -2632,44 +2611,6 @@ function showNotLaunched(e) {
   var ua = navigator.userAgent || '';
   var android = /Android/i.test(ua);
   window.open(android ? 'https://play.google.com/store/apps/details?id=com.unserzuhause.app&hl=de&gl=DE' : 'https://apps.apple.com/de/app/unser-zuhause/id6771931999', '_blank', 'noopener');
-}
-
-// ─── LAUNCH BANNER ───
-(function() {
-  const launchDate = new Date('2026-07-21T10:00:00+02:00');
-  const banner = document.getElementById('launch-banner');
-  if (!banner) return;
-
-  // Skjul banneret automatisk efter lancering
-  if (new Date() >= launchDate) {
-    banner.style.display = 'none';
-    return;
-  }
-
-  // Countdown
-  function updateCountdown() {
-    const now = new Date();
-    const diff = launchDate - now;
-    if (diff <= 0) { banner.style.display = 'none'; return; }
-    const days  = Math.floor(diff / 86400000);
-    const hours = Math.floor((diff % 86400000) / 3600000);
-    const mins  = Math.floor((diff % 3600000) / 60000);
-    const secs  = Math.floor((diff % 60000) / 1000);
-    document.getElementById('cd-days').textContent  = String(days).padStart(2,'0');
-    document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
-    document.getElementById('cd-mins').textContent  = String(mins).padStart(2,'0');
-    document.getElementById('cd-secs').textContent  = String(secs).padStart(2,'0');
-  }
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
-})();
-
-function closeLaunchBanner() {
-  const banner = document.getElementById('launch-banner');
-  banner.style.animation = 'none';
-  banner.style.opacity = '0';
-  banner.style.transition = 'opacity 0.3s ease';
-  setTimeout(() => banner.style.display = 'none', 300);
 }
 
 // ─── SCROLL REVEAL ───
