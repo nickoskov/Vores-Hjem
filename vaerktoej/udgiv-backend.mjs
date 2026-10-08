@@ -10,6 +10,11 @@
 // Den tyske kræver SIDE=de under Environment variables på unserzuhause-backend. Scriptet tjekker bagefter,
 // at backenden svarer som den rigtige side, og at databasen er dens egen.
 //
+// Kun den tyske faar chatbotten: funktionerne i backend/netlify/functions-de/ (chat-bot), bottens kode fra
+// chatbot/netlify/functions/chat-bot.js og widgeten (chatbot/widget.js, avatar-de.png) paa backendens adresse.
+// Det er den samme bot som den danske paa voreshjem-bot.netlify.app, saa der kun er en at rette. Den danske
+// backend faar intet af det.
+//
 // Repoets backend/ har de udgivne filer i roden (index.html, images/ osv.) og koden i netlify/.
 // Scriptet samler en midlertidig mappe: public/ med de udgivne filer, og hver funktion bundtet til
 // én fil med alle afhængigheder (fn/). Funktionerne bruger Netlifys nye format, fordi det gamle
@@ -32,7 +37,7 @@ const sh = (c, o = {}) => execSync(c, { stdio: 'pipe', encoding: 'utf8', ...o })
 
 // repoet skal vaere opdateret og rent, saa det udgivne altid findes paa GitHub
 sh('git fetch -q', { cwd: ROD });
-if (sh('git status --porcelain backend', { cwd: ROD }).trim()) throw new Error('backend/ har ændringer, der ikke er committet.');
+if (sh('git status --porcelain backend' + (DE ? ' chatbot' : ''), { cwd: ROD }).trim()) throw new Error((DE ? 'backend/ eller chatbot/' : 'backend/') + ' har ændringer, der ikke er committet.');
 if (sh('git rev-list --count HEAD..@{u}', { cwd: ROD }).trim() !== '0') throw new Error('Repoet er bagud for GitHub. Kør git pull.');
 
 const B = join(ROD, 'backend'), U = mkdtempSync(join(tmpdir(), 'vh-backend-'));
@@ -41,6 +46,13 @@ mkdirSync(join(U, 'public'));
 for (const x of readdirSync(B)) if (!KODE.has(x)) cpSync(join(B, x), join(U, 'public', x), { recursive: true });
 cpSync(join(B, 'netlify'), join(U, 'netlify'), { recursive: true });
 for (const f of ['package.json', 'package-lock.json']) cpSync(join(B, f), join(U, f));
+if (DE) {
+  // den tyske chatbot: samme kode som den danske bot, sat til kun tysk i functions-de/chat-bot.mjs
+  const C = join(ROD, 'chatbot');
+  for (const f of readdirSync(join(B, 'netlify', 'functions-de')).filter(f => f.endsWith('.mjs'))) cpSync(join(B, 'netlify', 'functions-de', f), join(U, 'netlify', 'functions', f));
+  cpSync(join(C, 'netlify', 'functions', 'chat-bot.js'), join(U, 'netlify', 'handlers', 'chat-bot.js'));
+  for (const f of ['widget.js', 'avatar-de.png']) cpSync(join(C, f), join(U, 'public', f));
+}
 writeFileSync(join(U, 'netlify.toml'), readFileSync(join(B, 'netlify.toml.fra-mac'), 'utf8').replace('functions = "netlify/functions"', 'functions = "fn"'));
 console.log('installerer afhængigheder ...'); sh('npm ci --silent', { cwd: U });
 mkdirSync(join(U, 'fn'));

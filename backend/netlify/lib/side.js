@@ -9,6 +9,7 @@
  *
  * Miljoevariablerne vinder stadig over profilen, der hvor de bruges: SITE_URL, VAGT_URL, SEO_SITE,
  * GSC_SITE_URL, SITE_NETLIFY_ID, BOT_URL, ALERT_FROM, ASC_APP_ID og GPLAY_PACKAGE.
+ * Undtagelse: BOT_URL og BOT_ADMIN_PASSWORD bruges ikke paa en backend med sin egen bot (botEgen, se lib/bot.js).
  */
 const PROFILER = {
   dk: {
@@ -35,6 +36,8 @@ const PROFILER = {
     kontakt: { kilde: 'voreshjem.dk/support', emne: 'support', hvor: '' },
     // chatbottens tabeller (vh_conversations ...) ligger i denne database
     botTabeller: true,
+    // botten er den faelles voreshjem-bot.netlify.app (lib/bot.js, BOT_URL), ikke en funktion i denne backend
+    botEgen: false,
     // maa tage en database med data, men uden ejermaerke (den danske havde data foer maerket)
     overtagData: true,
     skjul: [],
@@ -58,12 +61,14 @@ const PROFILER = {
     ga4Kode: null,
     taellerKilde: 'taeller.js, som unserzuhauseapp.de henter fra sin egen mappe (unserzuhause/taeller.js i repoet)',
     kontakt: { kilde: 'unserzuhauseapp.de (tysk)', emne: 'Unser Zuhause', hvor: ' på den tyske side' },
-    // chatbotten er faelles og har sine tabeller i den danske database. Den tyske backend spoerger botten.
-    botTabeller: false,
+    // den tyske side har sin egen chatbot i denne backend: samme kode som den danske bot, men kun tysk,
+    // med tabellerne i den tyske database (functions-de/chat-bot.mjs, udgives kun med udgiv-backend.mjs --de).
+    // lib/bot.js taler med den og aldrig med den danske bot.
+    botTabeller: true,
+    botEgen: true,
     overtagData: false,
-    // sider i panelet, der kun giver mening for den danske side. Chat: den tyske side har intet
-    // chatvindue. Faar den et, skal det have sin egen bot med tabeller i den tyske database.
-    skjul: ['blog', 'links', 'indhold', 'annoncer', 'chat'],
+    // sider i panelet, der kun giver mening for den danske side
+    skjul: ['blog', 'links', 'indhold', 'annoncer'],
     ental: 'tyske',
     // support-mail oversat begge veje (lib/sager.js, handlers/postkasse.js). Kunden skriver og faar svar paa
     // tysk fra support-postkassen, teamet laeser og svarer paa dansk. Kun her, saa den danske backend intet goer.

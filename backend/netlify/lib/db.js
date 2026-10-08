@@ -122,6 +122,26 @@ async function opret() {
   await sql`CREATE TABLE IF NOT EXISTS vh_seo (
     id SERIAL PRIMARY KEY, score INTEGER NOT NULL, rapport JSONB NOT NULL,
     koert TIMESTAMPTZ NOT NULL DEFAULT now())`;
+  // chatbottens tabeller, kun paa en backend med sin egen bot (side.js, botEgen: den tyske). Botten opretter
+  // dem ogsaa selv (ensureSchema i chatbot/netlify/functions/chat-bot.js), og de skal vaere ens. Her, saa
+  // panelets Chat, Oversigt og ryd.js ikke fejler paa en ny database, foer den foerste har skrevet i chatten.
+  // site faar altid bottens faste marked, saa standardvaerdien bruges aldrig. Den danske backend roeres ikke:
+  // dens tabeller laves af den faelles bot.
+  if (profil.botEgen) {
+    await sql`CREATE TABLE IF NOT EXISTS vh_conversations (
+      id TEXT PRIMARY KEY, email TEXT DEFAULT '', human BOOLEAN DEFAULT false,
+      needs_human BOOLEAN DEFAULT false, alerted BOOLEAN DEFAULT false, n INT DEFAULT 0,
+      seen BOOLEAN DEFAULT true, first_q TEXT DEFAULT '', created_at TIMESTAMPTZ DEFAULT now(), updated_at TIMESTAMPTZ DEFAULT now(),
+      mood TEXT DEFAULT '', archived BOOLEAN DEFAULT false, site TEXT DEFAULT 'dk')`;
+    await sql`CREATE INDEX IF NOT EXISTS vh_conversations_site_idx ON vh_conversations (site, archived, updated_at DESC)`;
+    await sql`CREATE TABLE IF NOT EXISTS vh_events (
+      id BIGSERIAL PRIMARY KEY, kind TEXT, label TEXT, ts TIMESTAMPTZ DEFAULT now(), site TEXT DEFAULT 'dk')`;
+    await sql`CREATE TABLE IF NOT EXISTS vh_messages (
+      id BIGSERIAL PRIMARY KEY, conv_id TEXT, role TEXT, content TEXT, ts TIMESTAMPTZ DEFAULT now(), da TEXT DEFAULT '')`;
+    await sql`CREATE INDEX IF NOT EXISTS vh_messages_conv_idx ON vh_messages (conv_id, id)`;
+    await sql`CREATE TABLE IF NOT EXISTS vh_feedback (
+      id BIGSERIAL PRIMARY KEY, value INT, question TEXT DEFAULT '', answer TEXT DEFAULT '', ts TIMESTAMPTZ DEFAULT now(), site TEXT DEFAULT 'dk')`;
+  }
   klarTabeller = true;
 }
 

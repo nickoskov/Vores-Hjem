@@ -6,7 +6,7 @@
  *
  * Trykket taelles i vh_klik, i backendens egen database, ligesom taelleren goer, uden cookies og
  * med samme gaeste-id. Kun tryk fra sidens egne sider taelles (henvisningen skal vaere profilens),
- * og robotter taelles ikke. Siden sender kun sit domaene som henvisning til en anden adresse
+ * og robotter taelles ikke. Undtagelsen er QR-koden paa hent-siden (?sted=qr), som scannes uden henvisning. Siden sender kun sit domaene som henvisning til en anden adresse
  * (strict-origin-when-cross-origin), saa sidens taeller.js haefter ?sti= (siden) og ?sted=
  * (afsnittet, knappen sad i) paa ved trykket. Uden dem bruges henvisningens sti.
  * Viderestillingen sker altid, ogsaa hvis taellingen fejler.
@@ -28,12 +28,14 @@ exports.handler = async (ev) => {
     : /iPhone|iPad|iPod/i.test(ua) ? 'appstore' : /Android/i.test(ua) ? 'googleplay' : 'hentside';
   const maal = profil.butik[butik] || profil.butik.hentside;
   const fra = h.referer || '';
-  if (sql && !robot && profil.tilladt.test(vaert(fra))) {
+  // en scanning af QR-koden paa hent-siden (sted=qr) kommer fra telefonens kamera uden henvisning
+  const qr = String(q.sted || '') === 'qr';
+  if (sql && !robot && (profil.tilladt.test(vaert(fra)) || qr)) {
     try {
       await tabel();
       let sti = '/'; try { sti = decodeURIComponent(new URL(fra).pathname || '/'); } catch (e) {}
       if (/^\/[^\s]*$/.test(String(q.sti || ''))) sti = String(q.sti);
-      sti = profil.sti(vaert(fra), sti).slice(0, 200);
+      sti = qr && !profil.tilladt.test(vaert(fra)) ? '/qr' : profil.sti(vaert(fra), sti).slice(0, 200);
       const sted = String(q.sted || '').replace(/[^\wÀ-ſ .:-]/g, '').slice(0, 60);
       await sql`INSERT INTO vh_klik (sti, sted, butik, enhed, gaest) VALUES (${sti}, ${sted}, ${butik}, ${enhed}, ${gaest})`;
     } catch (e) { /* knappen maa aldrig fejle for den besoegende */ }

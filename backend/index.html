@@ -1854,7 +1854,8 @@ async function visChat(m) {
     '<button class="' + (chatFane==='statistik'?'valgt':'') + '" onclick="chatFane=\'statistik\';vis()">Statistik</button></div>';
   if (chatFane === 'statistik') return visChatStat(m, faner);
   if (!opsat.bot) { m.innerHTML = hoved('Chat','Samtaler med chatbotten', vaerktoej(faner)) +
-    '<div class="besked advar">Panelet kan ikke nå botten. Sæt <b>BOT_ADMIN_PASSWORD</b> i Netlify til bot-panelets adgangskode, eller brug samme kode begge steder.</div>'; return; }
+    '<div class="besked advar">Panelet kan ikke nå botten. ' + (profil.kode === 'dk' ? 'Sæt <b>BOT_ADMIN_PASSWORD</b> i Netlify til bot-panelets adgangskode, eller brug samme kode begge steder.'
+      : 'Botten til ' + sik(profil.navn) + ' kører i denne backend og bruger <b>ADMIN_PASSWORD</b>. Sæt den i Netlify.') + '</div>'; return; }
   // den danske backend ser begge sprog; den tyske kun tyske samtaler (backenden afviser resten)
   const sprogValg = profil.kode === 'dk'
     ? '<div class="vaelg"><button class="' + (chatSide==='dk'?'valgt':'') + '" onclick="chatSide=\'dk\';chatValgt=null;vis()">Dansk<span id="b-dk"></span></button>' +
@@ -1942,7 +1943,7 @@ async function visChatStat(m, faner) {
   try { d = await kald('chat', chatStatSide === 'alle' ? { dage } : { dage, site: chatStatSide }); }
   catch (e) { m.innerHTML = hoved('Chat','', v) + '<div class="besked slem">' + sik(e.message) + '</div><div class="besked info">' + (profil.kode === 'dk'
       ? 'Chatten bruger samme database som bot-panelet. Sæt <b>DATABASE_URL</b> til den samme streng.'
-      : 'Backenden til ' + sik(profil.navn) + ' henter chattens tal fra botten, ikke fra en database. Tjek <b>BOT_ADMIN_PASSWORD</b> under Opsætning.') + '</div>'; return; }
+      : 'Chatbotten til ' + sik(profil.navn) + ' kører i denne backend og gemmer samtalerne i dens egen database. Tjek <b>DATABASE_URL</b> under Opsætning.') + '</div>'; return; }
   if (!d.feedback && opsat.bot) { try { st = await kald('bot-stat', { site: chatStatSide === 'de' ? 'de' : 'dk', dage }); } catch (e) {} }
   const t = d.tal || {};
   const navn = d.siteNavn || t.navn || '';

@@ -126,8 +126,8 @@ slet ikke, og panelet og udgivelsesscriptet siger hvorfor.
 
 Alt er adskilt fra den danske: database, login, mail og nøgler til Apple og
 Google. Kun selve udviklerkontoen hos Apple og Google er fælles, fordi den
-ejer begge apps. Den tyske side har intet chatvindue, så Chat findes ikke i
-det tyske panel, og den tyske backend taler aldrig med den danske chatbot.
+ejer begge apps. Den tyske side har sin egen chatbot i den tyske backend (se
+nedenfor), og den tyske backend taler aldrig med den danske chatbot.
 Hent-knapperne på den tyske side går til `backend.unserzuhauseapp.de/hent/app`,
 som sender telefonen til sin butik og tæller trykket i den tyske database.
 
@@ -135,7 +135,7 @@ som sender telefonen til sin butik og tæller trykket i den tyske database.
 |---|---|
 | `SIDE` | `de` |
 | `DATABASE_URL` | en ny, tom Neon-database (Frankfurt). Aldrig den danske |
-| `ADMIN_PASSWORD`, `SESSION_SECRET` | nye, kun til det tyske panel |
+| `ADMIN_PASSWORD`, `SESSION_SECRET` | nye, kun til det tyske panel. Panelet bruger `ADMIN_PASSWORD` til at tale med sin egen chatbot |
 | `SMTP_HOST`, `SMTP_PORT` | `smtp.simply.com`, `587` |
 | `SMTP_USER`, `SMTP_PASS` | postkassen `support@unserzuhauseapp.de` hos Simply |
 | `ALERT_TO` | `support@unserzuhauseapp.de` (flere adresser adskilles med komma) |
@@ -144,13 +144,32 @@ som sender telefonen til sin butik og tæller trykket i den tyske database.
 | `ASC_ISSUER_ID`, `ASC_KEY_ID`, `ASC_PRIVATE_KEY`, `ASC_VENDOR_NUMBER` | en egen API-nøgle i App Store Connect med rollen Sales. Issuer ID og Vendor Number er kontoens og derfor de samme |
 | `GSC_SITE_URL` | `sc-domain:unserzuhauseapp.de` |
 | `PSI_API_KEY`, `RYD_DAGE` | kan udelades |
-| `ANTHROPIC_API_KEY` | Claude-nøglen. Bruges til at oversætte support-mail |
+| `ANTHROPIC_API_KEY` | Claude-nøglen. Bruges til at oversætte support-mail og af chatbotten |
+| `BOT_MODEL` | kan udelades. Chatbottens Claude-model, står til den samme som den danske bot. `CLAUDE_MODEL` gælder kun backendens egne opgaver |
 | `SUPPORT_TEAM` | teamets indbakke, der får kundernes mails på dansk, fx `kontakt@vores-hjem.dk` (flere adresser adskilles med komma). Sættes den, er oversættelsen slået til |
 | `SUPPORT_TEAM_EKSTRA` | kan udelades. Flere adresser, hvis svar også sendes videre til kunden, men som ikke får kundernes mails |
 | `IMAP_HOST`, `IMAP_PORT` | kan udelades, står til `imap.simply.com` og `993` |
 
 Kopiér ingen nøgler fra den danske. Netlify udleverer heller ikke hemmelige
-værdier, så det, der ser ud som en kopi, er kun en pladsholder.
+værdier, så det, der ser ud som en kopi, er kun en pladsholder. `BOT_URL` og
+`BOT_ADMIN_PASSWORD` bruges slet ikke på den tyske backend, heller ikke hvis de
+står der.
+
+### Chatten på unserzuhauseapp.de
+
+Chatbotten er den samme kode som den danske (`chatbot/netlify/functions/chat-bot.js`).
+`udgiv-backend.mjs --de` tager den med som funktionen `chat-bot`
+(`backend/netlify/functions-de/chat-bot.mjs`) og lægger `widget.js` og
+`avatar-de.png` fra `chatbot/` på `backend.unserzuhauseapp.de`. Den danske
+backend får intet af det. Botten kender kun tysk, gemmer samtalerne i den
+tyske database og bruger den tyske backends Claude-nøgle, SMTP og `ALERT_TO`.
+Vil en kunde tale med et menneske, får `ALERT_TO` en mail med et link til Chat
+i det tyske panel. Der svarer teamet på dansk, og kunden får svaret på tysk.
+Butikslinks i chatten går til `backend.unserzuhauseapp.de/hent/...` og tælles
+som "Chatten". Den svævende knap ligger på siden selv (`unserzuhause/hentknap.js`).
+Samtaler slettes 90 dage efter sidste besked som på den danske. Får botten nye
+kolonner, køres `https://backend.unserzuhauseapp.de/.netlify/functions/chat-bot?migrate=1`
+én gang efter udgivelsen, som på den danske bot.
 
 ### Support-mail på tysk, læst og besvaret på dansk
 

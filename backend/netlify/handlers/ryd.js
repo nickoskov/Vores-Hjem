@@ -9,8 +9,9 @@
  * Bemaerk: besoeg og klik fra den egne taeller slettes ogsaa efter RYD_DAGE.
  * Den aeldste raekke er derfor "aeldste gemte", ikke "taelleren startede".
  * Hoejst én koersel pr. dansk dag (laas i vh_koersel).
- * Chatbottens tabeller ligger kun i den danske database (side.js, botTabeller). Den danske
- * backend rydder derfor samtaler fra begge sider, den tyske springer dem over.
+ * Chatbottens tabeller (side.js, botTabeller) ligger i begge databaser: den danske har den faelles
+ * bots samtaler (ogsaa de tyske fra foer den tyske bot), den tyske har sin egen bots. Hver backend
+ * rydder sine egne.
  */
 const { sql, opret, log } = require('../lib/db.js');
 const K = require('../lib/koersel.js');

@@ -2,13 +2,20 @@
   if (window.__vhChatLoaded) return;
   window.__vhChatLoaded = true;
 
-  var ENDPOINT = 'https://voreshjem-bot.netlify.app/.netlify/functions/chat-bot';
+  var MIT_SCRIPT = document.currentScript || document.querySelector('script[src*="widget.js"]');
+  // Botten og billederne ligger samme sted som scriptet: voreshjem-bot.netlify.app til den danske side,
+  // backend.unserzuhauseapp.de til den tyske (dens egen bot). Kendes adressen ikke, er det den danske bot som foer.
+  var BASE = (function () {
+    try { var u = new URL(MIT_SCRIPT.src); if (/^https?:$/.test(u.protocol)) return u.origin; } catch (e) {}
+    return 'https://voreshjem-bot.netlify.app';
+  })();
+  var ENDPOINT = BASE + '/.netlify/functions/chat-bot';
 
   // ---------- HVILKET MARKED? ----------
   // Sættes eksplicit med data-site="de" på script-tagget. Glemmer man det,
   // gættes der ud fra domænet, så den tyske side aldrig svarer på dansk.
   var SITE = (function () {
-    var el = document.currentScript || document.querySelector('script[src*="widget.js"]');
+    var el = MIT_SCRIPT;
     var attr = el && el.getAttribute('data-site');
     if (attr && /^(dk|de)$/i.test(attr)) return attr.toLowerCase();
     var h = (location.hostname || '').toLowerCase();
@@ -71,7 +78,7 @@
   };
   var T = TEKSTER[SITE] || TEKSTER.dk;
   // Hvert marked sit eget logo, ellers stod der Vores Hjem på den tyske side
-  var AVATAR = 'https://voreshjem-bot.netlify.app/' + (SITE === 'de' ? 'avatar-de.png' : 'avatar.png');
+  var AVATAR = BASE + '/' + (SITE === 'de' ? 'avatar-de.png' : 'avatar.png');
   var WELCOME = T.velkomst;
   var QUICK = T.hurtige;
   var NUDGES = T.teaser;

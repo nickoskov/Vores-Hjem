@@ -4,12 +4,18 @@
 
 const { neon } = require('@neondatabase/serverless');
 const nodemailer = require('nodemailer');
-const sql = process.env.DATABASE_URL ? neon(process.env.DATABASE_URL) : null;
+// let, fordi brug() nederst kan give botten en anden database-forbindelse (den tyske backend)
+let sql = process.env.DATABASE_URL ? neon(process.env.DATABASE_URL) : null;
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
-const MODEL = process.env.CLAUDE_MODEL || 'claude-haiku-4-5-20251001';
+const STANDARD_MODEL = 'claude-haiku-4-5-20251001';
+let MODEL = process.env.CLAUDE_MODEL || STANDARD_MODEL;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
 const SITE_URL = (process.env.SITE_URL || 'https://voreshjem-bot.netlify.app').replace(/\/$/, '');
+// Saettes kun af brug(): et fast marked, og hvor alarm-mailens knap peger hen. Uden brug() er de null,
+// og botten er praecis som den danske bot paa voreshjem-bot.netlify.app.
+let FAST_SITE = null;
+let PANEL_URL = null;
 
 // SMTP (din egen vores-hjem.dk-mail) — sæt som Netlify env vars
 const SMTP_HOST = process.env.SMTP_HOST;
@@ -195,8 +201,8 @@ DATEN, DATENSCHUTZ UND FIRMA:
 - Bei detaillierten Fragen zu Daten, Cookies oder Dritten: VERWEISE auf die Datenschutzerklärung, erfinde niemals selbst Details.
 
 DOWNLOAD (nutze IMMER genau diese Links, sie dürfen nicht verändert werden):
-- App Store: https://voreshjem-bot.netlify.app/hent/appstore?site=de
-- Google Play: https://voreshjem-bot.netlify.app/hent/googleplay?site=de
+- App Store: https://backend.unserzuhauseapp.de/hent/appstore?sted=chat
+- Google Play: https://backend.unserzuhauseapp.de/hent/googleplay?sted=chat
 
 HÄUFIGE FRAGEN:
 - Passwort vergessen: Auf dem Anmeldebildschirm die Passwort-vergessen-Funktion antippen, E-Mail eingeben, Link zum Zurücksetzen per Mail erhalten. (Nur die hauptverantwortliche Person; Code-Nutzer haben kein Passwort.)
@@ -302,7 +308,8 @@ const SITES = {
     },
   },
 };
-function cleanSite(s) { return SITES[String(s || '').toLowerCase()] ? String(s).toLowerCase() : 'dk'; }
+// Med et fast marked (brug()) kendes kun det: alt, hvad widgeten eller panelet sender som site, bliver det faste.
+function cleanSite(s) { if (FAST_SITE) return FAST_SITE; return SITES[String(s || '').toLowerCase()] ? String(s).toLowerCase() : 'dk'; }
 function cfg(s) { return SITES[cleanSite(s)]; }
 
 const CORS = {
@@ -349,6 +356,17 @@ async function ensureSchema() {
   await sql`ALTER TABLE vh_feedback ADD COLUMN IF NOT EXISTS site TEXT DEFAULT 'dk'`;
   await sql`UPDATE vh_feedback SET site = 'dk' WHERE site IS NULL`;
   _schemaReady = true;
+}
+// Kun med brug() (den tyske backend, hvis database starter tom): mangler bottens tabeller, oprettes de med
+// ensureSchema. Findes de, sker intet, saa ALTER TABLE aldrig koerer af sig selv (se VIGTIGT ved handleren).
+// En forespoergsel pr. kold start. Nye kolonner kommer stadig kun med GET ?migrate=1.
+let _tabellerTjekket = false;
+async function tabellerKlar() {
+  if (!FAST_SITE || _tabellerTjekket || _schemaReady || !sql) return;
+  const r = await sql`SELECT count(*)::int AS n FROM information_schema.tables
+    WHERE table_schema = current_schema() AND table_name IN ('vh_conversations', 'vh_messages', 'vh_feedback', 'vh_events')`;
+  if (r[0].n < 4) await ensureSchema();
+  _tabellerTjekket = true;
 }
 
 function rowToMeta(r) {
@@ -440,7 +458,8 @@ async function sendAlert(meta, lastText, resume, site) {
   if (!tx) { console.log('ALARM sprunget over — SMTP ikke konfigureret'); return; }
   const S = cfg(site), T = S.mail;
   // ?site= i linket åbner admin direkte på det rigtige marked
-  const url = SITE_URL + '/admin.html?site=' + cleanSite(site);
+  // inde i en backend (brug()) er det backendens panel
+  const url = PANEL_URL || (SITE_URL + '/admin.html?site=' + cleanSite(site));
   try {
     await tx.sendMail({
       from: ALERT_FROM, to: ALERT_TO,
@@ -633,20 +652,21 @@ exports.handler = async (event) => {
         // robotter og link-forhaandsvisninger foelger ogsaa links. De skal ikke taelles som klik.
         const ua2 = String((event.headers && (event.headers['user-agent'] || event.headers['User-Agent'])) || '');
         const robot = !ua2 || /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|telegram|discord|slack|curl|wget|python|node|axios|go-http|java\/|headless|lighthouse|google-inspectiontool|apis-google|mediapartners|feedfetcher|monitor|uptime|netlify/i.test(ua2);
-        if (sql && !robot) { try { await sql`INSERT INTO vh_events (kind, label, site) VALUES ('store', ${label}, ${gSite})`; } catch (e) {} }
+        if (sql && !robot) { try { await tabellerKlar(); await sql`INSERT INTO vh_events (kind, label, site) VALUES ('store', ${label}, ${gSite})`; } catch (e) {} }
         return { statusCode: 302, headers: { Location: target, ...CORS }, body: '' };
       }
     }
     let diag = null;
     if (event.queryStringParameters && event.queryStringParameters.diag && sql) {
       try {
+        await tabellerKlar();
         const r = await sql`SELECT count(*)::int AS n FROM vh_conversations`;
         const ev = await sql`SELECT count(*)::int AS n FROM vh_events`;
         diag = { conversations: r[0].n, events: ev[0].n };
       }
       catch (e) { diag = { error: String(e && e.message || e).slice(0, 120) }; }
     }
-    return json(200, { ok: true, service: 'voreshjem chat', configured: { anthropic: !!ANTHROPIC_API_KEY, admin: !!ADMIN_PASSWORD, smtp: !!(SMTP_HOST && SMTP_USER), database: !!sql }, diag });
+    return json(200, { ok: true, service: FAST_SITE ? cfg(FAST_SITE).label + ' chat' : 'voreshjem chat', configured: { anthropic: !!ANTHROPIC_API_KEY, admin: !!ADMIN_PASSWORD, smtp: !!(SMTP_HOST && SMTP_USER), database: !!sql }, diag });
   }
   if (event.httpMethod !== 'POST') return json(405, { error: 'method' });
 
@@ -656,6 +676,7 @@ exports.handler = async (event) => {
   if (!sql) return json(500, { error: 'database ikke konfigureret (DATABASE_URL mangler)' });
 
   try {
+    await tabellerKlar();
     // ---------- BESØGENDE (widget) ----------
     if (action === 'send') {
       if (!ANTHROPIC_API_KEY) return json(500, { error: 'server mangler nøgle' });
@@ -745,7 +766,9 @@ exports.handler = async (event) => {
       if (Number.isFinite(have) && have === messages.length) {
         return json(200, { unchanged: true, count: messages.length, human: !!(meta && meta.human), needsHuman: !!(meta && meta.needsHuman) });
       }
-      return json(200, { messages, human: !!(meta && meta.human), needsHuman: !!(meta && meta.needsHuman), count: messages.length });
+      // kunden faar kun det, kunden ser. da er teamets danske udgave (tysk marked) og hoerer kun til panelet.
+      const tilKunde = messages.map(m => ({ id: m.id, role: m.role, content: m.content, ts: m.ts }));
+      return json(200, { messages: tilKunde, human: !!(meta && meta.human), needsHuman: !!(meta && meta.needsHuman), count: messages.length });
     }
 
     // Tommel op/ned på et bot-svar
@@ -870,12 +893,14 @@ exports.handler = async (event) => {
       const tom = () => ({ samtaler: 0, medMail: 0, sendtVidere: 0, feedback: { up: 0, down: 0 } });
       const tomP = () => ({ samtaler: 0, medMail: 0, sendtVidere: 0, feedback: { up: 0, down: 0 }, stemning: [], chips: [] });
       const tomNu = () => ({ aabne: 0, ulaeste: 0, venterPaaMenneske: 0 });
-      const markeder = Object.keys(SITES).concat('alle');
+      // med et fast marked (brug()) findes kun det, saa svaret aldrig har et andet markeds felter
+      const egne = FAST_SITE ? [FAST_SITE] : Object.keys(SITES);
+      const markeder = egne.concat('alle');
       const alleTider = {}, perioden = {}, nu = {};
       for (const k of markeder) { alleTider[k] = tom(); perioden[k] = tomP(); nu[k] = tomNu(); }
       const iDag = {};
       // et ukendt marked (bør ikke findes) tælles kun med i 'alle'
-      const hvorTil = s => SITES[s] ? [s, 'alle'] : ['alle'];
+      const hvorTil = s => egne.includes(s) ? [s, 'alle'] : ['alle'];
       for (const r of samtR) {
         for (const k of hvorTil(r.s)) {
           alleTider[k].samtaler += r.alle; alleTider[k].medMail += r.alle_mail; alleTider[k].sendtVidere += r.alle_videre;
@@ -1091,3 +1116,19 @@ exports.handler = async (event) => {
 };
 
 exports.alertEmailHTML = alertEmailHTML; // til lokal forhåndsvisning
+
+// Den samme bot inde i en anden backend. Bruges af den tyske backend (backend/netlify/functions-de/chat-bot.mjs,
+// som vaerktoej/udgiv-backend.mjs --de tager med), aldrig af den danske bot, som derfor er uaendret.
+//   site   det ene marked, botten kender. Alt andet, widgeten eller panelet sender, bliver det.
+//   sql    backendens egen forbindelse (db.js, med ejermaerket). Botten bruger saa aldrig sin egen.
+//   panel  hvor alarm-mailens knap peger hen (backendens panel i stedet for bottens admin.html)
+// CLAUDE_MODEL hoerer til backendens egne opgaver (fx support-mailen), saa botten bruger BOT_MODEL eller
+// sin egen standard, samme model som den danske bot.
+exports.brug = function (valg) {
+  const v = valg || {};
+  if (!SITES[v.site]) throw new Error('brug(): ukendt marked ' + v.site);
+  FAST_SITE = v.site;
+  sql = v.sql || null;
+  PANEL_URL = v.panel || null;
+  MODEL = process.env.BOT_MODEL || STANDARD_MODEL;
+};

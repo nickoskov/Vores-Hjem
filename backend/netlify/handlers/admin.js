@@ -1081,7 +1081,7 @@ const chatTekster = () => ({
   alle_tider: 'Alle samtaler, der stadig er gemt. Samtaler slettes ' + RYD_DAGE + ' dage efter sidste besked.'
 });
 async function chat(dage, site) {
-  // uden bottens tabeller (den tyske backend) kommer tallene fra botten selv
+  // uden bottens tabeller i egen database kommer tallene fra botten selv
   if (!profil.botTabeller) return chatFraBot(dage, site);
   if (!sql) throw new Error('Databasen er ikke sat op');
   await opret();
@@ -1161,7 +1161,8 @@ async function chat(dage, site) {
     kilde: 'bot', type: p.type, visning: p.visning, fra: p.fra, til: p.til, klokke: p.klokke ? p.klokke.slice(0, 5).replace(':', '.') : null, note: p.note || null,
     site: valgt, siteNavn: MARKED[valgt], daekning: d, daekningHaendelser: dH,
     gemt: { fra: gemtFra, dage: RYD_DAGE, tekst: 'Samtaler og tommel slettes efter ' + RYD_DAGE + ' dage. "Alle tider" er det, der stadig er gemt.' },
-    tal: { ...marked[valgt] }, marked,
+    // den tyske backend har kun sin egen bots samtaler, saa svaret har kun dens eget sprog (og alle = det)
+    tal: { ...marked[valgt] }, marked: profil.kode === 'dk' ? marked : { [profil.chat]: marked[profil.chat], alle: marked.alle },
     stemning, spoergsmaal: chips ? chips.slice(0, 10) : null,
     feedback, nedPeriode: ned ? ned.filter(r => valgt === 'alle' || r.s === valgt).slice(0, 20).map(r => ({ q: r.q, a: r.a, ts: r.ts, site: r.s })) : null,
     seneste: sen ? sen.filter(r => valgt === 'alle' || (r.site || 'dk') === valgt).slice(0, 12) : null,
@@ -1170,11 +1171,11 @@ async function chat(dage, site) {
   };
 }
 
-/* Den tyske backend har ikke bottens tabeller: de ligger i den danske database, som den aldrig
-   maa roere (db.js). Tallene hentes i stedet fra bottens egen statistik for de samme danske
-   kalenderdage og gives i samme form som chat(). Botten sender null for tal, den ikke har dage
-   til, og null som daekning, naar den daekker hele perioden. Tommel ned findes kun pr. sprog,
-   saa 'alle' spoerger om begge. */
+/* Til en backend uden bottens tabeller i sin egen database (side.js, botTabeller). Begge har dem nu
+   (den tyske med sin egen bot), saa den bruges ikke, men den virker stadig, hvis en profil faar en bot
+   et andet sted. Tallene hentes fra bottens egen statistik for de samme danske kalenderdage og gives
+   i samme form som chat(). Botten sender null for tal, den ikke har dage til, og null som daekning,
+   naar den daekker hele perioden. Tommel ned findes kun pr. sprog, saa 'alle' spoerger om begge. */
 async function chatFraBot(dage, site) {
   if (!botOpsat()) throw new Error('Panelet kan ikke nå botten. Sæt BOT_ADMIN_PASSWORD i Netlify.');
   const p = omfang(dage), valgt = (site === 'dk' || site === 'de') ? site : 'alle';
@@ -1227,7 +1228,7 @@ async function raad() {
                     WHERE mobil > 0 AND (maalt AT TIME ZONE 'Europe/Copenhagen')::date >= ${dagPlus(dkIdag(), -6)}::date
                     ORDER BY (maalt AT TIME ZONE 'Europe/Copenhagen')::date, maalt DESC) x` : Promise.resolve([]),
     sql ? sql`SELECT vaerdi FROM vh_cache WHERE noegle = ${UDGAVE + 'hastighed'} AND udloeber > now()` : Promise.resolve([]),
-    // chatbottens tabeller ligger kun i den danske database. Den tyske backend spoerger botten selv.
+    // chatbottens tabeller ligger i backendens egen database (side.js, botTabeller), ellers spoerges botten
     !harChat ? Promise.resolve([{ n: 0 }]) :
     !profil.botTabeller ? (botOpsat() ? bot('admin_stats', { site: profil.chat, days: 1 }).then(st => [{ n: (st.nu && st.nu[profil.chat] || {}).venterPaaMenneske || 0 }]) : Promise.resolve([{ n: 0 }]))
       : sql ? sql`SELECT count(*)::int AS n FROM vh_conversations WHERE needs_human AND NOT archived` : Promise.resolve([{ n: 0 }])
@@ -1308,7 +1309,7 @@ async function uge() {
           FROM (SELECT count(*) AS n FROM vh_besoeg WHERE ts >= (${v.a}::timestamp AT TIME ZONE 'Europe/Copenhagen') AND ts < (${v.b}::timestamp AT TIME ZONE 'Europe/Copenhagen')
                 GROUP BY (ts AT TIME ZONE 'Europe/Copenhagen')::date, gaest) x`,
       qKlik(v),
-      // samtalerne ligger i bottens tabeller, som kun den danske database har
+      // samtalerne ligger i bottens tabeller i egen database (side.js, botTabeller)
       profil.botTabeller ? sql`SELECT count(*)::int AS n FROM vh_conversations WHERE created_at >= (${v.a}::timestamp AT TIME ZONE 'Europe/Copenhagen') AND created_at < (${v.b}::timestamp AT TIME ZONE 'Europe/Copenhagen')`
         : Promise.resolve(null)
     ]);
@@ -1328,7 +1329,7 @@ async function uge() {
     fraFoerTid: dkInstant(mandagFoer, '00:00:00'), tilFoerTid: dkInstant(dagFoer, nu.klokke),
     besoegendeDefinition: 'pr_dag_lagt_sammen',
     besoegendeTekst: 'Besøgende pr. dag, lagt sammen. Tælleren kan ikke genkende nogen fra dag til dag, så én, der kommer mandag og tirsdag, tæller to gange.',
-    // false: samtalerne kan ikke taelles her (de ligger i bottens tabeller i den danske database), saa raekken vises ikke
+    // false: samtalerne kan ikke taelles her (bottens tabeller ligger ikke i denne database), saa raekken vises ikke
     samtalerMed: !!profil.botTabeller,
     foersteUge: !dS.hel, klikFoersteUge: !kS.hel,
     grund: !dS.hel ? ingenSml(dS) : !kS.hel ? 'Klik til butik. ' + ingenSml(kS) : null,
@@ -1470,12 +1471,12 @@ const HANDLING_SIDE = { annoncer: 'annoncer',
   links: 'links', 'links-lav': 'links', 'links-gem': 'links', 'links-slet': 'links',
   indhold: 'indhold', 'indhold-gem': 'indhold', 'indhold-scan': 'indhold', felter: 'indhold', 'felt-gem': 'indhold', 'felt-fortryd': 'indhold',
   rettelser: 'indhold', 'rettelse-gem': 'indhold', 'rettelse-slet': 'indhold', 'rettelser-udgiv': 'indhold', 'seo-forslag': 'indhold', udgiv: 'indhold',
-  // chatbotten er den danske sides. Den tyske backend taler slet ikke med den.
+  // chatten: den danske backend taler med den faelles danske bot, den tyske med sin egen (side.js, botEgen)
   chat: 'chat', 'bot-liste': 'chat', 'bot-hent': 'chat', 'bot-stat': 'chat', 'bot-svar': 'chat', 'bot-tagover': 'chat',
   'bot-slet': 'chat', 'bot-ret': 'chat', 'bot-slet-besked': 'chat' };
 const harChat = !profil.skjul.includes('chat');
-/* Botten er faelles for begge sider. Den danske backend ser begge sprog, som foer. Den tyske ser
-   og roerer kun tyske samtaler (side.js, chat), uanset hvad panelet beder om. */
+/* Den danske backend ser begge sprog i den faelles danske bot, som foer. Den tyske har sin egen bot
+   (lib/bot.js) og ser og roerer kun tyske samtaler (side.js, chat), uanset hvad panelet beder om. */
 const chatSite = s => profil.kode === 'dk' ? s : profil.chat;
 async function egenSamtale(id) {
   if (profil.kode === 'dk') return;
@@ -1626,7 +1627,8 @@ exports.handler = async (ev) => {
         else ud.soro = { ok:false, fejl:'ikke sat op' };
         if (sql) await proev('taeller', async () => { const r = await sql`SELECT count(*)::int AS n, count(DISTINCT gaest)::int AS g, max(ts) AS sidst FROM vh_besoeg WHERE ts > now() - interval '24 hours'`;
           return r[0].n + ' sidevisninger fra ' + r[0].g + ' besøgende de sidste 24 timer' + (r[0].sidst ? ', seneste ' + new Date(r[0].sidst).toLocaleTimeString('da-DK', { timeZone:'Europe/Copenhagen', hour:'2-digit', minute:'2-digit' }) : ''); });
-        // kilder, kun den danske side bruger: de mangler ikke paa den tyske, de bruges bare ikke der
+        // kilder til sider, profilen skjuler (side.js, skjul): de mangler ikke, de bruges bare ikke der. Chatten
+        // skjules ikke laengere paa den tyske, saa dens bot testes nu som paa den danske.
         const brugesIkke = { meta: 'annoncer', googleads: 'annoncer', netlify: 'indhold', soro: 'blog', bot: 'chat' };
         for (const [n, side] of Object.entries(brugesIkke)) if (profil.skjul.includes(side)) ud[n] = { ok:false, fejl:'ikke sat op', brugesIkke:true, note:'Bruges ikke på ' + profil.navn + '.' };
         if (!profil.ga4Kode && !G.opsat()) ud.analytics = { ok:false, fejl:'ikke sat op', brugesIkke:true, note:'Google Analytics er ikke sat op på ' + profil.navn + '. Jeres egen tæller tæller besøgene.' };
