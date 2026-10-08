@@ -13,11 +13,28 @@ const opsat = () => !!(E.ASC_ISSUER_ID && E.ASC_KEY_ID && E.ASC_PRIVATE_KEY && E
 const b64 = o => Buffer.from(typeof o==='string'?o:JSON.stringify(o)).toString('base64')
   .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 
+// Netlifys felt er én lang linje, saa linjeskiftene i .p8-filen forsvinder tit, og saa kan noeglen
+// ikke laeses (DECODER routines::unsupported). Her saettes den sammen igen, uanset om den er indsat
+// som hel fil, paa én linje, med \n, uden BEGIN/END-linjerne eller base64-kodet.
+function pem(raa) {
+  let s = String(raa || '').trim().replace(/^["']|["']$/g, '').replace(/\\n/g, '\n');
+  if (!/-----BEGIN/.test(s)) {
+    const d = Buffer.from(s.replace(/\s+/g, ''), 'base64').toString('utf8');
+    s = /-----BEGIN/.test(d) ? d : '-----BEGIN PRIVATE KEY-----' + s + '-----END PRIVATE KEY-----';
+  }
+  const m = /-----BEGIN ([A-Z ]+?)-----([\s\S]*?)-----END \1-----/.exec(s);
+  const krop = m ? m[2].replace(/[^A-Za-z0-9+/=]/g, '') : '';
+  if (!krop) throw new Error('App Store-nøglen (ASC_PRIVATE_KEY) ligner ikke indholdet af en .p8-fil.');
+  const ud = '-----BEGIN ' + m[1] + '-----\n' + krop.match(/.{1,64}/g).join('\n') + '\n-----END ' + m[1] + '-----\n';
+  try { return crypto.createPrivateKey(ud); }
+  catch (e) { throw new Error('App Store-nøglen (ASC_PRIVATE_KEY) kunne ikke læses. Indsæt hele indholdet af .p8-filen igen. (' + e.message + ')'); }
+}
+
 function jwt() {
   const nu = Math.floor(Date.now()/1000);
   const krop = b64({alg:'ES256', kid:E.ASC_KEY_ID, typ:'JWT'}) + '.' +
                b64({iss:E.ASC_ISSUER_ID, iat:nu, exp:nu+1100, aud:'appstoreconnect-v1'});
-  const noegle = E.ASC_PRIVATE_KEY.includes('BEGIN') ? E.ASC_PRIVATE_KEY : Buffer.from(E.ASC_PRIVATE_KEY,'base64').toString();
+  const noegle = pem(E.ASC_PRIVATE_KEY);
   const s = crypto.createSign('SHA256'); s.update(krop); s.end();
   const der = s.sign({ key: noegle, dsaEncoding: 'ieee-p1363' });
   return krop + '.' + der.toString('base64').replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
