@@ -7,6 +7,7 @@
  * passerer aldrig gennem panelet, gennem browseren eller gennem en chat.
  */
 const crypto = require('crypto');
+const profil = require('./side.js');
 
 const OMRAADER = [
   'https://www.googleapis.com/auth/analytics.readonly',
@@ -135,7 +136,7 @@ function samlet(svar, navn) {
 // Wix' panel, der havde mest værdi for SEO, og den har intet med Analytics
 // at gøre, det er en helt anden tjeneste.
 async function soegning(krop) {
-  const side = process.env.GSC_SITE_URL || 'https://www.voreshjem.dk/';
+  const side = process.env.GSC_SITE_URL || profil.site + '/';
   return post('https://searchconsole.googleapis.com/webmasters/v3/sites/' +
               encodeURIComponent(side) + '/searchAnalytics/query', krop, 'Search Console');
 }

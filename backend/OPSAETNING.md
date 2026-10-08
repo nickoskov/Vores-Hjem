@@ -102,6 +102,46 @@ Servicekontoen fra trin 2 skal gives adgang i Play Console under Brugere.
 
 Giver: Downloads-fanen og fjerde trin i tragten.
 
+Salgsrapporten fra Apple dækker alle apps på kontoen. Backenden tæller kun
+sin egen app: Vores Hjem (6758346281) på den danske, Unser Zuhause
+(6771931999) på den tyske. `ASC_APP_ID` behøves kun, hvis det skal være en
+anden. Google Play bruger på samme måde `com.voreshjem.app` og
+`com.unserzuhause.app`, medmindre `GPLAY_PACKAGE` siger andet.
+
+---
+
+## Den tyske backend (backend.unserzuhauseapp.de)
+
+Samme kode, udgivet en gang til på Netlify-projektet **unserzuhause-backend**
+med `node vaerktoej/udgiv-backend.mjs --de` (prøveudgave) og `--de --live`.
+Variablen `SIDE=de` gør den tysk: navne i panelet og mails, hvilke adresser
+tælleren og kontaktformularen tager imod, og hvilken app der tælles. Blog,
+Links, Indhold og Annoncer findes kun på den danske.
+
+Den har sin egen database, sit eget panel og sit eget login. Første gang en
+backend bruger sin database, stemples den i tabellen `vh_side`. Den tyske
+tager kun en helt tom database i brug, og ingen af dem bruger en database,
+der er stemplet til den anden. Står `DATABASE_URL` forkert, røres databasen
+slet ikke, og panelet og udgivelsesscriptet siger hvorfor.
+
+| Navn | Værdi |
+|---|---|
+| `SIDE` | `de` |
+| `DATABASE_URL` | en ny, tom Neon-database. Aldrig den danske |
+| `ADMIN_PASSWORD`, `SESSION_SECRET` | nye, kun til det tyske panel |
+| `BOT_ADMIN_PASSWORD` | samme som på den danske, botten er fælles |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `ALERT_TO` | samme som på den danske |
+| `GA4_CREDENTIALS`, `GPLAY_BUCKET` | samme som på den danske |
+| `ASC_ISSUER_ID`, `ASC_KEY_ID`, `ASC_PRIVATE_KEY`, `ASC_VENDOR_NUMBER` | samme som på den danske |
+| `GPLAY_PACKAGE` | `com.unserzuhause.app`, eller udelad den |
+| `PSI_API_KEY`, `RYD_DAGE` | samme som på den danske, eller udelad dem |
+
+Kopiér ikke de danske `SITE_NETLIFY_ID`, `NETLIFY_TOKEN`, `NETLIFY_BUILD_HOOK`,
+`SORO_RSS_URL`, `WEBHOOK_SECRET`, `WEBHOOK_AUTOUDGIV`, `GA4_PROPERTY_ID`,
+`GSC_SITE_URL`, `SEO_SITE`, `SITE_URL`, `VAGT_URL`, `META_*` og `GADS_*`.
+`GSC_SITE_URL` sættes kun, hvis den tyske ejendom i Search Console ikke
+hedder `https://www.unserzuhauseapp.de/`, fx `sc-domain:unserzuhauseapp.de`.
+
 ---
 
 ## Soro

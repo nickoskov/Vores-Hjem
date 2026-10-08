@@ -18,6 +18,7 @@ const gplay = require('../lib/googleplay.js');
 const asc = require('../lib/appstore.js');
 const mail = require('../lib/mail.js');
 const K = require('../lib/koersel.js');
+const profil = require('../lib/side.js');
 const { sql, opret, log } = require('../lib/db.js');
 
 const T = n => n == null ? '–' : (Number(n) || 0).toLocaleString('da-DK');
@@ -174,7 +175,7 @@ exports.handler = async () => {
   } catch (x) {} }
 
   const html = `<div style="font-family:system-ui,sans-serif;max-width:540px;color:#14132A">
-    <h2 style="margin:0 0 4px">Uge ${ugeNr} på voreshjem.dk</h2>
+    <h2 style="margin:0 0 4px">Uge ${ugeNr} på ${profil.navn}</h2>
     <p style="${GRAA};margin:0 0 6px">Mandag ${K.kortDato(fra)} til søndag ${K.kortDato(til)}, sammenlignet med ugen før (${K.kortDato(fra2)} til ${K.kortDato(til2)}).</p>
     ${overskrift('Egen tæller, alle besøgende', 'Tæller alle uden cookies, robotter og jeres egne browsere fraregnet. Den samme person kan ikke genkendes fra dag til dag, så besøgende er talt pr. dag og lagt sammen. Klik til butik er tryk på hent-knapperne, der sendte folk til App Store eller Google Play.')}
     ${egenHtml}
@@ -185,9 +186,9 @@ exports.handler = async () => {
     ${overskrift('Google Analytics', 'Kun dem der siger ja til cookies, typisk en lille del af alle. Brug egen tæller ovenfor til at se, hvor mange der kom.')}
     ${gaHtml}
     ${oppe}
-    <p style="margin-top:22px;font-size:13px;${LYS}">Hele billedet: <a href="https://backend.voreshjem.dk" style="color:#6C47FF">backend.voreshjem.dk</a></p>
+    <p style="margin-top:22px;font-size:13px;${LYS}">Hele billedet: <a href="${profil.backend}" style="color:#6C47FF">${profil.backend.replace(/^https?:\/\//, '')}</a></p>
   </div>`;
-  const emne = 'Uge ' + ugeNr + ' på voreshjem.dk' + (e.fejl ? '' :
+  const emne = 'Uge ' + ugeNr + ' på ' + profil.navn + (e.fejl ? '' :
     ': ' + T(e.nu.besoegende) + ' besøgende (talt pr. dag), ' + T(e.nu.klik.ialt) + ' klik til butik');
 
   // laasen tages lige foer afsendelsen, saa en koersel, der fejlede tidligere, kan proeves igen

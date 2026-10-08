@@ -17,8 +17,9 @@ const FEJL_LEVETID = 20 * 1000;
    kopi kan derfor ikke ryddes af "Hent friske", som kun rammer én af dem.
    Er databasen der, er den den eneste sandhed. Hukommelsen bruges kun uden database.
    UDGAVE skiftes, naar et svar aendrer form, saa gamle gemte svar ikke vises.
-   u4: 6. okt. 2026, oversigt, tragt, downloads, live og uge fik ny form. */
-const UDGAVE = 'u4:';
+   u4: 6. okt. 2026, oversigt, tragt, downloads, live og uge fik ny form.
+   u5: 8. okt. 2026, App Store taeller kun profilens app (side.js), og uge og chat fik nye felter. */
+const UDGAVE = 'u5:';
 
 /** Har svaret en fejl fra en kilde? Forstaar baade en liste ([...]) og et opslag ({ meta:'...' }). */
 function harFejl(v) {

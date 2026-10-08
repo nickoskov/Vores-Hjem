@@ -3,6 +3,8 @@
 // blev graensen ramt. Det nye format har ingen graense. Logikken i netlify/handlers/ er uaendret.
 export function tilV2(handler) {
   return async (req, context) => {
+    // hvilket Netlify-site funktionen koerer paa. db.js bruger det til at fange en glemt SIDE (side.js).
+    if (context && context.site && context.site.id && !process.env.VH_NETLIFY_SITE) process.env.VH_NETLIFY_SITE = String(context.site.id);
     const url = new URL(req.url);
     const headers = Object.fromEntries(req.headers);
     if (!headers['x-nf-client-connection-ip'] && context && context.ip) headers['x-nf-client-connection-ip'] = context.ip;

@@ -5,7 +5,8 @@
  * og hvor meget trafik der kommer fra ChatGPT, Perplexity og de andre.
  */
 const G = require('./google.js');
-const SITE = process.env.SEO_SITE || 'https://www.voreshjem.dk';
+const profil = require('./side.js');
+const SITE = process.env.SEO_SITE || profil.site;
 
 /* ── danske kalenderdage (serveren koerer i UTC) ───────────────────────── */
 const DK = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Copenhagen', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hourCycle: 'h23' });
@@ -27,10 +28,11 @@ const punktum = t => /\.$/.test(t) ? t : t + '.';
 /* ── brand-soegninger ─────────────────────────────────────────────────────
    Soegninger paa jeres eget navn er ikke muligheder: dem vinder I allerede, og en
    lav klikrate paa en underside er forventet, fordi forsiden staar over den.
-   Fanger 'vores hjem', 'voreshjem', 'vores-hjem', 'voreshjem.dk', 'www.voreshjem.dk',
-   'vores hjem app', 'voreshjemapp' og smaa stavefejl som 'vore hjem' og 'vors hjem',
-   uanset store og smaa bogstaver. 'vores hjemmeside' er IKKE brand. */
-const BRAND = /(^| )vore?s? ?hje?m(app|dk)?(?= )/;
+   Moenstret kommer fra profilen (side.js). Paa den danske fanger det 'vores hjem', 'voreshjem',
+   'vores-hjem', 'voreshjem.dk', 'www.voreshjem.dk', 'vores hjem app', 'voreshjemapp' og smaa
+   stavefejl som 'vore hjem' og 'vors hjem', uanset store og smaa bogstaver. 'vores hjemmeside'
+   er IKKE brand. Paa den tyske fanger det 'unser zuhause', 'unserzuhause' og 'unserzuhauseapp'. */
+const BRAND = profil.brandSoeg;
 function erBrand(ord) {
   const s = ' ' + String(ord || '').toLowerCase().replace(/[^a-z0-9æøå]+/g, ' ').trim() + ' ';
   return BRAND.test(s);
@@ -141,7 +143,7 @@ function historikPrDag(raekker, max) {
 async function gennemgang() {
   const t0 = Date.now();
   let urls = [];
-  // sitemap'et siger www.voreshjem.dk, men vi henter altid fra SITE. Saa kan
+  // sitemap'et siger sidens rigtige adresse, men vi henter altid fra SITE. Saa kan
   // samme gennemgang koeres mod proeveadressen paa netlify, foer domaenet flytter.
   try { const s = await (await hent(SITE + '/sitemap.xml')).text();
     urls = alle(s, /<loc>\s*([^<]+?)\s*<\/loc>/gi).map(u => { try { const x = new URL(u); return SITE + x.pathname + x.search; } catch (e) { return null; } }).filter(Boolean); } catch (e) {}
@@ -243,7 +245,7 @@ async function muligheder() {
       daarligTitel: punktum('Plads 1 til 5, mindst 50 visninger og under 3 % klikrate, ' + vindue),
       udenSide: punktum('Rammer forsiden, plads over 6 og mindst 30 visninger, ' + vindue) },
     brandUdeladt: { raekker: brand.length, ord: [...new Set(brand.map(x => x.ord.toLowerCase()))].slice(0, 10),
-      tekst: 'Søgninger på jeres eget navn (fx "vores hjem") er udeladt. Dem vinder I allerede.' },
+      tekst: 'Søgninger på jeres eget navn (fx "' + profil.brandEksempel + '") er udeladt. Dem vinder I allerede.' },
     taet, daarligTitel, udenSide, antalOrd: rows.length };
 }
 

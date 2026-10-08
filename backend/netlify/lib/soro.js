@@ -9,6 +9,7 @@
  * ikke, saa rettelser i panelet ikke bliver overskrevet.
  */
 const { sql, opret } = require('./db.js');
+const profil = require('./side.js');
 
 const URL_ = () => process.env.SORO_RSS_URL || '';
 const opsat = () => !!URL_();
@@ -55,7 +56,7 @@ function laes(xml) {
 const norm = s => String(s||'').toLowerCase().replace(/[^a-zæøå0-9]+/g,' ').trim();
 async function paaSiden() {
   try {
-    const r = await fetch((process.env.SITE_URL || 'https://www.voreshjem.dk') + '/blog/indlaeg.json', { headers: { 'User-Agent': 'VoresHjem-backend/1.0' } });
+    const r = await fetch((process.env.SITE_URL || profil.site) + '/blog/indlaeg.json', { headers: { 'User-Agent': 'VoresHjem-backend/1.0' } });
     if (!r.ok) return { titler: new Set(), slugs: new Set() };
     const j = await r.json(); const l = Array.isArray(j) ? j : (j.indlaeg || []);
     return { titler: new Set(l.map(x => norm(x.titel))), slugs: new Set(l.map(x => x.slug)) };

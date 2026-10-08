@@ -1,6 +1,7 @@
 'use strict';
 /** To-trins login med engangskoder fra en telefon-app (Google Authenticator, 1Password, Apple Adgangskoder). Standard TOTP, 30 sekunder, 6 cifre. */
 const crypto = require('crypto');
+const profil = require('./side.js');
 const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 function base32(buf) { let bits = '', ud = ''; for (const b of buf) bits += b.toString(2).padStart(8,'0'); for (let i = 0; i + 5 <= bits.length; i += 5) ud += A[parseInt(bits.slice(i,i+5),2)]; return ud; }
 function fraBase32(s) { let bits = ''; for (const c of String(s).toUpperCase().replace(/[^A-Z2-7]/g,'')) bits += A.indexOf(c).toString(2).padStart(5,'0'); const ud = []; for (let i = 0; i + 8 <= bits.length; i += 8) ud.push(parseInt(bits.slice(i,i+8),2)); return Buffer.from(ud); }
@@ -18,5 +19,6 @@ function passer(hemmelighed, givet) {
   return [-1, 0, 1].some(d => { const k = kode(hemmelighed, nu + d*30000); return k.length === g.length && crypto.timingSafeEqual(Buffer.from(k), Buffer.from(g)); });
 }
 const ny = () => base32(crypto.randomBytes(20));
-const url = (navn, hemmelighed) => 'otpauth://totp/' + encodeURIComponent('Vores Hjem backend:' + navn) + '?secret=' + hemmelighed + '&issuer=' + encodeURIComponent('Vores Hjem') + '&digits=6&period=30';
+// navnet i telefonens app foelger profilen, saa den danske og den tyske backend kan skelnes
+const url = (navn, hemmelighed) => 'otpauth://totp/' + encodeURIComponent(profil.brand + ' backend:' + navn) + '?secret=' + hemmelighed + '&issuer=' + encodeURIComponent(profil.brand) + '&digits=6&period=30';
 module.exports = { kode, passer, ny, url };

@@ -14,6 +14,7 @@ const skriv = require('../lib/skriv.js');
 const G = require('../lib/google.js');
 const mail = require('../lib/mail.js');
 const K = require('../lib/koersel.js');
+const profil = require('../lib/side.js');
 const { sql, opret, log } = require('../lib/db.js');
 
 exports.handler = async () => {
@@ -37,7 +38,8 @@ exports.handler = async () => {
   await log('seo-gennemgang', 'score ' + r.score + ', ' + r.antalSider + ' sider, ' + r.optalt.fejl + ' fejl', 'seovagt');
 
   let udkast = null, ord = '';
-  if (G.opsatGsc() && skriv.opsat()) {
+  // udkast lander i bloggen, som kun findes paa den danske side (side.js, skjul)
+  if (G.opsatGsc() && skriv.opsat() && !profil.skjul.includes('blog')) {
     try {
       const m = await seo.muligheder();
       const brugt = (await sql`SELECT kilde FROM vh_blog WHERE kilde LIKE 'claude%'`).map(x => x.kilde.toLowerCase());
@@ -53,14 +55,14 @@ exports.handler = async () => {
   if (mail.opsat()) {
     const d = foer[0] ? r.score - foer[0].score : 0;
     const sidst = foer[0] ? ' siden ' + K.kortDato(K.dansk(new Date(foer[0].koert)).dato) : '';
-    await mail.send('SEO-score ' + r.score + (d ? (d > 0 ? ' (op ' + d + ')' : ' (ned ' + (-d) + ')') : ''),
+    await mail.send(profil.navn + ': SEO-score ' + r.score + (d ? (d > 0 ? ' (op ' + d + ')' : ' (ned ' + (-d) + ')') : ''),
       `<div style="font-family:system-ui,sans-serif;max-width:520px"><h2 style="margin:0 0 6px">SEO-gennemgang, ${r.antalSider} sider</h2>
        <p style="font-size:34px;font-weight:800;margin:0">${r.score}<span style="font-size:14px;color:#9B97B5;font-weight:500"> / 100${foer[0] ? (d ? ', ' + (d>0?'op ':'ned ') + Math.abs(d) : ', uændret') + sidst : ''}</span></p>
        <p style="color:#6B6785">${r.optalt.fejl} fejl, ${r.optalt.advar} advarsler, ${r.optalt.info} bemærkninger</p>
        <h3 style="font-size:13px;color:#9B97B5;text-transform:uppercase;letter-spacing:.05em">Det vigtigste</h3>
        ${r.opgaver.slice(0,5).map(o => '<div style="padding:7px 0;border-bottom:1px solid #F1EFFA"><b>' + o.hvad + '</b> på ' + o.sider.length + ' side' + (o.sider.length>1?'r':'') + '<div style="color:#6B6785;font-size:13px">' + o.hvordan + '</div></div>').join('')}
        ${udkast ? '<p style="margin-top:18px"><b>Nyt udkast i bloggen:</b> ' + udkast + '<br><span style="color:#6B6785;font-size:13px">skrevet ud fra søgningen "' + ord + '". Ligger som kladde, læs det før det udgives.</span></p>' : ''}
-       <p style="margin-top:18px;font-size:13px;color:#9B97B5"><a href="https://backend.voreshjem.dk/#seo" style="color:#6C47FF">Se hele gennemgangen</a></p></div>`).catch(()=>{});
+       <p style="margin-top:18px;font-size:13px;color:#9B97B5"><a href="${profil.backend}/#seo" style="color:#6C47FF">Se hele gennemgangen</a></p></div>`).catch(()=>{});
   }
   return { statusCode: 200, body: JSON.stringify({ score: r.score, udkast }) };
 };

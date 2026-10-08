@@ -5,12 +5,15 @@
  * sidste besked, medmindre nogen stadig venter paa et menneske. Login-forsoeg,
  * udloebet cache og gamle oppetidstjek ryddes ogsaa.
  *
- * Bemaerk: besoeg og klik fra den egne taeller (dansk og tysk side) slettes ogsaa efter RYD_DAGE.
+ * Bemaerk: besoeg og klik fra den egne taeller slettes ogsaa efter RYD_DAGE.
  * Den aeldste raekke er derfor "aeldste gemte", ikke "taelleren startede".
  * Hoejst én koersel pr. dansk dag (laas i vh_koersel).
+ * Chatbottens tabeller ligger kun i den danske database (side.js, botTabeller). Den danske
+ * backend rydder derfor samtaler fra begge sider, den tyske springer dem over.
  */
 const { sql, opret, log } = require('../lib/db.js');
 const K = require('../lib/koersel.js');
+const profil = require('../lib/side.js');
 const DAGE = Math.max(7, parseInt(process.env.RYD_DAGE, 10) || 90);
 
 exports.handler = async () => {
@@ -19,7 +22,7 @@ exports.handler = async () => {
   const dato = K.dansk().dato;
   if (!(await K.foersteGang('ryd', dato))) return { statusCode: 200, body: 'oprydningen har allerede koert i dag (' + dato + ')' };
   const ud = {};
-  try {
+  if (profil.botTabeller) try {
     const gamle = await sql`SELECT id FROM vh_conversations WHERE updated_at < now() - make_interval(days => ${DAGE}::int) AND NOT needs_human`;
     if (gamle.length) {
       const ids = gamle.map(g => g.id);
@@ -28,20 +31,22 @@ exports.handler = async () => {
     }
     ud.samtaler = gamle.length;
   } catch (e) { ud.samtalerFejl = e.message; }
-  try { const r = await sql`DELETE FROM vh_feedback WHERE ts < now() - make_interval(days => ${DAGE}::int) RETURNING id`; ud.feedback = r.length; } catch (e) {}
+  if (profil.botTabeller) try { const r = await sql`DELETE FROM vh_feedback WHERE ts < now() - make_interval(days => ${DAGE}::int) RETURNING id`; ud.feedback = r.length; } catch (e) {}
   try { const r = await sql`DELETE FROM vh_login WHERE hvornaar < now() - interval '1 day' RETURNING id`; ud.login = r.length; } catch (e) {}
   try { const r = await sql`DELETE FROM vh_klik WHERE ts < now() - make_interval(days => ${DAGE}::int) RETURNING id`; ud.klik = r.length; } catch (e) {}
   try { const r = await sql`DELETE FROM vh_besoeg WHERE ts < now() - make_interval(days => ${DAGE}::int) RETURNING id`; ud.besoeg = r.length; } catch (e) {}
-  // den tyske side (unserzuhauseapp.de) har sine egne tabeller, men samme loefte om sletning
-  try { const r = await sql`DELETE FROM vh_klik_de WHERE ts < now() - make_interval(days => ${DAGE}::int) RETURNING id`; ud.klikDe = r.length; } catch (e) {}
-  try { const r = await sql`DELETE FROM vh_besoeg_de WHERE ts < now() - make_interval(days => ${DAGE}::int) RETURNING id`; ud.besoegDe = r.length; } catch (e) {}
+  // tyske besoeg fra den 8. okt. 2026, foer den tyske side fik sin egen backend, ligger stadig i den
+  // danske database og skal udloebe som alt andet. Efter januar 2027 er de vaek, og linjerne kan fjernes.
+  if (profil.kode === 'dk') {
+    try { await sql`DELETE FROM vh_besoeg_de WHERE ts < now() - make_interval(days => ${DAGE}::int)`; } catch (e) {}
+    try { await sql`DELETE FROM vh_klik_de WHERE ts < now() - make_interval(days => ${DAGE}::int)`; } catch (e) {}
+  }
   try { const r = await sql`DELETE FROM vh_cache WHERE udloeber < now() RETURNING noegle`; ud.cache = r.length; } catch (e) {}
   try { const r = await sql`DELETE FROM vh_oppetid WHERE hvornaar < now() - interval '90 days' RETURNING id`; ud.oppetid = r.length; } catch (e) {}
   try { const r = await sql`DELETE FROM vh_log WHERE hvornaar < now() - interval '180 days' RETURNING id`; ud.log = r.length; } catch (e) {}
   // laasene fra de planlagte funktioner skal kun huskes, saa laenge en dobbeltkoersel kan komme
   try { const r = await sql`DELETE FROM vh_koersel WHERE ts < now() - interval '60 days' RETURNING job`; ud.koersel = r.length; } catch (e) {}
-  await log('oprydning', 'ældre end ' + DAGE + ' dage: samtaler ' + (ud.samtaler || 0) + ', besøg ' + (ud.besoeg || 0) + ', klik ' + (ud.klik || 0)
-    + ', tysk side besøg ' + (ud.besoegDe || 0) + ', klik ' + (ud.klikDe || 0)
+  await log('oprydning', 'ældre end ' + DAGE + ' dage: ' + (profil.botTabeller ? 'samtaler ' + (ud.samtaler || 0) + ', ' : '') + 'besøg ' + (ud.besoeg || 0) + ', klik ' + (ud.klik || 0)
     + (ud.samtalerFejl ? '. Samtaler fejlede: ' + String(ud.samtalerFejl).slice(0, 80) : ''), 'ryd');
   return { statusCode: 200, body: JSON.stringify(ud) };
 };

@@ -19,6 +19,7 @@
 const G = require('../lib/google.js');
 const mail = require('../lib/mail.js');
 const K = require('../lib/koersel.js');
+const profil = require('../lib/side.js');
 const { sql, opret, log } = require('../lib/db.js');
 
 /* egen taeller for to danske kalenderdage */
@@ -55,7 +56,7 @@ const midt = v => {
   return l.length ? l[Math.floor((l.length - 1) / 2)] : null;
 };
 async function maalHastighed() {
-  const url = process.env.VAGT_URL || 'https://www.voreshjem.dk/';
+  const url = process.env.VAGT_URL || profil.site + '/';
   const r = await Promise.allSettled([G.hastighed(url, 'mobile'), G.hastighed(url, 'desktop')]);
   const v = x => x.status === 'fulfilled' ? x.value : null;
   const grund = x => x.status === 'rejected' ? String((x.reason || {}).message || x.reason).slice(0, 120) : 'ingen score';
@@ -92,11 +93,11 @@ exports.handler = async () => {
   if (!egen.fejl && egen.igaar.visninger === 0) {
     alarm = true;
     await log('EGEN TÆLLER MÅLTE INTET', K.kortDato(igaar) + ': ' + gaTekst, 'dagvagt');
-    await mail.send('voreshjem.dk: egen tæller målte ingenting i går',
-      `<p><b>Den egne besøgstæller registrerede nul sidevisninger på voreshjem.dk i går (${K.kortDato(igaar)}).</b></p>
+    await mail.send(profil.navn + ': egen tæller målte ingenting i går',
+      `<p><b>Den egne besøgstæller registrerede nul sidevisninger på ${profil.navn} i går (${K.kortDato(igaar)}).</b></p>
        <p>${gaTekst}.</p>
-       <p>Tælleren sidder i hentknap.js, som voreshjem.dk henter fra voreshjem-bot.netlify.app. Tjek at siden stadig henter den,
-       og at backend.voreshjem.dk/t svarer. Er siden selv nede, har oppetidsvagten skrevet for sig.</p>`).catch(() => {});
+       <p>Tælleren sidder i ${profil.taellerKilde}. Tjek at siden stadig henter den,
+       og at ${profil.backend.replace(/^https?:\/\//, '')}/t svarer. Er siden selv nede, har oppetidsvagten skrevet for sig.</p>`).catch(() => {});
   }
 
   if (egen.fejl) {
@@ -107,7 +108,7 @@ exports.handler = async () => {
   if (ga.fejl) {
     alarm = true;
     await log('dagvagt: kunne ikke spørge Google', ga.fejl, 'dagvagt');
-    await mail.send('Backenden kan ikke læse Google Analytics',
+    await mail.send('Backenden til ' + profil.navn + ' kan ikke læse Google Analytics',
       `<p>Dagvagten kunne ikke hente gårsdagens tal fra Google Analytics.</p><p>Fejl: ${ga.fejl}</p>
        <p>Typisk er nøglen udløbet, eller servicekontoen har mistet adgang. Den egne tæller virker uafhængigt af det (${egenTekst}).</p>`).catch(() => {});
   } else if (!ga.ikkeOpsat && !egen.fejl && ga.igaar.visninger === 0 && ga.forgaars.visninger === 0
@@ -117,9 +118,9 @@ exports.handler = async () => {
     const n = egen.igaar.visninger + egen.forgaars.visninger;
     await log('GOOGLE ANALYTICS MÅLTE INTET', 'to dage med 0 hos Google, egen tæller så ' + n + ' sidevisninger', 'dagvagt');
     await mail.send('Google Analytics har ikke målt noget i to dage',
-      `<p><b>Google Analytics registrerede nul sidevisninger på voreshjem.dk ${K.kortDato(forgaars)} og ${K.kortDato(igaar)}, men den egne tæller så ${tal(n)}.</b></p>
+      `<p><b>Google Analytics registrerede nul sidevisninger på ${profil.navn} ${K.kortDato(forgaars)} og ${K.kortDato(igaar)}, men den egne tæller så ${tal(n)}.</b></p>
        <p>Google ser kun dem, der siger ja til cookies, men så mange besøg helt uden ét ja er usandsynligt.
-       Typisk er Google-koden (G-ZFW1KE91LV) forsvundet fra sidens head ved en udgivelse, eller cookiebanneret melder ikke ja videre.</p>`).catch(() => {});
+       Typisk er Google-koden${profil.ga4Kode ? ' (' + profil.ga4Kode + ')' : ''} forsvundet fra sidens head ved en udgivelse, eller cookiebanneret melder ikke ja videre.</p>`).catch(() => {});
   }
   if (!alarm) await log('dagvagt ok', K.kortDato(igaar) + ', ' + egenTekst + '. ' + gaTekst, 'dagvagt');
 
@@ -147,7 +148,7 @@ exports.handler = async () => {
         if (mGl - mNy >= 10 && !sendt.length) {
           const r1 = x => Math.round(x);
           await log('HASTIGHEDEN ER FALDET', 'mobil, midterværdi ' + r1(mGl) + ' (7 dage før) til ' + r1(mNy) + ' (sidste 3 dage)', 'dagvagt');
-          await mail.send('voreshjem.dk er blevet langsommere', `<p><b>Mobil-scoren hos Google er faldet fra ${r1(mGl)} til ${r1(mNy)}.</b></p>
+          await mail.send(profil.navn + ' er blevet langsommere', `<p><b>Mobil-scoren hos Google er faldet fra ${r1(mGl)} til ${r1(mNy)}.</b></p>
             <p>${r1(mNy)} er midterværdien af de sidste tre dages målinger, ${r1(mGl)} af de syv dage før. Google-tallet svinger meget fra måling til måling,
             så der skrives kun, når faldet holder over flere dage.</p>
             ${hast.lcp ? `<p>I dagens måling vises det største element efter ${(Math.round(hast.lcp / 100) / 10).toLocaleString('da-DK')} sekunder. ` : '<p>'}Typisk er et nyt billede eller en ny video for tung. Se Oppetid i panelet.</p>`).catch(() => {});
@@ -160,7 +161,7 @@ exports.handler = async () => {
   /* ── 3. mange fejl i panelet det seneste doegn ───────────────────────── */
   if (sql) { try {
     const r = await sql`SELECT count(*)::int AS n FROM vh_log WHERE hvad = 'FEJL' AND hvornaar > now() - interval '1 day'`;
-    if (r[0].n >= 10) await mail.send('Backenden har fejlet ' + r[0].n + ' gange det seneste døgn',
+    if (r[0].n >= 10) await mail.send('Backenden til ' + profil.navn + ' har fejlet ' + r[0].n + ' gange det seneste døgn',
       `<p><b>${r[0].n} fejl i panelet siden i går.</b> Se listen under Opsætning i panelet. Typisk er en nøgle udløbet, eller en tjeneste svarer ikke.</p>`).catch(() => {});
   } catch (e) {} }
 

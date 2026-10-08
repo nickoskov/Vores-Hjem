@@ -1,6 +1,7 @@
 'use strict';
 /**
- * Modtager kontaktformularen fra voreshjem.dk/support. Erstatter det gamle
+ * Modtager kontaktformularen fra siden (voreshjem.dk/support, eller unserzuhauseapp.de paa den
+ * tyske backend, se lib/side.js). Erstatter det gamle
  * Make.com-webhook, hvis adresse stod åbent i sidens kildekode og derfor
  * kunne rammes direkte udenom formularen. Her er tre lag imod spam:
  *   1. Edderkoppefelt: et felt ægte besøgende aldrig udfylder, kun bots gør.
@@ -11,8 +12,10 @@
  */
 const { sql } = require('../lib/db.js');
 const mail = require('../lib/mail.js');
+const profil = require('../lib/side.js');
 
-const TILLADT = /(^|\.)voreshjem\.dk$|(^|\.)unserzuhauseapp\.de$|^stirring-cactus-7010c5\.netlify\.app$|^verdant-strudel-af7a88\.netlify\.app$/i;
+// kun profilens egen side. Den anden side sender til sin egen backend.
+const TILLADT = profil.tilladt;
 const vaert = u => { try { return new URL(u).hostname.replace(/^www\./,'').toLowerCase(); } catch (e) { return ''; } };
 
 const svar = (kode, oprindelse, krop) => ({ statusCode: kode,
@@ -73,12 +76,12 @@ exports.handler = async (ev) => {
     await sql`INSERT INTO vh_kontakt (ip, navn, email, emne, besked) VALUES (${adr}, ${navn}, ${email}, ${emne}, ${besked})`;
   } catch (e) {} }
 
-  const tysk = q.get('side') === 'de';
-  const kilde = tysk ? 'unserzuhauseapp.de (tysk)' : 'voreshjem.dk/support';
-  const html = `<p><b>Ny henvendelse fra kontaktformularen${tysk ? ' på den tyske side' : ''}</b></p>
+  // hvor henvendelsen kom fra, og hvad emnet starter med, folger profilen (side.js)
+  const { kilde, emne: emneStart, hvor } = profil.kontakt;
+  const html = `<p><b>Ny henvendelse fra kontaktformularen${hvor}</b></p>
     <p><b>Navn:</b> ${esc(navn)}<br><b>Email:</b> ${esc(email)}<br><b>Emne:</b> ${esc(emne) || '(ingen)'}</p>
     <p><b>Besked:</b><br>${esc(besked).replace(/\n/g,'<br>')}</p>
     <p style="color:#888;font-size:12px">Sendt via ${kilde}${adr ? ', fra ' + esc(adr) : ''}</p>`;
-  try { await mail.send('Ny henvendelse / ' + (tysk ? 'Unser Zuhause' : 'support') + (emne ? ' / ' + emne : ''), html); } catch (e) {}
+  try { await mail.send('Ny henvendelse / ' + emneStart + (emne ? ' / ' + emne : ''), html); } catch (e) {}
   return svar(200, oprindelse, { modtaget: true });
 };

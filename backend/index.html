@@ -385,8 +385,8 @@ td.d{color:var(--daemp);font-weight:500}
 
 <div id="login">
   <div class="boks">
-    <h1>Vores Hjem</h1>
-    <p>Backend til voreshjem.dk</p>
+    <h1 id="loginNavn">Vores Hjem</h1>
+    <p id="loginUnder">Backend til voreshjem.dk</p>
     <form onsubmit="event.preventDefault();logInd()">
       <input id="navn" class="navn" type="text" placeholder="Navn" autocomplete="username">
       <input id="kode" type="password" placeholder="Adgangskode" autocomplete="current-password">
@@ -400,8 +400,8 @@ td.d{color:var(--daemp);font-weight:500}
 <div id="app">
   <aside>
     <div class="mrk">
-      <div class="prik"><img src="/images/logo.png" alt="Vores Hjem" width="32" height="32"></div>
-      <div><b>Vores Hjem</b><span>Backend</span></div>
+      <div class="prik"><img id="mrkLogo" src="/images/logo.png" alt="Vores Hjem" width="32" height="32"></div>
+      <div><b id="mrkNavn">Vores Hjem</b><span>Backend</span></div>
     </div>
     <nav id="nav"></nav>
     <div class="live" id="live"></div>
@@ -742,7 +742,6 @@ const SIDER = [
   {id:'soegeord', navn:'Søgeord',   gruppe:'Statistik', ikon:'M11 4a7 7 0 100 14 7 7 0 000-14zM21 21l-5.2-5.2'},
   {id:'annoncer', navn:'Annoncer',  gruppe:'Statistik', ikon:'M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'},
   {id:'downloads',navn:'Downloads', gruppe:'Statistik', ikon:'M12 3v12m0 0-4-4m4 4 4-4M4 17v3h16v-3'},
-  {id:'tysk',     navn:'Tysk side', gruppe:'Statistik', ikon:'M5 21V4m0 0h12l-2.5 4L17 12H5'},
   {id:'seo',      navn:'SEO og GEO',gruppe:'Statistik', ikon:'M12 2a10 10 0 100 20 10 10 0 000-20zm0 4v6l4 2'},
   {id:'chat',     navn:'Chat',      gruppe:'Siden',     ikon:'M4 4h16v11H8l-4 4V4z'},
   {id:'blog',     navn:'Blog',      gruppe:'Siden',     ikon:'M4 3h16v18H4V3zm3 4h10M7 11h10M7 15h6'},
@@ -751,6 +750,36 @@ const SIDER = [
   {id:'oppetid',  navn:'Oppetid',   gruppe:'Drift',     ikon:'M3 12h4l3-8 4 16 3-8h4'},
   {id:'opsaetning',navn:'Opsætning',gruppe:'Drift',     ikon:'M12 8a4 4 0 100 8 4 4 0 000-8zm9 4a9 9 0 01-.1 1.3l2.1 1.6-2 3.5-2.5-1a9 9 0 01-2.2 1.3L16 21h-4l-.3-2.3a9 9 0 01-2.2-1.3l-2.5 1-2-3.5 2.1-1.6A9 9 0 013 12z'}
 ];
+/* ── hvilken side backenden hoerer til ──
+   Samme panel koerer paa backend.voreshjem.dk og backend.unserzuhauseapp.de. Status (offentlig) siger hvilken
+   (side), og saa skiftes navnene, og sider der kun giver mening for den danske side, skjules. Uden svar: den danske. */
+let profil = { kode:'dk', brand:'Vores Hjem', navn:'voreshjem.dk', site:'https://www.voreshjem.dk', backend:'https://backend.voreshjem.dk', chat:'dk', skjul:[] };
+const skjult = id => (profil.skjul || []).includes(id);
+const synligeSider = () => SIDER.filter(s => !skjult(s.id));
+// teksterne er skrevet til voreshjem.dk; paa en anden side skiftes navnet og adressen ud
+const paaSiden = t => profil.kode === 'dk' || t == null ? t : String(t).replace(/https:\/\/www\.voreshjem\.dk/g, profil.site).replace(/voreshjem\.dk/g, profil.navn);
+let statusP = null;
+function hentStatus(frisk) {
+  if (!statusP || frisk) statusP = fetch('/api?d=status').then(r => r.json()).then(st => {
+    opsat = st.opsat || {};
+    if (st.side && st.side.kode) {
+      const ny = st.side.kode !== profil.kode;
+      profil = st.side;
+      // chatten starter paa sidens eget sprog
+      if (ny) { chatSide = profil.chat; chatStatSide = profil.kode === 'dk' ? 'alle' : profil.chat; }
+    }
+    saetNavne(); return st;
+  }).catch(() => ({}));
+  return statusP;
+}
+function saetNavne() {
+  document.title = profil.brand + ', backend';
+  const t = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+  t('loginNavn', profil.brand); t('loginUnder', 'Backend til ' + profil.navn); t('mrkNavn', profil.brand);
+  const l = document.getElementById('mrkLogo'); if (l) l.alt = profil.brand;
+}
+// en afvist database (forkert DATABASE_URL, se db.js) siges med backendens egen besked
+const dbBesked = () => opsat.databaseFejl ? '<div class="besked slem"><b>Databasen kan ikke bruges.</b> ' + sik(opsat.databaseFejl) + '</div>' : '';
 const lager = () => { try { return localStorage.getItem('vh-seddel') ? localStorage : sessionStorage; } catch (e) { return sessionStorage; } };
 function gemLogin(s, husk) {
   seddel = s.seddel; mig = { navn: s.navn, rolle: s.rolle };
@@ -763,6 +792,8 @@ let side = 'oversigt', dage = localStorage.getItem('vh-dage') || '28d', opsat = 
 let liveUr = null, sidsteTabel = {};
 const kanSkrive = () => mig && (mig.rolle === 'redigerer' || mig.rolle === 'ejer');
 const erEjer    = () => mig && mig.rolle === 'ejer';
+// rettelser af titler og beskrivelser udgives under Indhold, som kun den danske side har
+const kanRette  = () => kanSkrive() && !skjult('indhold');
 
 /* ── tale med serveren ── */
 /* Lige efter en udgivelse, eller naar databasen har sovet, kan foerste svar tage over ti
@@ -1029,12 +1060,12 @@ async function hentLive() {
   catch (err) { e.innerHTML = top(true) + '<div class="live-tal" style="color:var(--svag)">–</div><div class="live-under">kunne ikke hentes</div>'; return; }
   if (d.kilde == null || mangler(d.paaSiden)) {
     e.innerHTML = top(true) + '<div class="live-tal" style="color:var(--svag)">–</div><div class="live-under">' +
-      (opsat.database === false && !opsat.analytics ? 'ingen kilde koblet på' : 'kunne ikke tælles lige nu') + '</div>';
+      (opsat.database === false && opsat.databaseFejl ? 'databasen kan ikke bruges' : opsat.database === false && !opsat.analytics ? 'ingen kilde koblet på' : 'kunne ikke tælles lige nu') + '</div>';
     return;
   }
   const egen = d.kilde === 'egen';
   const m = (d.enheder||[]).find(x => x.deviceCategory === 'mobile');
-  const sider = (d.sider||[]).slice(0,3).map(x => '<div style="display:flex;justify-content:space-between;gap:8px;font-size:11.5px;color:var(--daemp);margin-top:3px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + sik(x.sti || x.unifiedScreenName || '').replace(/ \| Vores Hjem$/,'') + '</span><b>' + TT(x.activeUsers) + '</b></div>').join('');
+  const sider = (d.sider||[]).slice(0,3).map(x => '<div style="display:flex;justify-content:space-between;gap:8px;font-size:11.5px;color:var(--daemp);margin-top:3px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + sik(x.sti || x.unifiedScreenName || '').replace(new RegExp(' \\| ' + profil.brand + '$'), '') + '</span><b>' + TT(x.activeUsers) + '</b></div>').join('');
   const g = egen && d.ga4 && !mangler(d.ga4.paaSiden) ? '<div class="live-under" style="margin-top:3px">Google Analytics: ' + T(d.ga4.paaSiden) + ', kun cookie-ja</div>' : '';
   e.innerHTML = top(false) + '<div class="live-tal">' + T(d.paaSiden) + '</div>' +
     '<div class="live-under">' + (egen ? (d.paaSiden ? 'besøgende, alle' + (m ? ', ' + T(m.activeUsers) + ' på mobil' : '') : 'ingen besøgende, egen tæller')
@@ -1074,7 +1105,7 @@ function kildeBanner(d, idag) {
   return '';
 }
 async function visOversigt(m) {
-  if (!opsat.analytics && opsat.database === false) { m.innerHTML = hoved('Oversigt','Hvordan går det med siden') + ingenTal; return; }
+  if (!opsat.analytics && opsat.database === false) { m.innerHTML = hoved('Oversigt','Hvordan går det med siden') + (dbBesked() || ingenTal); return; }
   const v = vaerktoej(periodevaelger());
   m.innerHTML = hoved('Oversigt','Hvordan går det med siden', v) + skeletKort(4);
   const d = await kald('oversigt', { dage });
@@ -1186,10 +1217,10 @@ async function hentUge() {
       .map(([x, n]) => n + ' stod én gæst for ' + T(x.flestFraEnGaest) + ' af de ' + T(x.visninger) + ' sidevisninger på én dag.').join(' ');
     e.innerHTML = '<table><thead><tr><th></th><th style="text-align:right">Denne uge</th><th style="text-align:right">Sidste uge</th><th style="text-align:right">Ændring</th></tr></thead><tbody>' +
       rk('Besøgende pr. dag, lagt sammen', dn.besoegende, sd.besoegende, u.foersteUge) + rk('Sidevisninger', dn.visninger, sd.visninger, u.foersteUge) +
-      rk('Klik til butik', dn.klik, sd.klik, klikUden) + rk('Samtaler i chatten', dn.samtaler, sd.samtaler, false) + '</tbody></table>' +
+      rk('Klik til butik', dn.klik, sd.klik, klikUden) + (u.samtalerMed === false ? '' : rk('Samtaler i chatten', dn.samtaler, sd.samtaler, false)) + '</tbody></table>' +
       '<p style="font-size:12px;color:var(--svag);margin-top:8px">' + sik(tidsrum) + (u.grund ? ' ' + sik(u.grund) : '') + '</p>' +
       (flest ? '<p style="font-size:12px;margin-top:4px" class="advar-tekst">' + sik(flest) + ' Det kan være jer selv uden ?ansat=1.</p>' : '') +
-      '<div class="kilde" style="margin:6px 0 0">' + sik(kildeTekst('egen', null, 'Samtaler fra chatbotten')) + '</div>';
+      '<div class="kilde" style="margin:6px 0 0">' + sik(kildeTekst('egen', null, u.samtalerMed === false ? '' : 'Samtaler fra chatbotten')) + '</div>';
   } catch (err) { e.innerHTML = '<div class="tom">' + sik(err.message) + '</div>'; }
 }
 async function gemNote() {
@@ -1207,7 +1238,7 @@ async function sletNote(id) { try { await kald('noter-slet', { id }); vis(); } c
    trin fra samme kilde. */
 async function visTragt(m) {
   if (opsat.database === false) { m.innerHTML = hoved('Tragt','Hvor falder folk fra') +
-    '<div class="besked advar">Databasen er ikke sat op, så jeres egen tæller kan ikke bruges. Se <b>Opsætning</b>.</div>'; return; }
+    (dbBesked() || '<div class="besked advar">Databasen er ikke sat op, så jeres egen tæller kan ikke bruges. Se <b>Opsætning</b>.</div>'); return; }
   const v = vaerktoej(periodevaelger());
   m.innerHTML = hoved('Tragt','Hvor falder folk fra', v) + skeletKort(1);
   const d = await kald('tragt', { dage });
@@ -1355,16 +1386,6 @@ const HJAELP = {
   'Installationer i alt': 'Summen af de butikker, der har tal for perioden. Under tallet står, hvilke butikker der er med, fx kun Google Play.',
   'Installationer dag for dag': 'Installationer pr. butik og dag. Står der –, har butikken ingen tal for dagen endnu. Det er ikke det samme som 0.',
   'Installationer pr. dag': 'Installationer dag for dag. Et hul i kurven er en dag uden tal fra butikken, ikke 0. Læg noter på kurven under Oversigt, så I kan se, hvad der gav udslag.',
-  // Tysk side (noeglen starter med sidens id, saa den ikke blandes med Oversigtens bokse af samme navn)
-  'tysk:Besøgende': 'Hvor mange forskellige mennesker, der har været på den tyske side, unserzuhauseapp.de. Fra jeres egen tæller, som tæller alle uden cookies og sorterer robotter fra. Tælleren kan kun genkende folk inden for samme dag, så over flere dage er det besøgende pr. dag, lagt sammen: én, der kommer to dage, tæller to gange. Pilen sammenligner kun med en periode, tælleren har tal for hele vejen.',
-  'tysk:Sidevisninger': 'Hvor mange sider der er åbnet på den tyske side i alt. Ser én person fire sider, er det fire sidevisninger. Fra jeres egen tæller, som tæller alle uden cookies.',
-  'tysk:Tryk på hent-knapperne': 'Alle tryk på hent-knapperne på den tyske side, talt af knapperne selv, uden cookies. Under tallet står, hvor mange af trykkene der sendte folk direkte til App Store eller Google Play, og hvor mange besøgende der trykkede. Over flere dage er de besøgende talt pr. dag og lagt sammen. Klik-tælleren regner fra sit første tryk, så har den ikke tal for hele perioden, står dens egne datoer under tallet.',
-  'tysk:Besøgende pr. dag': 'Forskellige besøgende på den tyske side hver dag, i dansk tid. Den stiplede linje er perioden før, dag for dag, og står der kun, når tælleren har tal for hele perioden før. Et hul i kurven er dage, før tælleren havde tal, ikke 0.',
-  'tysk:Besøgende time for time': 'Forskellige besøgende på den tyske side i hver time, i dansk tid. Den stiplede linje er samme time dagen før, når tælleren har tal for den.',
-  'tysk:Mest læste sider': 'De sider på den tyske side, der er åbnet flest gange i perioden. Besøgende er forskellige mennesker på siden, over flere dage talt pr. dag og lagt sammen. Fra jeres egen tæller, som tæller alle uden cookies.',
-  'tysk:Hvor kommer de fra': 'Hvilken vej folk kom ind på den tyske side, talt på hver besøgendes første side den dag, så klik inde på siden ikke tæller som Direkte. Summen er lig med Besøgende. Kanalerne betyder det samme som under Hvor kommer de fra på Oversigten. Fra jeres egen tæller, som tæller alle uden cookies.',
-  'tysk:Lande': 'Hvor i verden de besøgende på den tyske side sidder, talt pr. dag og lagt sammen. Ukendt er besøg, hvor landet ikke kunne ses. Fra jeres egen tæller, som tæller alle uden cookies.',
-  'tysk:Enhed': 'Om folk på den tyske side kommer fra telefon, computer eller tablet, talt pr. dag og lagt sammen. Fra jeres egen tæller, som tæller alle uden cookies.',
   // SEO og GEO
   'Gennemgang af hele siden': 'Backenden læser alle jeres sider, som Google ville gøre, og finder det, der bør rettes: titler, beskrivelser, billeder uden tekst, døde links. Hvert forskelligt problem koster point, så ét fund giver altid under 100. Kører hver mandag, eller når I trykker Kør nu.',
   'Det der skal rettes, vigtigste først': 'Listen over fund fra gennemgangen. Klik på et punkt for at se, hvilke sider det gælder, og få Claude til at foreslå en rettelse.',
@@ -1410,7 +1431,7 @@ function saetHjaelp(m) {
   (m || document).querySelectorAll('.kort > h3').forEach(h => {
     if (h.querySelector('.hj')) return;
     const titel = [...h.childNodes].filter(x => x.nodeType === 3).map(x => x.textContent).join('').trim();
-    // en side kan have sin egen forklaring til en boks med samme navn, fx 'tysk:Besøgende'
+    // en side kan have sin egen forklaring til en boks med samme navn, noeglen er 'side:titel'
     const tekst = HJAELP[side + ':' + titel] || HJAELP[titel];
     if (!tekst) return;
     const id = 'auto' + (++n) + '-' + titel.replace(/\W+/g, '').slice(0, 20);
@@ -1420,7 +1441,7 @@ function saetHjaelp(m) {
 }
 /* ? i hjoernet: hjaelp(id, html) giver knappen, hjaelpBoks(id, html) giver selve boksen */
 const hjaelp = (id, html) => '<button class="hj" id="hj-' + id + '" title="Hvad betyder det her?" onclick="visHjaelp(\'' + id + '\')">?</button>';
-const hjaelpBoks = (id, html) => '<div class="hj-boks" id="hjb-' + id + '">' + html + '</div>';
+const hjaelpBoks = (id, html) => '<div class="hj-boks" id="hjb-' + id + '">' + paaSiden(html) + '</div>';
 function visHjaelp(id) { const b = document.getElementById('hjb-' + id), k = document.getElementById('hj-' + id); if (!b) return; b.classList.toggle('vis'); k.classList.toggle('aaben', b.classList.contains('vis')); }
 const STED = { hero:'Toppen af forsiden', hent:'Hent-siden', side:'Hent-siden', familiekode:'Efter familiekoden', opgaver:'Efter opgaverne', madplan:'Efter madplanen', sammenlign:'Efter sammenligningen',
   cta:'Bunden af siden', flydeknap:'Svævende knap', download:'Hent-siden', footer:'Footer', nav:'Menuen', header:'Menuen', 'main-nav':'Menuen',
@@ -1678,81 +1699,14 @@ async function visDownloads(m) {
         .concat(googleKoblet ? [{navn:'Google Play', felt:'google', h:true}] : []).concat([{navn:'I alt', felt:'ialt', h:true}]), 'Ingen data') + '</div>';
 }
 
-/* ══ TYSK SIDE ══ */
-/* unserzuhauseapp.de fra jeres egen tæller (vh_besoeg_de og vh_klik_de). Samme regler som Oversigten:
-   null står som –, dækningen står øverst, og pile vises kun mod en periode, tælleren har tal for hele vejen.
-   Kurven har null (hul) for dage før tælleren havde tal. Lister er null, når der ingen tal er, eller når tælleren fejlede. */
-const DE_KILDE = 'Egen tæller på unserzuhauseapp.de, alle besøgende, uden cookies';
-async function visTysk(m) {
-  const titel = 'Tysk side', u0 = 'Hvordan det går med unserzuhauseapp.de';
-  if (opsat.database === false) { m.innerHTML = hoved(titel, u0) +
-    '<div class="besked advar">Databasen er ikke sat op, så tælleren kan ikke bruges. Se <b>Opsætning</b>.</div>'; return; }
-  const v = vaerktoej(periodevaelger());
-  m.innerHTML = hoved(titel, u0, v) + skeletKort(3);
-  const d = await kald('tysk', { dage });
-  const daek = d.daekning, fd = d.foerDaekning;
-  const b = d.besoegende || {}, vi = d.visninger || {}, kl = d.klik || {};
-  // overskriften lover kun en sammenligning, når mindst ét tal har en (som på Oversigten)
-  const sml = d.sammenlign || (d.timer ? 'i går' : 'de ' + d.dage + ' dage før');
-  const kpier = [b, vi, kl];
-  const harSml = kpier.some(x => !mangler(x.nu) && !mangler(x.foer));
-  const smlGrund = (fd && fd.hel === false && fd.grund) ||
-    String((kpier.find(x => x.grund) || {}).grund || '').replace(/^Ingen sammenligning med perioden før\.\s*/, '');
-  const under = harSml ? periodeTekst(d) + ', sammenlignet med ' + sml
-    : punkt(periodeTekst(d)) + ' Ingen sammenligning med ' + sik(sml) + '.' + (smlGrund ? ' ' + sik(punkt(smlGrund)) : '');
-  const sidst = d.sidst ? ' Seneste besøg blev registreret ' + datoTidDk(d.sidst) + '.' : '';
-  // ingen tal for perioden: én tydelig besked i stedet for en række tomme bokse. Ellers den gule dækningsbesked.
-  const daekTekst = !daek ? '' : !daek.fra
-    ? '<div class="besked advar"><b>Ingen tal for perioden.</b> ' + sik(punkt(daek.grund || 'Tælleren har ikke tal for perioden.')) + sik(sidst) + '</div>'
-    : daekBesked(daek, 'Tal, kurve og lister dækker kun de dage, og der er ingen sammenligning med perioden før.');
-  const banner = d.fraHvornaar && daek && daek.fra ? '<div class="besked godt"><b>Fra jeres egen tæller på den tyske side.</b> Alle tal her tæller alle besøgende på unserzuhauseapp.de, også dem der siger nej til cookies, og robotter er sorteret fra.' +
-    (d.timer ? '' : ' Besøgende er talt pr. dag og lagt sammen, for tælleren kan ikke genkende nogen fra dag til dag.') +
-    ' Tælleren har tal fra ' + sik(datoTidDk(d.fraHvornaar)) + '.' + sik(sidst) + '</div>' : '';
-  // lister: står der ingen dage med tal, siges hvorfor, i stedet for "Kunne ikke hentes"
-  const liste = html => daek && !daek.fra ? '<div class="tom">' + sik(daek.grund || 'Ingen tal i perioden.') + '</div>' : html;
-  const kort = 'Egen tæller på unserzuhauseapp.de';
-  const flereDage = !d.timer && !(d.fra && d.fra === d.til);
-  const klikEkstra = mangler(kl.nu) ? '' : [kl.tilButik && !mangler(kl.tilButik.nu) ? T(kl.tilButik.nu) + ' til App Store eller Google Play' : '',
-    kl.gaester && !mangler(kl.gaester.nu) ? T(kl.gaester.nu) + ' besøgende trykkede' + (flereDage ? ' (talt pr. dag og lagt sammen)' : '') : ''].filter(Boolean).join(', ');
-  // backendens kurve { dato, time?, besoegende, visninger } i storKurves form; null forbliver null (hul)
-  const tilKurve = r => (r || []).map(x => ({ date: String(x.dato || '').replace(/-/g, '') + (x.time != null ? String(x.time).padStart(2, '0') : ''),
-    activeUsers: x.besoegende, screenPageViews: x.visninger }));
-  m.innerHTML = hoved(titel, under, v) + hentetLinje(d) +
-    delfejl(d, { besoegende:'Besøgende', visninger:'Sidevisninger', klik:'Tryk på hent-knapperne' }) +
-    (d.note ? '<div class="besked info">' + sik(d.note) + '</div>' : '') + banner + daekTekst +
-    '<div class="sektion">Egen tæller på unserzuhauseapp.de <span>alle besøgende, uden cookies</span></div>' +
-    '<div class="net n3">' +
-      kpiTal('Besøgende', { ...b, kilde: kort }, T, false, spark((d.kurve || []).map(r => r.besoegende))) +
-      kpiTal('Sidevisninger', { ...vi, kilde: kort }) +
-      kpiTal('Tryk på hent-knapperne', { ...kl, kilde: kort }, T, false, '', klikEkstra) + '</div>' +
-    '<div class="kort" style="margin-bottom:14px"><h3>Besøgende ' + (d.timer ? 'time for time' : 'pr. dag') + '</h3>' +
-      kildeLinje(DE_KILDE, daek, d.timer ? '' : 'Forskellige besøgende hver dag') + storKurve(tilKurve(d.kurve), tilKurve(d.kurveFoer), []) + '</div>' +
-    '<div class="net n21">' +
-      '<div class="kort"><h3>Mest læste sider' + (Array.isArray(d.sider) && d.sider.length ? udtrKnap('de-sider', 'tysk-sider') : '') + '</h3>' + kildeLinje(DE_KILDE, daek) +
-        liste(tabel('de-sider', d.sider, [
-          {navn:'Side', felt:'sti', bar:'visninger', total: vi.nu}, {navn:'Visninger', felt:'visninger', h:true},
-          {navn:'Besøgende', felt:'besoegende', h:true}], 'Ingen visninger i perioden')) + '</div>' +
-      '<div class="kort"><h3>Hvor kommer de fra</h3>' + kildeLinje(DE_KILDE, daek) +
-        liste(tabel('de-kilder', samlVist(d.kilder, 'kanal', kanal), [
-          {navn:'Kanal', felt:'kanal', bar:'besoegende', total: b.nu, form: x => sik(kanal(x))},
-          {navn:'Besøgende', felt:'besoegende', h:true}], 'Ingen besøg')) +
-        (d.kilderTekst ? '<p style="font-size:12px;color:var(--svag);margin-top:8px">' + sik(d.kilderTekst) + '</p>' : '') + '</div></div>' +
-    '<div class="net n2">' +
-      '<div class="kort"><h3>Lande</h3>' + kildeLinje(DE_KILDE, daek) +
-        liste(tabel('de-lande', samlVist(d.lande, 'land', land), [
-          {navn:'Land', felt:'land', bar:'besoegende', total: b.nu, form: x => sik(land(x))},
-          {navn:'Besøgende', felt:'besoegende', h:true}], 'Ingen data')) + '</div>' +
-      '<div class="kort"><h3>Enhed</h3>' + kildeLinje(DE_KILDE, daek) +
-        liste(donut(samlVist(d.enheder, 'enhed', enhed), 'enhed', 'besoegende', enhed)) + '</div></div>';
-}
-
 /* ══ SEO OG GEO ══ */
 async function visSeo(m) {
   const v = vaerktoej(periodevaelger());
   m.innerHTML = hoved('SEO og GEO','Hvordan siden står hos Google og hos AI-motorerne', v) + skeletKort(3);
   let d; try { d = await kald('seo', { dage }); } catch (e) { m.innerHTML = hoved('SEO og GEO','', v) + '<div class="besked slem">' + sik(e.message) + '</div>'; return; }
   const g = d.gennemgang; window.sidsteSeo = g;
-  try { const rr = await kald('rettelser'); seoGemte = {}; (rr.rettelser||[]).forEach(x => seoGemte[x.felt + '|' + x.url] = x.vaerdi); } catch (e) {}
+  // rettelser udgives under Indhold, som kun den danske side har
+  if (!skjult('indhold')) { try { const rr = await kald('rettelser'); seoGemte = {}; (rr.rettelser||[]).forEach(x => seoGemte[x.felt + '|' + x.url] = x.vaerdi); } catch (e) {} }
   const farve = n => n >= 90 ? 'var(--groen)' : n >= 70 ? 'var(--gul)' : 'var(--roed)';
   const ai = d.ai, mu = d.muligheder;
   const fejlTekst = delfejl(d, { ai:'Besøg fra AI-motorer', muligheder:'Muligheder' });
@@ -1798,16 +1752,16 @@ async function visSeo(m) {
     // ── muligheder (Search Console, 90 dage; ekstra klik er et skøn) ──
     (mu ? '<div class="kort" style="margin-bottom:14px;border-color:#C7D7FE"><h3>Muligheder <span class="ret" style="font-weight:500">' + sik((mu.kriterier && mu.kriterier.taet) || 'Ord I er tæt på side 1 med. De billigste sejre der findes.') + '</span>' + udtrKnap('seo-mu','muligheder') + '</h3>' +
       kildeLinje(kf.muligheder || mu.kilde || 'gsc', null, mup ? mup + (mu.periode && mu.periode.dage ? ', ' + mu.periode.dage + ' dage' : '') : '') +
-      '<div class="besked info" style="margin-bottom:12px">Sorteret efter skønnet over ekstra klik. <b>Skriv udkast</b> får Claude til at skrive et blogindlæg om ordet, som lander som kladde i bloggen. Intet udgives, før du har læst det.</div>' +
+      '<div class="besked info" style="margin-bottom:12px">Sorteret efter skønnet over ekstra klik.' + (skjult('blog') ? '' : ' <b>Skriv udkast</b> får Claude til at skrive et blogindlæg om ordet, som lander som kladde i bloggen. Intet udgives, før du har læst det.') + '</div>' +
       tabel('seo-mu', mu.taet, [
         {navn:'Søgning', felt:'ord', bar:'gevinst'}, {navn:'Rammer', felt:'side', daemp:true, form:v => { try { return sik(decodeURIComponent(v)); } catch (e) { return sik(v); } }},
         {navn:'Plads', felt:'plads', h:true, form:v => P(v)}, {navn:'Vist', felt:'visninger', h:true}, {navn:'Klik', felt:'klik', h:true},
         {navn: sik((mu.skoen && mu.skoen.kolonne) || 'Klik at hente, skøn'), felt:'gevinst', h:true, std:true, form:v => '+' + T(v)},
-        ...(kanSkrive() && opsat.claude ? [{navn:'', felt:'ord', h:true, form:v => '<button class="knap lille" onclick="skrivUdkast(this,\'' + sik(v).replace(/'/g,'&#39;') + '\')">Skriv udkast</button>'}] : [])
+        ...(kanSkrive() && opsat.claude && !skjult('blog') ? [{navn:'', felt:'ord', h:true, form:v => '<button class="knap lille" onclick="skrivUdkast(this,\'' + sik(v).replace(/'/g,'&#39;') + '\')">Skriv udkast</button>'}] : [])
       ], 'Ingen ord i vinduet plads 4 til 20 endnu. Det kommer med tiden.') +
       (mu.skoen && mu.skoen.tekst ? lille(sik(mu.skoen.tekst)) : '') +
       (mu.brandUdeladt && mu.brandUdeladt.tekst ? lille(sik(mu.brandUdeladt.tekst)) : '') +
-      (!opsat.claude && kanSkrive() ? '<p style="font-size:12.5px;color:var(--svag);margin-top:10px">Sæt <b>ANTHROPIC_API_KEY</b> i Netlify, så kommer der en knap, der skriver et udkast om hvert ord.</p>' : '') + '</div>' +
+      (!opsat.claude && kanSkrive() && !skjult('blog') ? '<p style="font-size:12.5px;color:var(--svag);margin-top:10px">Sæt <b>ANTHROPIC_API_KEY</b> i Netlify, så kommer der en knap, der skriver et udkast om hvert ord.</p>' : '') + '</div>' +
       '<div class="net n2">' +
         '<div class="kort"><h3>Titlen sælger ikke <span class="ret" style="font-weight:500">' + sik((mu.kriterier && mu.kriterier.daarligTitel) || 'God plads, men få klikker') + '</span></h3>' + kildeLinje('gsc', null, mup) + tabel('seo-titel', mu.daarligTitel, [
           {navn:'Søgning', felt:'ord'}, {navn:'Side', felt:'side', daemp:true}, {navn:'Plads', felt:'plads', h:true, form:v => P(v)}, {navn:'Klikrate', felt:'ctr', h:true, form:v => pct(v)}], 'Ingen. Titlerne gør deres arbejde.', { felt:'visninger', ned:true }) +
@@ -1842,19 +1796,19 @@ function rettelser(g, o) {
     const v = gemt != null ? gemt : (nu || '');
     return '<div class="rett-side"><div class="u">' + sik(u) + (gemt != null ? ' <span class="maerke m-kladde">rettet, ikke udgivet</span>' : '') + '</div>' +
       '<div class="nu">Nu: <b>' + (nu ? sik(nu) : '<i>ingen</i>') + '</b>' + (nu ? ' <span style="color:var(--svag)">(' + nu.length + ' tegn)</span>' : '') + '</div>' +
-      (kanSkrive() ? '<div class="form"><input value="' + sik(v) + '" maxlength="' + (felt==='titel'?70:170) + '" oninput="taelLen(this,\'' + felt + '\')" data-url="' + sik(u) + '" data-felt="' + felt + '"><span class="len ' + lenKlasse(v.length, felt) + '">' + v.length + ' tegn</span>' +
+      (kanRette() ? '<div class="form"><input value="' + sik(v) + '" maxlength="' + (felt==='titel'?70:170) + '" oninput="taelLen(this,\'' + felt + '\')" data-url="' + sik(u) + '" data-felt="' + felt + '"><span class="len ' + lenKlasse(v.length, felt) + '">' + v.length + ' tegn</span>' +
         (opsat.claude ? '<button class="knap grim lille" onclick="foreslaa(this,\'' + felt + '\',\'' + sik(u) + '\')">Foreslå</button>' : '') +
         '<button class="knap lille" onclick="gemRettelse(this)">Gem</button></div><div class="forslag"></div>' :
-        '<div class="nu" style="margin-top:6px;color:var(--svag)">Du kan kun læse. Bed ejeren om adgang til at rette.</div>') + '</div>';
+        '<div class="nu" style="margin-top:6px;color:var(--svag)">' + (skjult('indhold') ? 'Rettes i sidens html. Panelet udgiver ikke på ' + sik(profil.navn) + '.' : 'Du kan kun læse. Bed ejeren om adgang til at rette.') + '</div>') + '</div>';
   }).join('') +
-  (felt ? '<p style="font-size:12px;color:var(--svag);margin-top:4px">Gemte rettelser udgives samlet under <b>Indhold</b>, så du kan rette flere sider ad gangen.</p>' : '') + '</div>';
+  (felt && !skjult('indhold') ? '<p style="font-size:12px;color:var(--svag);margin-top:4px">Gemte rettelser udgives samlet under <b>Indhold</b>, så du kan rette flere sider ad gangen.</p>' : '') + '</div>';
 }
 function forklarSide(kode, s) {
-  if (kode === 'delekort') return 'Delekortet er det, der vises når linket deles på Facebook eller i en besked. ' + (s.ogB ? 'Billedet er der, titlen mangler.' : 'Siden har intet delebillede.') + ' Det rettes i sidens html med <code>og:image</code>. Bloggens indlæg uden billede får det, når der sættes et billede på i Blog.';
+  if (kode === 'delekort') return 'Delekortet er det, der vises når linket deles på Facebook eller i en besked. ' + (s.ogB ? 'Billedet er der, titlen mangler.' : 'Siden har intet delebillede.') + ' Det rettes i sidens html med <code>og:image</code>.' + (skjult('blog') ? '' : ' Bloggens indlæg uden billede får det, når der sættes et billede på i Blog.');
   if (kode === 'alt') return (s.udenAlt||'Nogle') + ' billeder mangler alt-tekst. Det rettes i html, hvert <code>&lt;img&gt;</code> skal have <code>alt="..."</code> der beskriver billedet.';
   if (kode === 'h1-mangler') return 'Siden har ingen H1. Gør sidens hovedoverskrift til <code>&lt;h1&gt;</code>.';
   if (kode === 'h1-flere') return 'Siden har ' + s.h1 + ' H1-overskrifter. Behold den første, lav de andre om til H2.';
-  if (kode === 'canonical') return 'Tilføj <code>&lt;link rel="canonical" href="https://www.voreshjem.dk' + sik(s.url) + '"&gt;</code> i sidens head.';
+  if (kode === 'canonical') return 'Tilføj <code>&lt;link rel="canonical" href="' + sik(profil.site) + sik(s.url) + '"&gt;</code> i sidens head.';
   if (kode === 'ld') return 'Siden har ingen strukturerede data. Tilføj JSON-LD, som de andre sider har.';
   if (kode === 'ord') return 'Siden har kun ' + s.ord + ' ord. Skriv mere om, hvad den handler om, mindst 150 ord.';
   if (kode === 'doedt-link') return 'Ret linket på siden, eller lav en omdirigering i _redirects.';
@@ -1898,10 +1852,13 @@ async function visChat(m) {
   if (chatFane === 'statistik') return visChatStat(m, faner);
   if (!opsat.bot) { m.innerHTML = hoved('Chat','Samtaler med chatbotten', vaerktoej(faner)) +
     '<div class="besked advar">Panelet kan ikke nå botten. Sæt <b>BOT_ADMIN_PASSWORD</b> i Netlify til bot-panelets adgangskode, eller brug samme kode begge steder.</div>'; return; }
+  // den danske backend ser begge sprog; den tyske kun tyske samtaler (backenden afviser resten)
+  const sprogValg = profil.kode === 'dk'
+    ? '<div class="vaelg"><button class="' + (chatSide==='dk'?'valgt':'') + '" onclick="chatSide=\'dk\';chatValgt=null;vis()">Dansk<span id="b-dk"></span></button>' +
+      '<button class="' + (chatSide==='de'?'valgt':'') + '" onclick="chatSide=\'de\';chatValgt=null;vis()">Tysk<span id="b-de"></span></button></div>'
+    : '<div class="vaelg"><button class="valgt">' + ({ dk:'Dansk', de:'Tysk' }[profil.chat] || profil.chat) + '<span id="b-' + sik(profil.chat) + '"></span></button></div>';
   m.innerHTML = hoved('Chat','Samtaler med chatbotten', vaerktoej(faner)) +
-    '<div class="samt"><div class="samt-liste"><div class="samt-top">' +
-      '<div class="vaelg"><button class="' + (chatSide==='dk'?'valgt':'') + '" onclick="chatSide=\'dk\';chatValgt=null;vis()">Dansk<span id="b-dk"></span></button>' +
-      '<button class="' + (chatSide==='de'?'valgt':'') + '" onclick="chatSide=\'de\';chatValgt=null;vis()">Tysk<span id="b-de"></span></button></div>' +
+    '<div class="samt"><div class="samt-liste"><div class="samt-top">' + sprogValg +
       '<button class="knap grim lille" style="margin-left:auto" onclick="chatArkiv=!chatArkiv;chatValgt=null;vis()">' + (chatArkiv ? 'Vis aktive' : 'Arkiv') + '</button></div>' +
       '<div id="samt-liste" style="flex:1;overflow-y:auto"><div class="skelet" style="height:200px;margin:12px"></div></div></div>' +
       '<div class="samt-vis" id="samt-vis"><div class="samt-tom">Vælg en samtale til venstre</div></div></div>';
@@ -1974,13 +1931,15 @@ async function sletBesked(bid) { if (!confirm('Slet dit svar?')) return;
    Tommel op/ned kommer fra chat-svaret selv (feedback.periode); kun hvis backenden er gammel, spørges botten. */
 let chatStatSide = 'alle';
 async function visChatStat(m, faner) {
-  const sprog = '<div class="vaelg">' + [['alle','Begge sprog'],['dk','Dansk'],['de','Tysk']].map(([k, n]) =>
+  const sprog = profil.kode !== 'dk' ? '' : '<div class="vaelg">' + [['alle','Begge sprog'],['dk','Dansk'],['de','Tysk']].map(([k, n]) =>
     '<button class="' + (chatStatSide === k ? 'valgt' : '') + '" onclick="chatStatSide=\'' + k + '\';vis()">' + n + '</button>').join('') + '</div>';
   const v = vaerktoej(faner, sprog, periodevaelger());
   m.innerHTML = hoved('Chat','Hvad chatbotten oplever', v) + skeletKort(4);
   let d, st = null;
   try { d = await kald('chat', chatStatSide === 'alle' ? { dage } : { dage, site: chatStatSide }); }
-  catch (e) { m.innerHTML = hoved('Chat','', v) + '<div class="besked slem">' + sik(e.message) + '</div><div class="besked info">Chatten bruger samme database som bot-panelet. Sæt <b>DATABASE_URL</b> til den samme streng.</div>'; return; }
+  catch (e) { m.innerHTML = hoved('Chat','', v) + '<div class="besked slem">' + sik(e.message) + '</div><div class="besked info">' + (profil.kode === 'dk'
+      ? 'Chatten bruger samme database som bot-panelet. Sæt <b>DATABASE_URL</b> til den samme streng.'
+      : 'Backenden til ' + sik(profil.navn) + ' henter chattens tal fra botten, ikke fra en database. Tjek <b>BOT_ADMIN_PASSWORD</b> under Opsætning.') + '</div>'; return; }
   if (!d.feedback && opsat.bot) { try { st = await kald('bot-stat', { site: chatStatSide === 'de' ? 'de' : 'dk', dage }); } catch (e) {} }
   const t = d.tal || {};
   const navn = d.siteNavn || t.navn || '';
@@ -2028,7 +1987,7 @@ async function visBlog(m) {
   m.innerHTML = hoved('Blog', p.length + ' indlæg i panelet, ' + udg + ' udgivet', vaerktoej(kanSkrive() ? '<button class="knap grim" onclick="skriv()">Nyt indlæg</button>' : '', (kanSkrive() && opsat.soro) ? '<button class="knap grim" onclick="hentSoro()">Hent fra Soro</button>' : '',
       erEjer() && udg ? '<button class="knap" onclick="udgivBlog()">Læg bloggen ud på siden</button>' : '')) +
     (erEjer() && udg && !opsat.netlify ? '<div class="besked advar"><b>NETLIFY_TOKEN</b> mangler, så indlæggene kan ikke lægges ud på siden herfra endnu. Se Opsætning.</div>' : '') +
-    '<div class="besked info">Et indlæg med status <b>Udgivet</b> kommer først ud på voreshjem.dk, når du trykker <b>Læg bloggen ud på siden</b>. Så bygges siden, bloggens forside og sitemap, og det udgives i ét hug. De 28 gamle indlæg røres ikke.</div>' +
+    '<div class="besked info">Et indlæg med status <b>Udgivet</b> kommer først ud på ' + sik(profil.navn) + ', når du trykker <b>Læg bloggen ud på siden</b>. Så bygges siden, bloggens forside og sitemap, og det udgives i ét hug. De 28 gamle indlæg røres ikke.</div>' +
     (opsat.soro ? '' : '<div class="besked advar"><b>SORO_RSS_URL</b> er ikke sat, så nye indlæg fra Soro hentes ikke endnu. Se <b>Opsætning</b>.</div>') +
     '<div class="kort">' + (p.length ? '<div class="rul"><table><thead><tr><th>Titel</th><th>Kilde</th><th>Status</th><th style="text-align:right">Opdateret</th><th></th></tr></thead><tbody>' +
       p.map(x => '<tr><td><div class="navn"><b>' + sik(x.titel || x.slug) + '</b></div><div style="font-size:12px;color:var(--svag)">/post/' + sik(x.slug) + '</div></td>' +
@@ -2038,7 +1997,7 @@ async function visBlog(m) {
       '<div class="tom">Ingen indlæg i panelet endnu.<br><br>De 28 indlæg fra Wix ligger allerede som færdige sider. Her lander de nye, både dem du skriver selv og dem Soro sender.</div>') + '</div>';
 }
 async function udgivBlog() {
-  if (!confirm('Læg alle udgivne indlæg ud på voreshjem.dk nu?')) return;
+  if (!confirm('Læg alle udgivne indlæg ud på ' + profil.navn + ' nu?')) return;
   flash('Bygger og udgiver, det tager et halvt minut', 'info');
   try { const r = await kald('blog-udgiv'); flash(r.udgivet ? (r.nyeSider.length + ' nye sider, bloggen har nu ' + r.antalIalt + ' indlæg. Live om et minut.') : 'Intet nyt at udgive. Bloggen er allerede opdateret.', r.udgivet ? 'godt' : 'advar'); }
   catch (e) { flash(e.message, 'slem'); }
@@ -2051,7 +2010,7 @@ async function skriv(id) {
       (id ? '<button class="knap fare" onclick="sletIndlaeg(' + id + ')">Slet</button>' : '') +
       '<button class="knap grim" onclick="this.closest(\'.overlag\').remove()">Luk</button><button class="knap" onclick="gemIndlaeg(' + (id||'null') + ')">Gem</button></div></div>' +
     '<div class="felt"><label>Titel</label><input id="b-titel" value="' + sik(p.titel) + '" oninput="foreslaaSlug()"></div>' +
-    '<div class="felt"><label>Adresse <span>voreshjem.dk/post/...</span></label><input id="b-slug" value="' + sik(p.slug) + '" oninput="this.dataset.rort=1"></div>' +
+    '<div class="felt"><label>Adresse <span>' + sik(profil.navn) + '/post/...</span></label><input id="b-slug" value="' + sik(p.slug) + '" oninput="this.dataset.rort=1"></div>' +
     '<div class="felt"><label>Resumé <span>vises i oversigten og i Google</span></label><textarea id="b-resume" style="min-height:70px">' + sik(p.resume) + '</textarea></div>' +
     '<div class="felt"><label>Billede <span>adresse på et billede, må gerne være tomt</span></label><input id="b-billede" value="' + sik(p.billede) + '"></div>' +
     '<div class="felt"><label>Indhold <span>almindelig tekst eller html</span></label><textarea id="b-brod" class="stor">' + sik(p.brod) + '</textarea></div>' +
@@ -2079,8 +2038,8 @@ async function visLinks(m) {
       '<div class="felt"><label>Medie <span>hvilken slags</span></label><input id="l-medie" placeholder="fx print, cpc, social" oninput="visLink()"></div>' +
       '<div class="felt"><label>Kampagne <span>navnet i statistikken</span></label><input id="l-kampagne" placeholder="fx efteraar-2026" oninput="visLink()"></div></div>' +
       '<div class="raekke" style="margin-top:10px"><div class="felt"><label>Indhold <span>til at skelne to varianter, må være tomt</span></label><input id="l-indhold" placeholder="fx hero-mor" oninput="visLink()"></div>' +
-      '<div class="felt" style="flex:2"><label>Landingsside</label><select id="l-landing" onchange="visLink()"><option value="https://www.voreshjem.dk/">Forsiden</option><option value="https://www.voreshjem.dk/hent/">Hent-siden</option>' +
-        '<option value="https://www.voreshjem.dk/kalender">Kalender</option><option value="https://www.voreshjem.dk/madplan">Madplan</option><option value="https://www.voreshjem.dk/opgaver">Opgaver</option><option value="https://www.voreshjem.dk/blog">Bloggen</option></select></div></div>' +
+      '<div class="felt" style="flex:2"><label>Landingsside</label><select id="l-landing" onchange="visLink()">' + [['/','Forsiden'],['/hent/','Hent-siden'],['/kalender','Kalender'],['/madplan','Madplan'],['/opgaver','Opgaver'],['/blog','Bloggen']]
+          .map(([sti, n]) => '<option value="' + sik(profil.site + sti) + '">' + n + '</option>').join('') + '</select></div></div>' +
       '<div class="link-ud" id="l-ud" style="display:none"><div style="flex:1;min-width:240px"><div class="url" id="l-url"></div>' +
         '<div class="vaerktoej" style="margin-top:10px"><button class="knap grim lille" onclick="kopier()">Kopiér link</button>' + (kanSkrive() ? '<button class="knap lille" onclick="gemLink()">Gem i listen</button>' : '') + '</div></div>' +
         '<div class="qr" id="l-qr"></div></div>' +
@@ -2149,7 +2108,7 @@ async function gemFelt(knap) { const inp = knap.parentElement.querySelector('[da
 async function fortrydFelt(noegle) { try { await kald('felt-fortryd', { noegle }); await kald('indhold-scan').catch(()=>{}); vis(); } catch (e) { flash(e.message, 'slem'); } }
 async function sletRettelse(felt, url) { try { await kald('rettelse-slet', { felt, url }); vis(); } catch (e) { flash(e.message, 'slem'); } }
 async function udgivRettelser() {
-  if (!confirm('Udgiv rettelserne på voreshjem.dk nu? Siden opdateres i løbet af et minut.')) return;
+  if (!confirm('Udgiv rettelserne på ' + profil.navn + ' nu? Siden opdateres i løbet af et minut.')) return;
   flash('Udgiver...', 'info');
   try { const r = await kald('rettelser-udgiv'); const ok = (r.log||[]).filter(x => x.ok && x.felter).length, fejl = (r.log||[]).filter(x => !x.ok);
     flash(r.udgivet ? ok + ' fil' + (ok>1?'er':'') + ' udgivet. Siden er opdateret om et minut.' : 'Intet nyt at udgive. ' + (fejl[0] ? fejl[0].hvorfor : ''), r.udgivet ? 'godt' : 'advar');
@@ -2186,7 +2145,7 @@ async function visOppetid(m) {
 
 /* ══ OPSÆTNING ══ */
 async function visOpsaetning(m) {
-  const r = await (await fetch('/api?d=status')).json(); opsat = r.opsat || {};
+  await hentStatus(true);
   let linjer = [], brugere = null, migNu = mig, fejl = { fejl: [], antal24: 0 };
   try { linjer = (await kald('log')).linjer || []; } catch (e) {}
   try { migNu = await kald('mig'); } catch (e) {}
@@ -2196,16 +2155,20 @@ async function visOpsaetning(m) {
   m.innerHTML = hoved('Opsætning','Hvad der er koblet på, og hvad der mangler', erEjer() ? vaerktoej('<button class="knap" onclick="testForbindelser()">Test forbindelserne</button>', '<button class="knap grim" onclick="opfrisk()">Hent friske tal</button>', opsat.mail ? '<button class="knap grim" onclick="testMail()">Send prøvemail</button>' : '') : '') +
     '<div id="test-ud"></div>' +
     '<div class="net n2"><div class="kort"><h3>Grundlaget</h3><table><tbody>' +
-      rk('Adgangskode', opsat.kode, 'ADMIN_PASSWORD. Ejerens kode.') + rk('Database', opsat.database, 'DATABASE_URL. Samme som bot-panelet.') +
+      rk('Adgangskode', opsat.kode, 'ADMIN_PASSWORD. Ejerens kode.') +
+      // databasens egen besked (fx afvist af ejermaerket) staar med roedt i stedet for opskriften
+      rk('Database', opsat.database && !opsat.databaseFejl, opsat.databaseFejl ? '<span style="color:var(--roed);font-weight:600">' + sik(opsat.databaseFejl) + '</span>'
+        : profil.kode === 'dk' ? 'DATABASE_URL. Samme som bot-panelet.' : 'DATABASE_URL. Sin egen database, aldrig den danske.') +
       rk('Mail', opsat.mail, 'SMTP_HOST, SMTP_USER, SMTP_PASS og ALERT_TO. Til alarmer og ugemail.') +
-      rk('Soro', opsat.soro, 'SORO_RSS_URL. Soros RSS-feed, læses hver time.') + rk('Udgivelse fra panelet', opsat.netlify || opsat.udgivelse, opsat.netlify ? 'NETLIFY_TOKEN. Rettelser og blogindlæg udgives direkte på siden.' : 'NETLIFY_TOKEN. Uden den kan rettelser ikke udgives fra panelet.') + '</tbody></table></div>' +
+      (skjult('blog') ? '' : rk('Soro', opsat.soro, 'SORO_RSS_URL. Soros RSS-feed, læses hver time.')) +
+      (skjult('indhold') ? '' : rk('Udgivelse fra panelet', opsat.netlify || opsat.udgivelse, opsat.netlify ? 'NETLIFY_TOKEN. Rettelser og blogindlæg udgives direkte på siden.' : 'NETLIFY_TOKEN. Uden den kan rettelser ikke udgives fra panelet.')) + '</tbody></table></div>' +
     '<div class="kort"><h3>Datakilder</h3><table><tbody>' +
       rk('Google Analytics', opsat.analytics, 'GA4_CREDENTIALS og GA4_PROPERTY_ID. Besøg, sider, kanaler.') +
-      rk('Search Console', opsat.soegning, 'Samme nøgle plus GSC_SITE_URL. Søgeord.') +
-      rk('Meta-annoncer', opsat.meta, 'META_ACCESS_TOKEN og META_AD_ACCOUNT_ID. Hvad Facebook-annoncerne kostede.') +
-      rk('Google Ads', opsat.googleads, 'Fem GADS-variabler. Hvad Google-annoncerne kostede.', PAUSE.googleads) +
-      rk('App Store Connect', opsat.appstore, 'Fire ASC-variabler. Installationer på iPhone.') +
-      rk('Google Play', opsat.googleplay, 'GPLAY_BUCKET og GPLAY_PACKAGE. Installationer på Android.') + '</tbody></table></div></div>' +
+      rk('Search Console', opsat.soegning, 'Samme nøgle. GSC_SITE_URL, hvis ejendommen i Search Console ikke hedder ' + sik(profil.site) + '/. Søgeord.') +
+      (skjult('annoncer') ? '' : rk('Meta-annoncer', opsat.meta, 'META_ACCESS_TOKEN og META_AD_ACCOUNT_ID. Hvad Facebook-annoncerne kostede.') +
+        rk('Google Ads', opsat.googleads, 'Fem GADS-variabler. Hvad Google-annoncerne kostede.', PAUSE.googleads)) +
+      rk('App Store Connect', opsat.appstore, 'Fire ASC-variabler. Installationer på iPhone, kun appen ' + sik(profil.brand) + '.') +
+      rk('Google Play', opsat.googleplay, 'GPLAY_BUCKET, og GPLAY_PACKAGE hvis det ikke er appen ' + sik(profil.brand) + '. Installationer på Android.') + '</tbody></table></div></div>' +
     (migNu.navn !== 'Ejer' ? '<div class="kort" style="margin-bottom:14px"><h3>Skift din adgangskode <span class="ret" style="font-weight:500">for ' + sik(migNu.navn) + '</span></h3>' +
       '<div class="raekke"><div class="felt"><label>Nuværende</label><input id="k-gammel" type="password" autocomplete="current-password"></div>' +
       '<div class="felt"><label>Ny <span>mindst 8 tegn</span></label><input id="k-ny" type="password" autocomplete="new-password"></div>' +
@@ -2234,8 +2197,8 @@ async function visOpsaetning(m) {
     (() => {
       const googleKlar = opsat.analytics && opsat.soegning;
       const mangler = [
-        !opsat.meta && '<b>Meta:</b> business.facebook.com, Systembrugere, lav en systembruger med <i>ads_read</i>, generér token. Annoncekontoens nummer står i Ads Manager.',
-        !opsat.googleads && !PAUSE.googleads && '<b>Google Ads:</b> kræver en developer token fra API Center og en OAuth-klient i Google Cloud. Den tungeste af dem, tag den til sidst.',
+        !opsat.meta && !skjult('annoncer') && '<b>Meta:</b> business.facebook.com, Systembrugere, lav en systembruger med <i>ads_read</i>, generér token. Annoncekontoens nummer står i Ads Manager.',
+        !opsat.googleads && !PAUSE.googleads && !skjult('annoncer') && '<b>Google Ads:</b> kræver en developer token fra API Center og en OAuth-klient i Google Cloud. Den tungeste af dem, tag den til sidst.',
         !opsat.appstore && '<b>App Store:</b> App Store Connect, Brugere og adgang, Nøgler, lav en nøgle med rollen Salg. Hent .p8-filen. Vendor-nummer står under Betalinger.',
         !opsat.googleplay && '<b>Google Play:</b> Play Console, Download rapporter, kopiér spandens navn (pubsite_prod_...), og giv servicekontoens mail adgang under Brugere.'
       ].filter(Boolean);
@@ -2248,8 +2211,8 @@ async function visOpsaetning(m) {
         '<div class="besked advar" style="margin:12px 0 0">Alle nøgler skal kun i Netlify. Send dem aldrig i en chat, heller ikke til mig.</div></div>');
       return kort.length ? '<div class="net' + (kort.length > 1 ? ' n2' : '') + '" style="margin-bottom:14px">' + kort.join('') + '</div>' : '';
     })() +
-    '<div class="kort" style="margin-bottom:14px"><h3>Soro</h3><p style="font-size:13.5px;color:var(--daemp);line-height:1.7">Soro har ikke en webhook, kun et RSS-feed (Settings, Other Platform, RSS Feed). Adressen ligger i Netlify som <b>SORO_RSS_URL</b>. Backenden læser feedet ti minutter over hver hele time, og du kan hente med det samme med knappen <b>Hent fra Soro</b> under Blog.</p>' +
-      '<p style="font-size:13.5px;color:var(--daemp);line-height:1.7;margin-top:10px">Indlæg lander som kladde, så intet går på siden, før et menneske har set det. Et indlæg, der allerede er hentet, hentes ikke igen, så jeres rettelser bliver stående.</p></div>' +
+    (skjult('blog') ? '' : '<div class="kort" style="margin-bottom:14px"><h3>Soro</h3><p style="font-size:13.5px;color:var(--daemp);line-height:1.7">Soro har ikke en webhook, kun et RSS-feed (Settings, Other Platform, RSS Feed). Adressen ligger i Netlify som <b>SORO_RSS_URL</b>. Backenden læser feedet ti minutter over hver hele time, og du kan hente med det samme med knappen <b>Hent fra Soro</b> under Blog.</p>' +
+      '<p style="font-size:13.5px;color:var(--daemp);line-height:1.7;margin-top:10px">Indlæg lander som kladde, så intet går på siden, før et menneske har set det. Et indlæg, der allerede er hentet, hentes ikke igen, så jeres rettelser bliver stående.</p></div>') +
     '<div class="kort"><h3>Seneste ændringer</h3>' + (linjer.length ? '<table><tbody>' + linjer.map(l => '<tr><td><b>' + sik(l.hvad) + '</b>' + (l.detalje ? ' <span style="color:var(--svag)">' + sik(l.detalje) + '</span>' : '') +
       (l.hvem ? '<div style="font-size:11.5px;color:var(--svag)">' + sik(l.hvem) + '</div>' : '') + '</td><td class="h d">' + tidDk(l.hvornaar) + '</td></tr>').join('') + '</tbody></table>' : '<div class="tom">Ingenting er sket endnu</div>') + '</div>';
 }
@@ -2306,7 +2269,7 @@ async function opfrisk() { try { await kald('opfrisk'); flash('Næste visning he
 async function testMail() { try { const s = await kald('test-mail'); flash('Prøvemail sendt til ' + s.til, 'godt'); } catch (e) { flash(e.message, 'slem'); } }
 
 /* ── stilladset ── */
-const hoved = (t, u, hoejre) => '<div class="top"><div><h1>' + t + '</h1><p>' + u + '</p></div>' + (hoejre || '') + '</div>';
+const hoved = (t, u, hoejre) => '<div class="top"><div><h1>' + t + '</h1><p>' + paaSiden(u) + '</p></div>' + (hoejre || '') + '</div>';
 /* Nøgletalskort. tal er en færdig tekst; null, undefined og '' vises som –. grund er en kort forklaring
    (fx "Google Play har kun tal til 25. sep."), som står med lille skrift under tallet. */
 const kpi = (navn, tal, aendring, sp, grund, kilde, advar) => '<div class="kort"><h3>' + navn + '</h3><div class="kpi-bund"><div><div class="tal">' +
@@ -2326,27 +2289,32 @@ function flash(t, slags) { document.querySelectorAll('.flash').forEach(e => e.re
   d.style.cssText = 'position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:200;box-shadow:0 12px 44px rgba(20,19,42,.2);margin:0';
   document.body.appendChild(d); setTimeout(() => d.remove(), 3400); }
 function tegnNav() { let ud = '', g = '';
-  SIDER.forEach(s => { if (s.gruppe !== g) { ud += '<div class="nav-mrk">' + s.gruppe + '</div>'; g = s.gruppe; }
+  synligeSider().forEach(s => { if (s.gruppe !== g) { ud += '<div class="nav-mrk">' + s.gruppe + '</div>'; g = s.gruppe; }
     ud += '<button class="' + (side===s.id?'valgt':'') + '" onclick="gaaTil(\'' + s.id + '\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="' + s.ikon + '"/></svg>' + s.navn + '</button>'; });
   document.getElementById('nav').innerHTML = ud;
   const h = document.getElementById('hvem');
   h.innerHTML = mig ? '<b>' + sik(mig.navn) + '</b><span class="rolle r-' + sik(mig.rolle) + '">' + ({laeser:'kan kigge',redigerer:'kan rette',ejer:'ejer'}[mig.rolle]||mig.rolle) + '</span>' : '';
 }
 function gaaTil(id) { side = id; location.hash = id; sidsteTabel = {}; vis(); }
-async function vis() { tegnNav(); const m = document.getElementById('main');
-  const f = { oversigt:visOversigt, tragt:visTragt, trafik:visTrafik, soegeord:visSoegeord, annoncer:visAnnoncer, downloads:visDownloads, tysk:visTysk,
+async function vis() { if (skjult(side)) side = 'oversigt'; tegnNav(); const m = document.getElementById('main');
+  const f = { oversigt:visOversigt, tragt:visTragt, trafik:visTrafik, soegeord:visSoegeord, annoncer:visAnnoncer, downloads:visDownloads,
               seo:visSeo, chat:visChat, blog:visBlog, links:visLinks, indhold:visIndhold, oppetid:visOppetid, opsaetning:visOpsaetning }[side] || visOversigt;
   try { await f(m); saetHjaelp(m); } catch (e) { m.innerHTML = hoved('Noget gik galt','') + '<div class="besked slem">' + sik(e.message) + '</div>'; } }
 async function start() {
   document.getElementById('login').style.display = 'none'; document.getElementById('app').classList.add('vis');
-  let st = {}; try { st = await (await fetch('/api?d=status')).json(); opsat = st.opsat || {}; } catch (e) {}
+  const st = await hentStatus();
   const pb = document.getElementById('proeve');
-  if (st.proeve) { pb.style.display = 'block'; pb.textContent = 'PRØVEDATA. Alle tal på denne side er opdigtede og bruges kun til at vise udseendet. Ingen af dem er rigtige.'; } else pb.style.display = 'none';
+  if (st.proeve) { pb.style.display = 'block'; pb.textContent = 'PRØVEDATA. Alle tal på denne side er opdigtede og bruges kun til at vise udseendet. Ingen af dem er rigtige.'; }
+  // databasen er afvist (fx DATABASE_URL fra den anden side): det skal ses med det samme, paa alle sider
+  else if (opsat.database === false && opsat.databaseFejl) { pb.style.display = 'block'; pb.textContent = 'Databasen kan ikke bruges. ' + opsat.databaseFejl; }
+  else pb.style.display = 'none';
   if (!mig) { try { mig = await kald('mig'); lager().setItem('vh-mig', JSON.stringify(mig)); } catch (e) {} }
-  side = (location.hash || '').replace('#','') || 'oversigt'; if (!SIDER.some(s => s.id === side)) side = 'oversigt';
+  side = (location.hash || '').replace('#','') || 'oversigt'; if (!synligeSider().some(s => s.id === side)) side = 'oversigt';
   vis(); hentLive(); if (liveUr) clearInterval(liveUr); liveUr = setInterval(hentLive, 60000);
 }
-window.addEventListener('hashchange', () => { const h = (location.hash || '').replace('#',''); if (h && h !== side && SIDER.some(s => s.id === h)) { side = h; sidsteTabel = {}; vis(); } });
+window.addEventListener('hashchange', () => { const h = (location.hash || '').replace('#',''); if (h && h !== side && synligeSider().some(s => s.id === h)) { side = h; sidsteTabel = {}; vis(); } });
+// status hentes med det samme, saa login-skaermen viser den rigtige side
+hentStatus();
 if (seddel) start(); else document.getElementById('navn').focus();
 
 </script>

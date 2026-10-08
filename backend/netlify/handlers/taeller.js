@@ -1,6 +1,7 @@
 'use strict';
 /**
- * Egen besøgstæller til voreshjem.dk. Live, uden cookies.
+ * Egen besøgstæller, live og uden cookies. Til voreshjem.dk eller unserzuhauseapp.de efter SIDE
+ * (lib/side.js). Hver backend taeller kun sin egen side og skriver i sin egen database.
  *
  * Siden sender ét lille signal pr. sidevisning. Her gemmes kun:
  *   hvilken side, hvor de kom fra (kun domænet), mobil eller computer, land,
@@ -15,11 +16,12 @@
  */
 const crypto = require('crypto');
 const { sql } = require('../lib/db.js');
+const profil = require('../lib/side.js');
 
-const TILLADT = /(^|\.)voreshjem\.dk$|^stirring-cactus-7010c5\.netlify\.app$|(^|\.)unserzuhauseapp\.de$|^verdant-strudel-af7a88\.netlify\.app$/i;
-// Den tyske side (unserzuhauseapp.de) gemmes i egne tabeller (vh_besoeg_de, vh_klik_de), saa tallene
-// aldrig blandes med de danske.
-const TYSK = /(^|\.)unserzuhauseapp\.de$|^verdant-strudel-af7a88\.netlify\.app$/i;
+// kun signaler fra sidens egne adresser. Den anden side har sin egen backend og sin egen database.
+const TILLADT = profil.tilladt;
+// henvisninger herfra er klik inde paa siden. Et link fra den anden side er en rigtig henvisning.
+const EGEN = profil.egen;
 const ROBOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|telegram|discord|slack|curl|wget|python|node|axios|go-http|java\/|headless|lighthouse|pagespeed|google-inspectiontool|apis-google|mediapartners|feedfetcher|monitor|uptime|netlify|chrome-lighthouse|gtmetrix|pingdom/i;
 
 let klar = false;
@@ -40,25 +42,13 @@ async function tabel() {
   // saa tabellen ikke laases ved hver kold start.
   const kol = await sql`SELECT 1 FROM information_schema.columns WHERE table_name = 'vh_besoeg' AND column_name = 'ikkefundet'`;
   if (!kol.length) await sql`ALTER TABLE vh_besoeg ADD COLUMN IF NOT EXISTS ikkefundet BOOLEAN NOT NULL DEFAULT false`;
-  // samme tabeller for den tyske side
-  await sql`CREATE TABLE IF NOT EXISTS vh_besoeg_de (
-    id BIGSERIAL PRIMARY KEY, ts TIMESTAMPTZ NOT NULL DEFAULT now(),
-    sti TEXT NOT NULL, kilde TEXT NOT NULL DEFAULT '', kanal TEXT NOT NULL DEFAULT 'Direct',
-    enhed TEXT NOT NULL DEFAULT 'desktop', land TEXT NOT NULL DEFAULT '', gaest TEXT NOT NULL,
-    ikkefundet BOOLEAN NOT NULL DEFAULT false)`;
-  await sql`CREATE INDEX IF NOT EXISTS vh_besoeg_de_ts ON vh_besoeg_de (ts)`;
-  await sql`CREATE TABLE IF NOT EXISTS vh_klik_de (
-    id BIGSERIAL PRIMARY KEY, ts TIMESTAMPTZ NOT NULL DEFAULT now(),
-    sti TEXT NOT NULL, sted TEXT NOT NULL DEFAULT '', butik TEXT NOT NULL DEFAULT '',
-    enhed TEXT NOT NULL DEFAULT 'desktop', gaest TEXT NOT NULL)`;
-  await sql`CREATE INDEX IF NOT EXISTS vh_klik_de_ts ON vh_klik_de (ts)`;
   klar = true;
 }
 
 function vaert(u) { try { return new URL(u).hostname.replace(/^www\./, '').toLowerCase(); } catch (e) { return ''; } }
 
 /* Samme kanalnavne som Google Analytics, så panelet oversætter dem ens. To undtagelser:
-   'Intern' er et klik fra én side på voreshjem.dk til en anden. Det er aldrig en indgang
+   'Intern' er et klik fra én side på siden til en anden. Det er aldrig en indgang
    til siden, så panelet tæller kilder på hver gæsts første visning på dagen.
    'Paid Other' er betalt trafik, hvor vi ikke kan se, hvem der betalte for den. */
 const SOCIAL = /facebook|instagram|threads|messenger|tiktok|linkedin|pinterest|reddit|youtube|snapchat|(^|\.)x\.com$|twitter|(^|\.)t\.co$|lnkd/;
@@ -115,12 +105,10 @@ exports.handler = async (ev) => {
     const sti = decodeURIComponent(side.pathname || '/').slice(0, 200);
     const utm = { source: side.searchParams.get('utm_source') || '', medium: side.searchParams.get('utm_medium') || '' };
     let kilde = vaert(String(k.r || ''));
-    // kom de fra en anden side paa voreshjem.dk, er det et klik inde paa siden og ikke en kilde.
+    // kom de fra en anden side paa samme site, er det et klik inde paa siden og ikke en kilde.
     // Har adressen utm-felter, er det alligevel en ny indgang (som hos Google), fx en annonce,
     // der sender videre via en af sidens egne adresser.
-    const tysk = TYSK.test(side.hostname);
-    // egen side = samme site; et link fra voreshjem.dk til den tyske side er en rigtig henvisning
-    const egen = !!kilde && (tysk ? TYSK.test(kilde) : (TILLADT.test(kilde) && !TYSK.test(kilde)) || kilde === 'voreshjem-bot.netlify.app');
+    const egen = !!kilde && EGEN.test(kilde);
     const intern = egen && !utm.source && !utm.medium;
     if (egen) kilde = '';
     if (!kilde && utm.source) kilde = utm.source.toLowerCase().slice(0, 60);
@@ -142,13 +130,10 @@ exports.handler = async (ev) => {
       if (!butik) return svar(204, oprindelse);
       // "app" vaelger selv butik efter enheden. Skriv den butik ned, som enheden faktisk sendes til.
       if (butik === 'app') butik = /iPhone|iPad|iPod/i.test(ua) ? 'appstore' : /Android/i.test(ua) ? 'googleplay' : 'hentside';
-      if (tysk) await sql`INSERT INTO vh_klik_de (sti, sted, butik, enhed, gaest) VALUES (${sti}, ${sted}, ${butik}, ${enhed}, ${gaest})`;
-      else await sql`INSERT INTO vh_klik (sti, sted, butik, enhed, gaest) VALUES (${sti}, ${sted}, ${butik}, ${enhed}, ${gaest})`;
+      await sql`INSERT INTO vh_klik (sti, sted, butik, enhed, gaest) VALUES (${sti}, ${sted}, ${butik}, ${enhed}, ${gaest})`;
       return svar(204, oprindelse);
     }
-    if (tysk) await sql`INSERT INTO vh_besoeg_de (sti, kilde, kanal, enhed, land, gaest, ikkefundet)
-      VALUES (${sti}, ${kilde}, ${kanal(kilde, utm, intern)}, ${enhed}, ${land}, ${gaest}, ${ikkefundet})`;
-    else await sql`INSERT INTO vh_besoeg (sti, kilde, kanal, enhed, land, gaest, ikkefundet)
+    await sql`INSERT INTO vh_besoeg (sti, kilde, kanal, enhed, land, gaest, ikkefundet)
       VALUES (${sti}, ${kilde}, ${kanal(kilde, utm, intern)}, ${enhed}, ${land}, ${gaest}, ${ikkefundet})`;
   } catch (e) { /* tælleren må aldrig give fejl på siden */ }
   return svar(204, oprindelse);

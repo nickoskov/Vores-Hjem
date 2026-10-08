@@ -1,6 +1,7 @@
 'use strict';
 /**
- * Oppetidsvagt. Koerer hver time (sat i netlify.toml) og pinger voreshjem.dk.
+ * Oppetidsvagt. Koerer hver time (sat i netlify.toml) og pinger siden (voreshjem.dk eller
+ * unserzuhauseapp.de efter SIDE, se lib/side.js).
  * Svarer siden ikke, sendes én mail, og én igen naar den er oppe. Ikke en mail
  * hver time, for saa laeser ingen dem.
  *
@@ -10,7 +11,8 @@
 const { sql, opret, log } = require('../lib/db.js');
 const mail = require('../lib/mail.js');
 const K = require('../lib/koersel.js');
-const MAAL = process.env.VAGT_URL || 'https://www.voreshjem.dk/';
+const profil = require('../lib/side.js');
+const MAAL = process.env.VAGT_URL || profil.site + '/';
 
 exports.handler = async () => {
   const t0 = Date.now();
@@ -24,7 +26,7 @@ exports.handler = async () => {
     const krop = await r.text();
     // 200 er ikke nok. Siden skal ogsaa indeholde noget vi kender, ellers er
     // det en fejlside fra hosten
-    oppe = r.ok && /Vores Hjem/i.test(krop);
+    oppe = r.ok && profil.kendetegn.test(krop);
     if (!oppe) fejl = r.ok ? 'siden svarer, men indholdet er forkert' : 'svar ' + r.status;
   } catch (e) { fejl = e.name === 'AbortError' ? 'ingen svar inden 15 sekunder' : String(e.message||e); }
   const ms = Date.now() - t0;
@@ -42,14 +44,14 @@ exports.handler = async () => {
 
   if (foer && !oppe) {
     await log('SIDEN ER NEDE', fejl, 'vagt');
-    await mail.send('voreshjem.dk svarer ikke',
-      `<p><b>voreshjem.dk svarer ikke.</b></p><p>Fejl: ${fejl}</p>
+    await mail.send(profil.navn + ' svarer ikke',
+      `<p><b>${profil.navn} svarer ikke.</b></p><p>Fejl: ${fejl}</p>
        <p>Tjekket ${new Date().toLocaleString('da-DK',{timeZone:'Europe/Copenhagen'})}.
        Vagten tjekker igen om en time og skriver, når siden er oppe igen.</p>`).catch(()=>{});
   } else if (!foer && oppe) {
     await log('siden er oppe igen', ms + ' ms', 'vagt');
-    await mail.send('voreshjem.dk er oppe igen',
-      `<p><b>voreshjem.dk svarer igen.</b> Svartid ${ms} ms.</p>`).catch(()=>{});
+    await mail.send(profil.navn + ' er oppe igen',
+      `<p><b>${profil.navn} svarer igen.</b> Svartid ${ms} ms.</p>`).catch(()=>{});
   }
   // ryd op: behold 30 dage
   await sql`DELETE FROM vh_oppetid WHERE hvornaar < now() - interval '30 days'`;

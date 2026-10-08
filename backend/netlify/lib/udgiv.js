@@ -8,9 +8,10 @@
  * Applications) og SITE_NETLIFY_ID (sidens id). Begge kun i Netlify.
  */
 const crypto = require('crypto');
+const profil = require('./side.js');
 const TOKEN = process.env.NETLIFY_TOKEN || '';
-const SITE_ID = process.env.SITE_NETLIFY_ID || 'fff8c0f6-c7e6-42c1-889d-8e128f9f070b';
-const SITE_URL = process.env.SEO_SITE || 'https://www.voreshjem.dk';
+const SITE_ID = process.env.SITE_NETLIFY_ID || profil.netlifySiteId;
+const SITE_URL = process.env.SEO_SITE || profil.site;
 const opsat = () => !!TOKEN;
 const api = async (sti, valg) => {
   const r = await fetch('https://api.netlify.com/api/v1' + sti, { ...(valg||{}), headers: { Authorization: 'Bearer ' + TOKEN, ...((valg||{}).headers||{}) } });

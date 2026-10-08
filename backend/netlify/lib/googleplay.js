@@ -2,15 +2,18 @@
 /**
  * Installationer fra Google Play. Play laegger sine rapporter i en Cloud Storage-spand,
  * som den samme servicekonto (GA4_CREDENTIALS) kan laese, hvis den er givet adgang i
- * Play Console. Kraever GPLAY_BUCKET (pubsite_prod_...) og GPLAY_PACKAGE (dk.voreshjem.app el.lign.).
+ * Play Console. Kraever GPLAY_BUCKET (pubsite_prod_...). Appens pakkenavn er GPLAY_PACKAGE, eller
+ * profilens (side.js, playPakke), saa hver backend kun laeser sin egen apps fil.
  *
  * Play skriver én raekke pr. dag, ogsaa dage med 0. En dag uden raekke er derfor
  * ukendt, ikke 0. hent() fortaeller ogsaa, hvilke maanedsfiler der blev laest, og
  * hvilken dato den nyeste raekke har, saa man kan se, hvornaar tallene stoppede.
  */
 const crypto = require('crypto');
+const profil = require('./side.js');
 const E = process.env;
-const opsat = () => !!(E.GA4_CREDENTIALS && E.GPLAY_BUCKET && E.GPLAY_PACKAGE);
+const pakke = () => String(E.GPLAY_PACKAGE || profil.playPakke).trim();
+const opsat = () => !!(E.GA4_CREDENTIALS && E.GPLAY_BUCKET && pakke());
 let token = null;
 
 function konto() {
@@ -42,7 +45,7 @@ const mdTekst = aarMd => MD[Number(aarMd.slice(4, 6)) - 1] + ' ' + aarMd.slice(0
 
 /** Én maanedsfil. Findes den ikke (404), siges det, i stedet for at give en tom liste. */
 async function maaned(aarMd) {
-  const obj = `stats/installs/installs_${E.GPLAY_PACKAGE}_${aarMd}_overview.csv`;
+  const obj = `stats/installs/installs_${pakke()}_${aarMd}_overview.csv`;
   const u = `https://storage.googleapis.com/storage/v1/b/${encodeURIComponent(E.GPLAY_BUCKET)}/o/${encodeURIComponent(obj)}?alt=media`;
   const r = await fetch(u, { headers:{ Authorization:'Bearer ' + await adgang() } });
   const fil = { maaned: aarMd.slice(0, 4) + '-' + aarMd.slice(4, 6), status: r.status, raekker: 0, foerste: null, sidste: null, note: '' };
@@ -81,7 +84,9 @@ const forrige = aarMd => { let y = Number(aarMd.slice(0, 4)), m = Number(aarMd.s
  * raekker, kigges op til to maaneder tilbage, saa man kan se, hvor tallene slutter.
  */
 async function hent(fra, til) {
-  if (!opsat()) throw new Error('GPLAY_BUCKET eller GPLAY_PACKAGE mangler i Netlify');
+  if (!opsat()) throw new Error('GPLAY_BUCKET mangler i Netlify');
+  // peger GPLAY_PACKAGE paa den anden sides app, ville tallene blive blandet. Saa hellere ingen tal.
+  if (pakke() === profil.anden.playPakke) throw new Error('Google Play: GPLAY_PACKAGE peger på appen til ' + profil.anden.navn + ' (' + pakke() + '). Ret den, eller fjern den.');
   const mdr = maaneder(fra, til);
   const svar = await Promise.all(mdr.map(maaned));
   const filer = svar.map(x => x.fil), alle = [];

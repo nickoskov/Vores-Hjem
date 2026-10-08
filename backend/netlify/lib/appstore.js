@@ -5,11 +5,17 @@
  * Apples rapporter er et doegn bagud og kommer som gzip-pakket tekst.
  * En dag, der ikke kunne hentes, eller hvis rapport ikke er klar, har downloads: null,
  * aldrig 0. Kun "ingen salg den dag" er et rigtigt 0.
+ *
+ * Salgsrapporten daekker alle apps paa kontoen, baade Vores Hjem og Unser Zuhause. Derfor taelles
+ * kun raekker for profilens app (side.js, appStoreId), eller ASC_APP_ID, hvis den er sat.
+ * Koeb i appen har appens SKU som Parent Identifier, saa de kobles paa via appens egne raekker.
  */
 const crypto = require('crypto');
 const zlib = require('zlib');
+const profil = require('./side.js');
 const E = process.env;
 const opsat = () => !!(E.ASC_ISSUER_ID && E.ASC_KEY_ID && E.ASC_PRIVATE_KEY && E.ASC_VENDOR_NUMBER);
+const appId = () => String(E.ASC_APP_ID || profil.appStoreId).trim();
 const b64 = o => Buffer.from(typeof o==='string'?o:JSON.stringify(o)).toString('base64')
   .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 
@@ -40,8 +46,10 @@ function jwt() {
   return krop + '.' + der.toString('base64').replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 }
 
-/** Én dags salgsrapport. Returnerer { dato, downloads, opdateringer, koeb } */
+/** Én dags salgsrapport for profilens app. Returnerer { dato, downloads, opdateringer, koeb } */
 async function dag(dato) {
+  // peger ASC_APP_ID paa den anden sides app, ville tallene blive blandet. Saa hellere ingen tal.
+  if (appId() === profil.anden.appStoreId) throw new Error('App Store: ASC_APP_ID peger på appen til ' + profil.anden.navn + '. Ret den, eller fjern den.');
   const u = new URL('https://api.appstoreconnect.apple.com/v1/salesReports');
   u.searchParams.set('filter[frequency]', 'DAILY');
   u.searchParams.set('filter[reportType]', 'SALES');
@@ -61,9 +69,15 @@ async function dag(dato) {
   const tekst = zlib.gunzipSync(Buffer.from(await r.arrayBuffer())).toString('utf8');
   const linjer = tekst.trim().split('\n').map(l => l.split('\t'));
   const h = linjer[0]; const ci = n => h.indexOf(n);
-  const iU = ci('Units'), iT = ci('Product Type Identifier');
+  const iU = ci('Units'), iT = ci('Product Type Identifier'), iA = ci('Apple Identifier'), iS = ci('SKU'), iP = ci('Parent Identifier');
+  // uden Apple Identifier kan appene ikke skilles ad, og saa er tallet ukendt, ikke en blanding
+  if (iA < 0) throw new Error('App Store: rapporten har ingen kolonne Apple Identifier, så appene kan ikke skilles ad.');
+  const id = appId();
+  const egne = linjer.slice(1).filter(l => String(l[iA] || '').trim() === id);
+  const skuer = new Set(egne.map(l => String(l[iS] || '').trim()).filter(Boolean));
+  const koebEgne = iP < 0 ? [] : linjer.slice(1).filter(l => /^IA/.test(l[iT] || '') && skuer.has(String(l[iP] || '').trim()));
   let downloads = 0, opdateringer = 0, koeb = 0;
-  linjer.slice(1).forEach(l => {
+  egne.concat(koebEgne).forEach(l => {
     const u = Number(l[iU])||0, t = l[iT] || '';
     // 1 og 1F er foerste download (iPhone, universal), 7 og 7F er opdatering, IA er koeb i app
     if (/^(1|1F|1T|1E|F1)$/.test(t)) downloads += u;

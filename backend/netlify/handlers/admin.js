@@ -2,6 +2,7 @@
 /**
  * Backend til voreshjem.dk. Erstatter det, Wix' panel kunne.
  * Alt går gennem én funktion, som deles op efter handling.
+ * Samme kode koerer ogsaa som backend til unserzuhauseapp.de med sin egen database (SIDE=de, se lib/side.js).
  */
 const G      = require('../lib/google.js');
 const soro = require('../lib/soro.js');
@@ -18,7 +19,8 @@ const udgivelse = require('../lib/udgiv.js');
 const blogbyg = require('../lib/blogbyg.js');
 // levetider: SEK, MINUT, TIME, DOEGN (millisekunder). MIN er standarden, 5 minutter, og bruges ikke til at gange op.
 const { husk, glem, SEK, MINUT, TIME, DOEGN, UDGAVE } = require('../lib/cache.js');
-const { sql, opret, log } = require('../lib/db.js');
+const { sql, opret, log, dbStatus } = require('../lib/db.js');
+const profil = require('../lib/side.js');
 
 const svar = (k, d) => ({ statusCode: k,
   headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
@@ -939,166 +941,11 @@ async function tragt(dage, valg) {
   return ud;
 }
 
-/* ── den tyske side, unserzuhauseapp.de ───────────────────────────────────
-   Samme egne taeller som den danske side, men i egne tabeller (vh_besoeg_de og vh_klik_de)
-   med de samme kolonner. Tabellerne findes foerst, naar den tyske side har sendt sit foerste
-   signal. Indtil da er alt null med en grund, aldrig 0. Gaeste-id'et skifter ved dansk midnat,
-   saa besoegende over flere dage er besoegende pr. dag, lagt sammen. Daekning og sammenligning
-   foelger de samme regler som Oversigten (daekning(), hele danske kalenderdage). */
-const DE_SITE = 'unserzuhauseapp.de';
-const DE_INGEN = 'Den tyske side har ikke sendt besøg endnu.';
-const DE_INGEN_KLIK = 'Den tyske side har ikke sendt tryk endnu.';
-// tabellen findes ikke endnu (Postgres-kode 42P01). En manglende kolonne (42703) er en rigtig fejl.
-const ingenTabel = e => !!e && (e.code === '42P01' || /relation "?[\w.]+"? does not exist/i.test(String(e.message || '')));
-// pr. spand (dag 'YYYYMMDD' eller time 'YYYYMMDDHH24'): forskellige gaester og visninger
-const qDeKurve = (v, fmt) => sql`SELECT b, count(DISTINCT gaest)::int AS besoegende, count(*)::int AS visninger
-  FROM (SELECT to_char(ts AT TIME ZONE 'Europe/Copenhagen', ${fmt}::text) AS b, gaest
-        FROM vh_besoeg_de WHERE ts >= (${v.a}::timestamp AT TIME ZONE 'Europe/Copenhagen') AND ts < (${v.b}::timestamp AT TIME ZONE 'Europe/Copenhagen')) x
-  GROUP BY b ORDER BY b`;
-// kanalen paa hver besoegendes foerste visning den dag, saa summen er lig med besoegende
-const qDeKilder = v => sql`SELECT kanal, count(*)::int AS n FROM (
-    SELECT DISTINCT ON (dag, gaest) kanal FROM (SELECT (ts AT TIME ZONE 'Europe/Copenhagen')::date AS dag, gaest, ts, kanal FROM vh_besoeg_de
-      WHERE ts >= (${v.a}::timestamp AT TIME ZONE 'Europe/Copenhagen') AND ts < (${v.b}::timestamp AT TIME ZONE 'Europe/Copenhagen')) y
-    ORDER BY dag, gaest, ts) x
-  GROUP BY kanal ORDER BY n DESC, kanal`;
-const qDeSider = v => sql`SELECT sti, count(*)::int AS visninger, count(DISTINCT ((ts AT TIME ZONE 'Europe/Copenhagen')::date::text || gaest))::int AS besoegende
-  FROM vh_besoeg_de WHERE ts >= (${v.a}::timestamp AT TIME ZONE 'Europe/Copenhagen') AND ts < (${v.b}::timestamp AT TIME ZONE 'Europe/Copenhagen')
-  GROUP BY sti ORDER BY visninger DESC, sti LIMIT 15`;
-// land '' (ukendt) er med, saa ingen besoegende forsvinder ud af listen
-const qDeLande = v => sql`SELECT land, count(DISTINCT ((ts AT TIME ZONE 'Europe/Copenhagen')::date::text || gaest))::int AS n
-  FROM vh_besoeg_de WHERE ts >= (${v.a}::timestamp AT TIME ZONE 'Europe/Copenhagen') AND ts < (${v.b}::timestamp AT TIME ZONE 'Europe/Copenhagen')
-  GROUP BY land ORDER BY n DESC, land LIMIT 10`;
-const qDeEnheder = v => sql`SELECT enhed, count(DISTINCT ((ts AT TIME ZONE 'Europe/Copenhagen')::date::text || gaest))::int AS n
-  FROM vh_besoeg_de WHERE ts >= (${v.a}::timestamp AT TIME ZONE 'Europe/Copenhagen') AND ts < (${v.b}::timestamp AT TIME ZONE 'Europe/Copenhagen')
-  GROUP BY enhed ORDER BY n DESC, enhed`;
-// tryk paa hent-knapperne: alle tryk, tryk der endte i en butik, og gaester pr. dag lagt sammen
-const qDeKlik = v => sql`SELECT coalesce(sum(tryk), 0)::int AS tryk, coalesce(sum(tryk_butik), 0)::int AS tryk_butik,
-    coalesce(sum(gaester), 0)::int AS gaester, coalesce(sum(gaester_butik), 0)::int AS gaester_butik
-  FROM (SELECT count(*) AS tryk, count(*) FILTER (WHERE butik IN ('appstore','googleplay')) AS tryk_butik,
-          count(DISTINCT gaest) AS gaester, count(DISTINCT gaest) FILTER (WHERE butik IN ('appstore','googleplay')) AS gaester_butik
-        FROM vh_klik_de WHERE ts >= (${v.a}::timestamp AT TIME ZONE 'Europe/Copenhagen') AND ts < (${v.b}::timestamp AT TIME ZONE 'Europe/Copenhagen')
-        GROUP BY (ts AT TIME ZONE 'Europe/Copenhagen')::date) x`;
-
-/** Hvor langt tilbage den tyske taeller har tal, regnet ud fra den aeldste raekke (som taellerStart).
-    besoeg/klik er null, naar tabellen mangler eller er tom. klikFejl er en anden fejl fra klik-tabellen. */
-async function deStart() {
-  const lav = (t, navn) => { if (!t) return null;
-    const tid = new Date(t).toISOString(), dato = dkNu(tid).dato;
-    return { tid, dato, heleFra: dagPlus(dato, 1), tekst: navn + ' har tal fra ' + dkTid(tid) }; };
-  let b, sidst = null;
-  try { b = await sql`SELECT min(ts) AS t, max(ts) AS s FROM vh_besoeg_de`; }
-  catch (e) { if (!ingenTabel(e)) throw e; b = null; }
-  let k = null, klikFejl = null;
-  try { k = await sql`SELECT min(ts) AS t FROM vh_klik_de`; }
-  catch (e) { if (!ingenTabel(e)) klikFejl = e; }
-  if (b && b[0] && b[0].s) sidst = new Date(b[0].s).toISOString();
-  return { besoeg: lav(b && b[0] && b[0].t, 'Tælleren på den tyske side'), klik: lav(k && k[0] && k[0].t, 'Klik-tælleren på den tyske side'),
-    sidst, klikFejl };
-}
-
-async function tysk(dage) {
-  const p = omfang(dage), fejl = [], af = dageMellem(p.fra, p.til);
-  const ingen = grund => ({ fra: null, til: null, dage: 0, af, hel: false, grund });
-  const tomt = grund => ({ nu: null, foer: null, kilde: 'egen', grund });
-  const tomtKlik = grund => ({ nu: null, foer: null, kilde: 'egen', grund, daekning: ingen(grund), foerDaekning: null, fra: null,
-    tilButik: { nu: null, foer: null }, gaester: { nu: null, foer: null }, gaesterButik: { nu: null, foer: null } });
-  const fmt = p.timer ? 'YYYYMMDDHH24' : 'YYYYMMDD';
-  // alle spande i perioden (timer eller dage), ogsaa dem foer daekningen, som saa er null
-  const noegler = (fra, til) => spande(p, fra) || alleDatoer(fra, til).map(d => d.replace(/-/g, ''));
-  const tilDato = k => k.slice(0, 4) + '-' + k.slice(4, 6) + '-' + k.slice(6, 8);
-  const lavKurve = (raekker, keys, med) => { const m = new Map((raekker || []).map(r => [r.b, r]));
-    return keys.map(k => { const r = m.get(k), ok = med(k), ud = { dato: tilDato(k) };
-      if (k.length === 10) ud.time = Number(k.slice(8, 10));
-      ud.besoegende = ok ? (r ? r.besoegende : 0) : null; ud.visninger = ok ? (r ? r.visninger : 0) : null;
-      return ud; }); };
-  const ud = {
-    kilde: 'egen', site: DE_SITE,
-    dage: p.d, type: p.type, timer: p.timer, egne: p.egne, fra: p.fra, til: p.til, foerFra: p.foerFra, foerTil: p.foerTil,
-    visning: p.visning, sammenlign: p.sammenlign, klokke: p.klokke ? p.klokke.slice(0, 5).replace(':', '.') : null, note: p.note || null,
-    daekning: null, foerDaekning: null, fraHvornaar: null, sidst: null,
-    besoegendeTekst: p.timer ? 'Forskellige besøgende i løbet af dagen.'
-      : 'Besøgende pr. dag, lagt sammen. Tælleren kan ikke genkende nogen fra dag til dag, så én, der kommer to dage, tæller to gange.',
-    besoegende: null, visninger: null, klik: null,
-    kurve: lavKurve([], noegler(p.fra, p.til), () => false), kurveFoer: [],
-    sider: null, kilder: null, lande: null, enheder: null,
-    kilderTekst: 'Besøgende fordelt efter, hvor de kom fra ved første side den dag. Klik inde på siden tæller ikke som Direkte.',
-    kildeFor: { besoegende: 'egen', visninger: 'egen', klik: 'egen', kurve: 'egen', sider: 'egen', kilder: 'egen', lande: 'egen', enheder: 'egen' },
-    fejl
-  };
-  const alt = grund => { ud.daekning = ingen(grund); ud.besoegende = tomt(grund); ud.visninger = tomt(grund); ud.klik = tomtKlik(grund); return ud; };
-  if (!sql) return alt('Databasen er ikke sat op.');
-  let s;
-  try { s = await deStart(); }
-  catch (e) { fejl.push(fejlObj('egen', e, 'Tælleren for den tyske side svarede ikke: ' + String(e.message || e).slice(0, 160)));
-    return alt('Tælleren for den tyske side svarede ikke.'); }
-  ud.fraHvornaar = s.besoeg ? s.besoeg.tid : null; ud.sidst = s.sidst;
-
-  // besoeg: kun den del af perioden, taelleren daekker, og kun sammenligning med en periode, den daekker helt
-  const dN = s.besoeg ? daekning(p.fra, p.til, s.besoeg) : ingen(DE_INGEN);
-  const dF = s.besoeg ? daekning(p.foerFra, p.foerTil, s.besoeg) : ingen(DE_INGEN);
-  ud.daekning = dN; ud.foerDaekning = dF;
-  const vN = dN.fra ? vindue(dN.fra, dN.til, p.klokke) : null;
-  const vF = dN.fra && dF.hel ? vindue(p.foerFra, p.foerTil, p.klokke) : null;
-  const grund = !vN ? dN.grund : !dN.hel ? punktum(dN.grund) + ' Ingen sammenligning med perioden før.' : !vF ? ingenSml(dF) : null;
-  if (!vN) { ud.besoegende = tomt(grund); ud.visninger = tomt(grund); }
-  else {
-    try {
-      const tom = Promise.resolve(null);
-      const [kN, kF, dagN, dagF, kilder, sider, lande, enheder] = await Promise.all([
-        qDeKurve(vN, fmt), vF ? qDeKurve(vF, fmt) : tom,
-        p.timer ? qDeKurve(vN, 'YYYYMMDD') : tom, vF && p.timer ? qDeKurve(vF, 'YYYYMMDD') : tom,
-        qDeKilder(vN), qDeSider(vN), qDeLande(vN), qDeEnheder(vN)
-      ]);
-      // totaler regnes altid fra dagene: én dag giver forskellige gaester den dag, flere dage giver dagene lagt sammen
-      const tN = p.timer ? dagN : kN, tF = p.timer ? dagF : kF;
-      const tal = f => ({ nu: lagtSammen(tN, f), foer: vF ? lagtSammen(tF, f) : null, kilde: 'egen', grund });
-      ud.besoegende = tal('besoegende'); ud.visninger = tal('visninger');
-      // timer: hele dagen er daekket (eller slet ikke); dage: fra den foerste hele dag
-      const fraK = dN.fra.replace(/-/g, '');
-      ud.kurve = lavKurve(kN, noegler(p.fra, p.til), k => k.slice(0, 8) >= fraK);
-      ud.kurveFoer = vF ? lavKurve(kF, noegler(p.foerFra, p.foerTil), () => true) : [];
-      ud.kilder = kilder.map(r => ({ kanal: r.kanal, besoegende: r.n }));
-      ud.sider = sider.map(r => ({ sti: r.sti, visninger: r.visninger, besoegende: r.besoegende }));
-      ud.lande = lande.map(r => ({ land: r.land, besoegende: r.n }));
-      ud.enheder = enheder.map(r => ({ enhed: r.enhed, besoegende: r.n }));
-    } catch (e) {
-      // tabellen kan ikke forsvinde mellem to kald i praksis, men skulle den, er det ikke en fejl
-      const g = ingenTabel(e) ? DE_INGEN : 'Tælleren for den tyske side svarede ikke.';
-      if (!ingenTabel(e)) fejl.push(fejlObj('egen', e, 'Tælleren for den tyske side svarede ikke: ' + String(e.message || e).slice(0, 160)));
-      ud.besoegende = tomt(g); ud.visninger = tomt(g);
-    }
-  }
-
-  // tryk: klik-taelleren har sin egen daekning fra sin foerste raekke, som paa Oversigten
-  if (s.klikFejl) { fejl.push(fejlObj('egen', s.klikFejl, 'Klik-tælleren for den tyske side svarede ikke: ' + String(s.klikFejl.message || s.klikFejl).slice(0, 160)));
-    ud.klik = tomtKlik('Klik-tælleren for den tyske side svarede ikke.'); }
-  else if (!s.klik) ud.klik = tomtKlik(DE_INGEN_KLIK);
-  else {
-    const kD = daekning(p.fra, p.til, s.klik), kFD = daekning(p.foerFra, p.foerTil, s.klik);
-    const kvN = kD.fra ? vindue(kD.fra, kD.til, p.klokke) : null;
-    const kvF = kD.fra && kFD.hel ? vindue(p.foerFra, p.foerTil, p.klokke) : null;
-    const kGrund = !kvN ? kD.grund : !kD.hel ? punktum(kD.grund) + ' Ingen sammenligning med perioden før.' : !kvF ? ingenSml(kFD) : null;
-    try {
-      const [n, f] = await Promise.all([kvN ? qDeKlik(kvN) : null, kvF ? qDeKlik(kvF) : null]);
-      const t = (r, felt) => r ? r[0][felt] : null;
-      ud.klik = { nu: t(n, 'tryk'), foer: t(f, 'tryk'), kilde: 'egen', grund: kGrund, daekning: kD, foerDaekning: kFD, fra: s.klik.tid,
-        tilButik: { nu: t(n, 'tryk_butik'), foer: t(f, 'tryk_butik') },
-        gaester: { nu: t(n, 'gaester'), foer: t(f, 'gaester') },
-        gaesterButik: { nu: t(n, 'gaester_butik'), foer: t(f, 'gaester_butik') },
-        tekst: 'Tryk på hent-knapperne på den tyske side. Egen tæller, uden cookies.' };
-    } catch (e) {
-      if (!ingenTabel(e)) fejl.push(fejlObj('egen', e, 'Klik-tælleren for den tyske side svarede ikke: ' + String(e.message || e).slice(0, 160)));
-      ud.klik = tomtKlik(ingenTabel(e) ? DE_INGEN_KLIK : 'Klik-tælleren for den tyske side svarede ikke.');
-    }
-  }
-  return ud;
-}
-
 /* ── hastighed, mobil og computer, gemt et doegn ───────────────────────────
    Hver enhed maales tre gange hos Google. Tallet er den midterste af de vellykkede, ved to den
    laveste. valgTekst siger, hvilken det blev, og maalinger har dem alle (google.js). */
 async function hastighed() {
-  const url = process.env.VAGT_URL || 'https://www.voreshjem.dk/';
+  const url = process.env.VAGT_URL || profil.site + '/';
   const r = await Promise.allSettled([G.hastighed(url,'mobile'), G.hastighed(url,'desktop')]);
   const ud = x => x.status === 'fulfilled' ? x.value : { fejl: String((x.reason && x.reason.message) || x.reason).slice(0, 300) };
   const mobil = ud(r[0]), computer = ud(r[1]);
@@ -1114,7 +961,7 @@ async function hastighed() {
    maa bruge. Den viser dagvagtens daglige maaling fra vh_hastighed. "Maal nu" (hastighed-nu) maaler
    live med en tidsgraense og gemmer resultatet et doegn, og saa vises det i stedet. */
 async function hastighedGemt() {
-  const url = process.env.VAGT_URL || 'https://www.voreshjem.dk/';
+  const url = process.env.VAGT_URL || profil.site + '/';
   const tom = { url, kilde: 'psi', fraDagvagt: true, fejl: [], tekst: 'Googles PageSpeed, målt af dagvagten hver morgen.' };
   if (!sql) return { ...tom, mobil: { fejl: 'Databasen er ikke sat op.' }, computer: { fejl: 'Databasen er ikke sat op.' } };
   const r = await sql`SELECT mobil, computer, maalt FROM vh_hastighed ORDER BY maalt DESC LIMIT 1`;
@@ -1221,7 +1068,17 @@ const MARKED = { dk: 'Dansk', de: 'Tysk', alle: 'Dansk og tysk' };
 const RYD_DAGE = Math.max(7, parseInt(process.env.RYD_DAGE, 10) || 90);
 /** Foerste danske dag, hvor samtaler og tommel med sikkerhed stadig er gemt: de seneste RYD_DAGE dage, i dag med. */
 const chatGemtFra = () => dagPlus(dkIdag(), -(RYD_DAGE - 1));
+const chatTekster = () => ({
+  i_perioden: 'Chatsamtaler startet i perioden, også dem der siden er arkiveret.',
+  med_mail: 'Chatsamtaler startet i perioden, hvor kunden skrev sin mail. Formularer tælles ikke med.',
+  sendt_videre: 'Chatsamtaler startet i perioden, som et menneske har overtaget eller som venter på et.',
+  ulaeste: 'Indbakken lige nu, uanset periode.', vil_have_menneske: 'Venter på et menneske lige nu, uanset periode.',
+  stemning: 'Stemningen i samtaler startet i perioden.', spoergsmaal: 'Hurtig-svar trykket i perioden.',
+  alle_tider: 'Alle samtaler, der stadig er gemt. Samtaler slettes ' + RYD_DAGE + ' dage efter sidste besked.'
+});
 async function chat(dage, site) {
+  // uden bottens tabeller (den tyske backend) kommer tallene fra botten selv
+  if (!profil.botTabeller) return chatFraBot(dage, site);
   if (!sql) throw new Error('Databasen er ikke sat op');
   await opret();
   const p = omfang(dage), valgt = (site === 'dk' || site === 'de') ? site : 'alle';
@@ -1304,15 +1161,48 @@ async function chat(dage, site) {
     stemning, spoergsmaal: chips ? chips.slice(0, 10) : null,
     feedback, nedPeriode: ned ? ned.filter(r => valgt === 'alle' || r.s === valgt).slice(0, 20).map(r => ({ q: r.q, a: r.a, ts: r.ts, site: r.s })) : null,
     seneste: sen ? sen.filter(r => valgt === 'alle' || (r.site || 'dk') === valgt).slice(0, 12) : null,
-    tekster: {
-      i_perioden: 'Chatsamtaler startet i perioden, også dem der siden er arkiveret.',
-      med_mail: 'Chatsamtaler startet i perioden, hvor kunden skrev sin mail. Formularer tælles ikke med.',
-      sendt_videre: 'Chatsamtaler startet i perioden, som et menneske har overtaget eller som venter på et.',
-      ulaeste: 'Indbakken lige nu, uanset periode.', vil_have_menneske: 'Venter på et menneske lige nu, uanset periode.',
-      stemning: 'Stemningen i samtaler startet i perioden.', spoergsmaal: 'Hurtig-svar trykket i perioden.',
-      alle_tider: 'Alle samtaler, der stadig er gemt. Samtaler slettes ' + RYD_DAGE + ' dage efter sidste besked.'
-    },
+    tekster: chatTekster(),
     fejl
+  };
+}
+
+/* Den tyske backend har ikke bottens tabeller: de ligger i den danske database, som den aldrig
+   maa roere (db.js). Tallene hentes i stedet fra bottens egen statistik for de samme danske
+   kalenderdage og gives i samme form som chat(). Botten sender null for tal, den ikke har dage
+   til, og null som daekning, naar den daekker hele perioden. Tommel ned findes kun pr. sprog,
+   saa 'alle' spoerger om begge. */
+async function chatFraBot(dage, site) {
+  if (!botOpsat()) throw new Error('Panelet kan ikke nå botten. Sæt BOT_ADMIN_PASSWORD i Netlify.');
+  const p = omfang(dage), valgt = (site === 'dk' || site === 'de') ? site : 'alle';
+  const sider = valgt === 'alle' ? ['dk', 'de'] : [valgt];
+  const svarene = await Promise.all(sider.map(s => bot('admin_stats', { site: s, fra: p.fra, til: p.til })));
+  const st = svarene[0];
+  if (!st.periode || !st.perioden || !st.nu || !st.alleTider) throw new Error('Botten er ikke opdateret endnu, så dens tal følger ikke den valgte periode.');
+  const af = dageMellem(p.fra, p.til);
+  const daek = d => d ? { fra: d.fra || null, til: d.til || null, dage: d.dage || 0, af, hel: false, grund: d.grund || null }
+    : { fra: p.fra, til: p.til, dage: af, af, hel: true, grund: null };
+  const gemtDage = (st.gemt && Number(st.gemt.dage)) || RYD_DAGE;
+  const tal = k => { const per = st.perioden[k] || {}, nu = st.nu[k] || {}, alle = st.alleTider[k] || {};
+    return { navn: MARKED[k], i_perioden: per.samtaler, med_mail: per.medMail, sendt_videre: per.sendtVidere,
+      aabne: nu.aabne, alle: nu.aabne, ulaeste: nu.ulaeste, vil_have_menneske: nu.venterPaaMenneske, alle_tider: alle.samtaler }; };
+  const per = st.perioden[valgt] || {}, alle = st.alleTider[valgt] || {};
+  const harTal = per.samtaler != null;
+  const ned = !harTal ? null : [].concat(...svarene.map((x, i) => (x.recentDownsPeriode || []).map(r => ({ q: r.q, a: r.a, ts: r.ts, site: sider[i] }))))
+    .sort((a, b) => String(b.ts).localeCompare(String(a.ts))).slice(0, 20);
+  const fb = per.feedback || { up: null, down: null };
+  return {
+    kilde: 'bot', type: p.type, visning: p.visning, fra: p.fra, til: p.til, klokke: p.klokke ? p.klokke.slice(0, 5).replace(':', '.') : null, note: p.note || null,
+    site: valgt, siteNavn: MARKED[valgt], daekning: daek(st.daekning), daekningHaendelser: daek(st.daekningHaendelser),
+    gemt: { fra: (st.gemt && st.gemt.fra) || chatGemtFra(), dage: gemtDage, tekst: 'Samtaler og tommel slettes efter ' + gemtDage + ' dage. "Alle tider" er det, der stadig er gemt.' },
+    // kun det valgte sprog: den tyske backend faar aldrig de danske tal med i svaret
+    tal: tal(valgt), marked: Object.fromEntries([...new Set([valgt].concat(sider))].map(k => [k, tal(k)])),
+    stemning: harTal ? (per.stemning || []) : null, spoergsmaal: Array.isArray(per.chips) ? per.chips.slice(0, 10) : null,
+    feedback: { periode: { up: fb.up, down: fb.down }, alleTider: alle.feedback || { up: null, down: null }, kilde: 'bot',
+      alleTiderNavn: 'seneste ' + gemtDage + ' dage',
+      tekst: 'periode er tommel op og ned givet i perioden. alleTider er alt, der stadig er gemt: tommel slettes efter ' + gemtDage + ' dage.' },
+    nedPeriode: ned, seneste: null,
+    tekster: chatTekster(),
+    fejl: []
   };
 }
 
@@ -1333,7 +1223,9 @@ async function raad() {
                     WHERE mobil > 0 AND (maalt AT TIME ZONE 'Europe/Copenhagen')::date >= ${dagPlus(dkIdag(), -6)}::date
                     ORDER BY (maalt AT TIME ZONE 'Europe/Copenhagen')::date, maalt DESC) x` : Promise.resolve([]),
     sql ? sql`SELECT vaerdi FROM vh_cache WHERE noegle = ${UDGAVE + 'hastighed'} AND udloeber > now()` : Promise.resolve([]),
-    sql ? sql`SELECT count(*)::int AS n FROM vh_conversations WHERE needs_human AND NOT archived` : Promise.resolve([{ n: 0 }])
+    // chatbottens tabeller ligger kun i den danske database. Den tyske backend spoerger botten selv.
+    !profil.botTabeller ? (botOpsat() ? bot('admin_stats', { site: profil.chat, days: 1 }).then(st => [{ n: (st.nu && st.nu[profil.chat] || {}).venterPaaMenneske || 0 }]) : Promise.resolve([{ n: 0 }]))
+      : sql ? sql`SELECT count(*)::int AS n FROM vh_conversations WHERE needs_human AND NOT archived` : Promise.resolve([{ n: 0 }])
   ]);
   // 1. tragten: hvor mange af de besoegende trykker paa en hent-knap, og hvor mange naar en butik
   if (t.status === 'fulfilled' && t.value.trin) {
@@ -1411,13 +1303,15 @@ async function uge() {
           FROM (SELECT count(*) AS n FROM vh_besoeg WHERE ts >= (${v.a}::timestamp AT TIME ZONE 'Europe/Copenhagen') AND ts < (${v.b}::timestamp AT TIME ZONE 'Europe/Copenhagen')
                 GROUP BY (ts AT TIME ZONE 'Europe/Copenhagen')::date, gaest) x`,
       qKlik(v),
-      sql`SELECT count(*)::int AS n FROM vh_conversations WHERE created_at >= (${v.a}::timestamp AT TIME ZONE 'Europe/Copenhagen') AND created_at < (${v.b}::timestamp AT TIME ZONE 'Europe/Copenhagen')`
+      // samtalerne ligger i bottens tabeller, som kun den danske database har
+      profil.botTabeller ? sql`SELECT count(*)::int AS n FROM vh_conversations WHERE created_at >= (${v.a}::timestamp AT TIME ZONE 'Europe/Copenhagen') AND created_at < (${v.b}::timestamp AT TIME ZONE 'Europe/Copenhagen')`
+        : Promise.resolve(null)
     ]);
     if (b.status === 'fulfilled') Object.assign(ud, { besoegende: b.value[0].besoegende, visninger: b.value[0].visninger, flestFraEnGaest: b.value[0].flest });
     else fejl.push(fejlObj('egen', b.reason));
     if (k.status === 'fulfilled') Object.assign(ud, { klik: k.value[0].tryk_butik, klikGaester: k.value[0].gaester_butik });
     else fejl.push(fejlObj('egen', k.reason, 'Klik-tælleren svarede ikke: ' + String((k.reason || {}).message || k.reason).slice(0, 160)));
-    if (s.status === 'fulfilled') ud.samtaler = s.value[0].n; else fejl.push(fejlObj('bot', s.reason, 'Chatsamtalerne kunne ikke tælles: ' + String((s.reason || {}).message || s.reason).slice(0, 160)));
+    if (s.status === 'fulfilled') ud.samtaler = s.value ? s.value[0].n : null; else fejl.push(fejlObj('bot', s.reason, 'Chatsamtalerne kunne ikke tælles: ' + String((s.reason || {}).message || s.reason).slice(0, 160)));
     return ud;
   };
   const [denne, sidste] = await Promise.all([tal(vD), tal(vS)]);
@@ -1429,6 +1323,8 @@ async function uge() {
     fraFoerTid: dkInstant(mandagFoer, '00:00:00'), tilFoerTid: dkInstant(dagFoer, nu.klokke),
     besoegendeDefinition: 'pr_dag_lagt_sammen',
     besoegendeTekst: 'Besøgende pr. dag, lagt sammen. Tælleren kan ikke genkende nogen fra dag til dag, så én, der kommer mandag og tirsdag, tæller to gange.',
+    // false: samtalerne kan ikke taelles her (de ligger i bottens tabeller i den danske database), saa raekken vises ikke
+    samtalerMed: !!profil.botTabeller,
     foersteUge: !dS.hel, klikFoersteUge: !kS.hel,
     grund: !dS.hel ? ingenSml(dS) : !kS.hel ? 'Klik til butik. ' + ingenSml(kS) : null,
     fejl };
@@ -1555,10 +1451,28 @@ async function blogGem(p, hvem) {
   return r[0];
 }
 function utmLink(p) {
-  const u = new URL(p.landing || 'https://www.voreshjem.dk/');
+  const u = new URL(p.landing || profil.site + '/');
   const s = (k, v) => { if (v) u.searchParams.set(k, String(v).trim().toLowerCase().replace(/\s+/g,'-')); };
   s('utm_source', p.kilde); s('utm_medium', p.medie); s('utm_campaign', p.kampagne); s('utm_content', p.indhold);
   return u.toString();
+}
+
+/* ── sider i panelet, der kun findes paa den danske side ─────────────────
+   Profilen (side.js, skjul) skjuler dem i panelet. Her afvises deres handlinger ogsaa, saa den
+   tyske backend aldrig udgiver blog eller rettelser paa en side, og intet havner i tomme sider. */
+const HANDLING_SIDE = { annoncer: 'annoncer',
+  blog: 'blog', 'blog-et': 'blog', 'blog-gem': 'blog', 'blog-slet': 'blog', 'blog-udgiv': 'blog', 'soro-hent': 'blog', 'seo-udkast': 'blog',
+  links: 'links', 'links-lav': 'links', 'links-gem': 'links', 'links-slet': 'links',
+  indhold: 'indhold', 'indhold-gem': 'indhold', 'indhold-scan': 'indhold', felter: 'indhold', 'felt-gem': 'indhold', 'felt-fortryd': 'indhold',
+  rettelser: 'indhold', 'rettelse-gem': 'indhold', 'rettelse-slet': 'indhold', 'rettelser-udgiv': 'indhold', 'seo-forslag': 'indhold', udgiv: 'indhold' };
+/* Botten er faelles for begge sider. Den danske backend ser begge sprog, som foer. Den tyske ser
+   og roerer kun tyske samtaler (side.js, chat), uanset hvad panelet beder om. */
+const chatSite = s => profil.kode === 'dk' ? s : profil.chat;
+async function egenSamtale(id) {
+  if (profil.kode === 'dk') return;
+  const c = await bot('admin_get', { conversationId: id, peek: true });
+  if ((c.site || 'dk') !== profil.chat) throw new Error('Samtalen hører ikke til ' + profil.navn + '.');
+  return c;
 }
 
 /* ── indgang ───────────────────────────────────────────────────────────── */
@@ -1567,10 +1481,12 @@ exports.handler = async (ev) => {
   let k = {}; try { k = ev.body ? JSON.parse(ev.body) : {}; } catch (e) {}
   const d = (ev.queryStringParameters || {}).d || k.d || '';
 
-  if (d === 'status') return svar(200, { ok:true, opsat: {
-    kode: auth.harKode(), database: !!sql, analytics: G.opsat(), soegning: G.opsatGsc(),
+  // offentlig: profilen (det, der alligevel staar paa siden) og hvad der er sat op. Databasen er
+  // false, naar den mangler eller er afvist af ejermaerket (db.js), og databaseFejl siger hvorfor.
+  if (d === 'status') { const db = await dbStatus(); return svar(200, { ok:true, side: profil.offentlig(), opsat: {
+    kode: auth.harKode(), database: db.ok, databaseFejl: db.fejl, analytics: G.opsat(), soegning: G.opsatGsc(),
     meta: meta.opsat(), googleads: gads.opsat(), appstore: asc.opsat(), googleplay: gplay.opsat(),
-    mail: mail.opsat(), udgivelse: !!process.env.NETLIFY_BUILD_HOOK, webhook: !!process.env.WEBHOOK_SECRET, soro: soro.opsat(), bot: botOpsat(), claude: forfatter.opsat(), netlify: udgivelse.opsat() } });
+    mail: mail.opsat(), udgivelse: !!process.env.NETLIFY_BUILD_HOOK, webhook: !!process.env.WEBHOOK_SECRET, soro: soro.opsat(), bot: botOpsat(), claude: forfatter.opsat(), netlify: udgivelse.opsat() } }); }
 
   const ip = ((ev.headers||{})['x-nf-client-connection-ip'] || (ev.headers||{})['x-forwarded-for'] || '').split(',')[0].trim();
   if (d === 'login') {
@@ -1593,6 +1509,7 @@ exports.handler = async (ev) => {
   }
   const bruger = await auth.bekraeft(auth.laes(k.seddel || (ev.headers||{})['x-seddel']));
   if (!bruger) return svar(401, { fejl: 'Log ind igen' });
+  if (HANDLING_SIDE[d] && profil.skjul.includes(HANDLING_SIDE[d])) return svar(404, { fejl: 'Den del af panelet findes ikke på backenden til ' + profil.navn + '.' });
   const skriv = () => { if (!auth.maa(bruger, 'redigerer')) throw new Error('Du kan kun kigge. Bed ejeren om at give dig adgang til at rette.'); };
   const ejer  = () => { if (!auth.maa(bruger, 'ejer')) throw new Error('Kun ejeren kan gøre det her.'); };
   const dage = k.dage || '28d';
@@ -1608,29 +1525,27 @@ exports.handler = async (ev) => {
       case 'soegeord':  return svar(200, await cachet('soegeord', () => soegeord(dage)));
       case 'downloads': return svar(200, await cachet('downloads', () => downloads(dage), TIME));
       case 'tragt':     return svar(200, await cachet('tragt',    () => tragt(dage)));
-      // den tyske side (unserzuhauseapp.de), egen taeller i vh_besoeg_de og vh_klik_de
-      case 'tysk':      return svar(200, await cachet('tysk',     () => tysk(dage)));
       // chat: site 'dk' | 'de' | udeladt (= dansk og tysk samlet). Kildefejl logges.
-      case 'chat':      return svar(200, await medLog(() => chat(dage, k.site))());
+      case 'chat':      return svar(200, await medLog(() => chat(dage, chatSite(k.site)))());
       // samtalerne, gennem bottens egen tjeneste
-      case 'bot-liste': return svar(200, await bot('admin_list',  { site: k.site || 'dk', archived: !!k.arkiv }));
-      case 'bot-hent':  return svar(200, await bot('admin_get',   { conversationId: k.id, peek: !!k.kig }));
+      case 'bot-liste': return svar(200, await bot('admin_list',  { site: chatSite(k.site || 'dk'), archived: !!k.arkiv }));
+      case 'bot-hent':  await egenSamtale(k.id); return svar(200, await bot('admin_get', { conversationId: k.id, peek: !!k.kig }));
       // bottens tal for samme danske dage som resten af panelet. Siden sender dage (knappen);
       // den gamle side sendte kun dageTal, som oversaettes tilbage til knappen.
       case 'bot-stat': {
         const valg = k.dage || ({ 1: '24t', 2: 'igaar', 7: '7d', 28: '28d', 90: '90d', 92: '365d', 365: '365d' })[k.dageTal] || '28d';
         const p = omfang(valg);
-        const st = await bot('admin_stats', { site: k.site === 'de' ? 'de' : 'dk', fra: p.fra, til: p.til, days: Math.min(p.d, 366) });
+        const st = await bot('admin_stats', { site: chatSite(k.site === 'de' ? 'de' : 'dk'), fra: p.fra, til: p.til, days: Math.min(p.d, 366) });
         // den gamle bot kender ikke fra/til og taeller 14 dage. Saa er periodetallene ikke til at stole paa.
         return svar(200, { ...st, valgtPeriode: { fra: p.fra, til: p.til, type: p.type, visning: p.visning },
           botOpdateret: !!st.periode, grund: st.periode ? null : 'Botten er ikke opdateret endnu, så dens tal følger ikke den valgte periode.' }); }
-      case 'bot-svar':  { skriv(); const r = await bot('admin_reply', { conversationId: k.id, content: k.tekst });
+      case 'bot-svar':  { skriv(); await egenSamtale(k.id); const r = await bot('admin_reply', { conversationId: k.id, content: k.tekst });
         await log('svarede i chatten', String(k.id).slice(0,12), bruger.navn); return svar(200, r); }
-      case 'bot-tagover': skriv(); return svar(200, await bot('admin_takeover', { conversationId: k.id, human: k.menneske !== false }));
-      case 'bot-slet':  { skriv(); const r = await bot('admin_delete', { conversationId: k.id });
+      case 'bot-tagover': skriv(); await egenSamtale(k.id); return svar(200, await bot('admin_takeover', { conversationId: k.id, human: k.menneske !== false }));
+      case 'bot-slet':  { skriv(); await egenSamtale(k.id); const r = await bot('admin_delete', { conversationId: k.id });
         await log('slettede en samtale', String(k.id).slice(0,12), bruger.navn); return svar(200, r); }
-      case 'bot-ret':   skriv(); return svar(200, await bot('admin_edit_msg', { conversationId: k.id, messageId: k.beskedId, content: k.tekst }));
-      case 'bot-slet-besked': skriv(); return svar(200, await bot('admin_delete_msg', { conversationId: k.id, messageId: k.beskedId }));
+      case 'bot-ret':   skriv(); await egenSamtale(k.id); return svar(200, await bot('admin_edit_msg', { conversationId: k.id, messageId: k.beskedId, content: k.tekst }));
+      case 'bot-slet-besked': skriv(); await egenSamtale(k.id); return svar(200, await bot('admin_delete_msg', { conversationId: k.id, messageId: k.beskedId }));
       case 'oppetid':   return svar(200, await oppetid());
       case 'raad':      return svar(200, await husk('raad', 5 * MINUT, medLog(raad)));
       case 'uge':       return svar(200, await husk('uge', MINUT, medLog(uge)));
@@ -1686,10 +1601,10 @@ exports.handler = async (ev) => {
         if (asc.opsat()) await proev('appstore', async () => { const r = await asc.periode(iso(new Date(Date.now()-3*86400000)), iso(new Date(Date.now()-2*86400000))); return (r[0]||{}).downloads + ' downloads forleden'; }); else ud.appstore = { ok:false, fejl:'ikke sat op' };
         if (gplay.opsat()) await proev('googleplay', async () => { const r = await gplay.periode(iso(new Date(Date.now()-5*86400000)), iso(new Date(Date.now()-2*86400000))); return r.length + ' dage med tal'; }); else ud.googleplay = { ok:false, fejl:'ikke sat op' };
         if (botOpsat()) await proev('bot', async () => { const r = await bot('admin_stats', { days: 7 }); return r.total + ' samtaler i alt'; }); else ud.bot = { ok:false, fejl:'ikke sat op' };
-        if (forfatter.opsat()) await proev('claude', async () => { const r = await forfatter.forslag('titel', { url:'/', titel:'Vores Hjem', besk:'', h1tekst:'Vores Hjem' }); return r.length + ' forslag'; }); else ud.claude = { ok:false, fejl:'ikke sat op' };
-        if (udgivelse.opsat()) await proev('netlify', async () => { const r = await fetch('https://api.netlify.com/api/v1/sites/' + (process.env.SITE_NETLIFY_ID || 'fff8c0f6-c7e6-42c1-889d-8e128f9f070b'), { headers:{ Authorization:'Bearer ' + process.env.NETLIFY_TOKEN } }); if (!r.ok) throw new Error('Netlify svarede ' + r.status); return (await r.json()).name; }); else ud.netlify = { ok:false, fejl:'ikke sat op' };
+        if (forfatter.opsat()) await proev('claude', async () => { const r = await forfatter.forslag('titel', { url:'/', titel: profil.brand, besk:'', h1tekst: profil.brand }); return r.length + ' forslag'; }); else ud.claude = { ok:false, fejl:'ikke sat op' };
+        if (udgivelse.opsat()) await proev('netlify', async () => { const r = await fetch('https://api.netlify.com/api/v1/sites/' + (process.env.SITE_NETLIFY_ID || profil.netlifySiteId), { headers:{ Authorization:'Bearer ' + process.env.NETLIFY_TOKEN } }); if (!r.ok) throw new Error('Netlify svarede ' + r.status); return (await r.json()).name; }); else ud.netlify = { ok:false, fejl:'ikke sat op' };
         if (mail.opsat()) ud.mail = { ok:true, note:'sender til ' + mail.TIL + ', brug Send prøvemail' }; else ud.mail = { ok:false, fejl:'ikke sat op' };
-        ud.database = sql ? { ok:true } : { ok:false, fejl:'ikke sat op' };
+        { const db = await dbStatus(); ud.database = db.ok && !db.fejl ? { ok:true } : { ok:false, fejl: db.fejl || 'ikke sat op' }; }
         // Soro har kun et RSS-feed. Her laeses det, og der taelles, hvad der er kommet ind
         if (soro.opsat()) await proev('soro', async () => { const h = await soro.hent();
           const r = await sql`SELECT count(*)::int AS n, max(opdateret) AS sidst FROM vh_blog WHERE kilde = 'soro'`;
@@ -1749,7 +1664,7 @@ exports.handler = async (ev) => {
       case 'bruger-slet': ejer(); await auth.sletBruger(k.id); await log('bruger slettet', String(k.id), bruger.navn); return svar(200, { ok:true });
 
       case 'log': await opret(); return svar(200, { linjer: await sql`SELECT hvad, detalje, hvem, hvornaar FROM vh_log ORDER BY id DESC LIMIT 80` });
-      case 'test-mail': { ejer(); const s = await mail.send('Prøve fra backenden', '<p>Mailen virker. Sendt fra voreshjem-backend.</p>');
+      case 'test-mail': { ejer(); const s = await mail.send('Prøve fra backenden til ' + profil.navn, '<p>Mailen virker. Sendt fra ' + profil.backend.replace(/^https?:\/\//, '') + '.</p>');
         await log('prøvemail', s.sendt ? s.til : s.grund, bruger.navn); return svar(s.sendt ? 200 : 400, s); }
       case 'udgiv': { ejer(); const krog = process.env.NETLIFY_BUILD_HOOK;
         if (!krog) return svar(400, { fejl: 'NETLIFY_BUILD_HOOK mangler i Netlify' });
