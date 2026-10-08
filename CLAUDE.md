@@ -16,6 +16,12 @@ Gælder på alle computere (Windows-PC og Mac). Repoet er den eneste kilde til, 
 - `backend/` udgives kun med `node vaerktoej/udgiv-backend.mjs` (prøveudgave) og `--live`. Scriptet samler
   de udgivne filer og bundter funktionerne (Netlifys nye format, fordi det gamle højst tillader 4 KB
   miljøvariabler). Brug aldrig `netlify deploy` direkte i `backend/`.
+- Samme `backend/` er **to adskilte backends**: den danske (backend.voreshjem.dk) og den tyske
+  (backend.unserzuhauseapp.de, `--de`, fx `node vaerktoej/udgiv-backend.mjs --de --live`). Hver har sin egen
+  database, sit eget login, sin egen mail og sine egne nøgler. Netlify-variablen `SIDE` (dk/de) vælger profilen
+  i `backend/netlify/lib/side.js`, og databasen er mærket med sin ejer, så de aldrig kan blandes. Den tyske side og
+  download-siden må aldrig pege på noget dansk (backend, chatbot eller mail), kun sprog-linkene (hreflang).
+  En rettelse i `backend/` skal udgives begge steder.
 - `chatbot/` må **ikke** udgives herfra endnu. Funktionskoden ligger i repoet, men der er intet udgivelsesscript.
 
 ## Flytning fra Mac'ens gamle mappe (`~/voreshjem-site` m.fl.)
