@@ -742,6 +742,7 @@ const SIDER = [
   {id:'soegeord', navn:'Søgeord',   gruppe:'Statistik', ikon:'M11 4a7 7 0 100 14 7 7 0 000-14zM21 21l-5.2-5.2'},
   {id:'annoncer', navn:'Annoncer',  gruppe:'Statistik', ikon:'M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'},
   {id:'downloads',navn:'Downloads', gruppe:'Statistik', ikon:'M12 3v12m0 0-4-4m4 4 4-4M4 17v3h16v-3'},
+  {id:'tysk',     navn:'Tysk side', gruppe:'Statistik', ikon:'M5 21V4m0 0h12l-2.5 4L17 12H5'},
   {id:'seo',      navn:'SEO og GEO',gruppe:'Statistik', ikon:'M12 2a10 10 0 100 20 10 10 0 000-20zm0 4v6l4 2'},
   {id:'chat',     navn:'Chat',      gruppe:'Siden',     ikon:'M4 4h16v11H8l-4 4V4z'},
   {id:'blog',     navn:'Blog',      gruppe:'Siden',     ikon:'M4 3h16v18H4V3zm3 4h10M7 11h10M7 15h6'},
@@ -1354,6 +1355,16 @@ const HJAELP = {
   'Installationer i alt': 'Summen af de butikker, der har tal for perioden. Under tallet står, hvilke butikker der er med, fx kun Google Play.',
   'Installationer dag for dag': 'Installationer pr. butik og dag. Står der –, har butikken ingen tal for dagen endnu. Det er ikke det samme som 0.',
   'Installationer pr. dag': 'Installationer dag for dag. Et hul i kurven er en dag uden tal fra butikken, ikke 0. Læg noter på kurven under Oversigt, så I kan se, hvad der gav udslag.',
+  // Tysk side (noeglen starter med sidens id, saa den ikke blandes med Oversigtens bokse af samme navn)
+  'tysk:Besøgende': 'Hvor mange forskellige mennesker, der har været på den tyske side, unserzuhauseapp.de. Fra jeres egen tæller, som tæller alle uden cookies og sorterer robotter fra. Tælleren kan kun genkende folk inden for samme dag, så over flere dage er det besøgende pr. dag, lagt sammen: én, der kommer to dage, tæller to gange. Pilen sammenligner kun med en periode, tælleren har tal for hele vejen.',
+  'tysk:Sidevisninger': 'Hvor mange sider der er åbnet på den tyske side i alt. Ser én person fire sider, er det fire sidevisninger. Fra jeres egen tæller, som tæller alle uden cookies.',
+  'tysk:Tryk på hent-knapperne': 'Alle tryk på hent-knapperne på den tyske side, talt af knapperne selv, uden cookies. Under tallet står, hvor mange af trykkene der sendte folk direkte til App Store eller Google Play, og hvor mange besøgende der trykkede. Over flere dage er de besøgende talt pr. dag og lagt sammen. Klik-tælleren regner fra sit første tryk, så har den ikke tal for hele perioden, står dens egne datoer under tallet.',
+  'tysk:Besøgende pr. dag': 'Forskellige besøgende på den tyske side hver dag, i dansk tid. Den stiplede linje er perioden før, dag for dag, og står der kun, når tælleren har tal for hele perioden før. Et hul i kurven er dage, før tælleren havde tal, ikke 0.',
+  'tysk:Besøgende time for time': 'Forskellige besøgende på den tyske side i hver time, i dansk tid. Den stiplede linje er samme time dagen før, når tælleren har tal for den.',
+  'tysk:Mest læste sider': 'De sider på den tyske side, der er åbnet flest gange i perioden. Besøgende er forskellige mennesker på siden, over flere dage talt pr. dag og lagt sammen. Fra jeres egen tæller, som tæller alle uden cookies.',
+  'tysk:Hvor kommer de fra': 'Hvilken vej folk kom ind på den tyske side, talt på hver besøgendes første side den dag, så klik inde på siden ikke tæller som Direkte. Summen er lig med Besøgende. Kanalerne betyder det samme som under Hvor kommer de fra på Oversigten. Fra jeres egen tæller, som tæller alle uden cookies.',
+  'tysk:Lande': 'Hvor i verden de besøgende på den tyske side sidder, talt pr. dag og lagt sammen. Ukendt er besøg, hvor landet ikke kunne ses. Fra jeres egen tæller, som tæller alle uden cookies.',
+  'tysk:Enhed': 'Om folk på den tyske side kommer fra telefon, computer eller tablet, talt pr. dag og lagt sammen. Fra jeres egen tæller, som tæller alle uden cookies.',
   // SEO og GEO
   'Gennemgang af hele siden': 'Backenden læser alle jeres sider, som Google ville gøre, og finder det, der bør rettes: titler, beskrivelser, billeder uden tekst, døde links. Hvert forskelligt problem koster point, så ét fund giver altid under 100. Kører hver mandag, eller når I trykker Kør nu.',
   'Det der skal rettes, vigtigste først': 'Listen over fund fra gennemgangen. Klik på et punkt for at se, hvilke sider det gælder, og få Claude til at foreslå en rettelse.',
@@ -1399,7 +1410,8 @@ function saetHjaelp(m) {
   (m || document).querySelectorAll('.kort > h3').forEach(h => {
     if (h.querySelector('.hj')) return;
     const titel = [...h.childNodes].filter(x => x.nodeType === 3).map(x => x.textContent).join('').trim();
-    const tekst = HJAELP[titel];
+    // en side kan have sin egen forklaring til en boks med samme navn, fx 'tysk:Besøgende'
+    const tekst = HJAELP[side + ':' + titel] || HJAELP[titel];
     if (!tekst) return;
     const id = 'auto' + (++n) + '-' + titel.replace(/\W+/g, '').slice(0, 20);
     h.insertAdjacentHTML('beforeend', hjaelp(id));
@@ -1664,6 +1676,74 @@ async function visDownloads(m) {
     '<div class="kort"><h3>Installationer dag for dag' + udtrKnap('d-dage','downloads') + '</h3>' + kildeLinje(googleKoblet ? 'play' : 'appstore', gD) + tabel('d-dage', dageRk, [
         {navn:'Dato', felt:'dato', form:datoDk, std:true}].concat(appleKoblet ? [{navn:'App Store', felt:'apple', h:true}] : [])
         .concat(googleKoblet ? [{navn:'Google Play', felt:'google', h:true}] : []).concat([{navn:'I alt', felt:'ialt', h:true}]), 'Ingen data') + '</div>';
+}
+
+/* ══ TYSK SIDE ══ */
+/* unserzuhauseapp.de fra jeres egen tæller (vh_besoeg_de og vh_klik_de). Samme regler som Oversigten:
+   null står som –, dækningen står øverst, og pile vises kun mod en periode, tælleren har tal for hele vejen.
+   Kurven har null (hul) for dage før tælleren havde tal. Lister er null, når der ingen tal er, eller når tælleren fejlede. */
+const DE_KILDE = 'Egen tæller på unserzuhauseapp.de, alle besøgende, uden cookies';
+async function visTysk(m) {
+  const titel = 'Tysk side', u0 = 'Hvordan det går med unserzuhauseapp.de';
+  if (opsat.database === false) { m.innerHTML = hoved(titel, u0) +
+    '<div class="besked advar">Databasen er ikke sat op, så tælleren kan ikke bruges. Se <b>Opsætning</b>.</div>'; return; }
+  const v = vaerktoej(periodevaelger());
+  m.innerHTML = hoved(titel, u0, v) + skeletKort(3);
+  const d = await kald('tysk', { dage });
+  const daek = d.daekning, fd = d.foerDaekning;
+  const b = d.besoegende || {}, vi = d.visninger || {}, kl = d.klik || {};
+  // overskriften lover kun en sammenligning, når mindst ét tal har en (som på Oversigten)
+  const sml = d.sammenlign || (d.timer ? 'i går' : 'de ' + d.dage + ' dage før');
+  const kpier = [b, vi, kl];
+  const harSml = kpier.some(x => !mangler(x.nu) && !mangler(x.foer));
+  const smlGrund = (fd && fd.hel === false && fd.grund) ||
+    String((kpier.find(x => x.grund) || {}).grund || '').replace(/^Ingen sammenligning med perioden før\.\s*/, '');
+  const under = harSml ? periodeTekst(d) + ', sammenlignet med ' + sml
+    : punkt(periodeTekst(d)) + ' Ingen sammenligning med ' + sik(sml) + '.' + (smlGrund ? ' ' + sik(punkt(smlGrund)) : '');
+  const sidst = d.sidst ? ' Seneste besøg blev registreret ' + datoTidDk(d.sidst) + '.' : '';
+  // ingen tal for perioden: én tydelig besked i stedet for en række tomme bokse. Ellers den gule dækningsbesked.
+  const daekTekst = !daek ? '' : !daek.fra
+    ? '<div class="besked advar"><b>Ingen tal for perioden.</b> ' + sik(punkt(daek.grund || 'Tælleren har ikke tal for perioden.')) + sik(sidst) + '</div>'
+    : daekBesked(daek, 'Tal, kurve og lister dækker kun de dage, og der er ingen sammenligning med perioden før.');
+  const banner = d.fraHvornaar && daek && daek.fra ? '<div class="besked godt"><b>Fra jeres egen tæller på den tyske side.</b> Alle tal her tæller alle besøgende på unserzuhauseapp.de, også dem der siger nej til cookies, og robotter er sorteret fra.' +
+    (d.timer ? '' : ' Besøgende er talt pr. dag og lagt sammen, for tælleren kan ikke genkende nogen fra dag til dag.') +
+    ' Tælleren har tal fra ' + sik(datoTidDk(d.fraHvornaar)) + '.' + sik(sidst) + '</div>' : '';
+  // lister: står der ingen dage med tal, siges hvorfor, i stedet for "Kunne ikke hentes"
+  const liste = html => daek && !daek.fra ? '<div class="tom">' + sik(daek.grund || 'Ingen tal i perioden.') + '</div>' : html;
+  const kort = 'Egen tæller på unserzuhauseapp.de';
+  const flereDage = !d.timer && !(d.fra && d.fra === d.til);
+  const klikEkstra = mangler(kl.nu) ? '' : [kl.tilButik && !mangler(kl.tilButik.nu) ? T(kl.tilButik.nu) + ' til App Store eller Google Play' : '',
+    kl.gaester && !mangler(kl.gaester.nu) ? T(kl.gaester.nu) + ' besøgende trykkede' + (flereDage ? ' (talt pr. dag og lagt sammen)' : '') : ''].filter(Boolean).join(', ');
+  // backendens kurve { dato, time?, besoegende, visninger } i storKurves form; null forbliver null (hul)
+  const tilKurve = r => (r || []).map(x => ({ date: String(x.dato || '').replace(/-/g, '') + (x.time != null ? String(x.time).padStart(2, '0') : ''),
+    activeUsers: x.besoegende, screenPageViews: x.visninger }));
+  m.innerHTML = hoved(titel, under, v) + hentetLinje(d) +
+    delfejl(d, { besoegende:'Besøgende', visninger:'Sidevisninger', klik:'Tryk på hent-knapperne' }) +
+    (d.note ? '<div class="besked info">' + sik(d.note) + '</div>' : '') + banner + daekTekst +
+    '<div class="sektion">Egen tæller på unserzuhauseapp.de <span>alle besøgende, uden cookies</span></div>' +
+    '<div class="net n3">' +
+      kpiTal('Besøgende', { ...b, kilde: kort }, T, false, spark((d.kurve || []).map(r => r.besoegende))) +
+      kpiTal('Sidevisninger', { ...vi, kilde: kort }) +
+      kpiTal('Tryk på hent-knapperne', { ...kl, kilde: kort }, T, false, '', klikEkstra) + '</div>' +
+    '<div class="kort" style="margin-bottom:14px"><h3>Besøgende ' + (d.timer ? 'time for time' : 'pr. dag') + '</h3>' +
+      kildeLinje(DE_KILDE, daek, d.timer ? '' : 'Forskellige besøgende hver dag') + storKurve(tilKurve(d.kurve), tilKurve(d.kurveFoer), []) + '</div>' +
+    '<div class="net n21">' +
+      '<div class="kort"><h3>Mest læste sider' + (Array.isArray(d.sider) && d.sider.length ? udtrKnap('de-sider', 'tysk-sider') : '') + '</h3>' + kildeLinje(DE_KILDE, daek) +
+        liste(tabel('de-sider', d.sider, [
+          {navn:'Side', felt:'sti', bar:'visninger', total: vi.nu}, {navn:'Visninger', felt:'visninger', h:true},
+          {navn:'Besøgende', felt:'besoegende', h:true}], 'Ingen visninger i perioden')) + '</div>' +
+      '<div class="kort"><h3>Hvor kommer de fra</h3>' + kildeLinje(DE_KILDE, daek) +
+        liste(tabel('de-kilder', samlVist(d.kilder, 'kanal', kanal), [
+          {navn:'Kanal', felt:'kanal', bar:'besoegende', total: b.nu, form: x => sik(kanal(x))},
+          {navn:'Besøgende', felt:'besoegende', h:true}], 'Ingen besøg')) +
+        (d.kilderTekst ? '<p style="font-size:12px;color:var(--svag);margin-top:8px">' + sik(d.kilderTekst) + '</p>' : '') + '</div></div>' +
+    '<div class="net n2">' +
+      '<div class="kort"><h3>Lande</h3>' + kildeLinje(DE_KILDE, daek) +
+        liste(tabel('de-lande', samlVist(d.lande, 'land', land), [
+          {navn:'Land', felt:'land', bar:'besoegende', total: b.nu, form: x => sik(land(x))},
+          {navn:'Besøgende', felt:'besoegende', h:true}], 'Ingen data')) + '</div>' +
+      '<div class="kort"><h3>Enhed</h3>' + kildeLinje(DE_KILDE, daek) +
+        liste(donut(samlVist(d.enheder, 'enhed', enhed), 'enhed', 'besoegende', enhed)) + '</div></div>';
 }
 
 /* ══ SEO OG GEO ══ */
@@ -2254,7 +2334,7 @@ function tegnNav() { let ud = '', g = '';
 }
 function gaaTil(id) { side = id; location.hash = id; sidsteTabel = {}; vis(); }
 async function vis() { tegnNav(); const m = document.getElementById('main');
-  const f = { oversigt:visOversigt, tragt:visTragt, trafik:visTrafik, soegeord:visSoegeord, annoncer:visAnnoncer, downloads:visDownloads,
+  const f = { oversigt:visOversigt, tragt:visTragt, trafik:visTrafik, soegeord:visSoegeord, annoncer:visAnnoncer, downloads:visDownloads, tysk:visTysk,
               seo:visSeo, chat:visChat, blog:visBlog, links:visLinks, indhold:visIndhold, oppetid:visOppetid, opsaetning:visOpsaetning }[side] || visOversigt;
   try { await f(m); saetHjaelp(m); } catch (e) { m.innerHTML = hoved('Noget gik galt','') + '<div class="besked slem">' + sik(e.message) + '</div>'; } }
 async function start() {

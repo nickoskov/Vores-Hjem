@@ -939,6 +939,161 @@ async function tragt(dage, valg) {
   return ud;
 }
 
+/* ── den tyske side, unserzuhauseapp.de ───────────────────────────────────
+   Samme egne taeller som den danske side, men i egne tabeller (vh_besoeg_de og vh_klik_de)
+   med de samme kolonner. Tabellerne findes foerst, naar den tyske side har sendt sit foerste
+   signal. Indtil da er alt null med en grund, aldrig 0. Gaeste-id'et skifter ved dansk midnat,
+   saa besoegende over flere dage er besoegende pr. dag, lagt sammen. Daekning og sammenligning
+   foelger de samme regler som Oversigten (daekning(), hele danske kalenderdage). */
+const DE_SITE = 'unserzuhauseapp.de';
+const DE_INGEN = 'Den tyske side har ikke sendt besøg endnu.';
+const DE_INGEN_KLIK = 'Den tyske side har ikke sendt tryk endnu.';
+// tabellen findes ikke endnu (Postgres-kode 42P01). En manglende kolonne (42703) er en rigtig fejl.
+const ingenTabel = e => !!e && (e.code === '42P01' || /relation "?[\w.]+"? does not exist/i.test(String(e.message || '')));
+// pr. spand (dag 'YYYYMMDD' eller time 'YYYYMMDDHH24'): forskellige gaester og visninger
+const qDeKurve = (v, fmt) => sql`SELECT b, count(DISTINCT gaest)::int AS besoegende, count(*)::int AS visninger
+  FROM (SELECT to_char(ts AT TIME ZONE 'Europe/Copenhagen', ${fmt}::text) AS b, gaest
+        FROM vh_besoeg_de WHERE ts >= (${v.a}::timestamp AT TIME ZONE 'Europe/Copenhagen') AND ts < (${v.b}::timestamp AT TIME ZONE 'Europe/Copenhagen')) x
+  GROUP BY b ORDER BY b`;
+// kanalen paa hver besoegendes foerste visning den dag, saa summen er lig med besoegende
+const qDeKilder = v => sql`SELECT kanal, count(*)::int AS n FROM (
+    SELECT DISTINCT ON (dag, gaest) kanal FROM (SELECT (ts AT TIME ZONE 'Europe/Copenhagen')::date AS dag, gaest, ts, kanal FROM vh_besoeg_de
+      WHERE ts >= (${v.a}::timestamp AT TIME ZONE 'Europe/Copenhagen') AND ts < (${v.b}::timestamp AT TIME ZONE 'Europe/Copenhagen')) y
+    ORDER BY dag, gaest, ts) x
+  GROUP BY kanal ORDER BY n DESC, kanal`;
+const qDeSider = v => sql`SELECT sti, count(*)::int AS visninger, count(DISTINCT ((ts AT TIME ZONE 'Europe/Copenhagen')::date::text || gaest))::int AS besoegende
+  FROM vh_besoeg_de WHERE ts >= (${v.a}::timestamp AT TIME ZONE 'Europe/Copenhagen') AND ts < (${v.b}::timestamp AT TIME ZONE 'Europe/Copenhagen')
+  GROUP BY sti ORDER BY visninger DESC, sti LIMIT 15`;
+// land '' (ukendt) er med, saa ingen besoegende forsvinder ud af listen
+const qDeLande = v => sql`SELECT land, count(DISTINCT ((ts AT TIME ZONE 'Europe/Copenhagen')::date::text || gaest))::int AS n
+  FROM vh_besoeg_de WHERE ts >= (${v.a}::timestamp AT TIME ZONE 'Europe/Copenhagen') AND ts < (${v.b}::timestamp AT TIME ZONE 'Europe/Copenhagen')
+  GROUP BY land ORDER BY n DESC, land LIMIT 10`;
+const qDeEnheder = v => sql`SELECT enhed, count(DISTINCT ((ts AT TIME ZONE 'Europe/Copenhagen')::date::text || gaest))::int AS n
+  FROM vh_besoeg_de WHERE ts >= (${v.a}::timestamp AT TIME ZONE 'Europe/Copenhagen') AND ts < (${v.b}::timestamp AT TIME ZONE 'Europe/Copenhagen')
+  GROUP BY enhed ORDER BY n DESC, enhed`;
+// tryk paa hent-knapperne: alle tryk, tryk der endte i en butik, og gaester pr. dag lagt sammen
+const qDeKlik = v => sql`SELECT coalesce(sum(tryk), 0)::int AS tryk, coalesce(sum(tryk_butik), 0)::int AS tryk_butik,
+    coalesce(sum(gaester), 0)::int AS gaester, coalesce(sum(gaester_butik), 0)::int AS gaester_butik
+  FROM (SELECT count(*) AS tryk, count(*) FILTER (WHERE butik IN ('appstore','googleplay')) AS tryk_butik,
+          count(DISTINCT gaest) AS gaester, count(DISTINCT gaest) FILTER (WHERE butik IN ('appstore','googleplay')) AS gaester_butik
+        FROM vh_klik_de WHERE ts >= (${v.a}::timestamp AT TIME ZONE 'Europe/Copenhagen') AND ts < (${v.b}::timestamp AT TIME ZONE 'Europe/Copenhagen')
+        GROUP BY (ts AT TIME ZONE 'Europe/Copenhagen')::date) x`;
+
+/** Hvor langt tilbage den tyske taeller har tal, regnet ud fra den aeldste raekke (som taellerStart).
+    besoeg/klik er null, naar tabellen mangler eller er tom. klikFejl er en anden fejl fra klik-tabellen. */
+async function deStart() {
+  const lav = (t, navn) => { if (!t) return null;
+    const tid = new Date(t).toISOString(), dato = dkNu(tid).dato;
+    return { tid, dato, heleFra: dagPlus(dato, 1), tekst: navn + ' har tal fra ' + dkTid(tid) }; };
+  let b, sidst = null;
+  try { b = await sql`SELECT min(ts) AS t, max(ts) AS s FROM vh_besoeg_de`; }
+  catch (e) { if (!ingenTabel(e)) throw e; b = null; }
+  let k = null, klikFejl = null;
+  try { k = await sql`SELECT min(ts) AS t FROM vh_klik_de`; }
+  catch (e) { if (!ingenTabel(e)) klikFejl = e; }
+  if (b && b[0] && b[0].s) sidst = new Date(b[0].s).toISOString();
+  return { besoeg: lav(b && b[0] && b[0].t, 'Tælleren på den tyske side'), klik: lav(k && k[0] && k[0].t, 'Klik-tælleren på den tyske side'),
+    sidst, klikFejl };
+}
+
+async function tysk(dage) {
+  const p = omfang(dage), fejl = [], af = dageMellem(p.fra, p.til);
+  const ingen = grund => ({ fra: null, til: null, dage: 0, af, hel: false, grund });
+  const tomt = grund => ({ nu: null, foer: null, kilde: 'egen', grund });
+  const tomtKlik = grund => ({ nu: null, foer: null, kilde: 'egen', grund, daekning: ingen(grund), foerDaekning: null, fra: null,
+    tilButik: { nu: null, foer: null }, gaester: { nu: null, foer: null }, gaesterButik: { nu: null, foer: null } });
+  const fmt = p.timer ? 'YYYYMMDDHH24' : 'YYYYMMDD';
+  // alle spande i perioden (timer eller dage), ogsaa dem foer daekningen, som saa er null
+  const noegler = (fra, til) => spande(p, fra) || alleDatoer(fra, til).map(d => d.replace(/-/g, ''));
+  const tilDato = k => k.slice(0, 4) + '-' + k.slice(4, 6) + '-' + k.slice(6, 8);
+  const lavKurve = (raekker, keys, med) => { const m = new Map((raekker || []).map(r => [r.b, r]));
+    return keys.map(k => { const r = m.get(k), ok = med(k), ud = { dato: tilDato(k) };
+      if (k.length === 10) ud.time = Number(k.slice(8, 10));
+      ud.besoegende = ok ? (r ? r.besoegende : 0) : null; ud.visninger = ok ? (r ? r.visninger : 0) : null;
+      return ud; }); };
+  const ud = {
+    kilde: 'egen', site: DE_SITE,
+    dage: p.d, type: p.type, timer: p.timer, egne: p.egne, fra: p.fra, til: p.til, foerFra: p.foerFra, foerTil: p.foerTil,
+    visning: p.visning, sammenlign: p.sammenlign, klokke: p.klokke ? p.klokke.slice(0, 5).replace(':', '.') : null, note: p.note || null,
+    daekning: null, foerDaekning: null, fraHvornaar: null, sidst: null,
+    besoegendeTekst: p.timer ? 'Forskellige besøgende i løbet af dagen.'
+      : 'Besøgende pr. dag, lagt sammen. Tælleren kan ikke genkende nogen fra dag til dag, så én, der kommer to dage, tæller to gange.',
+    besoegende: null, visninger: null, klik: null,
+    kurve: lavKurve([], noegler(p.fra, p.til), () => false), kurveFoer: [],
+    sider: null, kilder: null, lande: null, enheder: null,
+    kilderTekst: 'Besøgende fordelt efter, hvor de kom fra ved første side den dag. Klik inde på siden tæller ikke som Direkte.',
+    kildeFor: { besoegende: 'egen', visninger: 'egen', klik: 'egen', kurve: 'egen', sider: 'egen', kilder: 'egen', lande: 'egen', enheder: 'egen' },
+    fejl
+  };
+  const alt = grund => { ud.daekning = ingen(grund); ud.besoegende = tomt(grund); ud.visninger = tomt(grund); ud.klik = tomtKlik(grund); return ud; };
+  if (!sql) return alt('Databasen er ikke sat op.');
+  let s;
+  try { s = await deStart(); }
+  catch (e) { fejl.push(fejlObj('egen', e, 'Tælleren for den tyske side svarede ikke: ' + String(e.message || e).slice(0, 160)));
+    return alt('Tælleren for den tyske side svarede ikke.'); }
+  ud.fraHvornaar = s.besoeg ? s.besoeg.tid : null; ud.sidst = s.sidst;
+
+  // besoeg: kun den del af perioden, taelleren daekker, og kun sammenligning med en periode, den daekker helt
+  const dN = s.besoeg ? daekning(p.fra, p.til, s.besoeg) : ingen(DE_INGEN);
+  const dF = s.besoeg ? daekning(p.foerFra, p.foerTil, s.besoeg) : ingen(DE_INGEN);
+  ud.daekning = dN; ud.foerDaekning = dF;
+  const vN = dN.fra ? vindue(dN.fra, dN.til, p.klokke) : null;
+  const vF = dN.fra && dF.hel ? vindue(p.foerFra, p.foerTil, p.klokke) : null;
+  const grund = !vN ? dN.grund : !dN.hel ? punktum(dN.grund) + ' Ingen sammenligning med perioden før.' : !vF ? ingenSml(dF) : null;
+  if (!vN) { ud.besoegende = tomt(grund); ud.visninger = tomt(grund); }
+  else {
+    try {
+      const tom = Promise.resolve(null);
+      const [kN, kF, dagN, dagF, kilder, sider, lande, enheder] = await Promise.all([
+        qDeKurve(vN, fmt), vF ? qDeKurve(vF, fmt) : tom,
+        p.timer ? qDeKurve(vN, 'YYYYMMDD') : tom, vF && p.timer ? qDeKurve(vF, 'YYYYMMDD') : tom,
+        qDeKilder(vN), qDeSider(vN), qDeLande(vN), qDeEnheder(vN)
+      ]);
+      // totaler regnes altid fra dagene: én dag giver forskellige gaester den dag, flere dage giver dagene lagt sammen
+      const tN = p.timer ? dagN : kN, tF = p.timer ? dagF : kF;
+      const tal = f => ({ nu: lagtSammen(tN, f), foer: vF ? lagtSammen(tF, f) : null, kilde: 'egen', grund });
+      ud.besoegende = tal('besoegende'); ud.visninger = tal('visninger');
+      // timer: hele dagen er daekket (eller slet ikke); dage: fra den foerste hele dag
+      const fraK = dN.fra.replace(/-/g, '');
+      ud.kurve = lavKurve(kN, noegler(p.fra, p.til), k => k.slice(0, 8) >= fraK);
+      ud.kurveFoer = vF ? lavKurve(kF, noegler(p.foerFra, p.foerTil), () => true) : [];
+      ud.kilder = kilder.map(r => ({ kanal: r.kanal, besoegende: r.n }));
+      ud.sider = sider.map(r => ({ sti: r.sti, visninger: r.visninger, besoegende: r.besoegende }));
+      ud.lande = lande.map(r => ({ land: r.land, besoegende: r.n }));
+      ud.enheder = enheder.map(r => ({ enhed: r.enhed, besoegende: r.n }));
+    } catch (e) {
+      // tabellen kan ikke forsvinde mellem to kald i praksis, men skulle den, er det ikke en fejl
+      const g = ingenTabel(e) ? DE_INGEN : 'Tælleren for den tyske side svarede ikke.';
+      if (!ingenTabel(e)) fejl.push(fejlObj('egen', e, 'Tælleren for den tyske side svarede ikke: ' + String(e.message || e).slice(0, 160)));
+      ud.besoegende = tomt(g); ud.visninger = tomt(g);
+    }
+  }
+
+  // tryk: klik-taelleren har sin egen daekning fra sin foerste raekke, som paa Oversigten
+  if (s.klikFejl) { fejl.push(fejlObj('egen', s.klikFejl, 'Klik-tælleren for den tyske side svarede ikke: ' + String(s.klikFejl.message || s.klikFejl).slice(0, 160)));
+    ud.klik = tomtKlik('Klik-tælleren for den tyske side svarede ikke.'); }
+  else if (!s.klik) ud.klik = tomtKlik(DE_INGEN_KLIK);
+  else {
+    const kD = daekning(p.fra, p.til, s.klik), kFD = daekning(p.foerFra, p.foerTil, s.klik);
+    const kvN = kD.fra ? vindue(kD.fra, kD.til, p.klokke) : null;
+    const kvF = kD.fra && kFD.hel ? vindue(p.foerFra, p.foerTil, p.klokke) : null;
+    const kGrund = !kvN ? kD.grund : !kD.hel ? punktum(kD.grund) + ' Ingen sammenligning med perioden før.' : !kvF ? ingenSml(kFD) : null;
+    try {
+      const [n, f] = await Promise.all([kvN ? qDeKlik(kvN) : null, kvF ? qDeKlik(kvF) : null]);
+      const t = (r, felt) => r ? r[0][felt] : null;
+      ud.klik = { nu: t(n, 'tryk'), foer: t(f, 'tryk'), kilde: 'egen', grund: kGrund, daekning: kD, foerDaekning: kFD, fra: s.klik.tid,
+        tilButik: { nu: t(n, 'tryk_butik'), foer: t(f, 'tryk_butik') },
+        gaester: { nu: t(n, 'gaester'), foer: t(f, 'gaester') },
+        gaesterButik: { nu: t(n, 'gaester_butik'), foer: t(f, 'gaester_butik') },
+        tekst: 'Tryk på hent-knapperne på den tyske side. Egen tæller, uden cookies.' };
+    } catch (e) {
+      if (!ingenTabel(e)) fejl.push(fejlObj('egen', e, 'Klik-tælleren for den tyske side svarede ikke: ' + String(e.message || e).slice(0, 160)));
+      ud.klik = tomtKlik(ingenTabel(e) ? DE_INGEN_KLIK : 'Klik-tælleren for den tyske side svarede ikke.');
+    }
+  }
+  return ud;
+}
+
 /* ── hastighed, mobil og computer, gemt et doegn ───────────────────────────
    Hver enhed maales tre gange hos Google. Tallet er den midterste af de vellykkede, ved to den
    laveste. valgTekst siger, hvilken det blev, og maalinger har dem alle (google.js). */
@@ -1453,6 +1608,8 @@ exports.handler = async (ev) => {
       case 'soegeord':  return svar(200, await cachet('soegeord', () => soegeord(dage)));
       case 'downloads': return svar(200, await cachet('downloads', () => downloads(dage), TIME));
       case 'tragt':     return svar(200, await cachet('tragt',    () => tragt(dage)));
+      // den tyske side (unserzuhauseapp.de), egen taeller i vh_besoeg_de og vh_klik_de
+      case 'tysk':      return svar(200, await cachet('tysk',     () => tysk(dage)));
       // chat: site 'dk' | 'de' | udeladt (= dansk og tysk samlet). Kildefejl logges.
       case 'chat':      return svar(200, await medLog(() => chat(dage, k.site))());
       // samtalerne, gennem bottens egen tjeneste

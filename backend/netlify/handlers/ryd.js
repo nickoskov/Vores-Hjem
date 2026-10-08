@@ -5,7 +5,7 @@
  * sidste besked, medmindre nogen stadig venter paa et menneske. Login-forsoeg,
  * udloebet cache og gamle oppetidstjek ryddes ogsaa.
  *
- * Bemaerk: besoeg og klik fra den egne taeller slettes ogsaa efter RYD_DAGE.
+ * Bemaerk: besoeg og klik fra den egne taeller (dansk og tysk side) slettes ogsaa efter RYD_DAGE.
  * Den aeldste raekke er derfor "aeldste gemte", ikke "taelleren startede".
  * Hoejst én koersel pr. dansk dag (laas i vh_koersel).
  */
@@ -32,12 +32,16 @@ exports.handler = async () => {
   try { const r = await sql`DELETE FROM vh_login WHERE hvornaar < now() - interval '1 day' RETURNING id`; ud.login = r.length; } catch (e) {}
   try { const r = await sql`DELETE FROM vh_klik WHERE ts < now() - make_interval(days => ${DAGE}::int) RETURNING id`; ud.klik = r.length; } catch (e) {}
   try { const r = await sql`DELETE FROM vh_besoeg WHERE ts < now() - make_interval(days => ${DAGE}::int) RETURNING id`; ud.besoeg = r.length; } catch (e) {}
+  // den tyske side (unserzuhauseapp.de) har sine egne tabeller, men samme loefte om sletning
+  try { const r = await sql`DELETE FROM vh_klik_de WHERE ts < now() - make_interval(days => ${DAGE}::int) RETURNING id`; ud.klikDe = r.length; } catch (e) {}
+  try { const r = await sql`DELETE FROM vh_besoeg_de WHERE ts < now() - make_interval(days => ${DAGE}::int) RETURNING id`; ud.besoegDe = r.length; } catch (e) {}
   try { const r = await sql`DELETE FROM vh_cache WHERE udloeber < now() RETURNING noegle`; ud.cache = r.length; } catch (e) {}
   try { const r = await sql`DELETE FROM vh_oppetid WHERE hvornaar < now() - interval '90 days' RETURNING id`; ud.oppetid = r.length; } catch (e) {}
   try { const r = await sql`DELETE FROM vh_log WHERE hvornaar < now() - interval '180 days' RETURNING id`; ud.log = r.length; } catch (e) {}
   // laasene fra de planlagte funktioner skal kun huskes, saa laenge en dobbeltkoersel kan komme
   try { const r = await sql`DELETE FROM vh_koersel WHERE ts < now() - interval '60 days' RETURNING job`; ud.koersel = r.length; } catch (e) {}
   await log('oprydning', 'ældre end ' + DAGE + ' dage: samtaler ' + (ud.samtaler || 0) + ', besøg ' + (ud.besoeg || 0) + ', klik ' + (ud.klik || 0)
+    + ', tysk side besøg ' + (ud.besoegDe || 0) + ', klik ' + (ud.klikDe || 0)
     + (ud.samtalerFejl ? '. Samtaler fejlede: ' + String(ud.samtalerFejl).slice(0, 80) : ''), 'ryd');
   return { statusCode: 200, body: JSON.stringify(ud) };
 };
