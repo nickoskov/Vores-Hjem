@@ -15,7 +15,7 @@ const SIDER = {
   hjemmeside: { site: 'stirring-cactus-7010c5', domæne: 'www.voreshjem.dk', lås: true },
   unserzuhause: { site: 'verdant-strudel-af7a88', domæne: 'www.unserzuhauseapp.de', lås: true },
   download: { site: 'voreshjem-download', domæne: 'download.voreshjem.dk', lås: false },
-  'unserzuhause-download': { site: 'unserzuhause-download', domæne: 'unserzuhause-download.netlify.app', lås: false },
+  'unserzuhause-download': { site: 'unserzuhause-download', domæne: 'download.unserzuhauseapp.de', lås: false },
 };
 const FORBUDT = {
   chatbot: 'chatbot/ har kun de statiske filer. Funktionen chat-bot ligger ikke i repoet, og en udgivelse herfra ville slette den.',

@@ -8,7 +8,7 @@ Hver mappe er præcis det, der ligger live.
 | `hjemmeside/` | www.voreshjem.dk | `stirring-cactus-7010c5` |
 | `download/` | download.voreshjem.dk | `voreshjem-download` |
 | `unserzuhause/` | www.unserzuhauseapp.de | `verdant-strudel-af7a88` |
-| `unserzuhause-download/` | unserzuhause-download.netlify.app | `unserzuhause-download` |
+| `unserzuhause-download/` | download.unserzuhauseapp.de | `unserzuhause-download` |
 | `chatbot/` | voreshjem-bot.netlify.app | `voreshjem-bot` |
 | `backend/` | backend.voreshjem.dk | `voreshjem-backend` |
 

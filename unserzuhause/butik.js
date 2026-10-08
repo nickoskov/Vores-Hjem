@@ -14,7 +14,7 @@
       qr.scrollIntoView({ behavior: 'smooth', block: 'center' });
       qr.classList.remove('qr-puls'); void qr.offsetWidth; qr.classList.add('qr-puls');
     } else {
-      window.location.href = 'https://unserzuhause-download.netlify.app/';
+      window.location.href = 'https://download.unserzuhauseapp.de/';
     }
   }, false);
 })();

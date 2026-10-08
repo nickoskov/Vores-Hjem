@@ -49,17 +49,16 @@ const PROFILER = {
     kode: 'de', brand: 'Unser Zuhause', navn: 'unserzuhauseapp.de',
     site: 'https://www.unserzuhauseapp.de', backend: 'https://backend.unserzuhauseapp.de',
     netlifySiteId: 'dee37d6a-eb69-4f6c-a2e9-ef20e9076531', backendSiteId: '571ab434-e15f-4851-a728-a3ed7169b3d1',
-    // download-siden (unserzuhause-download.netlify.app, hvor bio-links peger hen) taelles med som /download
+    // download-siden (download.unserzuhauseapp.de, foer unserzuhause-download.netlify.app, hvor bio-links peger hen) taelles med som /download
     tilladt: /(^|\.)unserzuhauseapp\.de$|^verdant-strudel-af7a88\.netlify\.app$|^unserzuhause-download\.netlify\.app$/i,
     egen: /(^|\.)unserzuhauseapp\.de$|^verdant-strudel-af7a88\.netlify\.app$|^unserzuhause-download\.netlify\.app$/i,
-    // download.unserzuhauseapp.de er download-sidens planlagte adresse; den er med nu, saa intet blandes ved flytningen
-    foran: { 'unserzuhause-download.netlify.app': '/download', 'download.unserzuhauseapp.de': '/download' },
+    foran: { 'download.unserzuhauseapp.de': '/download', 'unserzuhause-download.netlify.app': '/download' },
     chat: 'de',
     vagtAdresser: ['www.unserzuhauseapp.de', 'unserzuhauseapp.de', 'backend.unserzuhauseapp.de', 'download.unserzuhauseapp.de', 'unserzuhause-download.netlify.app'],
     appStoreId: '6771931999', playPakke: 'com.unserzuhause.app',
     butik: { appstore: 'https://apps.apple.com/de/app/unser-zuhause/id6771931999',
       googleplay: 'https://play.google.com/store/apps/details?id=com.unserzuhause.app&hl=de&gl=DE&referrer=utm_source%3Dwebsite',
-      hentside: 'https://unserzuhause-download.netlify.app/' },
+      hentside: 'https://download.unserzuhauseapp.de/' },
     kendetegn: /Unser Zuhause/i,
     brandSoeg: /(^| )unser ?zuhau?se?(app)?(?= )/, brandEksempel: 'unser zuhause',
     ga4Kode: null,

@@ -283,7 +283,7 @@ const SITES = {
     // backend). Den tyske sides egne test-udgaver paa Netlify (<id>--verdant-strudel-af7a88) er med, saa chatten
     // ogsaa virker der. Den danske bot har ingen liste og svarer '*' som foer.
     origins: ['https://www.unserzuhauseapp.de', 'https://unserzuhauseapp.de', 'https://backend.unserzuhauseapp.de',
-      'https://unserzuhause-download.netlify.app', /^https:\/\/([a-z0-9-]+--)?verdant-strudel-af7a88\.netlify\.app$/],
+      'https://download.unserzuhauseapp.de', 'https://unserzuhause-download.netlify.app', /^https:\/\/([a-z0-9-]+--)?verdant-strudel-af7a88\.netlify\.app$/],
     tagline: 'Weniger Chaos. Mehr Überblick.',
     store: {
       appstore: 'https://apps.apple.com/de/app/unser-zuhause/id6771931999',
@@ -291,7 +291,7 @@ const SITES = {
       // referrer beholdes, så vi stadig kan se at installationen kom fra chatten.
       googleplay: 'https://play.google.com/store/apps/details?id=com.unserzuhause.app&hl=de&gl=DE&referrer=utm_source%3Dchatbot',
       website: 'https://www.unserzuhauseapp.de',
-      hentside: 'https://unserzuhause-download.netlify.app/',
+      hentside: 'https://download.unserzuhauseapp.de/',
     },
     humanRe: /(mit|einen?).{0,15}(mensch|person|mitarbeiter|team|kundenservice|support)|echte[rn]? (mensch|person)|jemanden? sprechen|persönlich sprechen|anrufen|rückruf/i,
     angryRe: /(scheiß|scheiss|mist|verdammt|furchtbar|schrecklich|katastrophal|beschwer|unzufrieden|ärgerlich|frustrier|genervt|abzocke|betrug|geldverschwendung|schlechteste)/i,
