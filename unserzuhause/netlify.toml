@@ -190,6 +190,15 @@ force = false
 
   [redirects.headers]
 
+# Ratgeber: /ratgeber skal vise oversigten uden at blive sendt videre til /ratgeber/
+# (force, fordi mappen ratgeber/ ellers giver en 301 til adressen med skraastreg).
+# Artiklerne /ratgeber/<slug> serveres direkte fra ratgeber/<slug>.html uden regel.
+[[redirects]]
+from = "/ratgeber"
+to = "/ratgeber/index.html"
+status = 200
+force = true
+
 [[redirects]]
 from = "/essensplan"
 to = "/essenpl%C3%A4ne"

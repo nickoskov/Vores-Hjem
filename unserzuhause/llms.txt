@@ -24,6 +24,16 @@ Wichtige Fakten (Stand: 8. Oktober 2026):
 - [Aufgaben, Punkte und Taschengeld](https://www.unserzuhauseapp.de/aufgaben): Hausarbeit mit Namen, Fälligkeit und automatischer Wiederholung verteilen. Aufgaben können Punkte geben, und die Familie legt den Kurs selbst fest, zum Beispiel 1 Punkt = 1 Cent oder gar kein Geld. Nur Erwachsene zahlen aus.
 - [Einstellungen und Familiencode](https://www.unserzuhauseapp.de/einstellungen): Familienmitglieder, Rollen, Familiencode, Abo und Sprache.
 
+## Ratgeber
+
+Praktische Artikel für den Familienalltag, geschrieben vom Team hinter Unser Zuhause. Übersicht: [Ratgeber](https://www.unserzuhauseapp.de/ratgeber).
+
+- [Familienkalender organisieren: So behaltet ihr alle den Überblick](https://www.unserzuhauseapp.de/ratgeber/familienkalender-organisieren): Ein Ort für alle Termine, klare Regeln fürs Eintragen und ein kurzer Wochencheck: So wird der Familienkalender zur echten Entlastung.
+- [Wochenplan Essen: So erstellt ihr einen Essensplan für die Familie](https://www.unserzuhauseapp.de/ratgeber/wochenplan-essen-familie): Erst der Kalender, dann die Rezepte: So entsteht ein Essensplan, der auch am Donnerstag noch hält. Mit Beispielwoche für Familien.
+- [Einkaufsliste teilen: So kauft die ganze Familie gemeinsam ein](https://www.unserzuhauseapp.de/ratgeber/einkaufsliste-teilen): Eine Liste für alle, abhaken direkt im Laden und der Essensplan als Grundlage: So gibt es weniger Doppelkäufe und Extrafahrten.
+- [Aufgaben für Kinder im Haushalt: Was passt zu welchem Alter?](https://www.unserzuhauseapp.de/ratgeber/aufgaben-fuer-kinder-im-haushalt): Vom Spielzeug-Aufräumen bis zum eigenen Abendessen: Aufgaben nach Alter, Tipps für feste Routinen und die Frage nach dem Taschengeld.
+- [Mental Load in der Familie: So verteilt ihr das Mitdenken](https://www.unserzuhauseapp.de/ratgeber/mental-load-familie): Merken, planen, erinnern: Was Mental Load ist, warum Helfen allein nicht reicht und wie ihr die Denkarbeit in der Familie fair verteilt.
+
 ## App herunterladen
 
 - [Unser Zuhause im App Store](https://apps.apple.com/de/app/unser-zuhause/id6771931999): iPhone-App.
