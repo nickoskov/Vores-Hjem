@@ -22,6 +22,8 @@ const PROFILER = {
     // henvisninger herfra er klik inde paa siden. Botten viser den danske hent-side.
     egen: /(^|\.)voreshjem\.dk$|^stirring-cactus-7010c5\.netlify\.app$|^voreshjem-bot\.netlify\.app$/i,
     chat: 'dk',
+    // blokeringsvagten (blokvagt.js) slaar disse op gennem de offentlige sikkerhedsfiltre hver morgen
+    vagtAdresser: ['www.voreshjem.dk', 'voreshjem.dk', 'backend.voreshjem.dk', 'download.voreshjem.dk'],
     appStoreId: '6758346281', playPakke: 'com.voreshjem.app',
     // hent-knappen (hent.js): telefonen sendes til sin butik, en computer til hent-siden
     butik: { appstore: 'https://apps.apple.com/dk/app/vores-hjem/id6758346281',
@@ -52,6 +54,7 @@ const PROFILER = {
     egen: /(^|\.)unserzuhauseapp\.de$|^verdant-strudel-af7a88\.netlify\.app$|^unserzuhause-download\.netlify\.app$/i,
     foran: { 'unserzuhause-download.netlify.app': '/download' },
     chat: 'de',
+    vagtAdresser: ['www.unserzuhauseapp.de', 'unserzuhauseapp.de', 'backend.unserzuhauseapp.de', 'download.unserzuhauseapp.de', 'unserzuhause-download.netlify.app'],
     appStoreId: '6771931999', playPakke: 'com.unserzuhause.app',
     butik: { appstore: 'https://apps.apple.com/de/app/unser-zuhause/id6771931999',
       googleplay: 'https://play.google.com/store/apps/details?id=com.unserzuhause.app&hl=de&gl=DE&referrer=utm_source%3Dwebsite',
