@@ -30,7 +30,8 @@
       try {
         var u = new URL(a.href), omr0 = a.closest('section[id]');
         u.searchParams.set('sti', location.pathname);
-        u.searchParams.set('sted', omr0 ? omr0.id : a.closest('nav') ? 'menu' : a.closest('footer') ? 'footer' : '');
+        // knapper uden for et afsnit (den svaevende i hentknap.js) siger selv, hvad de er
+        u.searchParams.set('sted', a.getAttribute('data-sted') || (omr0 ? omr0.id : a.closest('nav') ? 'menu' : a.closest('footer') ? 'footer' : ''));
         a.href = u.toString();
       } catch (e2) {}
       return;

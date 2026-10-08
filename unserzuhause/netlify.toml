@@ -249,3 +249,39 @@ force = false
   [redirects.conditions]
 
   [redirects.headers]
+
+[[redirects]]
+from = "/datenschutzerklaerung"
+to = "https://www.iubenda.com/privacy-policy/77031753"
+status = 301
+force = false
+
+[[redirects]]
+from = "/privacy-policy"
+to = "https://www.iubenda.com/privacy-policy/77031753"
+status = 301
+force = false
+
+[[redirects]]
+from = "/cookie-richtlinie"
+to = "https://www.iubenda.com/privacy-policy/77031753/cookie-policy"
+status = 301
+force = false
+
+[[redirects]]
+from = "/nutzungsbedingungen"
+to = "https://www.iubenda.com/terms-and-conditions/77031753"
+status = 301
+force = false
+
+[[redirects]]
+from = "/contact/*"
+to = "/support"
+status = 301
+force = false
+
+[[redirects]]
+from = "/kontakt-os"
+to = "/support"
+status = 301
+force = false
