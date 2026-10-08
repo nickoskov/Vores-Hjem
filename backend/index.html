@@ -776,7 +776,10 @@ function saetNavne() {
   document.title = profil.brand + ', backend';
   const t = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
   t('loginNavn', profil.brand); t('loginUnder', 'Backend til ' + profil.navn); t('mrkNavn', profil.brand);
-  const l = document.getElementById('mrkLogo'); if (l) l.alt = profil.brand;
+  // hver side har sit eget logo: /images/logo.png (Vores Hjem) og /images/logo-de.png (Unser Zuhause)
+  const logo = profil.kode === 'de' ? '/images/logo-de.png' : '/images/logo.png';
+  const l = document.getElementById('mrkLogo'); if (l) { l.alt = profil.brand; l.src = logo; }
+  document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]').forEach(x => { x.href = logo; });
 }
 // en afvist database (forkert DATABASE_URL, se db.js) siges med backendens egen besked
 const dbBesked = () => opsat.databaseFejl ? '<div class="besked slem"><b>Databasen kan ikke bruges.</b> ' + sik(opsat.databaseFejl) + '</div>' : '';

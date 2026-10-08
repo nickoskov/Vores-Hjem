@@ -106,6 +106,19 @@ async function opret() {
   // ejerens to-trins-hemmelighed gemmes ogsaa her, under navnet "Ejer"
   await sql`CREATE TABLE IF NOT EXISTS vh_totp (navn TEXT PRIMARY KEY, hemmelighed TEXT NOT NULL, oprettet TIMESTAMPTZ NOT NULL DEFAULT now())`;
   await sql`CREATE TABLE IF NOT EXISTS vh_hastighed (id SERIAL PRIMARY KEY, mobil INTEGER, computer INTEGER, maalt TIMESTAMPTZ NOT NULL DEFAULT now())`;
+  // den egne taellers tabeller (taeller.js og hent.js opretter dem ogsaa). Her, saa en ny database ikke
+  // giver fejl i panelet, foer det foerste besoeg er kommet ind.
+  await sql`CREATE TABLE IF NOT EXISTS vh_besoeg (
+    id BIGSERIAL PRIMARY KEY, ts TIMESTAMPTZ NOT NULL DEFAULT now(),
+    sti TEXT NOT NULL, kilde TEXT NOT NULL DEFAULT '', kanal TEXT NOT NULL DEFAULT 'Direct',
+    enhed TEXT NOT NULL DEFAULT 'desktop', land TEXT NOT NULL DEFAULT '', gaest TEXT NOT NULL,
+    ikkefundet BOOLEAN NOT NULL DEFAULT false)`;
+  await sql`CREATE INDEX IF NOT EXISTS vh_besoeg_ts ON vh_besoeg (ts)`;
+  await sql`CREATE TABLE IF NOT EXISTS vh_klik (
+    id BIGSERIAL PRIMARY KEY, ts TIMESTAMPTZ NOT NULL DEFAULT now(),
+    sti TEXT NOT NULL, sted TEXT NOT NULL DEFAULT '', butik TEXT NOT NULL DEFAULT '',
+    enhed TEXT NOT NULL DEFAULT 'desktop', gaest TEXT NOT NULL)`;
+  await sql`CREATE INDEX IF NOT EXISTS vh_klik_ts ON vh_klik (ts)`;
   await sql`CREATE TABLE IF NOT EXISTS vh_seo (
     id SERIAL PRIMARY KEY, score INTEGER NOT NULL, rapport JSONB NOT NULL,
     koert TIMESTAMPTZ NOT NULL DEFAULT now())`;

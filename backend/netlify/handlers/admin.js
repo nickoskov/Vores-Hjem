@@ -153,6 +153,7 @@ let startHusk = null;
 async function taellerStart() {
   if (!sql) return null;
   if (startHusk && startHusk.t > Date.now() - 10 * 60000) return startHusk.v;
+  await opret();   // en ny database har ikke taellerens tabeller, foer det foerste besoeg er kommet ind
   const [b, k] = await Promise.allSettled([sql`SELECT min(ts) AS t FROM vh_besoeg`, sql`SELECT min(ts) AS t FROM vh_klik`]);
   if (b.status === 'rejected') throw b.reason;
   const lav = (x, navn) => {
@@ -228,12 +229,12 @@ const medLog = lav => async () => { const v = await lav(); await logFejl(v && v.
    dem, der har sagt ja til cookies, og vises derfor kun som et ekstra tal. */
 async function live() {
   const ud = { minutter: 30, kilde: null, paaSiden: null, visninger: null, sidst: null, enheder: [], sider: [], tekst: '', egen: null, ga4: null, fejl: [] };
-  const egenP = sql ? Promise.all([
+  const egenP = sql ? opret().then(() => Promise.all([
     sql`SELECT count(DISTINCT gaest)::int AS g, count(*)::int AS v FROM vh_besoeg WHERE ts > now() - interval '30 minutes'`,
     sql`SELECT enhed, count(DISTINCT gaest)::int AS g FROM vh_besoeg WHERE ts > now() - interval '30 minutes' GROUP BY enhed ORDER BY g DESC`,
     sql`SELECT sti, count(DISTINCT gaest)::int AS g, count(*)::int AS v FROM vh_besoeg WHERE ts > now() - interval '30 minutes' GROUP BY sti ORDER BY g DESC, v DESC LIMIT 5`,
     sql`SELECT max(ts) AS t FROM vh_besoeg`
-  ]).catch(e => { ud.fejl.push(fejlObj('egen', e)); return null; }) : Promise.resolve(null);
+  ])).catch(e => { ud.fejl.push(fejlObj('egen', e)); return null; }) : Promise.resolve(null);
   const gP = G.opsat() ? G.alle([
     G.realtid({ dimensions: [{ name: 'deviceCategory' }], metrics: [{ name: 'activeUsers' }] }),
     G.realtid({ dimensions: [{ name: 'unifiedScreenName' }], metrics: [{ name: 'activeUsers' }],
