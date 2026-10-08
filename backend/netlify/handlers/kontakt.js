@@ -15,7 +15,11 @@ const mail = require('../lib/mail.js');
 const profil = require('../lib/side.js');
 
 // kun profilens egen side. Den anden side sender til sin egen backend.
-const TILLADT = profil.tilladt;
+// Overgang 8. okt. 2026: den tyske side sender stadig sin formular hertil, indtil den tyske backend
+// har faaet sine noegler (flytnoegler.js). Saa laenge tager den danske backend imod den, som foer.
+// Fjernes sammen med flytnoegler.js, naar unserzuhause/ sender til backend.unserzuhauseapp.de.
+const OVERGANG = profil.kode === 'dk' ? profil.anden.tilladt : null;
+const TILLADT = { test: v => profil.tilladt.test(v) || (!!OVERGANG && OVERGANG.test(v)) };
 const vaert = u => { try { return new URL(u).hostname.replace(/^www\./,'').toLowerCase(); } catch (e) { return ''; } };
 
 const svar = (kode, oprindelse, krop) => ({ statusCode: kode,
@@ -77,7 +81,8 @@ exports.handler = async (ev) => {
   } catch (e) {} }
 
   // hvor henvendelsen kom fra, og hvad emnet starter med, folger profilen (side.js)
-  const { kilde, emne: emneStart, hvor } = profil.kontakt;
+  const fra = OVERGANG && OVERGANG.test(vaert(oprindelse)) ? profil.anden : profil;
+  const { kilde, emne: emneStart, hvor } = fra.kontakt;
   const html = `<p><b>Ny henvendelse fra kontaktformularen${hvor}</b></p>
     <p><b>Navn:</b> ${esc(navn)}<br><b>Email:</b> ${esc(email)}<br><b>Emne:</b> ${esc(emne) || '(ingen)'}</p>
     <p><b>Besked:</b><br>${esc(besked).replace(/\n/g,'<br>')}</p>
