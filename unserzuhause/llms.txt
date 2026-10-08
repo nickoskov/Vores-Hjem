@@ -41,7 +41,7 @@ Praktische Artikel für den Familienalltag, geschrieben vom Team hinter Unser Zu
 
 ## Hilfe und Support
 
-- [Support und Kontakt](https://www.unserzuhauseapp.de/support): Hilfe zur App und Kontaktformular. Antwort innerhalb von 1 bis 2 Werktagen.
+- [Support und Kontakt](https://www.unserzuhauseapp.de/support): Hilfe zur App und Kontaktformular. Antwort an Werktagen innerhalb von 24 Stunden.
 - [Konto löschen](https://www.unserzuhauseapp.de/konto-loeschen): So löscht man sein Konto und alle Daten direkt in der App.
 - [Impressum](https://www.unserzuhauseapp.de/impressum): Anbieterkennzeichnung von Vores Hjem I/S.
 

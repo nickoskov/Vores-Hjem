@@ -174,7 +174,7 @@ kolonner, køres `https://backend.unserzuhauseapp.de/.netlify/functions/chat-bot
 ### Support-mail på tysk, læst og besvaret på dansk
 
 Kunderne skriver på tysk til `support@unserzuhauseapp.de`. Funktionen
-`postkasse` læser postkassen hvert andet minut (samme login som SMTP) og
+`postkasse` læser postkassen hvert 5. minut (samme login som SMTP) og
 sender hver ny kundemail videre til `SUPPORT_TEAM`, oversat til dansk, med et
 sagsnummer som `[UZ-12]` i emnet. Kunden får med det samme en kort tysk
 kvittering, højst én pr. adresse pr. døgn. Svarer teamet på dansk på den

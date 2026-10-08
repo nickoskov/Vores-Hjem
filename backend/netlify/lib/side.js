@@ -81,7 +81,7 @@ const PROFILER = {
       svarEmne: 'AW: ', udenEmne: '(ohne Betreff)',
       kvittering: {
         emne: 'Danke für deine Nachricht',
-        tekst: 'Hallo,\n\ndanke für deine Nachricht an Unser Zuhause. Wir haben sie erhalten und antworten dir innerhalb von 1 bis 2 Werktagen.\n\n' +
+        tekst: 'Hallo,\n\ndanke für deine Nachricht an Unser Zuhause. Wir haben sie erhalten und antworten dir an Werktagen innerhalb von 24 Stunden.\n\n' +
           'Viele Antworten findest du schon jetzt auf unserer Hilfeseite: https://www.unserzuhauseapp.de/support\n\nViele Grüße\ndein Team von Unser Zuhause'
       },
       // citatlinjen over kundens egen besked i svaret: 'Am 8. Oktober 2026 um 18:02 schrieb Max <max@...>:'

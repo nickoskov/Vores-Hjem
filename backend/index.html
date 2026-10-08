@@ -2276,7 +2276,7 @@ async function visOpsaetning(m) {
       rk('Mail', opsat.mail, 'SMTP_HOST, SMTP_USER, SMTP_PASS og ALERT_TO. Til alarmer og ugemail.') +
       // kun paa en backend med support-mail (den tyske). Viser kun navnene paa det, der mangler, aldrig adresser
       (opsat.support ? rk('Oversættelse af support-mail', opsat.support.klar, opsat.support.klar
-        ? 'Kundemails til support-postkassen kommer til teamet på dansk med et sagsnummer. Svar på dansk sendes til kunden på tysk. Tjekkes hvert andet minut.'
+        ? 'Kundemails til support-postkassen kommer til teamet på dansk med et sagsnummer. Svar på dansk sendes til kunden på tysk. Tjekkes hvert 5. minut.'
         : 'Mangler ' + (opsat.support.mangler || []).map(sik).join(', ') + '. SUPPORT_TEAM er teamets adresse, der får kundemails på dansk.') : '') +
       (skjult('blog') ? '' : rk('Soro', opsat.soro, 'SORO_RSS_URL. Soros RSS-feed, læses hver time.')) +
       (skjult('indhold') ? '' : rk('Udgivelse fra panelet', opsat.netlify || opsat.udgivelse, opsat.netlify ? 'NETLIFY_TOKEN. Rettelser og blogindlæg udgives direkte på siden.' : 'NETLIFY_TOKEN. Uden den kan rettelser ikke udgives fra panelet.')) + '</tbody></table></div>' +
