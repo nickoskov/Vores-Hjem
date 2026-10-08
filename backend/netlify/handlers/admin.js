@@ -1349,10 +1349,11 @@ async function oppetid() {
   const q = iv => sql`SELECT count(*)::int AS alle, count(*) FILTER (WHERE NOT oppe)::int AS nede, avg(ms)::int AS ms,
                         min(hvornaar) AS fra, max(hvornaar) AS til
                       FROM vh_oppetid WHERE hvornaar > now() - ${iv}::interval`;
-  const [d, u, m, sidste, haendelser, f] = await Promise.all([ q('1 day'), q('7 days'), q('30 days'),
+  const [d, u, m, sidste, haendelser, f, bv] = await Promise.all([ q('1 day'), q('7 days'), q('30 days'),
     sql`SELECT oppe, ms, status, fejl, hvornaar FROM vh_oppetid ORDER BY id DESC LIMIT 1`,
     sql`SELECT oppe, ms, status, fejl, hvornaar FROM vh_oppetid WHERE NOT oppe ORDER BY id DESC LIMIT 20`,
-    sql`SELECT min(hvornaar) AS t FROM vh_oppetid` ]);
+    sql`SELECT min(hvornaar) AS t FROM vh_oppetid`,
+    sql`SELECT vaerdi FROM vh_cache WHERE noegle = 'blokvagt-sidst'` ]);
   const foerste = f[0] && f[0].t ? new Date(f[0].t).toISOString() : null;
   const komma = n => String(n).replace('.', ',');
   const vin = (r, timer, navn) => {
@@ -1371,7 +1372,28 @@ async function oppetid() {
     dag: vin(d, 24, 'Seneste døgn'), uge: vin(u, 7 * 24, 'Seneste 7 dage'), maaned: vin(m, 30 * 24, 'Seneste 30 dage'),
     sidste: sidste[0] || null, haendelser,
     svartid: { kilde: 'oppetid', dag: d[0] ? d[0].ms : null, uge: u[0] ? u[0].ms : null,
-      tekst: 'Tid for at hente hele forsiden fra en Netlify-server (som standard i USA), med opkobling og eventuel omdirigering. Det er ikke den ventetid, en besøgende i Danmark oplever, så brug den til at se udsving. Serverens egen svartid står under Sidehastighed.' } };
+      tekst: 'Tid for at hente hele forsiden fra en Netlify-server (som standard i USA), med opkobling og eventuel omdirigering. Det er ikke den ventetid, en besøgende i Danmark oplever, så brug den til at se udsving. Serverens egen svartid står under Sidehastighed.' },
+    blokvagt: blokvagtSidst(bv[0] && bv[0].vaerdi) };
+}
+
+/* Blokeringsvagtens seneste koersel (handlers/blokvagt.js gemmer den i vh_cache under 'blokvagt-sidst', én gang
+   om dagen). Har vagten ikke koert, er svaret null med en grund, aldrig "ingen blokeringer". Antallet af filtre og
+   adresser er det, koerslen selv gemte; koersler fra foer 9. okt. 2026 gemte det ikke, og saa er tallene null. */
+const BLOKVAGT_GAMMEL = 36;   // timer. Vagten koerer hver morgen, saa et aeldre resultat er forsinket.
+function blokvagtSidst(v) {
+  const liste = x => Array.isArray(x) ? x : null;
+  if (!v || typeof v !== 'object' || !v.hvornaar || isNaN(Date.parse(v.hvornaar))) return { kilde: 'blokvagt', koert: null, fund: null,
+    filtre: null, adresser: null, usikre: null, sprunget: null, antalGrund: null, gammel: null,
+    grund: 'Blokeringsvagten har ikke kørt endnu på backenden til ' + profil.navn + '. Den kører hver morgen og gemmer sit resultat her.' };
+  const fund = liste(v.fund), filtre = liste(v.filtre), adresser = liste(v.adresser);
+  const timer = (Date.now() - Date.parse(v.hvornaar)) / 3600000;
+  return { kilde: 'blokvagt', koert: new Date(v.hvornaar).toISOString(),
+    fund: fund ? fund.map(f => ({ navn: String(f.navn || ''), filter: String(f.filter || ''), hvordan: String(f.hvordan || '') })) : null,
+    filtre: filtre ? filtre.length : null, adresser: adresser ? adresser.length : null,
+    usikre: liste(v.usikre), sprunget: liste(v.sprunget),
+    antalGrund: filtre && adresser ? null : 'Kørslen er fra før vagten gemte, hvor meget den tjekkede.',
+    gammel: timer > BLOKVAGT_GAMMEL ? punktum('Vagten har ikke kørt siden ' + dkTid(v.hvornaar) + ', selv om den skal køre hver morgen. Resultatet kan være forældet') : null,
+    grund: fund ? null : 'Kørslen gemte ikke, hvad den fandt.' };
 }
 
 /* ── support (kun en backend med support-mail, side.js: den tyske) ──────────

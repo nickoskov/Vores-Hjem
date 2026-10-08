@@ -515,7 +515,7 @@ const TT = (n, form) => mangler(n) ? '–' : (form || T)(n);
    kildeLinje giver den lille grå linje under en overskrift, fx "Egen tæller, alle besøgende, 17. sep. til 5. okt." */
 const KILDEKORT = { egen:'Egen tæller, alle besøgende', ga4:'Google Analytics, kun cookie-ja', gsc:'Search Console', play:'Google Play',
   appstore:'App Store', meta:'Meta', googleads:'Google Ads', bot:'Chatbotten', oppetid:'Oppetidsvagten', psi:'Google PageSpeed',
-  seo:'Egen gennemgang af siden', db:'Databasen', support:'Support-mailen' };
+  seo:'Egen gennemgang af siden', db:'Databasen', support:'Support-mailen', blokvagt:'Blokeringsvagten' };
 function kildeTekst(k, daek, ekstra) {
   const navn = Array.isArray(k) ? k.map(x => KILDEKORT[x] || x).join(' og ') : (KILDEKORT[k] || k || '');
   let t = navn;
@@ -1426,6 +1426,7 @@ const HJAELP = {
   'Alarm': 'Om I får en mail, hvis siden holder op med at svare. Kræver at mail er sat op.',
   'Sidehastighed, målt af Google': 'Googles egen test af, hvor hurtigt siden loader på telefon og computer. Over 90 er grønt. Tallet svinger meget fra gang til gang, så hver enhed måles tre gange. Under boksene står, hvilken måling der vises: midterværdien, eller den laveste, hvis kun to lykkedes.',
   'Gange siden ikke svarede': 'Hver gang vores tjek ikke fik svar fra siden, med tidspunkt og fejl.',
+  'Blokeringsvagt': 'Hver morgen slår backenden sidens adresser op hos de offentlige sikkerhedsfiltre, som internetudbydere, firmaer og skoler bygger deres filtre på, og hos Google Safe Browsing. Står en adresse som blokeret, kan folk bag det filter ikke åbne siden, og I får en mail samme morgen. Internetudbydernes egne filtre (fx YouSee) kan ikke spørges udefra, kun de offentlige. Har vagten ikke kørt, står der det, ikke at alt er i orden.',
   // Opsaetning
   'Forbindelserne, testet lige nu': 'Backenden prøver at hente tal fra hver kilde og fortæller, om det lykkedes. Rødt betyder, at nøglen eller adgangen er forkert.',
   'Grundlaget': 'De ting, panelet selv har brug for: adgangskode, database, mail og udgivelse.',
@@ -2207,6 +2208,25 @@ function tegnSag(d) {
   const bk = document.getElementById('sag-beskeder'); if (bk) bk.scrollTop = bk.scrollHeight;
 }
 
+/* Blokeringsvagtens seneste koersel (oppetid.blokvagt). koert null: den har ikke koert, og det staar der,
+   ikke "ingen blokeringer". filtre og adresser er null, naar koerslen ikke gemte dem. */
+function blokvagtIndhold(b) {
+  if (!b) return '<div class="tom">Backenden sendte intet om blokeringsvagten.</div>';
+  if (!b.koert) return kildeLinje(b.kilde || 'blokvagt', null, 'kører hver morgen') + '<div class="besked advar" style="margin:0"><b>Har ikke kørt endnu.</b> ' + sik(b.grund || '') + '</div>';
+  const f = b.fund, u = b.usikre || [], sp = b.sprunget || [];
+  const tjekket = mangler(b.filtre) || mangler(b.adresser) ? (b.antalGrund || 'Ukendt, hvor meget der blev tjekket.')
+    : T(b.adresser) + (b.adresser === 1 ? ' adresse' : ' adresser') + ' tjekket hos ' + T(b.filtre) + ' filtre.';
+  return kildeLinje(b.kilde || 'blokvagt', null, 'kørte ' + tidDk(b.koert)) +
+    (b.gammel ? '<div class="besked advar" style="margin:0 0 10px">' + sik(b.gammel) + '</div>' : '') +
+    (f == null ? '<div class="besked advar" style="margin:0 0 10px">' + sik(b.grund || 'Ukendt, hvad vagten fandt.') + '</div>'
+      : f.length ? '<div class="besked slem" style="margin:0 0 10px"><b>' + (f.length === 1 ? 'Én aktiv blokering' : f.length + ' aktive blokeringer') + '</b><br>' +
+          f.map(x => '<b>' + sik(x.navn) + '</b> hos ' + sik(x.filter) + ': ' + sik(x.hvordan)).join('<br>') + '</div>'
+      : '<div class="besked godt" style="margin:0 0 10px">Ingen blokeringer.</div>') +
+    '<div style="font-size:12.5px;color:var(--svag);line-height:1.6">' + sik(tjekket) +
+      (u.length ? ' ' + T(u.length) + ' tjek kunne ikke gennemføres: ' + sik(u.slice(0, 3).join('; ')) + (u.length > 3 ? ' og ' + T(u.length - 3) + ' til' : '') + '.' : '') +
+      (sp.length ? ' Sprunget over: ' + sik(sp.join('; ')) + '.' : '') + '</div>';
+}
+
 /* ══ OPPETID ══ */
 async function visOppetid(m) {
   m.innerHTML = hoved('Oppetid','Svarer voreshjem.dk') + skeletKort(3);
@@ -2227,6 +2247,7 @@ async function visOppetid(m) {
       (d.uge && d.uge.ms ? ' · ' + T(d.uge.ms) + ' ms over ugen' : '') + '. Brug tallet til at se udsving, ikke som besøgendes ventetid.</div></div>' +
       '<div class="kort"><h3>Alarm</h3><div style="font-size:14px;line-height:1.7;color:var(--daemp)">' + (opsat.mail ? 'Mail sendes til <b>' + sik(opsat.mailTil||'den adresse der står i ALERT_TO') + '</b>, når siden går ned, og igen når den er oppe.' :
       '<span style="color:var(--gul);font-weight:700">Mail er ikke sat op.</span> Går siden ned, får ingen besked. Sæt SMTP-variablerne og ALERT_TO under Opsætning.') + '</div></div></div>' +
+    '<div class="kort" style="margin-bottom:14px"><h3>Blokeringsvagt</h3>' + blokvagtIndhold(d.blokvagt) + '</div>' +
     '<div class="kort" style="margin-bottom:14px"><h3>Sidehastighed, målt af Google <span class="ret" style="font-weight:500">dagvagtens måling, Mål nu gemmes et døgn</span>' +
       (erEjer() ? '<button class="ret knap grim lille" onclick="maalHastighed()">Mål igen</button>' : '') + '</h3><div id="hast"><div class="skelet" style="height:90px"></div></div></div>' +
     '<div class="kort"><h3>Gange siden ikke svarede</h3>' + ((d.haendelser||[]).length ? '<table><thead><tr><th>Hvornår</th><th>Fejl</th><th style="text-align:right">Svar</th></tr></thead><tbody>' +
