@@ -1611,7 +1611,9 @@ exports.handler = async (ev) => {
         if (gplay.opsat()) await proev('googleplay', async () => { const r = await gplay.periode(iso(new Date(Date.now()-5*86400000)), iso(new Date(Date.now()-2*86400000))); return r.length + ' dage med tal'; }); else ud.googleplay = { ok:false, fejl:'ikke sat op' };
         if (!harChat) ud.bot = { ok:true, ms:0, note:'ingen chat på ' + profil.navn };
         else if (botOpsat()) await proev('bot', async () => { const r = await bot('admin_stats', { days: 7 }); return r.total + ' samtaler i alt'; }); else ud.bot = { ok:false, fejl:'ikke sat op' };
-        if (forfatter.opsat()) await proev('claude', async () => { const r = await forfatter.forslag('titel', { url:'/', titel: profil.brand, besk:'', h1tekst: profil.brand }); return r.length + ' forslag'; }); else ud.claude = { ok:false, fejl:'ikke sat op' };
+        // den tyske backend bruger Claude til at oversaette support-mail, saa det er det, der proeves
+        if (profil.support && require('../lib/oversaet.js').opsat()) await proev('claude', async () => { const r = await require('../lib/oversaet.js').oversaet('Danke für eure schnelle Hilfe!', 'de-da'); return 'oversætter: ' + String(r).slice(0, 60); });
+        else if (forfatter.opsat()) await proev('claude', async () => { const r = await forfatter.forslag('titel', { url:'/', titel: profil.brand, besk:'', h1tekst: profil.brand }); return r.length + ' forslag'; }); else ud.claude = { ok:false, fejl:'ikke sat op' };
         if (udgivelse.opsat()) await proev('netlify', async () => { const r = await fetch('https://api.netlify.com/api/v1/sites/' + (process.env.SITE_NETLIFY_ID || profil.netlifySiteId), { headers:{ Authorization:'Bearer ' + process.env.NETLIFY_TOKEN } }); if (!r.ok) throw new Error('Netlify svarede ' + r.status); return (await r.json()).name; }); else ud.netlify = { ok:false, fejl:'ikke sat op' };
         if (mail.opsat()) ud.mail = { ok:true, note:'sender til ' + mail.TIL + ', brug Send prøvemail' }; else ud.mail = { ok:false, fejl:'ikke sat op' };
         // support-postkassen: logger ind over IMAP og taeller indbakken, laeser ingen mails
@@ -1624,6 +1626,10 @@ exports.handler = async (ev) => {
         else ud.soro = { ok:false, fejl:'ikke sat op' };
         if (sql) await proev('taeller', async () => { const r = await sql`SELECT count(*)::int AS n, count(DISTINCT gaest)::int AS g, max(ts) AS sidst FROM vh_besoeg WHERE ts > now() - interval '24 hours'`;
           return r[0].n + ' sidevisninger fra ' + r[0].g + ' besøgende de sidste 24 timer' + (r[0].sidst ? ', seneste ' + new Date(r[0].sidst).toLocaleTimeString('da-DK', { timeZone:'Europe/Copenhagen', hour:'2-digit', minute:'2-digit' }) : ''); });
+        // kilder, kun den danske side bruger: de mangler ikke paa den tyske, de bruges bare ikke der
+        const brugesIkke = { meta: 'annoncer', googleads: 'annoncer', netlify: 'indhold', soro: 'blog', bot: 'chat' };
+        for (const [n, side] of Object.entries(brugesIkke)) if (profil.skjul.includes(side)) ud[n] = { ok:false, fejl:'ikke sat op', brugesIkke:true, note:'Bruges ikke på ' + profil.navn + '.' };
+        if (!profil.ga4Kode && !G.opsat()) ud.analytics = { ok:false, fejl:'ikke sat op', brugesIkke:true, note:'Google Analytics er ikke sat op på ' + profil.navn + '. Jeres egen tæller tæller besøgene.' };
         await log('forbindelser testet', Object.entries(ud).filter(([k,v]) => !v.ok && v.fejl !== 'ikke sat op').map(([k]) => k).join(', ') || 'alle ok', bruger.navn);
         return svar(200, ud); }
       case 'rettelser-udgiv': { ejer(); await opret();
