@@ -1422,6 +1422,13 @@
         <label for="c-msg">Besked</label>
         <textarea id="c-msg" rows="4" placeholder="Hvad handler det om?"></textarea>
       </div>
+      <!-- Kun bots udfylder dette felt. Ægte besøgende ser det aldrig. -->
+      <div aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;">
+        <label for="c-hjemmeside">Hjemmeside</label>
+        <input type="text" id="c-hjemmeside" name="hjemmeside" tabindex="-1" autocomplete="off">
+      </div>
+      <input type="hidden" id="c-t" name="t">
+      <script>document.getElementById('c-t').value = Date.now();</script>
       <p id="contact-error" style="display:none;color:#E84040;font-size:13px;font-weight:600;margin-top:4px;"></p>
       <button class="contact-submit" id="contact-submit-btn" onclick="submitContact()">Send besked</button>
     </div>
@@ -1463,12 +1470,16 @@ async function submitContact() {
   btn.disabled = true;
   btn.textContent = 'Sender…';
   try {
-    await fetch('https://hook.eu1.make.com/o4qv702raknh1ar1oo8iwpdpeeatbn4r', {
+    // Samme modtager, felter og kodning som formularen på /support (kontakt.html).
+    // Backenden (backend/netlify/handlers/kontakt.js) bruger edderkoppefeltet og tidsstemplet mod spam.
+    const svar = await fetch('https://backend.voreshjem.dk/formular/kontakt', {
       method: 'POST',
-      mode: 'no-cors',
-                headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ name, email, message: msg })
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ navn: name, email: email, emne: '', besked: msg,
+        hjemmeside: document.getElementById('c-hjemmeside').value, t: document.getElementById('c-t').value })
     });
+    if (!svar.ok) throw new Error();
+    await svar.json();
     document.getElementById('contact-form-wrap').style.display = 'none';
     const s = document.getElementById('contact-success');
     s.style.display = 'flex';
