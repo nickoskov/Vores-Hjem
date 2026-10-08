@@ -250,5 +250,140 @@
   "billede": "",
   "dato": "2026-08-05",
   "kategori": "madplan"
+ },
+ {
+  "slug": "opgavepoint-eller-lommepenge",
+  "fil": "/blog/post/opgavepoint-eller-lommepenge.html",
+  "titel": "Opgavepoint eller lommepenge i familien?",
+  "resume": "Opgavepoint eller lommepenge? Få hjælp til at vælge en enkel model for huslige opgaver, ansvar og belønning, som passer til jeres familie i hverdagen.",
+  "billede": "https://www.voreshjem.dk/images/blog/s399672f351.webp",
+  "dato": "2026-10-07",
+  "kategori": "opgaver"
+ },
+ {
+  "slug": "faa-overblik-over-hverdagen",
+  "fil": "/blog/post/faa-overblik-over-hverdagen.html",
+  "titel": "Sådan får familien overblik over hverdagen",
+  "resume": "Få overblik over hverdagen med en fælles kalender, madplan, indkøbsliste og opgaver, så familien lettere kan koordinere det, der skal ske hver eneste uge.",
+  "billede": "https://www.voreshjem.dk/images/blog/sd2544969f2.webp",
+  "dato": "2026-10-05",
+  "kategori": "hverdag"
+ },
+ {
+  "slug": "hvornar-faar-boern-huslige-pligter",
+  "fil": "/blog/post/hvornar-faar-boern-huslige-pligter.html",
+  "titel": "Hvornår får børn huslige pligter i hverdagen?",
+  "resume": "Hvornår får børn huslige pligter? Se, hvordan små opgaver efter alder kan blive en naturlig del af hverdagen og familiens fælles ansvar helt enkelt nu.",
+  "billede": "https://www.voreshjem.dk/images/blog/s42aa80d1c4.webp",
+  "dato": "2026-10-03",
+  "kategori": "opgaver"
+ },
+ {
+  "slug": "planlaeg-ugens-indkoeb-sammen",
+  "fil": "/blog/post/planlaeg-ugens-indkoeb-sammen.html",
+  "titel": "Planlæg ugens indkøb sammen uden ekstra beskeder",
+  "resume": "Planlæg ugens indkøb sammen med en fælles liste, madplan og kalender. Få færre dobbeltkøb og et tydeligt ansvar for familiens indkøb i hverdagen nu.",
+  "billede": "https://www.voreshjem.dk/images/blog/s1e078cc96e.webp",
+  "dato": "2026-10-01",
+  "kategori": "indkøb"
+ },
+ {
+  "slug": "fordel-dagens-praktiske-goeremaal",
+  "fil": "/blog/post/fordel-dagens-praktiske-goeremaal.html",
+  "titel": "Fordel dagens praktiske gøremål i familien",
+  "resume": "Fordel dagens praktiske gøremål, så ansvar, indkøb, madplan og aftaler bliver synlige for hele familien og lettere at følge op på hver uge.",
+  "billede": "https://www.voreshjem.dk/images/blog/s5dd35044af.webp",
+  "dato": "2026-09-29",
+  "kategori": "opgaver"
+ },
+ {
+  "slug": "planlaeg-indkoeb-efter-ugens-retter",
+  "fil": "/blog/post/planlaeg-indkoeb-efter-ugens-retter.html",
+  "titel": "Planlæg indkøb efter ugens retter med ro",
+  "resume": "Planlæg indkøb efter ugens retter, så madplan og indkøbsliste hænger sammen. Få en enkel metode, der giver familien fælles overblik hver uge i køkkenet.",
+  "billede": "https://www.voreshjem.dk/images/blog/se4027ee978.webp",
+  "dato": "2026-09-27",
+  "kategori": "indkøb"
+ },
+ {
+  "slug": "familieplanlaegning-for-samboende",
+  "fil": "/blog/post/familieplanlaegning-for-samboende.html",
+  "titel": "Familieplanlægning for samboende i hverdagen",
+  "resume": "Familieplanlægning for samboende giver fælles overblik over kalender, mad, indkøb og opgaver, så hverdagen bliver lettere at koordinere sammen hver uge.",
+  "billede": "https://www.voreshjem.dk/images/blog/s0295c09363.webp",
+  "dato": "2026-09-25",
+  "kategori": "hverdag"
+ },
+ {
+  "slug": "hvordan-undgaar-vi-dobbeltbookinger-hjemme",
+  "fil": "/blog/post/hvordan-undgaar-vi-dobbeltbookinger-hjemme.html",
+  "titel": "Hvordan undgår vi dobbeltbookinger hjemme?",
+  "resume": "Sådan undgår vi dobbeltbookinger hjemme med en fælles kalender, klare aftaler og faste vaner, der giver familien overblik i hverdagen hver eneste uge.",
+  "billede": "https://www.voreshjem.dk/images/blog/sad81ef293c.webp",
+  "dato": "2026-09-23",
+  "kategori": "kalender"
+ },
+ {
+  "slug": "digital-organisering-af-hjemmet",
+  "fil": "/blog/post/digital-organisering-af-hjemmet.html",
+  "titel": "Digital organisering af hjemmet uden støj",
+  "resume": "Digital organisering af hjemmet samler kalender, madplan, indkøb og opgaver, så familien lettere kan dele ansvar og skabe overblik hver dag i hjemmet.",
+  "billede": "https://www.voreshjem.dk/images/blog/s0de916a404.webp",
+  "dato": "2026-09-21",
+  "kategori": "hverdag"
+ },
+ {
+  "slug": "guide-til-planlaegning-af-skolehverdagen",
+  "fil": "/blog/post/guide-til-planlaegning-af-skolehverdagen.html",
+  "titel": "En guide til planlægning af skolehverdagen",
+  "resume": "Få roligere morgener og bedre overblik med en guide til planlægning af skolehverdagen for familien, fra aftaler og madplan til opgaver uden at alt skal huskes.",
+  "billede": "https://www.voreshjem.dk/images/blog/s3124d045ea.webp",
+  "dato": "2026-09-19",
+  "kategori": "kalender"
+ },
+ {
+  "slug": "indkoebsliste-paa-papir-versus-app",
+  "fil": "/blog/post/indkoebsliste-paa-papir-versus-app.html",
+  "titel": "Indkøbsliste på papir versus app for familien",
+  "resume": "Indkøbsliste på papir versus app: Se forskellene, og vælg den løsning, der giver familien fælles overblik over madplan og indkøb i hverdagen uden dobbeltkøb.",
+  "billede": "https://www.voreshjem.dk/images/blog/sdf60e744ab.webp",
+  "dato": "2026-09-17",
+  "kategori": "indkøb"
+ },
+ {
+  "slug": "opret-faste-rutiner-med-boern",
+  "fil": "/blog/post/opret-faste-rutiner-med-boern.html",
+  "titel": "Sådan opretter I faste rutiner med børn hjemme",
+  "resume": "Få mere ro om morgen, måltider og sengetid. Lær at oprette faste rutiner med børn med enkle greb, der passer til jeres hverdag uden at gøre den stram.",
+  "billede": "https://www.voreshjem.dk/images/blog/s2a59ffa091.webp",
+  "dato": "2026-09-15",
+  "kategori": "hverdag"
+ },
+ {
+  "slug": "ugeplansapp-anmeldelse",
+  "fil": "/blog/post/ugeplansapp-anmeldelse.html",
+  "titel": "Ugeplansapp anmeldelse for travle familier",
+  "resume": "Læs vores ugeplansapp anmeldelse og se, hvad kalender, madplan, indkøbsliste og opgaver bør kunne for at skabe fælles overblik hjemme i familien hver dag.",
+  "billede": "https://www.voreshjem.dk/images/blog/sb30b28a8bb.webp",
+  "dato": "2026-09-13",
+  "kategori": "apps"
+ },
+ {
+  "slug": "eksempel-paa-retfaerdig-opgavefordeling",
+  "fil": "/blog/post/eksempel-paa-retfaerdig-opgavefordeling.html",
+  "titel": "Eksempel på retfærdig opgavefordeling hjemme",
+  "resume": "Få et eksempel på retfærdig opgavefordeling i familien og en enkel metode til at dele opgaver, ansvar og planlægning uden misforståelser i en travl hverdag.",
+  "billede": "https://www.voreshjem.dk/images/blog/s890fe031c2.webp",
+  "dato": "2026-09-11",
+  "kategori": "opgaver"
+ },
+ {
+  "slug": "start-med-boernepoint-hjemme",
+  "fil": "/blog/post/start-med-boernepoint-hjemme.html",
+  "titel": "Start med børnepoint hjemme uden at gøre det svært",
+  "resume": "Vil I starte med børnepoint hjemme? Få en enkel model til opgaver, point og belønninger, som skaber overblik og samarbejde i familiens hverdag med mere ro.",
+  "billede": "https://www.voreshjem.dk/images/blog/sea0cdbbdbb.webp",
+  "dato": "2026-09-09",
+  "kategori": "opgaver"
  }
 ]
