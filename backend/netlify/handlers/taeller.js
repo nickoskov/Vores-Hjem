@@ -88,6 +88,18 @@ const svar = (kode, oprindelse) => ({ statusCode: kode, body: '', headers: {
   'Access-Control-Allow-Origin': oprindelse || '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type', 'Cache-Control': 'no-store' } });
 
+/* Det, der maerker en besoegende uden at gemme noget om dem: enhed og dagens gaeste-id.
+   Bruges ogsaa af hent.js, saa et tryk paa en hent-knap faar samme id som besoeget. */
+function maerk(h) {
+  const ua = String(h['user-agent'] || '');
+  const enhed = /iPad|Tablet/i.test(ua) ? 'tablet' : /Mobi|Android|iPhone/i.test(ua) ? 'mobile' : 'desktop';
+  const ip = String(h['x-nf-client-connection-ip'] || h['x-forwarded-for'] || '').split(',')[0].trim();
+  // ny hemmelighed ved dansk midnat, saa id'et passer med de danske datoer i panelet
+  const salt = crypto.createHmac('sha256', process.env.SESSION_SECRET || 'vh').update('taeller:' + danskDato()).digest('hex');
+  const gaest = crypto.createHash('sha256').update(salt + '|' + ip + '|' + ua).digest('hex').slice(0, 20);
+  return { ua, robot: !ua || ROBOT.test(ua), enhed, gaest };
+}
+
 exports.handler = async (ev) => {
   const h = ev.headers || {};
   const oprindelse = h.origin || '';
@@ -114,13 +126,8 @@ exports.handler = async (ev) => {
     if (!kilde && utm.source) kilde = utm.source.toLowerCase().slice(0, 60);
     const ikkefundet = k.nf === 1 || k.nf === true;
 
-    const enhed = /iPad|Tablet/i.test(ua) ? 'tablet' : /Mobi|Android|iPhone/i.test(ua) ? 'mobile' : 'desktop';
+    const { enhed, gaest } = maerk(h);
     const land = String(h['x-country'] || '').toUpperCase().slice(0, 2);
-    const ip = String(h['x-nf-client-connection-ip'] || h['x-forwarded-for'] || '').split(',')[0].trim();
-    // ny hemmelighed ved dansk midnat, saa id'et passer med de danske datoer i panelet
-    const dag = danskDato();
-    const salt = crypto.createHmac('sha256', process.env.SESSION_SECRET || 'vh').update('taeller:' + dag).digest('hex');
-    const gaest = crypto.createHash('sha256').update(salt + '|' + ip + '|' + ua).digest('hex').slice(0, 20);
 
     await tabel();
     if (k.k === 'klik') {
@@ -138,3 +145,6 @@ exports.handler = async (ev) => {
   } catch (e) { /* tælleren må aldrig give fejl på siden */ }
   return svar(204, oprindelse);
 };
+
+exports.maerk = maerk;
+exports.tabel = tabel;

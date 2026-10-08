@@ -22,6 +22,10 @@ const PROFILER = {
     egen: /(^|\.)voreshjem\.dk$|^stirring-cactus-7010c5\.netlify\.app$|^voreshjem-bot\.netlify\.app$/i,
     chat: 'dk',
     appStoreId: '6758346281', playPakke: 'com.voreshjem.app',
+    // hent-knappen (hent.js): telefonen sendes til sin butik, en computer til hent-siden
+    butik: { appstore: 'https://apps.apple.com/dk/app/vores-hjem/id6758346281',
+      googleplay: 'https://play.google.com/store/apps/details?id=com.voreshjem.app&referrer=utm_source%3Dwebsite',
+      hentside: 'https://www.voreshjem.dk/hent/' },
     // oppetidsvagten: forsiden skal indeholde det her, ellers er det en fejlside fra hosten
     kendetegn: /Vores Hjem/i,
     // soegninger paa eget navn: 'vores hjem', 'voreshjem', 'voreshjem.dk', 'vore hjem' ...
@@ -44,6 +48,9 @@ const PROFILER = {
     egen: /(^|\.)unserzuhauseapp\.de$|^verdant-strudel-af7a88\.netlify\.app$/i,
     chat: 'de',
     appStoreId: '6771931999', playPakke: 'com.unserzuhause.app',
+    butik: { appstore: 'https://apps.apple.com/de/app/unser-zuhause/id6771931999',
+      googleplay: 'https://play.google.com/store/apps/details?id=com.unserzuhause.app&hl=de&gl=DE&referrer=utm_source%3Dwebsite',
+      hentside: 'https://unserzuhause-download.netlify.app/' },
     kendetegn: /Unser Zuhause/i,
     brandSoeg: /(^| )unser ?zuhau?se?(app)?(?= )/, brandEksempel: 'unser zuhause',
     ga4Kode: null,
@@ -52,8 +59,9 @@ const PROFILER = {
     // chatbotten er faelles og har sine tabeller i den danske database. Den tyske backend spoerger botten.
     botTabeller: false,
     overtagData: false,
-    // sider i panelet, der kun giver mening for den danske side
-    skjul: ['blog', 'links', 'indhold', 'annoncer'],
+    // sider i panelet, der kun giver mening for den danske side. Chat: den tyske side har intet
+    // chatvindue. Faar den et, skal det have sin egen bot med tabeller i den tyske database.
+    skjul: ['blog', 'links', 'indhold', 'annoncer', 'chat'],
     ental: 'tyske'
   }
 };

@@ -1224,6 +1224,7 @@ async function raad() {
                     ORDER BY (maalt AT TIME ZONE 'Europe/Copenhagen')::date, maalt DESC) x` : Promise.resolve([]),
     sql ? sql`SELECT vaerdi FROM vh_cache WHERE noegle = ${UDGAVE + 'hastighed'} AND udloeber > now()` : Promise.resolve([]),
     // chatbottens tabeller ligger kun i den danske database. Den tyske backend spoerger botten selv.
+    !harChat ? Promise.resolve([{ n: 0 }]) :
     !profil.botTabeller ? (botOpsat() ? bot('admin_stats', { site: profil.chat, days: 1 }).then(st => [{ n: (st.nu && st.nu[profil.chat] || {}).venterPaaMenneske || 0 }]) : Promise.resolve([{ n: 0 }]))
       : sql ? sql`SELECT count(*)::int AS n FROM vh_conversations WHERE needs_human AND NOT archived` : Promise.resolve([{ n: 0 }])
   ]);
@@ -1464,7 +1465,11 @@ const HANDLING_SIDE = { annoncer: 'annoncer',
   blog: 'blog', 'blog-et': 'blog', 'blog-gem': 'blog', 'blog-slet': 'blog', 'blog-udgiv': 'blog', 'soro-hent': 'blog', 'seo-udkast': 'blog',
   links: 'links', 'links-lav': 'links', 'links-gem': 'links', 'links-slet': 'links',
   indhold: 'indhold', 'indhold-gem': 'indhold', 'indhold-scan': 'indhold', felter: 'indhold', 'felt-gem': 'indhold', 'felt-fortryd': 'indhold',
-  rettelser: 'indhold', 'rettelse-gem': 'indhold', 'rettelse-slet': 'indhold', 'rettelser-udgiv': 'indhold', 'seo-forslag': 'indhold', udgiv: 'indhold' };
+  rettelser: 'indhold', 'rettelse-gem': 'indhold', 'rettelse-slet': 'indhold', 'rettelser-udgiv': 'indhold', 'seo-forslag': 'indhold', udgiv: 'indhold',
+  // chatbotten er den danske sides. Den tyske backend taler slet ikke med den.
+  chat: 'chat', 'bot-liste': 'chat', 'bot-hent': 'chat', 'bot-stat': 'chat', 'bot-svar': 'chat', 'bot-tagover': 'chat',
+  'bot-slet': 'chat', 'bot-ret': 'chat', 'bot-slet-besked': 'chat' };
+const harChat = !profil.skjul.includes('chat');
 /* Botten er faelles for begge sider. Den danske backend ser begge sprog, som foer. Den tyske ser
    og roerer kun tyske samtaler (side.js, chat), uanset hvad panelet beder om. */
 const chatSite = s => profil.kode === 'dk' ? s : profil.chat;
@@ -1600,7 +1605,8 @@ exports.handler = async (ev) => {
         if (gads.opsat()) await proev('googleads', async () => { const r = await gads.forbrug(iso(new Date(Date.now()-8*86400000)), iso(new Date(Date.now()-86400000))); return r.length + ' kampagner'; }); else ud.googleads = { ok:false, fejl:'ikke sat op' };
         if (asc.opsat()) await proev('appstore', async () => { const r = await asc.periode(iso(new Date(Date.now()-3*86400000)), iso(new Date(Date.now()-2*86400000))); return (r[0]||{}).downloads + ' downloads forleden'; }); else ud.appstore = { ok:false, fejl:'ikke sat op' };
         if (gplay.opsat()) await proev('googleplay', async () => { const r = await gplay.periode(iso(new Date(Date.now()-5*86400000)), iso(new Date(Date.now()-2*86400000))); return r.length + ' dage med tal'; }); else ud.googleplay = { ok:false, fejl:'ikke sat op' };
-        if (botOpsat()) await proev('bot', async () => { const r = await bot('admin_stats', { days: 7 }); return r.total + ' samtaler i alt'; }); else ud.bot = { ok:false, fejl:'ikke sat op' };
+        if (!harChat) ud.bot = { ok:true, ms:0, note:'ingen chat på ' + profil.navn };
+        else if (botOpsat()) await proev('bot', async () => { const r = await bot('admin_stats', { days: 7 }); return r.total + ' samtaler i alt'; }); else ud.bot = { ok:false, fejl:'ikke sat op' };
         if (forfatter.opsat()) await proev('claude', async () => { const r = await forfatter.forslag('titel', { url:'/', titel: profil.brand, besk:'', h1tekst: profil.brand }); return r.length + ' forslag'; }); else ud.claude = { ok:false, fejl:'ikke sat op' };
         if (udgivelse.opsat()) await proev('netlify', async () => { const r = await fetch('https://api.netlify.com/api/v1/sites/' + (process.env.SITE_NETLIFY_ID || profil.netlifySiteId), { headers:{ Authorization:'Bearer ' + process.env.NETLIFY_TOKEN } }); if (!r.ok) throw new Error('Netlify svarede ' + r.status); return (await r.json()).name; }); else ud.netlify = { ok:false, fejl:'ikke sat op' };
         if (mail.opsat()) ud.mail = { ok:true, note:'sender til ' + mail.TIL + ', brug Send prøvemail' }; else ud.mail = { ok:false, fejl:'ikke sat op' };

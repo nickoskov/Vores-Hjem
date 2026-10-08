@@ -124,23 +124,29 @@ tager kun en helt tom database i brug, og ingen af dem bruger en database,
 der er stemplet til den anden. Står `DATABASE_URL` forkert, røres databasen
 slet ikke, og panelet og udgivelsesscriptet siger hvorfor.
 
+Alt er adskilt fra den danske: database, login, mail og nøgler til Apple og
+Google. Kun selve udviklerkontoen hos Apple og Google er fælles, fordi den
+ejer begge apps. Den tyske side har intet chatvindue, så Chat findes ikke i
+det tyske panel, og den tyske backend taler aldrig med den danske chatbot.
+Hent-knapperne på den tyske side går til `backend.unserzuhauseapp.de/hent/app`,
+som sender telefonen til sin butik og tæller trykket i den tyske database.
+
 | Navn | Værdi |
 |---|---|
 | `SIDE` | `de` |
-| `DATABASE_URL` | en ny, tom Neon-database. Aldrig den danske |
+| `DATABASE_URL` | en ny, tom Neon-database (Frankfurt). Aldrig den danske |
 | `ADMIN_PASSWORD`, `SESSION_SECRET` | nye, kun til det tyske panel |
-| `BOT_ADMIN_PASSWORD` | samme som på den danske, botten er fælles |
-| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `ALERT_TO` | samme som på den danske |
-| `GA4_CREDENTIALS`, `GPLAY_BUCKET` | samme som på den danske |
-| `ASC_ISSUER_ID`, `ASC_KEY_ID`, `ASC_PRIVATE_KEY`, `ASC_VENDOR_NUMBER` | samme som på den danske |
-| `GPLAY_PACKAGE` | `com.unserzuhause.app`, eller udelad den |
-| `PSI_API_KEY`, `RYD_DAGE` | samme som på den danske, eller udelad dem |
+| `SMTP_HOST`, `SMTP_PORT` | `smtp.simply.com`, `587` |
+| `SMTP_USER`, `SMTP_PASS` | postkassen `support@unserzuhauseapp.de` hos Simply |
+| `ALERT_TO` | `support@unserzuhauseapp.de` (flere adresser adskilles med komma) |
+| `GA4_CREDENTIALS` | nøgle (JSON) til en egen servicekonto, fx `unserzuhause-backend`, med adgang til den tyske ejendom i Search Console og den tyske app i Play Console |
+| `GPLAY_BUCKET` | samme som på den danske. Det er udviklerkontoens rapportmappe, ikke en nøgle |
+| `ASC_ISSUER_ID`, `ASC_KEY_ID`, `ASC_PRIVATE_KEY`, `ASC_VENDOR_NUMBER` | en egen API-nøgle i App Store Connect med rollen Sales. Issuer ID og Vendor Number er kontoens og derfor de samme |
+| `GSC_SITE_URL` | `sc-domain:unserzuhauseapp.de` |
+| `PSI_API_KEY`, `RYD_DAGE` | kan udelades |
 
-Kopiér ikke de danske `SITE_NETLIFY_ID`, `NETLIFY_TOKEN`, `NETLIFY_BUILD_HOOK`,
-`SORO_RSS_URL`, `WEBHOOK_SECRET`, `WEBHOOK_AUTOUDGIV`, `GA4_PROPERTY_ID`,
-`GSC_SITE_URL`, `SEO_SITE`, `SITE_URL`, `VAGT_URL`, `META_*` og `GADS_*`.
-`GSC_SITE_URL` sættes kun, hvis den tyske ejendom i Search Console ikke
-hedder `https://www.unserzuhauseapp.de/`, fx `sc-domain:unserzuhauseapp.de`.
+Kopiér ingen nøgler fra den danske. Netlify udleverer heller ikke hemmelige
+værdier, så det, der ser ud som en kopi, er kun en pladsholder.
 
 ---
 
