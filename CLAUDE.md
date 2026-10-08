@@ -22,8 +22,11 @@ Gælder på alle computere (Windows-PC og Mac). Repoet er den eneste kilde til, 
   i `backend/netlify/lib/side.js`, og databasen er mærket med sin ejer, så de aldrig kan blandes. Den tyske side og
   download-siden må aldrig pege på noget dansk (backend, chatbot eller mail), kun sprog-linkene (hreflang).
   En rettelse i `backend/` skal udgives begge steder.
-- `chatbot/` må **ikke** udgives herfra som dansk bot (voreshjem-bot.netlify.app); der er intet udgivelsesscript til den.
-  Den tyske backend bruger dog samme kode: `udgiv-backend.mjs --de` lægger `chatbot/netlify/functions/chat-bot.js`,
+- `chatbot/` (den danske bot, voreshjem-bot.netlify.app) udgives kun med `node vaerktoej/udgiv-bot.mjs` (prøveudgave
+  og test) og `--live`. `--tjek` tjekker uden at sende noget til Netlify. Scriptet stopper, hvis `chatbot/` er ændret
+  siden sidste gennemgang, eller hvis live ikke er udgivet fra repoet. Brug aldrig `netlify deploy` direkte og aldrig
+  den gamle mappe `~/voreshjem-bot`. Prøveudgaven bruger den rigtige database og mail: skriv ikke i chatten på den.
+  Den tyske backend bruger samme kode: `udgiv-backend.mjs --de` lægger `chatbot/netlify/functions/chat-bot.js`,
   `widget.js` og `avatar-de.png` ind i den tyske backend, så en rettelse i `chatbot/` rammer den tyske bot ved næste `--de`.
 
 ## Flytning fra Mac'ens gamle mappe (`~/voreshjem-site` m.fl.)

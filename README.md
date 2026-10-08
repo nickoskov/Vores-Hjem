@@ -22,7 +22,7 @@ node vaerktoej/udgiv.mjs hjemmeside          # testudgave + test
 node vaerktoej/udgiv.mjs hjemmeside --live   # live, låst og pushet til GitHub
 ```
 
-Se også CLAUDE.md. `backend/` udgives med `node vaerktoej/udgiv-backend.mjs [--live]`. ⚠️ **Udgiv aldrig `chatbot/` herfra** (intet script endnu).
+Se også CLAUDE.md. `backend/` udgives med `node vaerktoej/udgiv-backend.mjs [--live]`, og `chatbot/` med `node vaerktoej/udgiv-bot.mjs [--tjek | --live]`.
 
 ## Mangler
 
