@@ -82,6 +82,19 @@ to = "https://www.iubenda.com/privacy-policy/85951957"
 status = 301
 force = true
 
+# gamle kontaktadresser fra Wix. App Store-sidens support-link peger paa /contact/kontakt-os (8. okt. 2026)
+[[redirects]]
+from = "/contact/*"
+to = "/support"
+status = 301
+force = false
+
+[[redirects]]
+from = "/kontakt-os"
+to = "/support"
+status = 301
+force = false
+
 # danske adresser til politikkerne hos iubenda. www.vores-hjem.dk/privatlivspolitik og gamle links fra Wix-tiden
 # landede ellers paa en fejlside (8. okt. 2026)
 [[redirects]]
