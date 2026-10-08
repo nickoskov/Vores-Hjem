@@ -365,6 +365,7 @@ td.d{color:var(--daemp);font-weight:500}
 /* support: et svar, der ikke naaede ud til kunden */
 .bsk.agent.ikke-sendt{background:#FEF2F2;color:#991B1B;border:1px dashed #FECACA}
 .bsk.agent.ikke-sendt .da{border-color:rgba(153,27,27,.18)}
+#sag-vis .bsk .hvem{color:inherit}
 .sag-emne{padding:10px 16px;border-bottom:1px solid var(--kant-blod);font-size:13px;line-height:1.6}
 .bsk .vk{position:absolute;top:6px;right:8px;display:none;gap:4px}
 .bsk.agent:hover .vk{display:flex}
@@ -2212,7 +2213,7 @@ function tegnSag(d) {
    ikke "ingen blokeringer". filtre og adresser er null, naar koerslen ikke gemte dem. */
 function blokvagtIndhold(b) {
   if (!b) return '<div class="tom">Backenden sendte intet om blokeringsvagten.</div>';
-  if (!b.koert) return kildeLinje(b.kilde || 'blokvagt', null, 'kører hver morgen') + '<div class="besked advar" style="margin:0"><b>Har ikke kørt endnu.</b> ' + sik(b.grund || '') + '</div>';
+  if (!b.koert) return kildeLinje(b.kilde || 'blokvagt', null, 'kører hver morgen') + '<div class="besked advar" style="margin:0">' + sik(b.grund || 'Blokeringsvagten har ikke kørt endnu.') + '</div>';
   const f = b.fund, u = b.usikre || [], sp = b.sprunget || [];
   const tjekket = mangler(b.filtre) || mangler(b.adresser) ? (b.antalGrund || 'Ukendt, hvor meget der blev tjekket.')
     : T(b.adresser) + (b.adresser === 1 ? ' adresse' : ' adresser') + ' tjekket hos ' + T(b.filtre) + ' filtre.';
