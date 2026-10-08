@@ -19,7 +19,7 @@ const SIDER = {
 };
 const FORBUDT = {
   chatbot: 'chatbot/ har kun de statiske filer. Funktionen chat-bot ligger ikke i repoet, og en udgivelse herfra ville slette den.',
-  backend: 'backend/ har kun de statiske filer. Funktionerne (admin, vagt, ugemail, webhook m.fl.) ligger ikke i repoet, og en udgivelse herfra ville slette dem.',
+  backend: 'backend/ udgives med node vaerktoej/udgiv-backend.mjs (den bundter funktionerne). En udgivelse herfra ville slette dem.',
 };
 
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
