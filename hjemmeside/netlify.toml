@@ -82,6 +82,50 @@ to = "https://www.iubenda.com/privacy-policy/85951957"
 status = 301
 force = true
 
+# danske adresser til politikkerne hos iubenda. www.vores-hjem.dk/privatlivspolitik og gamle links fra Wix-tiden
+# landede ellers paa en fejlside (8. okt. 2026)
+[[redirects]]
+from = "/privatlivspolitik"
+to = "https://www.iubenda.com/privacy-policy/85951957"
+status = 301
+force = true
+
+[[redirects]]
+from = "/privatliv"
+to = "https://www.iubenda.com/privacy-policy/85951957"
+status = 301
+force = true
+
+[[redirects]]
+from = "/cookiepolitik"
+to = "https://www.iubenda.com/privacy-policy/85951957/cookie-policy"
+status = 301
+force = true
+
+[[redirects]]
+from = "/cookie-policy"
+to = "https://www.iubenda.com/privacy-policy/85951957/cookie-policy"
+status = 301
+force = true
+
+[[redirects]]
+from = "/vilkaar"
+to = "https://www.iubenda.com/vilkar-og-betingelser/85951957"
+status = 301
+force = true
+
+[[redirects]]
+from = "/vilkar-og-betingelser"
+to = "https://www.iubenda.com/vilkar-og-betingelser/85951957"
+status = 301
+force = true
+
+[[redirects]]
+from = "/vilkaar-og-betingelser"
+to = "https://www.iubenda.com/vilkar-og-betingelser/85951957"
+status = 301
+force = true
+
 [[redirects]]
 from = "/terms-and-conditions"
 to = "https://www.iubenda.com/vilkar-og-betingelser/85951957"
