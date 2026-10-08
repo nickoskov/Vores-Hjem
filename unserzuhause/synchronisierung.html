@@ -1380,10 +1380,10 @@ nav {
       <p class="cta-sub">Eine App. Die ganze Familie. Die Termine kommen von selbst mit.</p>
       <div class="cta-buttons">
         <a href="#" onclick="goToStore(event)" class="btn btn-white btn-lg">Kostenlos testen</a>
-        <a href="https://www.voreshjem.dk/support" target="_top" onclick="window.top.location.href='https://www.voreshjem.dk/support';return false;" class="btn btn-outline-white btn-lg">Kontakt os</a>
+        <a href="./kontakt.html" target="_top" onclick="window.top.location.href='./kontakt.html';return false;" class="btn btn-outline-white btn-lg">Kontakt aufnehmen</a>
       </div>
       <p class="cta-trust">Nach 14 Tagen: <span>5,99 €/Monat</span> oder <span>24,99 €/Halbjahr</span> · Jederzeit kündbar</p>
-      <a href="https://www.voreshjem.dk" target="_top" style="display:inline-flex; align-items:center; gap:6px; margin-top:24px; font-size:14px; font-weight:600; color:rgba(255,255,255,0.55); text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">
+      <a href="./index.html" style="display:inline-flex; align-items:center; gap:6px; margin-top:24px; font-size:14px; font-weight:600; color:rgba(255,255,255,0.55); text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="15 18 9 12 15 6"/></svg>
         Zurück zur Startseite
       </a>
@@ -1504,7 +1504,7 @@ async function submitContact() {
   btn.disabled = true; btn.textContent = 'Senden…';
   try {
     const __d = { name, email, message: msg };
-    const __r = await fetch('https://backend.voreshjem.dk/formular/kontakt', { method: 'POST',
+    const __r = await fetch('https://backend.unserzuhauseapp.de/formular/kontakt', { method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({ navn: __d.name || '', email: __d.email || '', emne: __d.subject || '',
         besked: __d.message || '', t: String(window.__uzT || 0),

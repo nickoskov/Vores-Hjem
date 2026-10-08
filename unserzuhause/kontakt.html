@@ -512,7 +512,7 @@ nav {
                   subject: document.getElementById('emne').value.trim(),
                   message: document.getElementById('besked').value.trim()
                 };
-    const __r = await fetch('https://backend.voreshjem.dk/formular/kontakt', { method: 'POST',
+    const __r = await fetch('https://backend.unserzuhauseapp.de/formular/kontakt', { method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({ navn: __d.name || '', email: __d.email || '', emne: __d.subject || '',
         besked: __d.message || '', t: String(window.__uzT || 0),

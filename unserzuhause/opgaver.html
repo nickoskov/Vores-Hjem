@@ -1328,7 +1328,7 @@ nav {
       <h2 class="cta-h2">Bereit für mehr Ruhe<br>im Alltag?</h2>
       <p class="cta-sub">Eine App. Die ganze Familie. Die Aufgaben verteilt.</p>
       <div class="cta-buttons">
-        <a target="_blank" rel="noopener" href="https://voreshjem-bot.netlify.app/hent/app-de" class="btn btn-white btn-lg">Kostenlos testen</a>
+        <a target="_blank" rel="noopener" href="https://backend.unserzuhauseapp.de/hent/app" class="btn btn-white btn-lg">Kostenlos testen</a>
         <a href="./kontakt.html" target="_top" onclick="window.top.location.href='./kontakt.html';return false;" class="btn btn-outline-white btn-lg">Kontakt aufnehmen</a>
       </div>
       <p class="cta-trust">Nach 14 Tagen: <span>5,99 €/Monat</span> oder <span>24,99 €/Halbjahr</span> · Jederzeit kündbar</p>
@@ -1459,7 +1459,7 @@ async function submitContact() {
   btn.disabled = true; btn.textContent = 'Senden…';
   try {
     const __d = { name, email, message: msg };
-    const __r = await fetch('https://backend.voreshjem.dk/formular/kontakt', { method: 'POST',
+    const __r = await fetch('https://backend.unserzuhauseapp.de/formular/kontakt', { method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({ navn: __d.name || '', email: __d.email || '', emne: __d.subject || '',
         besked: __d.message || '', t: String(window.__uzT || 0),
