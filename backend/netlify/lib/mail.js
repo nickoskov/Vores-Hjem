@@ -2,7 +2,9 @@
 /** Sender mail via samme SMTP som bot-panelet. Uden SMTP-variabler sendes intet, og der logges i stedet. */
 const nodemailer = require('nodemailer');
 const profil = require('./side.js');
-const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
+// et mellemrum foer eller efter, der kom med ved indsaettelsen i Netlify, faar ellers Simply til at afvise login
+const ren = v => String(v || '').trim();
+const SMTP_HOST = ren(process.env.SMTP_HOST), SMTP_PORT = ren(process.env.SMTP_PORT), SMTP_USER = ren(process.env.SMTP_USER), SMTP_PASS = ren(process.env.SMTP_PASS);
 const FRA = process.env.ALERT_FROM || SMTP_USER || 'backend@' + profil.navn;
 const TIL = process.env.ALERT_TO || '';
 const opsat = () => !!(SMTP_HOST && SMTP_USER && SMTP_PASS && TIL);
