@@ -18,7 +18,7 @@ const SIDER = {
   'unserzuhause-download': { site: 'unserzuhause-download', domæne: 'download.unserzuhauseapp.de', lås: false },
 };
 const FORBUDT = {
-  chatbot: 'chatbot/ har kun de statiske filer. Funktionen chat-bot ligger ikke i repoet, og en udgivelse herfra ville slette den.',
+  chatbot: 'chatbot/ udgives med node vaerktoej/udgiv-bot.mjs (den tager funktionen chat-bot med). En udgivelse herfra ville slette den.',
   backend: 'backend/ udgives med node vaerktoej/udgiv-backend.mjs (den bundter funktionerne). En udgivelse herfra ville slette dem.',
 };
 
