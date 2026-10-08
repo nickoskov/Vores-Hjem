@@ -9,20 +9,20 @@
 <link rel="apple-touch-icon" href="/favicon.png">
 <script>window.__uzT = Date.now();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gemeinsamer Kalender | Unser Zuhause</title>
+<title>Gemeinsamer Familienkalender | Unser Zuhause</title>
 <!-- SEO til eget domæne (tilføjet ved flytningen fra Wix) -->
 <link rel="canonical" href="https://www.unserzuhauseapp.de/kalender">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="de_DE">
 <meta property="og:site_name" content="Unser Zuhause">
-<meta property="og:title" content="Gemeinsamer Kalender | Unser Zuhause">
+<meta property="og:title" content="Gemeinsamer Familienkalender | Unser Zuhause">
 <meta property="og:description" content="Ein gemeinsamer Ort für alle Termine der Familie: füge Ereignisse hinzu, setze Erinnerungen und behalte den Überblick. Teste Unser Zuhause 14 Tage kostenlos.">
 <meta property="og:url" content="https://www.unserzuhauseapp.de/kalender">
 <meta property="og:image" content="https://www.unserzuhauseapp.de/images/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Gemeinsamer Kalender | Unser Zuhause">
+<meta name="twitter:title" content="Gemeinsamer Familienkalender | Unser Zuhause">
 <meta name="twitter:description" content="Ein gemeinsamer Ort für alle Termine der Familie: füge Ereignisse hinzu, setze Erinnerungen und behalte den Überblick. Teste Unser Zuhause 14 Tage kostenlos.">
 <meta name="twitter:image" content="https://www.unserzuhauseapp.de/images/og.jpg">
 <link rel="alternate" hreflang="de" href="https://www.unserzuhauseapp.de/kalender">
@@ -791,7 +791,7 @@ nav {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         </div>
         <div class="f-title">Tag, Woche & Monat</div>
-        <div class="f-desc">Wechsle frei zwischen Tages-, 2-Wochen- und 4-Wochen-Ansicht: je nachdem, was du gerade brauchst.</div>
+        <div class="f-desc">Wechsle frei zwischen Tages-, 2-Wochen- und 4-Wochen-Ansicht, je nachdem, was du gerade brauchst.</div>
       </div>
       <div class="feature-card reveal reveal-delay-3">
         <div class="f-icon fi-pink">
@@ -1015,13 +1015,13 @@ nav {
   motor('trin1', function (vent, el) {
     var dage = qa(el, '.kd-d'), raekker = qa(el, '.td-r'), tael = q(el, '#k1-dag');
     ryd_alle(el); tael.textContent = '·';
-    vent(700,  function () { dage[2].classList.add('valgt'); tael.textContent = 'Mittwoch d. 5'; });
+    vent(700,  function () { dage[2].classList.add('valgt'); tael.textContent = 'Mittwoch, 5.'; });
     vent(1150, function () { raekker[0].classList.add('on'); });
     vent(1550, function () { raekker[1].classList.add('on'); });
     // og så en anden dag
     vent(3200, function () {
       dage[2].classList.remove('valgt'); raekker.forEach(function (r) { r.classList.remove('on'); });
-      dage[4].classList.add('valgt'); tael.textContent = 'Freitag d. 7';
+      dage[4].classList.add('valgt'); tael.textContent = 'Freitag, 7.';
     });
     vent(3700, function () {
       raekker[0].classList.add('on');
@@ -1387,7 +1387,7 @@ nav {
           </li>
           <li>
             <span class="sl-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
-            <span><strong>Du bestimmst, wer ein Schild hat</strong>: und damit, wer die privaten Termine sehen kann</span>
+            <span><strong>Du bestimmst, wer ein Schild hat</strong>, und damit, wer die privaten Termine sehen kann</span>
           </li>
         </ul>
       </div>
@@ -1445,12 +1445,12 @@ nav {
         <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Infoseiten</p>
         <div style="display:flex; flex-direction:column; gap:10px;">
           <a href="https://www.unserzuhauseapp.de/kalender" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/kalender';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Kalender</a>
-          <a href="https://www.unserzuhauseapp.de/essenpläne" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/essenpläne';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Essenpläne</a>
+          <a href="https://www.unserzuhauseapp.de/essenpläne" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/essenpläne';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Essenspläne</a>
           <a href="https://www.unserzuhauseapp.de/einkaufsliste" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/einkaufsliste';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Einkaufsliste</a>
           <a href="https://www.unserzuhauseapp.de/aufgaben" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/aufgaben';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Aufgaben</a>
           <a href="https://www.unserzuhauseapp.de/einstellungen" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Einstellungen</a>
           <a href="https://www.unserzuhauseapp.de/synchronisierung" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Synchronisierung</a>
-          <a href="https://www.unserzuhauseapp.de/konto-loeschen" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/konto-loeschen';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">konto-loeschen</a>
+          <a href="https://www.unserzuhauseapp.de/konto-loeschen" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/konto-loeschen';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Konto löschen</a>
         </div>
       </div>
 
@@ -1467,7 +1467,7 @@ nav {
 
       <!-- Politikker -->
       <div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Politikker</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Richtlinien</p>
         <div style="display:flex; flex-direction:column; gap:10px;">
           <a href="https://www.unserzuhauseapp.de/impressum" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Impressum</a> <a href="https://www.iubenda.com/privacy-policy/77031753" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Datenschutzerklärung</a>
           <a href="https://www.iubenda.com/privacy-policy/77031753/cookie-policy" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Cookie-Richtlinie</a>
@@ -1574,7 +1574,7 @@ function showNotLaunched(e) {
       <h3>Schreib uns</h3>
       <p>Wir antworten an Werktagen innerhalb von 24 Stunden.</p>
       <div class="contact-field"><label for="c-name">Name</label><input type="text" id="c-name" placeholder="Dein Name"></div>
-      <div class="contact-field"><label for="c-email">E-mail</label><input type="email" id="c-email" placeholder="deine@email.de"></div>
+      <div class="contact-field"><label for="c-email">E-Mail</label><input type="email" id="c-email" placeholder="deine@email.de"></div>
       <div class="contact-field"><label for="c-msg">Nachricht</label><textarea id="c-msg" rows="4" placeholder="Worum geht es?"></textarea><input type="text" id="uz-hp" name="hjemmeside" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0"></div>
       <p class="contact-error" id="contact-error"></p>
       <button class="contact-submit" id="contact-submit-btn" onclick="submitContact()">Nachricht senden</button>
