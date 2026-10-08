@@ -72,13 +72,9 @@
       '<span>Kostenlos testen</span>';
     document.body.appendChild(a);
 
-    /* Kommer foerst frem, naar man er kommet lidt ned, saa den ikke daekker for det foerste indtryk */
-    function tjek() {
-      if (window.scrollY > 420) a.classList.add('vh-vis');
-      else a.classList.remove('vh-vis');
-    }
-    window.addEventListener('scroll', tjek, { passive: true });
-    tjek();
+    /* Synlig hele tiden, ogsaa oeverst paa siden (Nicko 8. okt. 2026). Klassen saettes i naeste billede,
+       saa knappen glider blidt ind i stedet for at springe frem. */
+    requestAnimationFrame(function () { a.classList.add('vh-vis'); });
 
     placer();
     setInterval(placer, 1000);
