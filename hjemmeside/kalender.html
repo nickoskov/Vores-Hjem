@@ -1717,8 +1717,6 @@ function goToStore(e){ if(e) e.preventDefault();
 (function(){
   var k = document.getElementById('hent-flyd');
   if (!k) return;
-  // Knappen kommer først frem, når man er kommet lidt ned, så den ikke
-  // dækker for det første indtryk af forsiden.
   // Wix lægger siden i en iframe. Et element med position:fixed inde i en
   // iframe hænger fast i iframens egen ramme, ikke i browservinduet, så
   // knappen ville sidde et tilfældigt sted nede på siden. Inde i en iframe
@@ -1727,12 +1725,9 @@ function goToStore(e){ if(e) e.preventDefault();
   try { iRamme = window.self !== window.top; } catch (e) { iRamme = true; }
   if (iRamme) { k.remove(); return; }
 
-  function tjek(){
-    if (window.scrollY > 420) k.classList.add('vis');
-    else k.classList.remove('vis');
-  }
-  window.addEventListener('scroll', tjek, {passive:true});
-  tjek();
+  // synlig hele tiden, ogsaa oeverst paa siden (Nicko 8. okt. 2026). Klassen saettes i naeste billede,
+  // saa knappen glider blidt ind i stedet for at springe frem.
+  requestAnimationFrame(function(){ k.classList.add('vis'); });
 })();
 </script>
 
