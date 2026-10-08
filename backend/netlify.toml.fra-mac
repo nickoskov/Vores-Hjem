@@ -2,7 +2,7 @@
   publish = "public"
   functions = "netlify/functions"
 
-# De planlagte job (vagt, dagvagt, seovagt, ryd, ugemail, sorovagt) har deres tidsplan i
+# De planlagte job (vagt, dagvagt, seovagt, ryd, ugemail, sorovagt, postkasse) har deres tidsplan i
 # netlify/functions/<navn>.mjs (export const config), fordi funktionerne bruger Netlifys nye format.
 [functions]
   node_bundler = "esbuild"

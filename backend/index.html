@@ -897,7 +897,7 @@ async function opfriskOgVis() { try { await kald('opfrisk'); sidsteTabel = {}; v
    ['tekst'], [{ kilde, tekst, raa }] og { kilde: 'tekst' }. navne oversætter kildenøgler, der kun bruges på én side. */
 const KILDENAVN = { ga4:'Google Analytics', analytics:'Google Analytics', ai:'Google Analytics', gsc:'Search Console', muligheder:'Search Console',
   meta:'Meta', googleads:'Google Ads', play:'Google Play', googleplay:'Google Play', apple:'App Store', appstore:'App Store',
-  egen:'Egen tæller', db:'Databasen', bot:'Chatbotten', psi:'Google PageSpeed' };
+  egen:'Egen tæller', db:'Databasen', bot:'Chatbotten', psi:'Google PageSpeed', support:'Support-mail' };
 function fejlene(f, navne) {
   if (!f) return [];
   const navn = k => (navne && navne[k]) || KILDENAVN[k] || k || 'En kilde';
@@ -2163,6 +2163,10 @@ async function visOpsaetning(m) {
       rk('Database', opsat.database && !opsat.databaseFejl, opsat.databaseFejl ? '<span style="color:var(--roed);font-weight:600">' + sik(opsat.databaseFejl) + '</span>'
         : profil.kode === 'dk' ? 'DATABASE_URL. Samme som bot-panelet.' : 'DATABASE_URL. Sin egen database, aldrig den danske.') +
       rk('Mail', opsat.mail, 'SMTP_HOST, SMTP_USER, SMTP_PASS og ALERT_TO. Til alarmer og ugemail.') +
+      // kun paa en backend med support-mail (den tyske). Viser kun navnene paa det, der mangler, aldrig adresser
+      (opsat.support ? rk('Oversættelse af support-mail', opsat.support.klar, opsat.support.klar
+        ? 'Kundemails til support-postkassen kommer til teamet på dansk med et sagsnummer. Svar på dansk sendes til kunden på tysk. Tjekkes hvert andet minut.'
+        : 'Mangler ' + (opsat.support.mangler || []).map(sik).join(', ') + '. SUPPORT_TEAM er teamets adresse, der får kundemails på dansk.') : '') +
       (skjult('blog') ? '' : rk('Soro', opsat.soro, 'SORO_RSS_URL. Soros RSS-feed, læses hver time.')) +
       (skjult('indhold') ? '' : rk('Udgivelse fra panelet', opsat.netlify || opsat.udgivelse, opsat.netlify ? 'NETLIFY_TOKEN. Rettelser og blogindlæg udgives direkte på siden.' : 'NETLIFY_TOKEN. Uden den kan rettelser ikke udgives fra panelet.')) + '</tbody></table></div>' +
     '<div class="kort"><h3>Datakilder</h3><table><tbody>' +
@@ -2247,7 +2251,7 @@ async function hentSoro() { try { const r = await kald('soro-hent'); flash(r.nye
 async function testForbindelser() {
   const ud = document.getElementById('test-ud'); ud.innerHTML = '<div class="kort" style="margin-bottom:14px"><div class="skelet" style="height:60px"></div></div>';
   try { const r = await kald('test');
-    const NAVN = { database:'Database', analytics:'Google Analytics', soegning:'Search Console', meta:'Meta-annoncer', googleads:'Google Ads', appstore:'App Store Connect', googleplay:'Google Play', bot:'Chatbotten', claude:'Claude', netlify:'Netlify, udgivelse', mail:'Mail', soro:'Soro, blogindlæg', taeller:'Egen tæller' };
+    const NAVN = { database:'Database', analytics:'Google Analytics', soegning:'Search Console', meta:'Meta-annoncer', googleads:'Google Ads', appstore:'App Store Connect', googleplay:'Google Play', bot:'Chatbotten', claude:'Claude', netlify:'Netlify, udgivelse', mail:'Mail', soro:'Soro, blogindlæg', taeller:'Egen tæller', support:'Support-postkassen (IMAP)' };
     ud.innerHTML = '<div class="kort" style="margin-bottom:14px"><h3>Forbindelserne, testet lige nu</h3><table><tbody>' + Object.entries(r).map(([k,v]) =>
       '<tr><td><b>' + (NAVN[k]||k) + '</b>' + (v.note ? '<div style="font-size:12.5px;color:var(--daemp)">' + sik(v.note) + '</div>' : (!v.ok && v.fejl === 'ikke sat op' && PAUSE[k]) ? '<div style="font-size:12.5px;color:var(--daemp)">' + PAUSE[k] + '</div>' : '') + (v.fejl && v.fejl !== 'ikke sat op' ? '<div style="font-size:12.5px;color:var(--roed)">' + sik(v.fejl) + '</div>' : '') + '</td>' +
       '<td class="h"><span class="maerke ' + (v.ok ? 'm-klar' : v.fejl === 'ikke sat op' ? (PAUSE[k] ? 'm-pause' : 'm-mangler') : '') + '"' + (!v.ok && v.fejl !== 'ikke sat op' ? ' style="background:#FEF2F2;color:#991B1B"' : '') + '>' + (v.ok ? 'virker' + (v.ms ? ', ' + v.ms + ' ms' : '') : v.fejl === 'ikke sat op' ? (PAUSE[k] ? 'på pause' : 'ikke sat op') : 'fejler') + '</span></td></tr>').join('') + '</tbody></table></div>';

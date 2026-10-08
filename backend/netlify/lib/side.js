@@ -64,7 +64,22 @@ const PROFILER = {
     // sider i panelet, der kun giver mening for den danske side. Chat: den tyske side har intet
     // chatvindue. Faar den et, skal det have sin egen bot med tabeller i den tyske database.
     skjul: ['blog', 'links', 'indhold', 'annoncer', 'chat'],
-    ental: 'tyske'
+    ental: 'tyske',
+    // support-mail oversat begge veje (lib/sager.js, handlers/postkasse.js). Kunden skriver og faar svar paa
+    // tysk fra support-postkassen, teamet laeser og svarer paa dansk. Kun her, saa den danske backend intet goer.
+    support: {
+      kundeSprog: 'de', teamSprog: 'da', praefiks: 'UZ', afsender: 'Unser Zuhause',
+      tidszone: 'Europe/Berlin',
+      svarEmne: 'AW: ', udenEmne: '(ohne Betreff)',
+      kvittering: {
+        emne: 'Danke für deine Nachricht',
+        tekst: 'Hallo,\n\ndanke für deine Nachricht an Unser Zuhause. Wir haben sie erhalten und antworten dir innerhalb von 1 bis 2 Werktagen.\n\n' +
+          'Viele Antworten findest du schon jetzt auf unserer Hilfeseite: https://www.unserzuhauseapp.de/support\n\nViele Grüße\ndein Team von Unser Zuhause'
+      },
+      // citatlinjen over kundens egen besked i svaret: 'Am 8. Oktober 2026 um 18:02 schrieb Max <max@...>:'
+      citat: (dato, hvem) => 'Am ' + dato + ' schrieb ' + hvem + ':',
+      datoSprog: 'de-DE'
+    }
   }
 };
 
@@ -74,6 +89,7 @@ const profil = PROFILER[kode];
 
 module.exports = {
   ...profil,
+  support: profil.support || null,
   anden: PROFILER[kode === 'dk' ? 'de' : 'dk'],
   // en SIDE, ingen profil kender: databasen bruges slet ikke (db.js), saa intet havner forkert
   ugyldig: PROFILER[raa] ? null : 'SIDE=' + String(process.env.SIDE).slice(0, 20) + ' kendes ikke. Brug dk eller de.',

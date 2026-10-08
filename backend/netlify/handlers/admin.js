@@ -17,6 +17,9 @@ const seo = require('../lib/seo.js');
 const forfatter = require('../lib/skriv.js');
 const udgivelse = require('../lib/udgiv.js');
 const blogbyg = require('../lib/blogbyg.js');
+// support-mail oversat begge veje (kun den tyske backend): status til Opsaetning. IMAP-testen henter
+// lib/imap.js foerst, naar den bruges, saa panelet ikke starter langsommere.
+const sager = require('../lib/sager.js');
 // levetider: SEK, MINUT, TIME, DOEGN (millisekunder). MIN er standarden, 5 minutter, og bruges ikke til at gange op.
 const { husk, glem, SEK, MINUT, TIME, DOEGN, UDGAVE } = require('../lib/cache.js');
 const { sql, opret, log, dbStatus } = require('../lib/db.js');
@@ -1492,7 +1495,7 @@ exports.handler = async (ev) => {
   if (d === 'status') { const db = await dbStatus(); return svar(200, { ok:true, side: profil.offentlig(), opsat: {
     kode: auth.harKode(), database: db.ok, databaseFejl: db.fejl, analytics: G.opsat(), soegning: G.opsatGsc(),
     meta: meta.opsat(), googleads: gads.opsat(), appstore: asc.opsat(), googleplay: gplay.opsat(),
-    mail: mail.opsat(), udgivelse: !!process.env.NETLIFY_BUILD_HOOK, webhook: !!process.env.WEBHOOK_SECRET, soro: soro.opsat(), bot: botOpsat(), claude: forfatter.opsat(), netlify: udgivelse.opsat() } }); }
+    mail: mail.opsat(), udgivelse: !!process.env.NETLIFY_BUILD_HOOK, webhook: !!process.env.WEBHOOK_SECRET, soro: soro.opsat(), bot: botOpsat(), claude: forfatter.opsat(), netlify: udgivelse.opsat(), support: sager.status() } }); }
 
   const ip = ((ev.headers||{})['x-nf-client-connection-ip'] || (ev.headers||{})['x-forwarded-for'] || '').split(',')[0].trim();
   if (d === 'login') {
@@ -1611,6 +1614,8 @@ exports.handler = async (ev) => {
         if (forfatter.opsat()) await proev('claude', async () => { const r = await forfatter.forslag('titel', { url:'/', titel: profil.brand, besk:'', h1tekst: profil.brand }); return r.length + ' forslag'; }); else ud.claude = { ok:false, fejl:'ikke sat op' };
         if (udgivelse.opsat()) await proev('netlify', async () => { const r = await fetch('https://api.netlify.com/api/v1/sites/' + (process.env.SITE_NETLIFY_ID || profil.netlifySiteId), { headers:{ Authorization:'Bearer ' + process.env.NETLIFY_TOKEN } }); if (!r.ok) throw new Error('Netlify svarede ' + r.status); return (await r.json()).name; }); else ud.netlify = { ok:false, fejl:'ikke sat op' };
         if (mail.opsat()) ud.mail = { ok:true, note:'sender til ' + mail.TIL + ', brug Send prøvemail' }; else ud.mail = { ok:false, fejl:'ikke sat op' };
+        // support-postkassen: logger ind over IMAP og taeller indbakken, laeser ingen mails
+        { const st = sager.status(); if (st) { if (st.klar) await proev('support', () => require('../lib/imap.js').tjek()); else ud.support = { ok:false, fejl:'ikke sat op' }; } }
         { const db = await dbStatus(); ud.database = db.ok && !db.fejl ? { ok:true } : { ok:false, fejl: db.fejl || 'ikke sat op' }; }
         // Soro har kun et RSS-feed. Her laeses det, og der taelles, hvad der er kommet ind
         if (soro.opsat()) await proev('soro', async () => { const h = await soro.hent();

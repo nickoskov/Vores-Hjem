@@ -5,7 +5,7 @@
  * som kladde i bloggen og udgives aldrig af sig selv.
  */
 const NOEGLE = process.env.ANTHROPIC_API_KEY || '';
-const MODEL = process.env.CLAUDE_MODEL || 'claude-sonnet-5';
+const MODEL = process.env.CLAUDE_MODEL || 'claude-sonnet-5-5';
 const opsat = () => !!NOEGLE;
 
 const STIL = `Du skriver for Vores Hjem, en dansk familieapp der samler kalender, madplan, indkoebsliste og opgaver med point til boernene. 39 kr om maaneden, 14 dage gratis, op til 7 personer.

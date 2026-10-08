@@ -5,6 +5,8 @@
   "description": "Backend til voreshjem.dk. Erstatter Wix' panel.",
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
+    "imapflow": "^2.3.0",
+    "mailparser": "^3.9.37",
     "nodemailer": "^10.0.9"
   }
 }

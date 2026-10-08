@@ -13,6 +13,7 @@
 const { sql } = require('../lib/db.js');
 const mail = require('../lib/mail.js');
 const profil = require('../lib/side.js');
+const sager = require('../lib/sager.js');
 
 // kun profilens egen side. Den anden side sender til sin egen backend.
 const TILLADT = profil.tilladt;
@@ -75,6 +76,14 @@ exports.handler = async (ev) => {
     }
     await sql`INSERT INTO vh_kontakt (ip, navn, email, emne, besked) VALUES (${adr}, ${navn}, ${email}, ${emne}, ${besked})`;
   } catch (e) {} }
+
+  // support-mail oversat begge veje (kun paa en backend med support i profilen, se lib/sager.js): henvendelsen
+  // bliver en sag, og teamet faar den paa dansk med sagsnummer, saa et svar naar kunden paa kundens sprog.
+  // Fejler det, foer sagen findes, sendes den almindelige mail nedenfor, saa intet gaar tabt.
+  if (sager.klar()) {
+    try { await sager.fraFormular({ navn, email, emne, besked }, { slut: Date.now() + 5000 }); return svar(200, oprindelse, { modtaget: true }); }
+    catch (e) { await sager.logFejl('Kontaktformularen kunne ikke lave en sag, sendt som almindelig mail: ' + String(e && e.message || e).slice(0, 120)); }
+  }
 
   // hvor henvendelsen kom fra, og hvad emnet starter med, folger profilen (side.js)
   const { kilde, emne: emneStart, hvor } = profil.kontakt;

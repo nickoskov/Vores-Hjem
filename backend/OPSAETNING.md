@@ -144,9 +144,31 @@ som sender telefonen til sin butik og tæller trykket i den tyske database.
 | `ASC_ISSUER_ID`, `ASC_KEY_ID`, `ASC_PRIVATE_KEY`, `ASC_VENDOR_NUMBER` | en egen API-nøgle i App Store Connect med rollen Sales. Issuer ID og Vendor Number er kontoens og derfor de samme |
 | `GSC_SITE_URL` | `sc-domain:unserzuhauseapp.de` |
 | `PSI_API_KEY`, `RYD_DAGE` | kan udelades |
+| `ANTHROPIC_API_KEY` | Claude-nøglen. Bruges til at oversætte support-mail |
+| `SUPPORT_TEAM` | teamets indbakke, der får kundernes mails på dansk, fx `kontakt@vores-hjem.dk` (flere adresser adskilles med komma). Sættes den, er oversættelsen slået til |
+| `SUPPORT_TEAM_EKSTRA` | kan udelades. Flere adresser, hvis svar også sendes videre til kunden, men som ikke får kundernes mails |
+| `IMAP_HOST`, `IMAP_PORT` | kan udelades, står til `imap.simply.com` og `993` |
 
 Kopiér ingen nøgler fra den danske. Netlify udleverer heller ikke hemmelige
 værdier, så det, der ser ud som en kopi, er kun en pladsholder.
+
+### Support-mail på tysk, læst og besvaret på dansk
+
+Kunderne skriver på tysk til `support@unserzuhauseapp.de`. Funktionen
+`postkasse` læser postkassen hvert andet minut (samme login som SMTP) og
+sender hver ny kundemail videre til `SUPPORT_TEAM`, oversat til dansk, med et
+sagsnummer som `[UZ-12]` i emnet. Kunden får med det samme en kort tysk
+kvittering, højst én pr. adresse pr. døgn. Svarer teamet på dansk på den
+mail, oversættes svaret til tysk og sendes til kunden fra
+`support@unserzuhauseapp.de`, og teamet får en kopi af den tyske tekst.
+Kontaktformularen på unserzuhauseapp.de laver også en sag.
+
+Fejler oversættelsen eller afsendelsen, får kunden intet, og teamet får at
+vide hvorfor. Autosvar, fejlmeldinger, nyhedsbreve og vores egne mails
+ignoreres, så teamets eget autosvar aldrig når kunden. Mail fra før
+funktionen blev slået til, røres ikke. Sagerne slettes 90 dage efter sidste
+besked. Slå ikke Simplys eget autosvar til på postkassen: det ville også
+svare teamet. Den danske backend gør intet af dette.
 
 ---
 
