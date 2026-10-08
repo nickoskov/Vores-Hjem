@@ -20,6 +20,8 @@ const blogbyg = require('../lib/blogbyg.js');
 // support-mail oversat begge veje (kun den tyske backend): status til Opsaetning. IMAP-testen henter
 // lib/imap.js foerst, naar den bruges, saa panelet ikke starter langsommere.
 const sager = require('../lib/sager.js');
+// hvor meget af en lang kundemail, der oversaettes (Support viser, naar resten kun staar paa tysk)
+const { MAKS_TEGN } = require('../lib/oversaet.js');
 // levetider: SEK, MINUT, TIME, DOEGN (millisekunder). MIN er standarden, 5 minutter, og bruges ikke til at gange op.
 const { husk, glem, SEK, MINUT, TIME, DOEGN, UDGAVE } = require('../lib/cache.js');
 const { sql, opret, log, dbStatus } = require('../lib/db.js');
@@ -1372,6 +1374,144 @@ async function oppetid() {
       tekst: 'Tid for at hente hele forsiden fra en Netlify-server (som standard i USA), med opkobling og eventuel omdirigering. Det er ikke den ventetid, en besøgende i Danmark oplever, så brug den til at se udsving. Serverens egen svartid står under Sidehastighed.' } };
 }
 
+/* ── support (kun en backend med support-mail, side.js: den tyske) ──────────
+   Kun laesning. Sagerne og beskederne ligger i vh_sager og vh_sag_beskeder (lib/sager.js). Teamet svarer ved
+   at svare paa den danske mail i sin indbakke, aldrig herfra. En sag lukkes ikke med en knap: ryd.js sletter
+   den, naar der er gaaet sager.DAGE dage uden ny besked, saa aabne sager er alle sager, der stadig er gemt.
+   Status regnes af beskederne, i den raekkefoelge de kom ind (id):
+     venter    den nyeste besked er fra kunden. Et svar, der ikke blev sendt (fejl, uvist, undervejs), taeller ikke.
+     besvaret  den nyeste besked er et svar, der gik ud til kunden (status 'sendt').
+   Svartiden: fra kundens foerste besked i en runde, til teamets foerste svar, der gik ud bagefter. En runde
+   starter med sagens foerste besked eller med den foerste besked fra kunden efter et sendt svar. Tiderne er
+   hvornaar beskederne kom ind i backenden (ts), ikke hvornaar kunden trykkede send. */
+const SUPPORT_MAKS = 200;   // sager i listen
+const SVAR_NOTE = {
+  fejl: 'Jeres seneste svar blev ikke sendt til kunden.',
+  uvist: 'Uvist, om jeres seneste svar nåede ud. Tjek support-postkassens sendte post.',
+  oversaetter: 'Jeres seneste svar er ved at blive oversat.',
+  sender: 'Jeres seneste svar er ved at blive sendt.' };
+// det samme ved det enkelte svar i traaden
+const BESKED_NOTE = {
+  uvist: 'Uvist, om svaret nåede ud. Tjek support-postkassens sendte post.',
+  oversaetter: 'Oversættes lige nu og er ikke sendt endnu.',
+  sender: 'Sendes lige nu.' };
+const sagMaerke = id => '[' + profil.support.praefiks + '-' + id + ']';
+const iso2 = t => t ? new Date(t).toISOString() : null;
+/** En raekke fra listen eller fra én sag som det, panelet viser. */
+function sagUd(r) {
+  const ind = r.sidste_ind != null ? Number(r.sidste_ind) : null, ud = r.sidste_ud != null ? Number(r.sidste_ud) : null;
+  const status = ind == null && ud == null ? null : ud != null && (ind == null || ud > ind) ? 'besvaret' : 'venter';
+  const forsoeg = r.sidste_svar != null ? Number(r.sidste_svar) : null;
+  const note = forsoeg != null && forsoeg !== ud && (ind == null || forsoeg > ind) ? SVAR_NOTE[r.sidste_svar_status] || null : null;
+  return { id: r.id, maerke: sagMaerke(r.id), navn: r.navn || '', email: r.email, kilde: r.kilde,
+    emneDe: r.emne_de || '', emneDa: r.emne_da || null,
+    emneDaGrund: r.emne_da ? null : !r.emne_de ? 'Kunden skrev intet emne.' : r.uoversat ? 'Ikke oversat endnu.' : 'Emnet blev ikke oversat.',
+    beskeder: r.beskeder, fraKunden: r.fra_kunden, tilKunden: r.til_kunden,
+    status, statusGrund: status ? null : 'Sagen har ingen beskeder.', note,
+    oprettet: iso2(r.oprettet), sidst: iso2(r.sidst) };
+}
+
+async function support() {
+  if (!sql) throw new Error('Databasen er ikke sat op');
+  await sager.tabeller();
+  const [liste, alle, runder, start] = await Promise.all([
+    sql`SELECT s.id, s.email, s.navn, s.emne_de, s.emne_da, s.kilde, s.oprettet, s.sidst,
+          count(b.id)::int AS beskeder,
+          count(b.id) FILTER (WHERE b.retning = 'ind')::int AS fra_kunden,
+          count(b.id) FILTER (WHERE b.retning = 'ud' AND b.status = 'sendt')::int AS til_kunden,
+          max(b.id) FILTER (WHERE b.retning = 'ind') AS sidste_ind,
+          max(b.id) FILTER (WHERE b.retning = 'ud' AND b.status = 'sendt') AS sidste_ud,
+          max(b.id) FILTER (WHERE b.retning = 'ud') AS sidste_svar,
+          (array_agg(b.status ORDER BY b.id DESC) FILTER (WHERE b.retning = 'ud'))[1] AS sidste_svar_status,
+          coalesce(bool_or(b.retning = 'ind' AND b.status IN ('venter', 'i gang')), false) AS uoversat
+        FROM vh_sager s LEFT JOIN vh_sag_beskeder b ON b.sag = s.id
+        GROUP BY s.id ORDER BY s.sidst DESC, s.id DESC LIMIT ${SUPPORT_MAKS}::int`,
+    sql`SELECT count(*)::int AS aabne,
+          count(*) FILTER (WHERE ind IS NOT NULL AND (ud IS NULL OR ud < ind))::int AS venter
+        FROM (SELECT s.id, max(b.id) FILTER (WHERE b.retning = 'ind') AS ind,
+                max(b.id) FILTER (WHERE b.retning = 'ud' AND b.status = 'sendt') AS ud
+              FROM vh_sager s LEFT JOIN vh_sag_beskeder b ON b.sag = s.id GROUP BY s.id) x`,
+    sql`WITH b AS (
+          SELECT id, sag, retning, ts, lag(retning) OVER (PARTITION BY sag ORDER BY id) AS forrige
+          FROM vh_sag_beskeder WHERE retning = 'ind' OR (retning = 'ud' AND status = 'sendt')),
+        r AS (
+          SELECT b.ts, (SELECT min(u.ts) FROM vh_sag_beskeder u
+                        WHERE u.sag = b.sag AND u.retning = 'ud' AND u.status = 'sendt' AND u.id > b.id) AS svar
+          FROM b WHERE b.retning = 'ind' AND (b.forrige IS NULL OR b.forrige = 'ud') AND b.ts > now() - interval '30 days')
+        SELECT count(*)::int AS runder, count(svar)::int AS besvaret,
+          (percentile_cont(0.5) WITHIN GROUP (ORDER BY extract(epoch FROM svar - ts)::float8) FILTER (WHERE svar IS NOT NULL))::float8 AS median
+        FROM r`,
+    // hvornaar support-mailen startede: postkassens foerste fuldt opsatte koersel, eller den foerste sag (formularen kan komme foer)
+    sql`SELECT least((SELECT min(oprettet) FROM vh_sager),
+          (SELECT vaerdi::timestamptz FROM vh_tilstand WHERE noegle = 'postkasse-start')) AS t`
+  ]);
+  const a = alle[0] || {}, r = runder[0] || {};
+  const fra = start[0] && start[0].t ? new Date(start[0].t).toISOString() : null;
+  const mangler = sager.mangler();
+  // ingen sager, og support-mailen har aldrig koert: tallene kendes ikke, de er ikke 0
+  const ukendt = !a.aabne && !fra;
+  const ukendtGrund = mangler.length ? 'Support-mailen er ikke sat op endnu. Mangler ' + mangler.join(', ') + '.'
+    : 'Support-postkassen har ikke kørt endnu, så der er ingen sager at tælle.';
+  const hel = !!fra && Date.parse(fra) <= Date.now() - 30 * 86400000;
+  const daekGrund = fra && !hel ? 'Support-mailen startede ' + dkTid(fra) + ', så kun ' +
+    String(Math.max(0, Math.round((Date.now() - Date.parse(fra)) / 86400000 * 10) / 10)).replace('.', ',') + ' af 30 dage er med.' : null;
+  const ubesvaret = (r.runder || 0) - (r.besvaret || 0);
+  const svartid = { kilde: 'support', nu: r.besvaret ? Math.round(r.median) : null, antal: r.besvaret || 0, ubesvaret, fra, hel,
+    grund: [!fra ? ukendtGrund
+      : !r.runder ? 'Ingen henvendelser fra kunder de seneste 30 dage.'
+      : !r.besvaret ? (r.runder === 1 ? 'Den ene henvendelse' : 'Ingen af de ' + r.runder + ' henvendelser') + ' fra de seneste 30 dage er besvaret endnu.'
+      : ubesvaret ? ubesvaret + (ubesvaret === 1 ? ' henvendelse venter' : ' henvendelser venter') + ' stadig og er ikke med.' : null,
+      daekGrund].filter(Boolean).join(' ') || null };
+  return { kilde: 'support', start: fra, dage: sager.DAGE, mangler,
+    tal: {
+      aabne: { kilde: 'support', nu: ukendt ? null : a.aabne || 0,
+        grund: ukendt ? ukendtGrund : 'Alle gemte sager. En sag slettes ' + sager.DAGE + ' dage efter sidste besked.' },
+      venter: { kilde: 'support', nu: ukendt ? null : a.venter || 0, grund: ukendt ? ukendtGrund : null },
+      svartid },
+    sager: liste.map(sagUd), flere: Math.max(0, (a.aabne || 0) - liste.length) };
+}
+
+/** Én sag med alle beskeder i den raekkefoelge, de kom. Kunden: dansk oversaettelse og tysk original.
+    Teamet: den danske tekst, de skrev, og den tyske, der blev sendt. Mangler en oversaettelse, er den null med en grund. */
+async function supportSag(id) {
+  if (!sql) throw new Error('Databasen er ikke sat op');
+  await sager.tabeller();
+  const [s] = await sql`SELECT s.id, s.email, s.navn, s.emne_de, s.emne_da, s.kilde, s.oprettet, s.sidst,
+          count(b.id)::int AS beskeder,
+          count(b.id) FILTER (WHERE b.retning = 'ind')::int AS fra_kunden,
+          count(b.id) FILTER (WHERE b.retning = 'ud' AND b.status = 'sendt')::int AS til_kunden,
+          max(b.id) FILTER (WHERE b.retning = 'ind') AS sidste_ind,
+          max(b.id) FILTER (WHERE b.retning = 'ud' AND b.status = 'sendt') AS sidste_ud,
+          max(b.id) FILTER (WHERE b.retning = 'ud') AS sidste_svar,
+          (array_agg(b.status ORDER BY b.id DESC) FILTER (WHERE b.retning = 'ud'))[1] AS sidste_svar_status,
+          coalesce(bool_or(b.retning = 'ind' AND b.status IN ('venter', 'i gang')), false) AS uoversat
+        FROM vh_sager s LEFT JOIN vh_sag_beskeder b ON b.sag = s.id WHERE s.id = ${id}::int GROUP BY s.id`;
+  if (!s) return null;
+  const rk = await sql`SELECT id, retning, fra, emne, tekst, oversat, bilag, status, fejl, ts
+    FROM vh_sag_beskeder WHERE sag = ${id}::int ORDER BY id`;
+  const beskeder = rk.map(b => {
+    const ud = { id: b.id, retning: b.retning, fra: b.fra, emne: b.emne || '', ts: iso2(b.ts), status: b.status, bilag: b.bilag || '',
+      sendt: b.retning === 'ud' ? b.status === 'sendt' : null };
+    const fejl = b.fejl ? ' (' + b.fejl + ')' : '';
+    if (b.retning === 'ind') {
+      ud.tysk = b.tekst || '';
+      ud.dansk = b.oversat || null;
+      ud.danskGrund = b.oversat ? null : !b.tekst ? 'Beskeden har ingen tekst.'
+        : b.status === 'venter' || b.status === 'i gang' ? punktum('Ikke oversat endnu. Postkassen tager den ved næste kørsel' + (b.fejl ? '. Sidste forsøg fejlede' + fejl : ''))
+        : b.status === 'fejl' ? punktum('Kunne ikke sendes til teamet' + fejl)
+        : punktum('Oversættelsen fejlede' + fejl + ', så teamet fik kun den tyske original');
+      ud.note = b.oversat && b.tekst.length > MAKS_TEGN ? 'Kun de første ' + MAKS_TEGN.toLocaleString('da-DK') + ' tegn er oversat.' : null;
+    } else {
+      ud.dansk = b.tekst || '';
+      ud.tysk = b.oversat || null;
+      ud.tyskGrund = b.oversat ? null : b.status === 'oversaetter' ? 'Oversættes lige nu.' : 'Oversættelsen fejlede, så der er ingen tysk tekst.';
+      ud.note = b.status === 'sendt' ? null : b.status === 'fejl' ? punktum('Ikke sendt til kunden' + fejl) : BESKED_NOTE[b.status] || 'Ikke sendt til kunden.';
+    }
+    return ud;
+  });
+  return { kilde: 'support', sag: sagUd(s), beskeder, dage: sager.DAGE };
+}
+
 /* ── seo og geo ─────────────────────────────────────────────────────────────
    Gennemgangen og historikken er jeres egen (vh_seo). Gamle gennemgange (gemt med regel 1, som
    kunne give 100 trods advarsler) regnes om efter regel 2, og historikken har én gennemgang pr.
@@ -1473,7 +1613,11 @@ const HANDLING_SIDE = { annoncer: 'annoncer',
   rettelser: 'indhold', 'rettelse-gem': 'indhold', 'rettelse-slet': 'indhold', 'rettelser-udgiv': 'indhold', 'seo-forslag': 'indhold', udgiv: 'indhold',
   // chatten: den danske backend taler med den faelles danske bot, den tyske med sin egen (side.js, botEgen)
   chat: 'chat', 'bot-liste': 'chat', 'bot-hent': 'chat', 'bot-stat': 'chat', 'bot-svar': 'chat', 'bot-tagover': 'chat',
-  'bot-slet': 'chat', 'bot-ret': 'chat', 'bot-slet-besked': 'chat' };
+  'bot-slet': 'chat', 'bot-ret': 'chat', 'bot-slet-besked': 'chat',
+  // support-mailen findes kun paa en backend, hvis profil har support (side.js, den tyske)
+  support: 'support', 'support-sag': 'support' };
+/** Siden findes ikke paa denne backend: profilen skjuler den, eller det er Support uden support-mail. */
+const sideSkjult = s => profil.skjul.includes(s) || (s === 'support' && !profil.support);
 const harChat = !profil.skjul.includes('chat');
 /* Den danske backend ser begge sprog i den faelles danske bot, som foer. Den tyske har sin egen bot
    (lib/bot.js) og ser og roerer kun tyske samtaler (side.js, chat), uanset hvad panelet beder om. */
@@ -1519,7 +1663,7 @@ exports.handler = async (ev) => {
   }
   const bruger = await auth.bekraeft(auth.laes(k.seddel || (ev.headers||{})['x-seddel']));
   if (!bruger) return svar(401, { fejl: 'Log ind igen' });
-  if (HANDLING_SIDE[d] && profil.skjul.includes(HANDLING_SIDE[d])) return svar(404, { fejl: 'Den del af panelet findes ikke på backenden til ' + profil.navn + '.' });
+  if (HANDLING_SIDE[d] && sideSkjult(HANDLING_SIDE[d])) return svar(404, { fejl: 'Den del af panelet findes ikke på backenden til ' + profil.navn + '.' });
   const skriv = () => { if (!auth.maa(bruger, 'redigerer')) throw new Error('Du kan kun kigge. Bed ejeren om at give dig adgang til at rette.'); };
   const ejer  = () => { if (!auth.maa(bruger, 'ejer')) throw new Error('Kun ejeren kan gøre det her.'); };
   const dage = k.dage || '28d';
@@ -1557,6 +1701,12 @@ exports.handler = async (ev) => {
       case 'bot-ret':   skriv(); await egenSamtale(k.id); return svar(200, await bot('admin_edit_msg', { conversationId: k.id, messageId: k.beskedId, content: k.tekst }));
       case 'bot-slet-besked': skriv(); await egenSamtale(k.id); return svar(200, await bot('admin_delete_msg', { conversationId: k.id, messageId: k.beskedId }));
       case 'oppetid':   return svar(200, await oppetid());
+      // support-mailen, kun laesning. Alle roller maa laese; svar gives fra teamets indbakke, ikke herfra.
+      case 'support':   return svar(200, await support());
+      case 'support-sag': { const id = Number(k.id);
+        if (!Number.isInteger(id) || id < 1 || id > 2147483647) return svar(400, { fejl: 'Mangler sagens nummer' });
+        const r = await supportSag(id);
+        return r ? svar(200, r) : svar(404, { fejl: 'Sag ' + sagMaerke(id) + ' findes ikke. Sager slettes ' + sager.DAGE + ' dage efter sidste besked.' }); }
       case 'raad':      return svar(200, await husk('raad', 5 * MINUT, medLog(raad)));
       case 'uge':       return svar(200, await husk('uge', MINUT, medLog(uge)));
       // et doegn (foer stod der 24*60*MIN, som er 5 doegn, fordi MIN er 5 minutter)
