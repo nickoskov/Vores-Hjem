@@ -52,7 +52,8 @@ const PROFILER = {
     // download-siden (unserzuhause-download.netlify.app, hvor bio-links peger hen) taelles med som /download
     tilladt: /(^|\.)unserzuhauseapp\.de$|^verdant-strudel-af7a88\.netlify\.app$|^unserzuhause-download\.netlify\.app$/i,
     egen: /(^|\.)unserzuhauseapp\.de$|^verdant-strudel-af7a88\.netlify\.app$|^unserzuhause-download\.netlify\.app$/i,
-    foran: { 'unserzuhause-download.netlify.app': '/download' },
+    // download.unserzuhauseapp.de er download-sidens planlagte adresse; den er med nu, saa intet blandes ved flytningen
+    foran: { 'unserzuhause-download.netlify.app': '/download', 'download.unserzuhauseapp.de': '/download' },
     chat: 'de',
     vagtAdresser: ['www.unserzuhauseapp.de', 'unserzuhauseapp.de', 'backend.unserzuhauseapp.de', 'download.unserzuhauseapp.de', 'unserzuhause-download.netlify.app'],
     appStoreId: '6771931999', playPakke: 'com.unserzuhause.app',

@@ -85,16 +85,26 @@
   var NUDGE_TEXT = NUDGES[0];
   var feedbackGiven = {}; // beskeds-index -> 1/-1
 
+  // Lagring kan være spærret (fx Safari med "Bloker alle cookies"): så kaster localStorage en fejl, og
+  // uden try/catch kom boblen slet ikke frem. Alt går gennem de to her; convId og email i hukommelsen er reserven.
+  function hentGemt(n) { try { return window.localStorage.getItem(n); } catch (e) { return null; } }
+  function gem(n, v) { try { window.localStorage.setItem(n, v); } catch (e) {} }
+
   // Identitet pr. browser OG pr. marked. Uden suffikset ville en person der
   // besøger begge sider fortsætte den danske samtale på den tyske side.
   var NØGLE = SITE === 'dk' ? 'vh-conv-id' : 'vh-conv-id-' + SITE;
   var MAILNØGLE = SITE === 'dk' ? 'vh-conv-email' : 'vh-conv-email-' + SITE;
-  var convId = localStorage.getItem(NØGLE);
-  if (!convId) {
-    convId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('c' + Date.now() + Math.round(Math.random() * 1e9));
-    localStorage.setItem(NØGLE, convId);
+  // Ved sideindlæsning læses kun et id, der allerede findes. Et nyt laves og gemmes først, når den første
+  // besked sendes (sikrId), så intet gemmes hos dem, der aldrig bruger chatten.
+  var convId = hentGemt(NØGLE) || '';
+  function sikrId() {
+    if (!convId) {
+      convId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('c' + Date.now() + Math.round(Math.random() * 1e9));
+      gem(NØGLE, convId);
+    }
+    return convId;
   }
-  var email = localStorage.getItem(MAILNØGLE) || '';
+  var email = hentGemt(MAILNØGLE) || '';
 
   var serverMsgs = [];
   var human = false;
@@ -320,8 +330,9 @@
       var v = (inp.value || '').trim();
       if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) { err.style.display = 'block'; inp.focus(); return; }
       email = v;
-      try { localStorage.setItem(MAILNØGLE, email); } catch (e) {}
-      try { api({ action: 'set_email', conversationId: convId, email: email }); } catch (e) {}
+      gem(MAILNØGLE, email);
+      // uden id er der ingen samtale endnu; mailen sendes så med den første besked
+      if (convId) { try { api({ action: 'set_email', conversationId: convId, email: email }); } catch (e) {} }
       renderChat(false);
       setTimeout(function () { ta.focus(); }, 60);
     }
@@ -354,6 +365,7 @@
   }
 
   async function doPoll() {
+    if (!convId) return; // ingen samtale endnu, så intet at hente
     try {
       var data = await api({ action: 'poll', conversationId: convId, have: serverMsgs.length });
       if (data && data.unchanged) {
@@ -381,7 +393,7 @@
     renderChat(true);
     busy = true; sendBtn.disabled = true;
     try {
-      var data = await api({ action: 'send', conversationId: convId, email: email, content: text, history: history });
+      var data = await api({ action: 'send', conversationId: sikrId(), email: email, content: text, history: history });
       lastSig = '';           // tving gen-tegning
       applyState(data);
     } catch (e) {

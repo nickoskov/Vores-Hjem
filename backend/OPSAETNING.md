@@ -168,8 +168,11 @@ i det tyske panel. Der svarer teamet på dansk, og kunden får svaret på tysk.
 Butikslinks i chatten går til `backend.unserzuhauseapp.de/hent/...` og tælles
 som "Chatten". Den svævende knap ligger på siden selv (`unserzuhause/hentknap.js`).
 Samtaler slettes 90 dage efter sidste besked som på den danske. Får botten nye
-kolonner, køres `https://backend.unserzuhauseapp.de/.netlify/functions/chat-bot?migrate=1`
-én gang efter udgivelsen, som på den danske bot.
+kolonner, køres skemaopdateringen én gang efter udgivelsen. Den kræver den tyske
+`ADMIN_PASSWORD` (den gamle `?migrate=1` uden kode virker ikke længere):
+`curl -s -X POST https://backend.unserzuhauseapp.de/.netlify/functions/chat-bot -H 'content-type: application/json' -d '{"action":"admin_migrate","password":"KODEN"}'`
+Svaret er `{"migrated":true}`. Seks forkerte koder fra samme adresse på et kvarter
+spærrer botten og panelets login i et kvarter.
 
 ### Support-mail på tysk, læst og besvaret på dansk
 

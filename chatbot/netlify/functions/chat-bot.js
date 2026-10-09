@@ -4,6 +4,7 @@
 
 const { neon } = require('@neondatabase/serverless');
 const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 // let, fordi brug() nederst kan give botten en anden database-forbindelse (den tyske backend)
 let sql = process.env.DATABASE_URL ? neon(process.env.DATABASE_URL) : null;
 
@@ -52,7 +53,7 @@ PRIS OG KONTO:
 SÅDAN KOMMER MAN I GANG:
 - Én person downloader appen, opretter konto med email og starter den gratis prøveperiode.
 - Hovedbrugeren TILFØJER hvert familiemedlem under Indstillinger → Familiemedlemmer → "+ Tilføj familiemedlem" ved at skrive deres NAVN. Et medlem kan IKKE komme ind, før de er tilføjet.
-- Familiemedlemmet (også børn og bedsteforældre) logger så ind med TO ting: det NØJAGTIGE navn som hovedbrugeren skrev (skal matche præcist) + den delte FAMILIEKODE (fx "RX-375919", står under Indstillinger → Familiemedlemmer). Ingen egen email eller kodeord. Er navnet ikke tilføjet eller stavet forkert, kan de ikke logge ind.
+- Familiemedlemmet (også børn og bedsteforældre) logger så ind med TO ting: det NØJAGTIGE navn som hovedbrugeren skrev (skal matche præcist) + den delte FAMILIEKODE (fx "AA-123456", står under Indstillinger → Familiemedlemmer). Ingen egen email eller kodeord. Er navnet ikke tilføjet eller stavet forkert, kan de ikke logge ind.
 - Hovedbrugeren kan generere en ny kode, logge alle kode-brugere ud og gøre medlemmer til Admin.
 - Hvert familiemedlem har sin egen profil, som man vælger under Indstillinger.
 
@@ -158,7 +159,7 @@ PREIS UND KONTO:
 SO GEHT DER START:
 - Eine Person lädt die App, legt ein Konto mit E-Mail an und startet die kostenlose Testphase.
 - Die hauptverantwortliche Person FÜGT jedes Familienmitglied unter Einstellungen → Familienmitglieder hinzu, indem sie dessen NAMEN einträgt. Ohne diesen Schritt kommt niemand hinein.
-- Das Familienmitglied (auch Kinder und Großeltern) meldet sich dann mit ZWEI Dingen an: dem GENAUEN Namen, wie er eingetragen wurde (muss exakt übereinstimmen) + dem gemeinsamen FAMILIENCODE (z. B. „RX-375919", zu finden unter Einstellungen → Familienmitglieder). Keine eigene E-Mail, kein eigenes Passwort. Ist der Name nicht eingetragen oder falsch geschrieben, klappt die Anmeldung nicht.
+- Das Familienmitglied (auch Kinder und Großeltern) meldet sich dann mit ZWEI Dingen an: dem GENAUEN Namen, wie er eingetragen wurde (muss exakt übereinstimmen) + dem gemeinsamen FAMILIENCODE (z. B. „AA-123456", zu finden unter Einstellungen → Familienmitglieder). Keine eigene E-Mail, kein eigenes Passwort. Ist der Name nicht eingetragen oder falsch geschrieben, klappt die Anmeldung nicht.
 - Die hauptverantwortliche Person kann einen neuen Code erzeugen, alle Code-Nutzer abmelden und Mitglieder zu Admins machen.
 - Jedes Familienmitglied hat ein eigenes Profil, das man unter Einstellungen auswählt.
 
@@ -276,6 +277,11 @@ const SITES = {
     prompt: PROMPT_DE,
     supportMail: 'support@unserzuhauseapp.de',
     domain: 'unserzuhauseapp.de',
+    // De sider, der maa kalde botten fra en browser (CORS). Bruges kun med et fast marked (brug(), den tyske
+    // backend). Den tyske sides egne test-udgaver paa Netlify (<id>--verdant-strudel-af7a88) er med, saa chatten
+    // ogsaa virker der. Den danske bot har ingen liste og svarer '*' som foer.
+    origins: ['https://www.unserzuhauseapp.de', 'https://unserzuhauseapp.de', 'https://backend.unserzuhauseapp.de',
+      'https://unserzuhause-download.netlify.app', /^https:\/\/([a-z0-9-]+--)?verdant-strudel-af7a88\.netlify\.app$/],
     tagline: 'Weniger Chaos. Mehr Überblick.',
     store: {
       appstore: 'https://apps.apple.com/de/app/unser-zuhause/id6771931999',
@@ -318,6 +324,22 @@ const CORS = {
   'Access-Control-Allow-Headers': 'content-type',
 };
 const json = (statusCode, obj) => ({ statusCode, headers: { 'content-type': 'application/json', ...CORS }, body: JSON.stringify(obj) });
+// Med et fast marked, der har en liste (SITES.de.origins), faar kun de sider Access-Control-Allow-Origin.
+// Alle andre faar ingen, saa en fremmed side ikke kan bruge botten fra besoegendes browsere. Uden liste: '*' som foer.
+function medCors(svar, event) {
+  const liste = FAST_SITE ? cfg(FAST_SITE).origins : null;
+  if (!liste || !svar) return svar;
+  const h = (event && event.headers) || {};
+  const origin = String(h.origin || h.Origin || '');
+  const headers = { ...(svar.headers || {}), Vary: 'Origin' };
+  delete headers['Access-Control-Allow-Origin'];
+  if (origin && liste.some(o => typeof o === 'string' ? o === origin : o.test(origin))) headers['Access-Control-Allow-Origin'] = origin;
+  return { ...svar, headers };
+}
+function klientIp(event) {
+  const h = (event && event.headers) || {};
+  return String(h['x-nf-client-connection-ip'] || h['x-forwarded-for'] || '').split(',')[0].trim();
+}
 
 function nowISO() { return new Date().toISOString(); }
 function cleanId(s) { return String(s || '').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 60); }
@@ -325,6 +347,50 @@ function cleanId(s) { return String(s || '').replace(/[^a-zA-Z0-9_-]/g, '').slic
 // ---------- SPAM-/OMKOSTNINGSBESKYTTELSE ----------
 // Grænse pr. samtale (tælles på widgetens historik). Hårdt loft = forudbetalte Anthropic-credits.
 const CONVO_MAX = 60;
+// Grænse pr. adresse: samtale-id og historik kommer fra klienten, saa et script kan skifte id ved hver besked.
+// Derfor ogsaa et loft pr. IP pr. time, talt i databasen. Adressen gemmes kun som hash og slettes efter en time.
+const IP_MAX_TIME = 30;
+let _ipTabel = false, _ipRyddet = 0;
+async function ipOverLoft(ip) {
+  if (!ip) return false;
+  if (!_ipTabel) {
+    await sql`CREATE TABLE IF NOT EXISTS vh_bot_ip (ip TEXT NOT NULL, ts TIMESTAMPTZ NOT NULL DEFAULT now())`;
+    await sql`CREATE INDEX IF NOT EXISTS vh_bot_ip_idx ON vh_bot_ip (ip, ts)`;
+    _ipTabel = true;
+  }
+  const h = crypto.createHash('sha256').update(ip).digest('hex').slice(0, 32);
+  const r = await sql`SELECT count(*)::int AS n FROM vh_bot_ip WHERE ip = ${h} AND ts > now() - interval '1 hour'`;
+  if (r[0].n >= IP_MAX_TIME) return true;
+  await sql`INSERT INTO vh_bot_ip (ip) VALUES (${h})`;
+  // gamle raekker ryddes hoejst hvert 10. minut pr. instans
+  if (Date.now() - _ipRyddet > 600000) {
+    _ipRyddet = Date.now();
+    try { await sql`DELETE FROM vh_bot_ip WHERE ts < now() - interval '1 hour'`; } catch (e) {}
+  }
+  return false;
+}
+
+// Spaerring af admin-koden, som panelets login (backend/netlify/lib/auth.js): 6 forkerte koder fra samme
+// adresse inden for et kvarter, saa svarer alle admin_*-handlinger 429, foer koden overhovedet tjekkes.
+// Samme tabel som panelet (vh_login), saa forkerte forsoeg i panelet og her taeller sammen.
+let _loginTabel = false;
+async function loginTabel() {
+  if (_loginTabel) return;
+  await sql`CREATE TABLE IF NOT EXISTS vh_login (id SERIAL PRIMARY KEY, ip TEXT NOT NULL,
+    ok BOOLEAN NOT NULL, hvornaar TIMESTAMPTZ NOT NULL DEFAULT now())`;
+  _loginTabel = true;
+}
+async function forMangeForsoeg(ip) {
+  await loginTabel();
+  const r = await sql`SELECT count(*)::int AS n FROM vh_login
+    WHERE ip = ${ip} AND NOT ok AND hvornaar > now() - interval '15 minutes'`;
+  return r[0].n >= 6;
+}
+async function forkertKode(ip) {
+  try { await loginTabel();
+        await sql`INSERT INTO vh_login (ip, ok) VALUES (${ip}, false)`;
+        await sql`DELETE FROM vh_login WHERE hvornaar < now() - interval '1 day'`; } catch (e) {}
+}
 
 // ---------- LAGER (Neon / Postgres) ----------
 let _schemaReady = false;
@@ -359,7 +425,7 @@ async function ensureSchema() {
 }
 // Kun med brug() (den tyske backend, hvis database starter tom): mangler bottens tabeller, oprettes de med
 // ensureSchema. Findes de, sker intet, saa ALTER TABLE aldrig koerer af sig selv (se VIGTIGT ved handleren).
-// En forespoergsel pr. kold start. Nye kolonner kommer stadig kun med GET ?migrate=1.
+// En forespoergsel pr. kold start. Nye kolonner kommer stadig kun med admin_migrate (POST med koden).
 let _tabellerTjekket = false;
 async function tabellerKlar() {
   if (!FAST_SITE || _tabellerTjekket || _schemaReady || !sql) return;
@@ -606,13 +672,17 @@ function statPeriode(body) {
 function requireAdmin(body) { return ADMIN_PASSWORD && body.password === ADMIN_PASSWORD; }
 
 // VIGTIGT: ensureSchema køres ALDRIG automatisk — ALTER TABLE låser tabellerne og gav 15-30s
-// udfald når nye funktions-instanser startede. Kør den manuelt via GET ?migrate=1 efter skema-ændringer.
+// udfald når nye funktions-instanser startede. Kør den manuelt efter skema-ændringer med POST
+// {"action":"admin_migrate","password":"<ADMIN_PASSWORD>"} (kræver koden og er bag spærringen).
 let _lastArchiveSweep = 0;
 
-exports.handler = async (event) => {
+exports.handler = async (event) => medCors(await behandl(event), event);
+
+async function behandl(event) {
   if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers: CORS, body: '' };
-  if (event.httpMethod === 'GET' && event.queryStringParameters && event.queryStringParameters.migrate && sql) {
-    try { await ensureSchema(); return json(200, { migrated: true }); } catch (e) { return json(200, { migrated: false, error: String(e && e.message || e).slice(0, 150) }); }
+  // ?migrate=1 og ?diag=1 virker ikke laengere uden kode. De er nu admin_migrate og admin_diag (POST med koden).
+  if (event.httpMethod === 'GET' && event.queryStringParameters && event.queryStringParameters.migrate) {
+    return json(405, { migrated: false, error: 'brug POST med action admin_migrate og admin-koden' });
   }
   if (event.httpMethod === 'GET') {
     // Klik-tæller: /hent/appstore + /hent/googleplay → tæl og viderestil til butikken
@@ -656,17 +726,7 @@ exports.handler = async (event) => {
         return { statusCode: 302, headers: { Location: target, ...CORS }, body: '' };
       }
     }
-    let diag = null;
-    if (event.queryStringParameters && event.queryStringParameters.diag && sql) {
-      try {
-        await tabellerKlar();
-        const r = await sql`SELECT count(*)::int AS n FROM vh_conversations`;
-        const ev = await sql`SELECT count(*)::int AS n FROM vh_events`;
-        diag = { conversations: r[0].n, events: ev[0].n };
-      }
-      catch (e) { diag = { error: String(e && e.message || e).slice(0, 120) }; }
-    }
-    return json(200, { ok: true, service: FAST_SITE ? cfg(FAST_SITE).label + ' chat' : 'voreshjem chat', configured: { anthropic: !!ANTHROPIC_API_KEY, admin: !!ADMIN_PASSWORD, smtp: !!(SMTP_HOST && SMTP_USER), database: !!sql }, diag });
+    return json(200, { ok: true, service: FAST_SITE ? cfg(FAST_SITE).label + ' chat' : 'voreshjem chat', configured: { anthropic: !!ANTHROPIC_API_KEY, admin: !!ADMIN_PASSWORD, smtp: !!(SMTP_HOST && SMTP_USER), database: !!sql } });
   }
   if (event.httpMethod !== 'POST') return json(405, { error: 'method' });
 
@@ -706,6 +766,13 @@ exports.handler = async (event) => {
         await saveMeta(id, meta);
         const limitMsg = meta.human ? S.txt.limitHuman : S.txt.limitBot;
         return json(200, { messages: prior.concat([{ role: 'user', content }, { role: 'assistant', content: limitMsg }]), human: !!meta.human, limited: true });
+      }
+
+      // Loft pr. IP (IP_MAX_TIME pr. time). Svaret er limitBot, uden kald til Claude og uden at gemme noget,
+      // saa et script med nye samtale-id'er hverken bruger credits eller fylder indbakken. Har teamet
+      // overtaget samtalen, koster den ingen credits, og kunden skal kunne blive ved med at skrive.
+      if (!meta.human && await ipOverLoft(klientIp(event))) {
+        return json(200, { messages: prior.concat([{ role: 'user', content }, { role: 'assistant', content: S.txt.limitBot }]), human: false, limited: true });
       }
 
       meta.updatedAt = nowISO();
@@ -791,9 +858,29 @@ exports.handler = async (event) => {
     }
 
     // ---------- ADMIN ----------
-    if (action === 'admin_login') return json(200, { ok: requireAdmin(body) });
     if (!action.startsWith('admin_')) return json(400, { error: 'ukendt action' });
-    if (!requireAdmin(body)) return json(401, { error: 'forkert adgangskode' });
+    // Spaerringen tjekkes foer koden (se forMangeForsoeg), ogsaa for admin_login
+    const ip = klientIp(event);
+    if (await forMangeForsoeg(ip)) return json(429, { error: 'for mange forsøg', message: 'For mange forkerte forsøg. Vent et kvarter.' });
+    if (!requireAdmin(body)) {
+      await forkertKode(ip);
+      return action === 'admin_login' ? json(200, { ok: false }) : json(401, { error: 'forkert adgangskode' });
+    }
+    if (action === 'admin_login') return json(200, { ok: true });
+
+    // Skema-opdatering efter nye kolonner (koeres aldrig af sig selv, se VIGTIGT ved handleren)
+    if (action === 'admin_migrate') {
+      try { await ensureSchema(); return json(200, { migrated: true }); } catch (e) { return json(200, { migrated: false, error: String(e && e.message || e).slice(0, 150) }); }
+    }
+
+    if (action === 'admin_diag') {
+      try {
+        const r = await sql`SELECT count(*)::int AS n FROM vh_conversations`;
+        const ev = await sql`SELECT count(*)::int AS n FROM vh_events`;
+        return json(200, { diag: { conversations: r[0].n, events: ev[0].n } });
+      }
+      catch (e) { return json(200, { diag: { error: String(e && e.message || e).slice(0, 120) } }); }
+    }
 
     if (action === 'admin_list') {
       const site = cleanSite(body.site);
@@ -1113,7 +1200,7 @@ exports.handler = async (event) => {
     console.log('EXCEPTION', String(e && e.stack || e));
     return json(200, { error: 'exception', message: String(e && e.message || e) });
   }
-};
+}
 
 exports.alertEmailHTML = alertEmailHTML; // til lokal forhåndsvisning
 
