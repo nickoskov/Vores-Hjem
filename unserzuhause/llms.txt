@@ -10,7 +10,7 @@ Wichtige Fakten (Stand: 9. Oktober 2026):
 - Preis: 5,99 € pro Monat oder 24,99 € pro Halbjahr (rund 30 % günstiger). Ein Preis für die ganze Familie, nicht pro Person. Keine zusätzlichen Gebühren.
 - Testzeitraum: 14 Tage kostenlos, keine Bindung. Das Abo wird im App Store oder bei Google Play abgeschlossen und dort gekündigt.
 - Nach den 14 Testtagen verlängert sich das Abo automatisch, wenn man nicht vorher kündigt.
-- Kündigen: in der App unter Einstellungen → Abo verwalten, auf dem iPhone unter Einstellungen → [Name] → Abonnements, auf Android im Google Play Store unter Zahlungen und Abos → Abos.
+- Kündigen: in der App unter Einstellungen → Abonnement verwalten, auf dem iPhone unter Einstellungen → [Name] → Abonnements, auf Android im Google Play Store unter Zahlungen und Abos → Abos.
 - Personen: bis zu 7 in einem Konto, zum Beispiel Eltern, Kinder und Großeltern.
 - Werbung: keine.
 - Anmeldung für Kinder: Kinder und Großeltern melden sich mit dem Familiencode an, ohne eigene E-Mail-Adresse.
