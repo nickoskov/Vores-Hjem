@@ -350,7 +350,9 @@ function cleanId(s) { return String(s || '').replace(/[^a-zA-Z0-9_-]/g, '').slic
 // Grænse pr. samtale (tælles på widgetens historik). Hårdt loft = forudbetalte Anthropic-credits.
 const CONVO_MAX = 60;
 // Grænse pr. adresse: samtale-id og historik kommer fra klienten, saa et script kan skifte id ved hver besked.
-// Derfor ogsaa et loft pr. IP pr. time, talt i databasen. Adressen gemmes kun som hash og slettes efter en time.
+// Derfor ogsaa et loft pr. IP pr. time, talt i databasen. Adressen gemmes som saltet hash (HMAC med SESSION_SECRET,
+// ellers ADMIN_PASSWORD, saa den ikke kan regnes tilbage ved at proeve alle IPv4-adresser) og slettes senest
+// efter et doegn: her ved nye beskeder, og hver nat af backendens oprydning (backend/netlify/handlers/ryd.js).
 const IP_MAX_TIME = 30;
 let _ipTabel = false, _ipRyddet = 0;
 async function ipOverLoft(ip) {
@@ -360,7 +362,7 @@ async function ipOverLoft(ip) {
     await sql`CREATE INDEX IF NOT EXISTS vh_bot_ip_idx ON vh_bot_ip (ip, ts)`;
     _ipTabel = true;
   }
-  const h = crypto.createHash('sha256').update(ip).digest('hex').slice(0, 32);
+  const h = crypto.createHmac('sha256', process.env.SESSION_SECRET || ADMIN_PASSWORD || 'vh').update('botip|' + ip).digest('hex').slice(0, 32);
   const r = await sql`SELECT count(*)::int AS n FROM vh_bot_ip WHERE ip = ${h} AND ts > now() - interval '1 hour'`;
   if (r[0].n >= IP_MAX_TIME) return true;
   await sql`INSERT INTO vh_bot_ip (ip) VALUES (${h})`;

@@ -398,6 +398,9 @@
   async function send() {
     var text = ta.value.trim();
     if (!text || busy) return;
+    // fokus tilbage til feltet kun, hvis det havde fokus (der blev skrevet) eller der er mus.
+    // Efter et tryk på en hurtig-knap på touch ville tastaturet ellers springe op og dække svaret.
+    var feltHavdeFokus = root.activeElement === ta;
     ta.value = ''; ta.style.height = 'auto';
     var history = serverMsgs.slice(); // hele den nuværende historik (sendes med til kontekst)
     // optimistisk
@@ -413,7 +416,7 @@
       body.insertAdjacentHTML('beforeend', rowHTML('assistant', T.netfejl));
       body.scrollTop = body.scrollHeight;
     } finally {
-      busy = false; sendBtn.disabled = false; ta.focus();
+      busy = false; sendBtn.disabled = false; if (feltHavdeFokus || harHover()) ta.focus();
     }
   }
 
