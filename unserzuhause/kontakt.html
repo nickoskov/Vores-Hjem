@@ -9,6 +9,7 @@
 <link rel="apple-touch-icon" href="/favicon.png">
 <script>window.__uzT = Date.now();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="only light">
 <title>Support und Hilfe | Unser Zuhause App</title>
 <!-- SEO til eget domæne (tilføjet ved flytningen fra Wix) -->
 <link rel="canonical" href="https://www.unserzuhauseapp.de/support">
@@ -27,9 +28,11 @@
 <meta name="twitter:image" content="https://www.unserzuhauseapp.de/images/og.jpg">
 <link rel="alternate" hreflang="de" href="https://www.unserzuhauseapp.de/support">
 <link rel="alternate" hreflang="da" href="https://www.voreshjem.dk/support">
-<link rel="alternate" hreflang="x-default" href="https://www.unserzuhauseapp.de/support">
+<link rel="alternate" hreflang="x-default" href="https://www.voreshjem.dk/support">
 
 <meta name="description" content="Hilfe zur Unser Zuhause App: schreib dem Support oder finde Antworten auf häufige Fragen zu Abo, Kündigung, Familiencode und dem Löschen deines Kontos.">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Startseite","item":"https://www.unserzuhauseapp.de/"},{"@type":"ListItem","position":2,"name":"Support","item":"https://www.unserzuhauseapp.de/support"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Wie lade ich meine Familie ein?","acceptedAnswer":{"@type":"Answer","text":"Lege zuerst unter Einstellungen → Familienmitglieder jedes Familienmitglied mit Namen an. Dort findest du auch euren Familiencode. Jedes Mitglied wählt beim Start „Familiencode“ und meldet sich mit genau diesem Namen und dem Code an, ganz ohne E-Mail."}},{"@type":"Question","name":"Kann ich die App kostenlos testen?","acceptedAnswer":{"@type":"Answer","text":"Ja, alle neuen Nutzer können die App 14 Tage kostenlos testen, ohne Bindung. Danach beträgt der Preis 5,99 €/Monat oder 24,99 €/Halbjahr."}},{"@type":"Question","name":"Wie kündige ich mein Abo?","acceptedAnswer":{"@type":"Answer","text":"In der App unter Einstellungen → Abo verwalten. iPhone: Einstellungen → [dein Name] → Abonnements → Unser Zuhause → Abo kündigen. Android: Google Play Store → Profilbild → Zahlungen und Abos → Abos → Unser Zuhause → Kündigen. Kündige mindestens 24 Stunden vor Ablauf, sonst verlängert sich das Abo automatisch. Bei Problemen helfen wir dir gern, kündigen kannst aber nur du selbst."}},{"@type":"Question","name":"Wie lösche ich mein Konto?","acceptedAnswer":{"@type":"Answer","text":"Du kannst dein Konto direkt in der App löschen: Einstellungen → Konto löschen. <a href=\"https://www.unserzuhauseapp.de/konto-loeschen\">Schritt-für-Schritt-Anleitung hier →</a>"}},{"@type":"Question","name":"Was passiert mit meinen Daten?","acceptedAnswer":{"@type":"Answer","text":"Die Familiendaten aus der App werden in der EU gespeichert, hauptsächlich in Frankfurt. Wir verkaufen keine Daten und zeigen keine Werbung. Wenn du dein Konto löschst, werden alle Daten dauerhaft gelöscht. Mehr dazu in der <a href=\"https://www.unserzuhauseapp.de/datenschutz\">Datenschutzerklärung</a>."}},{"@type":"Question","name":"Ich habe mein Passwort vergessen","acceptedAnswer":{"@type":"Answer","text":"Tippe auf „Passwort vergessen?“ auf dem Anmeldebildschirm der App. Du erhältst innerhalb weniger Minuten eine E-Mail zum Zurücksetzen. Prüfe gegebenenfalls deinen Spam-Ordner."}}]}</script>
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -40,12 +43,13 @@
   --pink: #EC4899;
   --success: #10B981;
   --gradient: linear-gradient(135deg, #6C47FF 0%, #3B82F6 55%, #EC4899 100%);
+  --gradient-dyb: linear-gradient(135deg, #4F32CC 0%, #1D4ED8 55%, #BE185D 100%);
   --bg: #FFFFFF;
   --bg-subtle: #F8F7FF;
   --bg-muted: #F1F0FA;
   --text: #0F0E1A;
   --text-secondary: #5E5A7A;
-  --text-muted: #9B97B5;
+  --text-muted: #625E7E;
   --border: #E8E5FF;
   --font: 'Plus Jakarta Sans', sans-serif;
   --radius: 16px;
@@ -53,8 +57,8 @@
   --shadow-lg: 0 24px 80px rgba(108,71,255,0.18);
 }
 
-html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100%; }
-body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; max-width: 100%; }
+html { scroll-behavior: smooth; overflow-x: hidden; overflow-x: clip; max-width: 100%; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; overflow-x: clip; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
 .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
 
@@ -164,6 +168,7 @@ nav {
 .info-card-text p { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
 .info-card-text a { color: var(--purple); font-weight: 600; }
 .info-card-text a:hover { text-decoration: underline; }
+.info-card-text a[href^="mailto:"] { overflow-wrap: anywhere; }
 
 .response-note {
   margin-top: 8px;
@@ -199,7 +204,7 @@ nav {
 .field input, .field textarea, .field select {
   width: 100%; padding: 13px 16px;
   background: var(--bg-subtle); border: 1.5px solid var(--border);
-  border-radius: 12px; font-family: var(--font); font-size: 15px; color: var(--text);
+  border-radius: 12px; font-family: var(--font); font-size: 16px; color: var(--text);
   transition: border-color 0.2s, box-shadow 0.2s; outline: none; resize: none;
 }
 .field input:focus, .field textarea:focus, .field select:focus {
@@ -212,7 +217,7 @@ nav {
 
 .submit-btn {
   width: 100%; padding: 16px;
-  background: var(--gradient); color: #fff;
+  background: var(--gradient-dyb); color: #fff;
   border: none; border-radius: 14px; cursor: pointer;
   font-family: var(--font); font-size: 16px; font-weight: 700;
   box-shadow: 0 4px 24px rgba(108,71,255,0.4);
@@ -241,6 +246,9 @@ nav {
   background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.2);
   border-radius: 10px; font-size: 13px; color: #b91c1c; font-weight: 600;
 }
+.form-note { margin-top: 14px; font-size: 13px; color: var(--text-secondary); text-align: center; line-height: 1.5; }
+.form-note a { color: var(--purple); font-weight: 600; }
+.form-note a:hover { text-decoration: underline; }
 
 @media (max-width: 600px) {
   .field-row { grid-template-columns: 1fr; }
@@ -271,16 +279,18 @@ nav {
 .faq-q {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   font-size: 16px; font-weight: 700; color: var(--text);
+  list-style: none; cursor: pointer;
 }
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q::marker { content: ''; }
 .faq-q svg { width: 18px; height: 18px; color: var(--purple); flex-shrink: 0; transition: transform 0.2s; }
-.faq-item.open .faq-q svg { transform: rotate(45deg); }
+.faq-item[open] .faq-q svg { transform: rotate(45deg); }
 .faq-a {
-  display: none; margin-top: 14px; padding-top: 14px;
+  margin-top: 14px; padding-top: 14px;
   border-top: 1px solid var(--border);
   font-size: 14px; color: var(--text-secondary); line-height: 1.65;
 }
 .faq-a a { color: var(--purple); font-weight: 600; }
-.faq-item.open .faq-a { display: block; }
 
 /* ─── ABO HILFE ─── */
 .abo-section {
@@ -338,7 +348,7 @@ nav {
 
 /* ─── RESPONSIVE ─── */
 @media (max-width: 900px) {
-  .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+  .contact-grid { grid-template-columns: minmax(0,1fr); gap: 40px; }
   .form-box { padding: 36px 28px; }
 }
 @media (max-width: 600px) {
@@ -349,6 +359,26 @@ nav {
   .form-box { padding: 28px 20px; }
   .bottom-strip-right { gap: 16px; }
 }
+/* Samme lille linkrække som på forsiden og funktionssiderne. Under 960 px får den sin egen række under logoet. */
+.nav-links { display: flex; align-items: center; gap: 28px; margin-left: auto; margin-right: 36px; }
+.nav-links a { font-size: 14px; font-weight: 500; color: var(--text-secondary); transition: color 0.2s; }
+.nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--purple); }
+@media (max-width: 960px) {
+  .nav-inner { flex-wrap: wrap; height: auto; min-height: 68px; padding-top: 5px; }
+  .nav-links { order: 3; width: 100%; justify-content: center; gap: 22px; margin: 0; padding: 2px 0 10px; }
+  .nav-links a { font-size: 13.5px; font-weight: 600; }
+}
+@media (max-width: 360px) { .nav-links { gap: 16px; } .nav-links a { font-size: 13px; } }
+/* Genvej til indholdet: kun synlig, når den får fokus med tastaturet */
+.skip-link { position: fixed; left: -9999px; top: 12px; z-index: 1000; padding: 10px 18px; background: #fff; color: var(--text); border: 2px solid var(--purple); border-radius: 10px; font-size: 14px; font-weight: 700; }
+.skip-link:focus { left: 16px; }
+/* Respektér "Bewegung reduzieren" */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto !important; }
+}
+/* Kun for skærmlæsere */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 </style>
 <style>
 /* MOBIL-FIX: tysk tekst er længere, fjern nowrap så lange linjer ombrydes i stedet for at klippes */
@@ -368,6 +398,7 @@ nav {
 </style>
 </head>
 <body>
+<a class="skip-link" href="#inhalt">Zum Inhalt springen</a>
 
 <!-- NAV -->
 <nav>
@@ -376,6 +407,12 @@ nav {
       <a href="https://www.unserzuhauseapp.de" target="_top" class="nav-logo">
         <img src="/images/logo.webp" alt="Unser Zuhause" style="height:58px;width:auto;display:block;">
       </a>
+      <div class="nav-links">
+        <a href="/#features">Funktionen</a>
+        <a href="/#price-band">Preis</a>
+        <a href="/ratgeber">Ratgeber</a>
+        <a href="/support" aria-current="page">Support</a>
+      </div>
       <a href="https://www.unserzuhauseapp.de" target="_top" style="display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:700;color:var(--text-secondary);transition:color 0.2s;" onmouseover="this.style.color='#6C47FF'" onmouseout="this.style.color='#5E5A7A'">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:15px;height:15px;"><polyline points="15 18 9 12 15 6"/></svg>
         Zurück zur Startseite
@@ -384,6 +421,7 @@ nav {
   </div>
 </nav>
 
+<main id="inhalt">
 <!-- HERO -->
 <section class="contact-hero">
   <div class="container">
@@ -392,17 +430,18 @@ nav {
       Wir antworten so schnell wie möglich
     </div>
     <h1>Support</h1>
-    <p>Hast du Fragen, Feedback oder brauchst Hilfe? Wir sind für dich da und freuen uns von dir zu hören.</p>
+    <p>Hast du Fragen oder Feedback, oder brauchst du Hilfe? Wir sind für dich da und freuen uns, von dir zu hören.</p>
   </div>
 </section>
 
 <!-- MAIN -->
-<main class="contact-main">
+<section class="contact-main">
   <div class="container">
     <div class="contact-grid">
 
       <!-- LEFT: Kontaktinfo -->
       <div class="contact-info">
+        <h2 class="sr-only">Kontaktdaten</h2>
 
         <div class="info-card">
           <div class="info-icon" style="background:rgba(108,71,255,0.1);">
@@ -430,7 +469,7 @@ nav {
           </div>
           <div class="info-card-text">
             <h3>Wer wir sind</h3>
-            <p>Unser Zuhause App / Vores Hjem I/S: ein dänisches Startup, das von einer echten Familie entwickelt wurde</p>
+            <p>Unser Zuhause / Vores Hjem I/S: ein dänisches Startup, gegründet von Nicko, Haris und Brigitte.</p>
           </div>
         </div>
 
@@ -439,8 +478,8 @@ nav {
             <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           </div>
           <div class="info-card-text">
-            <h3>DSGVO &amp; Daten</h3>
-            <p>Deine Daten werden sicher verarbeitet und in der EU gespeichert, hauptsächlich in Frankfurt</p>
+            <h3>Deine Daten</h3>
+            <p>Die Familiendaten aus der App werden in der EU gespeichert, hauptsächlich in Frankfurt.</p>
           </div>
         </div>
 
@@ -458,8 +497,8 @@ nav {
           <p>Fülle das Formular aus und wir melden uns so schnell wie möglich bei dir.</p>
         </div>
 
-        <div class="form-error" id="formError">Etwas ist schiefgelaufen. Versuche es erneut oder schreibe direkt an support@unserzuhauseapp.de</div>
-        <div class="form-success" id="formSuccess">
+        <div class="form-error" id="formError" role="alert" tabindex="-1">Etwas ist schiefgelaufen. Versuche es erneut oder schreibe direkt an support@unserzuhauseapp.de</div>
+        <div class="form-success" id="formSuccess" role="status" tabindex="-1">
           <div class="form-success-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
@@ -467,30 +506,32 @@ nav {
           <p>Danke für deine Anfrage. Wir melden uns an Werktagen innerhalb von 24 Stunden.</p>
         </div>
 
-        <form id="contactForm">
+        <form id="contactForm" method="post" action="javascript:void(0)">
           <input type="text" id="uz-hp" name="hjemmeside" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0">
+          <noscript><p>Ohne JavaScript kann das Formular nicht gesendet werden. Schreib uns direkt an support@unserzuhauseapp.de.</p></noscript>
           <div class="field-row">
             <div class="field">
               <label for="navn">Name <span style="color:#EC4899;">*</span></label>
-              <input type="text" id="navn" name="navn" placeholder="Dein Name" required>
+              <input type="text" id="navn" name="navn" placeholder="Dein Name" autocomplete="name" required>
             </div>
             <div class="field">
               <label for="email">E-Mail <span style="color:#EC4899;">*</span></label>
-              <input type="email" id="email" name="email" placeholder="deine@email.de" required>
+              <input type="email" id="email" name="email" placeholder="deine@email.de" autocomplete="email" required>
             </div>
           </div>
           <div class="field">
             <label for="emne">Betreff</label>
-            <input type="text" id="emne" name="emne" placeholder="Worum geht es?" required>
+            <input type="text" id="emne" name="emne" placeholder="Worum geht es?">
           </div>
           <div class="field">
-            <label for="besked">Nachricht</label>
+            <label for="besked">Nachricht <span style="color:#EC4899;">*</span></label>
             <textarea id="besked" name="besked" placeholder="Schreib deine Nachricht hier..." required></textarea>
           </div>
           <button type="submit" class="submit-btn" id="submitBtn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:18px;height:18px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             Nachricht senden
           </button>
+          <p class="form-note">Wir nutzen deine Angaben nur, um dir zu antworten. Mehr in der <a href="/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a>.</p>
         </form>
 
         <script>
@@ -521,8 +562,12 @@ nav {
               form.style.display = 'none';
               error.style.display = 'none';
               success.style.display = 'block';
+              success.scrollIntoView({ block: 'center' });
+              success.focus({ preventScroll: true });
             } catch {
               error.style.display = 'block';
+              error.scrollIntoView({ block: 'center' });
+              error.focus({ preventScroll: true });
               btn.disabled = false;
               btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:18px;height:18px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Nachricht senden';
             }
@@ -534,13 +579,13 @@ nav {
 
     </div>
   </div>
-</main>
+</section>
 
 <!-- ABO HILFE -->
 <section class="abo-section">
   <div class="container">
     <h2>Hilfe zum Abo</h2>
-    <p class="section-sub">Alles, was du über dein Unser Zuhause App-Abo wissen musst.</p>
+    <p class="section-sub">Alles, was du über dein Abo bei Unser Zuhause wissen musst.</p>
     <div class="abo-grid">
 
       <div class="abo-card">
@@ -556,7 +601,7 @@ nav {
           <svg viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
         </div>
         <h3>Abo kündigen</h3>
-        <p>Du kannst dein Abo jederzeit kündigen. Kündige über dein iPhone unter Einstellungen → Apple ID → Abos, oder schreib uns.</p>
+        <p>Kündigen kannst nur du selbst, dort, wo du das Abo abgeschlossen hast: in der App unter Einstellungen → Abo verwalten, auf dem iPhone unter Einstellungen → [dein Name] → Abonnements, auf Android im Google Play Store unter Profilbild → Zahlungen und Abos → Abos. Das Abo verlängert sich automatisch, bis du kündigst. Bei Fragen helfen wir dir gern.</p>
       </div>
 
       <div class="abo-card">
@@ -580,7 +625,7 @@ nav {
           <svg viewBox="0 0 24 24" fill="none" stroke="#EC4899" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         </div>
         <h3>Konto löschen</h3>
-        <p>Möchtest du dein Konto und alle Daten löschen? <a href="./slet-konto.html">Hier findest du die Anleitung →</a></p>
+        <p>Möchtest du dein Konto und alle Daten löschen? <a href="/konto-loeschen">Hier findest du die Anleitung →</a></p>
       </div>
 
       <div class="abo-card">
@@ -602,63 +647,58 @@ nav {
     <p class="section-sub">Hier findest du Antworten auf die häufigsten Fragen.</p>
     <div class="faq-grid">
 
-      <div class="faq-item">
-        <div class="faq-q">Wie lade ich meine Familie ein?
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </div>
-        <div class="faq-a">Öffne die App und gehe zu „Familiencode“, dort findest du deinen einzigartigen Code. Teile ihn mit deinen Familienmitgliedern, damit sie deinem Zuhause beitreten können.</div>
-      </div>
+      <details class="faq-item">
+        <summary class="faq-q">Wie lade ich meine Familie ein?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </summary>
+        <div class="faq-a">Lege zuerst unter Einstellungen → Familienmitglieder jedes Familienmitglied mit Namen an. Dort findest du auch euren Familiencode. Jedes Mitglied wählt beim Start „Familiencode“ und meldet sich mit genau diesem Namen und dem Code an, ganz ohne E-Mail.</div>
+      </details>
 
-      <div class="faq-item">
-        <div class="faq-q">Kann ich die App kostenlos testen?
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </div>
+      <details class="faq-item">
+        <summary class="faq-q">Kann ich die App kostenlos testen?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </summary>
         <div class="faq-a">Ja, alle neuen Nutzer können die App 14 Tage kostenlos testen, ohne Bindung. Danach beträgt der Preis 5,99 €/Monat oder 24,99 €/Halbjahr.</div>
-      </div>
+      </details>
 
-      <div class="faq-item">
-        <div class="faq-q">Wie kündige ich mein Abo?
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </div>
-        <div class="faq-a">Kündige über dein iPhone: Einstellungen → [dein Name] → Abos → Unser Zuhause App → Abo kündigen. Bei Problemen schreib uns gerne.</div>
-      </div>
+      <details class="faq-item">
+        <summary class="faq-q">Wie kündige ich mein Abo?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </summary>
+        <div class="faq-a">In der App unter Einstellungen → Abo verwalten. iPhone: Einstellungen → [dein Name] → Abonnements → Unser Zuhause → Abo kündigen. Android: Google Play Store → Profilbild → Zahlungen und Abos → Abos → Unser Zuhause → Kündigen. Kündige mindestens 24 Stunden vor Ablauf, sonst verlängert sich das Abo automatisch. Bei Problemen helfen wir dir gern, kündigen kannst aber nur du selbst.</div>
+      </details>
 
-      <div class="faq-item">
-        <div class="faq-q">Wie lösche ich mein Konto?
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </div>
-        <div class="faq-a">Du kannst dein Konto direkt in der App unter Einstellungen → Konto löschen löschen. <a href="./slet-konto.html">Schritt-für-Schritt-Anleitung hier →</a></div>
-      </div>
+      <details class="faq-item">
+        <summary class="faq-q">Wie lösche ich mein Konto?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </summary>
+        <div class="faq-a">Du kannst dein Konto direkt in der App löschen: Einstellungen → Konto löschen. <a href="/konto-loeschen">Schritt-für-Schritt-Anleitung hier →</a></div>
+      </details>
 
-      <div class="faq-item">
-        <div class="faq-q">Was passiert mit meinen Daten?
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </div>
-        <div class="faq-a">Deine Daten werden sicher in der EU gespeichert, hauptsächlich in Frankfurt, und nicht an Dritte weitergegeben. Wir halten die DSGVO vollständig ein. Bei Kontolöschung werden alle Daten dauerhaft gelöscht.</div>
-      </div>
+      <details class="faq-item">
+        <summary class="faq-q">Was passiert mit meinen Daten?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </summary>
+        <div class="faq-a">Die Familiendaten aus der App werden in der EU gespeichert, hauptsächlich in Frankfurt. Wir verkaufen keine Daten und zeigen keine Werbung. Wenn du dein Konto löschst, werden alle Daten dauerhaft gelöscht. Mehr dazu in der <a href="/datenschutz">Datenschutzerklärung</a>.</div>
+      </details>
 
-      <div class="faq-item">
-        <div class="faq-q">Ich habe mein Passwort vergessen
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </div>
-        <div class="faq-a">Tippe auf „Passwort vergessen?“ auf dem Login-Bildschirm der App. Du erhältst eine Zurücksetzungs-E-Mail innerhalb weniger Minuten. Prüfe gegebenenfalls deinen Spam-Ordner.</div>
-      </div>
+      <details class="faq-item">
+        <summary class="faq-q">Ich habe mein Passwort vergessen
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </summary>
+        <div class="faq-a">Tippe auf „Passwort vergessen?“ auf dem Anmeldebildschirm der App. Du erhältst innerhalb weniger Minuten eine E-Mail zum Zurücksetzen. Prüfe gegebenenfalls deinen Spam-Ordner.</div>
+      </details>
 
     </div>
   </div>
 </section>
-
-<script>
-  document.querySelectorAll('.faq-item').forEach(item => {
-    item.querySelector('.faq-q').addEventListener('click', () => {
-      item.classList.toggle('open');
-    });
-  });
-</script>
+</main>
 
 <style>
 @media (max-width: 700px) { .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 32px !important; } }
 @media (max-width: 420px) { .footer-grid { grid-template-columns: 1fr !important; gap: 28px !important; } }
+/* Luft under copyright-linjen, så de svævende knapper ikke dækker den */
+@media (max-width: 600px) { footer { padding-bottom: 150px !important; } }
 </style>
 <footer style="background:#0F0E1A; color:#fff; padding: 64px 0 32px; font-family:'Plus Jakarta Sans',sans-serif;">
   <div style="max-width:1200px; margin:0 auto; padding:0 32px;">
@@ -672,30 +712,30 @@ nav {
 
       <!-- Informationssider -->
       <div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Infoseiten</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Infoseiten</p>
         <div style="display:flex; flex-direction:column; gap:10px;">
-          <a href="https://www.unserzuhauseapp.de/kalender" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/kalender';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Kalender</a>
-          <a href="https://www.unserzuhauseapp.de/essenpläne" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/essenpläne';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Essenspläne</a>
-          <a href="https://www.unserzuhauseapp.de/einkaufsliste" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/einkaufsliste';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Einkaufsliste</a>
-          <a href="https://www.unserzuhauseapp.de/aufgaben" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/aufgaben';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Aufgaben</a>
-          <a href="https://www.unserzuhauseapp.de/ratgeber" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/ratgeber';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Ratgeber</a>
+          <a href="https://www.unserzuhauseapp.de/kalender" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Kalender</a>
+          <a href="https://www.unserzuhauseapp.de/essenpläne" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Essenspläne</a>
+          <a href="https://www.unserzuhauseapp.de/einkaufsliste" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Einkaufsliste</a>
+          <a href="https://www.unserzuhauseapp.de/aufgaben" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Aufgaben</a>
+          <a href="https://www.unserzuhauseapp.de/ratgeber" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Ratgeber</a>
           <a href="https://www.unserzuhauseapp.de/einstellungen" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Einstellungen</a>
           <a href="https://www.unserzuhauseapp.de/synchronisierung" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Synchronisierung</a>
-          <a href="https://www.unserzuhauseapp.de/konto-loeschen" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/konto-loeschen';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Konto löschen</a>
+          <a href="https://www.unserzuhauseapp.de/konto-loeschen" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Konto löschen</a>
         </div>
       </div>
 
       <div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Soziale Medien</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Soziale Medien</p>
         <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:28px;">
           <a href="https://www.facebook.com/profile.php?id=61590361744172" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Facebook</a>
-          <a href="https://www.tiktok.com/@unserzuhause?_r=1&amp;_t=ZG-97Tx5A9mGki" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">TikTok</a>
+          <a href="https://www.tiktok.com/@unserzuhause" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">TikTok</a>
         </div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Kontakt</p>
-        <a href="https://www.unserzuhauseapp.de/support" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/support';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Support</a>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Kontakt</p>
+        <a href="https://www.unserzuhauseapp.de/support" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Support</a>
       </div>
       <div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Richtlinien</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Rechtliches</p>
         <div style="display:flex; flex-direction:column; gap:10px;">
           <a href="https://www.unserzuhauseapp.de/impressum" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Impressum</a> <a href="https://www.iubenda.com/privacy-policy/77031753" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Datenschutzerklärung</a>
           <a href="https://www.iubenda.com/privacy-policy/77031753/cookie-policy" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Cookie-Richtlinie</a>
@@ -704,26 +744,13 @@ nav {
       </div>
     </div>
     <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
-      <p style="font-size:12px; color:rgba(255,255,255,0.3); white-space:nowrap;">© 2026 Vores Hjem I/S · CVR 45804445 · Alle Rechte vorbehalten.</p>
-      <a href="https://backend.unserzuhauseapp.de" target="_blank" rel="nofollow noopener" style="font-size:12px; color:rgba(255,255,255,0.3); text-decoration:none; white-space:nowrap;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Mitarbeiter</a>
-      <p style="font-size:12px; color:rgba(255,255,255,0.3); white-space:nowrap;">Entwickelt in Dänemark 🇩🇰</p>
+      <p style="font-size:12px; color:rgba(255,255,255,0.55); white-space:nowrap;">© 2026 Vores Hjem I/S · CVR 45804445 · Alle Rechte vorbehalten.</p>
+      <a href="https://backend.unserzuhauseapp.de" target="_blank" rel="nofollow noopener" style="font-size:12px; color:rgba(255,255,255,0.55); text-decoration:none; white-space:nowrap;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">Mitarbeiter</a>
+      <p style="font-size:12px; color:rgba(255,255,255,0.55); white-space:nowrap;">Entwickelt in Dänemark 🇩🇰</p>
     </div>
   </div>
 </footer>
 
-<script>
-/* Wix-iframe: hold interne links i SAMME fane (top-navigation); eksterne (_blank) urørt */
-document.addEventListener('click',function(e){
-  var a=e.target&&e.target.closest?e.target.closest('a'):null;
-  if(!a) return;
-  if(a.getAttribute('target')==='_blank') return;            // ekstern -> ny fane (uændret)
-  var href=a.getAttribute('href');
-  if(!href||href.charAt(0)==='#'||href.indexOf('javascript:')===0) return; // knapper/anchors
-  e.preventDefault();
-  try{ (window.top||window).location.href=href; }            // samme fane, bryd ud af iframe
-  catch(err){ window.location.href=href; }
-},true);
-</script>
 <script src="/taeller.js" defer></script>
 <!-- chatten (fra den tyske backend) og den svaevende hent-knap, som paa voreshjem.dk -->
 <script src="https://backend.unserzuhauseapp.de/widget.js" data-site="de" defer></script>
