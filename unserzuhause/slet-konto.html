@@ -41,11 +41,12 @@
   --blue: #3B82F6;
   --pink: #EC4899;
   --gradient: linear-gradient(135deg, #6C47FF 0%, #3B82F6 55%, #EC4899 100%);
+  --gradient-dyb: linear-gradient(135deg, #4F32CC 0%, #1D4ED8 55%, #BE185D 100%);
   --bg: #FFFFFF;
   --bg-subtle: #F8F7FF;
   --text: #0F0E1A;
   --text-secondary: #5E5A7A;
-  --text-muted: #9B97B5;
+  --text-muted: #625E7E;
   --border: #E8E5FF;
   --font: 'Plus Jakarta Sans', sans-serif;
   --radius: 16px;
@@ -53,7 +54,7 @@
   --shadow-lg: 0 24px 80px rgba(108,71,255,0.16);
 }
 
-html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100%; }
+html { scroll-behavior: smooth; overflow-x: hidden; overflow-x: clip; max-width: 100%; }
 body {
   font-family: var(--font);
   background: var(--bg);
@@ -61,6 +62,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  overflow-x: clip;
   max-width: 100%;
 }
 a { color: inherit; text-decoration: none; }
@@ -155,7 +157,7 @@ nav {
 .step-number {
   display: inline-flex; align-items: center; justify-content: center;
   width: 44px; height: 44px;
-  background: var(--gradient);
+  background: var(--gradient-dyb);
   border-radius: 14px;
   font-size: 18px; font-weight: 800; color: #fff;
   margin-bottom: 20px;
@@ -241,14 +243,18 @@ nav {
 .contact-cta p {
   font-size: 16px; color: var(--text-secondary);
   margin-bottom: 28px;
+  max-width: 600px; margin-left: auto; margin-right: auto;
 }
+.contact-cta p + p { margin-top: -14px; }
+.contact-cta p a { color: var(--purple); font-weight: 600; overflow-wrap: anywhere; }
+.contact-cta p a:hover { text-decoration: underline; }
 .cta-buttons {
   display: flex; align-items: center; justify-content: center; gap: 12px;
   flex-wrap: wrap;
 }
 .btn-primary {
   display: inline-flex; align-items: center; gap: 8px;
-  background: var(--gradient);
+  background: var(--gradient-dyb);
   color: #fff;
   padding: 13px 28px;
   border-radius: 100px;
@@ -288,6 +294,16 @@ nav {
   .step-divider { margin-bottom: 56px; }
   .contact-cta h2 { font-size: 22px; }
 }
+/* Samme lille linkrække som på forsiden og funktionssiderne. Under 960 px får den sin egen række under logoet. */
+.nav-links { display: flex; align-items: center; gap: 28px; margin-left: auto; margin-right: 36px; }
+.nav-links a { font-size: 14px; font-weight: 500; color: var(--text-secondary); transition: color 0.2s; }
+.nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--purple); }
+@media (max-width: 960px) {
+  .nav-inner { flex-wrap: wrap; height: auto; min-height: 68px; padding-top: 5px; }
+  .nav-links { order: 3; width: 100%; justify-content: center; gap: 22px; margin: 0; padding: 2px 0 10px; }
+  .nav-links a { font-size: 13.5px; font-weight: 600; }
+}
+@media (max-width: 360px) { .nav-links { gap: 16px; } .nav-links a { font-size: 13px; } }
 /* Genvej til indholdet: kun synlig, når den får fokus med tastaturet */
 .skip-link { position: fixed; left: -9999px; top: 12px; z-index: 1000; padding: 10px 18px; background: #fff; color: var(--text); border: 2px solid var(--purple); border-radius: 10px; font-size: 14px; font-weight: 700; }
 .skip-link:focus { left: 16px; }
@@ -323,6 +339,12 @@ nav {
     <a href="https://www.unserzuhauseapp.de" target="_top" class="nav-logo">
       <img src="/images/logo.webp" alt="Unser Zuhause" style="height:58px;width:auto;display:block;">
     </a>
+    <div class="nav-links">
+      <a href="/#features">Funktionen</a>
+      <a href="/#price-band">Preis</a>
+      <a href="/ratgeber">Ratgeber</a>
+      <a href="/support">Support</a>
+    </div>
     <a href="https://www.unserzuhauseapp.de" target="_top" class="back-link">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="15 18 9 12 15 6"/>
@@ -341,7 +363,7 @@ nav {
       Hilfe-Center
     </div>
     <h1>Wie lösche ich<br>mein Konto?</h1>
-    <p>Folge den vier Schritten unten, um dein Unser Zuhause App-Konto dauerhaft zu löschen.</p>
+    <p>Folge den vier Schritten unten, um dein Konto bei Unser Zuhause dauerhaft zu löschen.</p>
   </div>
 </section>
 
@@ -361,12 +383,12 @@ nav {
     <div class="step-card">
       <div class="step-content">
         <div class="step-number">1</div>
-        <h2>In Unser Zuhause App einloggen</h2>
+        <h2>In der App anmelden</h2>
         <p>Öffne die <strong>Unser Zuhause App</strong> auf deinem Smartphone und melde dich mit deiner E-Mail-Adresse und deinem Passwort an.</p>
       </div>
       <div class="phone-wrap">
         <div class="phone-frame">
-          <img src="/images/de-login.webp" alt="In Unser Zuhause App einloggen" loading="lazy">
+          <img src="/images/de-login.webp" alt="In der App anmelden" loading="lazy">
         </div>
       </div>
     </div>
@@ -383,7 +405,7 @@ nav {
       <div class="step-content">
         <div class="step-number">2</div>
         <h2>Zu den Einstellungen gehen</h2>
-        <p>Tippe auf <strong>Einstellungen</strong> in der App, folge dem Pfeil wie im Bild gezeigt.</p>
+        <p>Tippe auf <strong>Einstellungen</strong> in der App und folge dem Pfeil im Bild.</p>
       </div>
       <div class="phone-wrap">
         <div class="phone-frame">
@@ -404,7 +426,7 @@ nav {
       <div class="step-content">
         <div class="step-number">3</div>
         <h2>Auf „Konto löschen“ tippen</h2>
-        <p>Scrolle in den Einstellungen nach unten und tippe auf <strong>Konto löschen</strong>, folge dem Pfeil wie im Bild gezeigt.</p>
+        <p>Scrolle in den Einstellungen nach unten, tippe auf <strong>Konto löschen</strong> und folge dem Pfeil im Bild.</p>
       </div>
       <div class="phone-wrap">
         <div class="phone-frame">
@@ -432,7 +454,7 @@ nav {
             <line x1="12" y1="9" x2="12" y2="13"/>
             <line x1="12" y1="17" x2="12.01" y2="17"/>
           </svg>
-          <p><strong>Wichtig:</strong> Danach ist es nicht mehr möglich, dein Konto oder deine Daten wiederherzustellen.</p>
+          <p><strong>Wichtig:</strong> Danach ist es nicht mehr möglich, dein Konto oder deine Daten wiederherzustellen. Das Löschen deines Kontos kündigt dein Abo nicht. Kündige es vorher unter Einstellungen → Abo verwalten, im App Store oder bei Google Play.</p>
         </div>
       </div>
       <div class="phone-wrap">
@@ -448,7 +470,8 @@ nav {
 <!-- KONTAKT CTA -->
 <section class="contact-cta">
   <h2>Problem nicht gelöst?</h2>
-  <p>Wir sind bereit zu helfen, werktags von 9–17 Uhr.</p>
+  <p>Wir helfen dir gern, werktags von 9 bis 17 Uhr.</p>
+  <p>Du hast keinen Zugriff mehr auf die App? Schreib an <a href="mailto:support@unserzuhauseapp.de">support@unserzuhauseapp.de</a> mit der E-Mail-Adresse deines Kontos, dann löschen wir alles für dich.</p>
   <div class="cta-buttons">
     <a href="/support" class="btn-primary">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
@@ -465,6 +488,8 @@ nav {
 <style>
 @media (max-width: 700px) { .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 32px !important; } }
 @media (max-width: 420px) { .footer-grid { grid-template-columns: 1fr !important; gap: 28px !important; } }
+/* Luft under copyright-linjen, så de svævende knapper ikke dækker den */
+@media (max-width: 600px) { footer { padding-bottom: 150px !important; } }
 </style>
 <footer style="background:#0F0E1A; color:#fff; padding: 64px 0 32px; font-family:'Plus Jakarta Sans',sans-serif;">
   <div style="max-width:1200px; margin:0 auto; padding:0 32px;">
@@ -478,7 +503,7 @@ nav {
 
       <!-- Informationssider -->
       <div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Infoseiten</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Infoseiten</p>
         <div style="display:flex; flex-direction:column; gap:10px;">
           <a href="https://www.unserzuhauseapp.de/kalender" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Kalender</a>
           <a href="https://www.unserzuhauseapp.de/essenpläne" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Essenspläne</a>
@@ -492,16 +517,16 @@ nav {
       </div>
 
       <div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Soziale Medien</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Soziale Medien</p>
         <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:28px;">
           <a href="https://www.facebook.com/profile.php?id=61590361744172" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Facebook</a>
           <a href="https://www.tiktok.com/@unserzuhause" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">TikTok</a>
         </div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Kontakt</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Kontakt</p>
         <a href="https://www.unserzuhauseapp.de/support" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Support</a>
       </div>
       <div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Richtlinien</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Rechtliches</p>
         <div style="display:flex; flex-direction:column; gap:10px;">
           <a href="https://www.unserzuhauseapp.de/impressum" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Impressum</a> <a href="https://www.iubenda.com/privacy-policy/77031753" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Datenschutzerklärung</a>
           <a href="https://www.iubenda.com/privacy-policy/77031753/cookie-policy" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Cookie-Richtlinie</a>
@@ -510,9 +535,9 @@ nav {
       </div>
     </div>
     <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
-      <p style="font-size:12px; color:rgba(255,255,255,0.3); white-space:nowrap;">© 2026 Vores Hjem I/S · CVR 45804445 · Alle Rechte vorbehalten.</p>
-      <a href="https://backend.unserzuhauseapp.de" target="_blank" rel="nofollow noopener" style="font-size:12px; color:rgba(255,255,255,0.3); text-decoration:none; white-space:nowrap;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Mitarbeiter</a>
-      <p style="font-size:12px; color:rgba(255,255,255,0.3); white-space:nowrap;">Entwickelt in Dänemark 🇩🇰</p>
+      <p style="font-size:12px; color:rgba(255,255,255,0.55); white-space:nowrap;">© 2026 Vores Hjem I/S · CVR 45804445 · Alle Rechte vorbehalten.</p>
+      <a href="https://backend.unserzuhauseapp.de" target="_blank" rel="nofollow noopener" style="font-size:12px; color:rgba(255,255,255,0.55); text-decoration:none; white-space:nowrap;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">Mitarbeiter</a>
+      <p style="font-size:12px; color:rgba(255,255,255,0.55); white-space:nowrap;">Entwickelt in Dänemark 🇩🇰</p>
     </div>
   </div>
 </footer>

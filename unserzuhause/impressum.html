@@ -39,11 +39,12 @@
   --blue: #3B82F6;
   --pink: #EC4899;
   --gradient: linear-gradient(135deg, #6C47FF 0%, #3B82F6 55%, #EC4899 100%);
+  --gradient-dyb: linear-gradient(135deg, #4F32CC 0%, #1D4ED8 55%, #BE185D 100%);
   --bg: #FFFFFF;
   --bg-subtle: #F8F7FF;
   --text: #0F0E1A;
   --text-secondary: #5E5A7A;
-  --text-muted: #9B97B5;
+  --text-muted: #625E7E;
   --border: #E8E5FF;
   --font: 'Plus Jakarta Sans', sans-serif;
   --radius: 16px;
@@ -51,7 +52,7 @@
   --shadow-lg: 0 24px 80px rgba(108,71,255,0.16);
 }
 
-html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100%; }
+html { scroll-behavior: smooth; overflow-x: hidden; overflow-x: clip; max-width: 100%; }
 body {
   font-family: var(--font);
   background: var(--bg);
@@ -59,6 +60,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  overflow-x: clip;
   max-width: 100%;
 }
 a { color: inherit; text-decoration: none; }
@@ -153,7 +155,7 @@ nav {
 .step-number {
   display: inline-flex; align-items: center; justify-content: center;
   width: 44px; height: 44px;
-  background: var(--gradient);
+  background: var(--gradient-dyb);
   border-radius: 14px;
   font-size: 18px; font-weight: 800; color: #fff;
   margin-bottom: 20px;
@@ -246,7 +248,7 @@ nav {
 }
 .btn-primary {
   display: inline-flex; align-items: center; gap: 8px;
-  background: var(--gradient);
+  background: var(--gradient-dyb);
   color: #fff;
   padding: 13px 28px;
   border-radius: 100px;
@@ -286,6 +288,16 @@ nav {
   .step-divider { margin-bottom: 56px; }
   .contact-cta h2 { font-size: 22px; }
 }
+/* Samme lille linkrække som på forsiden og funktionssiderne. Under 960 px får den sin egen række under logoet. */
+.nav-links { display: flex; align-items: center; gap: 28px; margin-left: auto; margin-right: 36px; }
+.nav-links a { font-size: 14px; font-weight: 500; color: var(--text-secondary); transition: color 0.2s; }
+.nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--purple); }
+@media (max-width: 960px) {
+  .nav-inner { flex-wrap: wrap; height: auto; min-height: 68px; padding-top: 5px; }
+  .nav-links { order: 3; width: 100%; justify-content: center; gap: 22px; margin: 0; padding: 2px 0 10px; }
+  .nav-links a { font-size: 13.5px; font-weight: 600; }
+}
+@media (max-width: 360px) { .nav-links { gap: 16px; } .nav-links a { font-size: 13px; } }
 /* Genvej til indholdet: kun synlig, når den får fokus med tastaturet */
 .skip-link { position: fixed; left: -9999px; top: 12px; z-index: 1000; padding: 10px 18px; background: #fff; color: var(--text); border: 2px solid var(--purple); border-radius: 10px; font-size: 14px; font-weight: 700; }
 .skip-link:focus { left: 16px; }
@@ -305,6 +317,7 @@ nav {
 .imp-card h2 {
   font-size: 22px; font-weight: 800; letter-spacing:-0.02em;
   margin-bottom: 18px; display:flex; align-items:center; gap:12px;
+  overflow-wrap: anywhere; hyphens: auto;
 }
 .imp-card h2 svg { width:22px; height:22px; color: var(--purple); flex:none; }
 .imp-card h3 { font-size:15px; font-weight:700; margin: 22px 0 6px; }
@@ -325,6 +338,12 @@ nav {
   .imp-card { padding: 28px 22px; }
   .imp-card h2 { font-size: 19px; }
 }
+/* Sidefoden på telefon, som på de andre sider */
+@media (max-width: 700px) { .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 32px !important; } }
+@media (max-width: 420px) { .footer-grid { grid-template-columns: 1fr !important; gap: 28px !important; } }
+@media (max-width: 600px) { footer p { white-space: normal !important; } }
+/* Luft under copyright-linjen, så de svævende knapper ikke dækker den */
+@media (max-width: 600px) { footer { padding-bottom: 150px !important; } }
 </style>
 
 </head>
@@ -336,6 +355,12 @@ nav {
     <a href="https://www.unserzuhauseapp.de" target="_top" class="nav-logo">
       <img src="/images/logo.webp" alt="Unser Zuhause" style="height:58px;width:auto;display:block;">
     </a>
+    <div class="nav-links">
+      <a href="/#features">Funktionen</a>
+      <a href="/#price-band">Preis</a>
+      <a href="/ratgeber">Ratgeber</a>
+      <a href="/support">Support</a>
+    </div>
     <a href="https://www.unserzuhauseapp.de" target="_top" class="back-link">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="15 18 9 12 15 6"/>
@@ -388,12 +413,11 @@ nav {
 
     <div class="imp-card">
       <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Kontakt</h2>
-      <p><strong>E-Mail (Anbieter):</strong> <a href="mailto:support@unserzuhauseapp.de">support@unserzuhauseapp.de</a></p>
-      <p><strong>Support:</strong> <a href="mailto:support@unserzuhauseapp.de">support@unserzuhauseapp.de</a></p>
-      <p>Wir antworten an Werktagen innerhalb von 24 Stunden, werktags von 9&ndash;17 Uhr.</p>
+      <p><strong>E-Mail:</strong> <a href="mailto:support@unserzuhauseapp.de">support@unserzuhauseapp.de</a></p>
+      <p>Wir antworten werktags von 9 bis 17 Uhr, in der Regel innerhalb von 24 Stunden.</p>
       <div class="imp-note">
-        Eine schnelle elektronische Kontaktaufnahme ist &uuml;ber die oben genannten
-        E-Mail-Adressen sowie &uuml;ber das <a href="https://www.unserzuhauseapp.de/support" target="_top">Kontaktformular</a> m&ouml;glich.
+        Eine schnelle elektronische Kontaktaufnahme ist &uuml;ber die oben genannte
+        E-Mail-Adresse sowie &uuml;ber das <a href="https://www.unserzuhauseapp.de/support" target="_top">Kontaktformular</a> m&ouml;glich.
       </div>
     </div>
 
@@ -407,7 +431,7 @@ nav {
       <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M5 7h14"/><path d="M5 7l-3 7h6z"/><path d="M19 7l3 7h-6z"/></svg> Verbraucherstreitbeilegung</h2>
       <p>Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor
          einer Verbraucherschlichtungsstelle teilzunehmen.</p>
-      <p>Bei Fragen oder Beschwerden wenden Sie sich bitte zuerst direkt an uns.
+      <p>Bei Fragen oder Beschwerden wende dich bitte zuerst direkt an uns.
          Wir finden fast immer gemeinsam eine L&ouml;sung.</p>
     </div>
 
@@ -436,8 +460,8 @@ nav {
 
     <div class="imp-card">
       <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Datenschutz</h2>
-      <p>Informationen zur Verarbeitung personenbezogener Daten finden Sie in unserer
-         <a href="https://www.unserzuhauseapp.de/impressum" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Impressum</a> <a href="https://www.iubenda.com/privacy-policy/77031753" target="_blank" rel="noopener">Datenschutzerkl&auml;rung</a>
+      <p>Informationen zur Verarbeitung personenbezogener Daten findest du in unserer
+         <a href="https://www.iubenda.com/privacy-policy/77031753" target="_blank" rel="noopener">Datenschutzerkl&auml;rung</a>
          und in der
          <a href="https://www.iubenda.com/privacy-policy/77031753/cookie-policy" target="_blank" rel="noopener">Cookie-Richtlinie</a>.</p>
     </div>
@@ -458,7 +482,7 @@ nav {
 
       <!-- Informationssider -->
       <div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Infoseiten</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Infoseiten</p>
         <div style="display:flex; flex-direction:column; gap:10px;">
           <a href="https://www.unserzuhauseapp.de/kalender" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Kalender</a>
           <a href="https://www.unserzuhauseapp.de/essenpläne" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Essenspläne</a>
@@ -472,16 +496,16 @@ nav {
       </div>
 
       <div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Soziale Medien</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Soziale Medien</p>
         <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:28px;">
           <a href="https://www.facebook.com/profile.php?id=61590361744172" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Facebook</a>
           <a href="https://www.tiktok.com/@unserzuhause" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">TikTok</a>
         </div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Kontakt</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Kontakt</p>
         <a href="https://www.unserzuhauseapp.de/support" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Support</a>
       </div>
       <div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Richtlinien</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Rechtliches</p>
         <div style="display:flex; flex-direction:column; gap:10px;">
           <a href="https://www.iubenda.com/privacy-policy/77031753" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Datenschutzerklärung</a>
           <a href="https://www.iubenda.com/privacy-policy/77031753/cookie-policy" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Cookie-Richtlinie</a>
@@ -490,9 +514,9 @@ nav {
       </div>
     </div>
     <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
-      <p style="font-size:12px; color:rgba(255,255,255,0.3); white-space:nowrap;">© 2026 Vores Hjem I/S · CVR 45804445 · Alle Rechte vorbehalten.</p>
-      <a href="https://backend.unserzuhauseapp.de" target="_blank" rel="nofollow noopener" style="font-size:12px; color:rgba(255,255,255,0.3); text-decoration:none; white-space:nowrap;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Mitarbeiter</a>
-      <p style="font-size:12px; color:rgba(255,255,255,0.3); white-space:nowrap;">Entwickelt in Dänemark 🇩🇰</p>
+      <p style="font-size:12px; color:rgba(255,255,255,0.55); white-space:nowrap;">© 2026 Vores Hjem I/S · CVR 45804445 · Alle Rechte vorbehalten.</p>
+      <a href="https://backend.unserzuhauseapp.de" target="_blank" rel="nofollow noopener" style="font-size:12px; color:rgba(255,255,255,0.55); text-decoration:none; white-space:nowrap;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">Mitarbeiter</a>
+      <p style="font-size:12px; color:rgba(255,255,255,0.55); white-space:nowrap;">Entwickelt in Dänemark 🇩🇰</p>
     </div>
   </div>
 </footer>
