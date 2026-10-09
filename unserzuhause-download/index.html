@@ -75,7 +75,7 @@
     display:inline-flex;
     align-items:center;
     gap:8px;
-    background:linear-gradient(135deg, #6C47FF 0%, #3B82F6 55%, #EC4899 100%);
+    background:linear-gradient(135deg, #5B3DF5 0%, #2563EB 55%, #DB2777 100%);
     color:#fff;
     font-size:14px;
     font-weight:800;
@@ -164,9 +164,10 @@
   }
   .web-btn:hover { transform:translateY(-2px); background:#E9E4FF; }
   .web-btn svg { width:20px; height:20px; flex-shrink:0; }
-  /* QR-Code, nur am Computer: das Handy scannt und landet selbst im richtigen Store (backend.unserzuhauseapp.de/hent/app) */
+  /* QR-Code, nur am Computer: das Handy scannt und landet selbst im richtigen Store (backend.unserzuhauseapp.de/hent/app).
+     hover/pointer: nur mit Maus, also nicht auf dem iPad oder dem quer gehaltenen Handy */
   .qr { display:none; }
-  @media (min-width:820px) {
+  @media (min-width:820px) and (hover:hover) and (pointer:fine) {
     .qr { display:flex; align-items:center; gap:18px; text-align:left; background:#F8F7FF; border:1.5px solid #E8E5FF;
           border-radius:20px; padding:16px 18px; margin-bottom:22px; }
     .qr-ramme { position:relative; width:132px; height:132px; flex-shrink:0; border-radius:10px; background:#fff; padding:6px; box-shadow:0 6px 18px rgba(76,71,180,.12); }
@@ -184,7 +185,11 @@
     font-weight:600;
     color:#6C47FF;
   }
-  .trial span { display:block; font-weight:500; color:#8B849B; font-size:13px; margin-top:4px; }
+  .trial span { display:block; font-weight:500; color:#6E6880; font-size:13px; margin-top:4px; }
+  /* Rechtliches: Impressum, Datenschutz, Nutzungsbedingungen */
+  .recht { margin-top:18px; font-size:12px; line-height:1.5; color:#6E6880; }
+  .recht a { display:inline-block; padding:4px 0; color:#6E6880; text-decoration:none; }
+  .recht a:hover, .recht a:focus-visible { text-decoration:underline; }
 </style>
 </head>
 <body>
@@ -192,7 +197,7 @@
     <img src="logo-lille.webp" alt="Unser Zuhause" class="logo" width="120" height="95">
     <div class="free-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.3L19 9l-5.2 1.7L12 16l-1.8-5.3L5 9l5.2-1.7L12 2z"/></svg>14 TAGE KOSTENLOS TESTEN</div>
     <div class="phone-frame">
-      <video autoplay muted loop playsinline preload="metadata" poster="video-poster.webp" width="540" height="960" aria-label="Demo der App Unser Zuhause">
+      <video muted loop playsinline preload="metadata" poster="video-poster.webp" width="540" height="960" aria-label="Demo der App Unser Zuhause">
         <source src="app-demo.mp4" type="video/mp4">
       </video>
     </div>
@@ -217,7 +222,18 @@
       </a>
     </div>
     <div class="trial">14 Tage kostenlos, keine Bindung<span>5,99 €/Monat · bis zu 7 Personen</span></div>
+    <p class="recht"><a href="https://www.unserzuhauseapp.de/impressum">Impressum</a> · <a href="https://www.unserzuhauseapp.de/datenschutz">Datenschutz</a> · <a href="https://www.unserzuhauseapp.de/nutzungsbedingungen">Nutzungsbedingungen</a></p>
   </main>
+  <!-- Video nur abspielen, wenn "Bewegung reduzieren" nicht eingeschaltet ist (sonst bleibt das Standbild stehen) -->
+  <script>
+    (function () {
+      var v = document.querySelector('.phone-frame video');
+      if (!v || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+      v.muted = true;
+      var p = v.play();
+      if (p && p.catch) p.catch(function () {});
+    })();
+  </script>
   <!-- Besuchsstatistik: derselbe cookiefreie Zähler wie auf unserzuhauseapp.de. Die Seite zählt dort als /download. -->
   <script src="https://www.unserzuhauseapp.de/taeller.js" defer></script>
 <script src="https://www.unserzuhauseapp.de/butik.js" defer></script>
