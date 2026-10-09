@@ -48,12 +48,13 @@
       mailGem: 'Gem email',
       mailSpring: 'Nej tak, jeg fortsætter bare',
       mailSmaat: 'Vi bruger kun din email til at svare dig. Se privatlivspolitik på voreshjem.dk.',
+      feltNavn: 'Din besked', mailNavn: 'Din email',
       netfejl: 'Beklager, der er forbindelsesproblemer lige nu. Skriv gerne til kontakt@vores-hjem.dk.'
     },
     de: {
       titel: 'Unser Zuhause',
-      status: 'Wir antworten meist sofort',
-      velkomst: 'Hallo! Ich bin die Assistenz von Unser Zuhause. Frag mich zum Preis, zur Bedienung, zu Familienmitgliedern, Funktionen, was du möchtest.',
+      status: 'KI-Assistent, antwortet sofort',
+      velkomst: 'Hallo! Ich bin der KI-Assistent von Unser Zuhause. Frag mich zum Preis, zur Bedienung, zu Familienmitgliedern oder Funktionen. Bei Bedarf übernimmt jemand aus dem Team.',
       hurtige: ['Was kostet es?', 'Wie fange ich an?', 'Kann ich kostenlos testen?', 'Kann ich den Kalender synchronisieren?'],
       teaser: [
         'Fragen zur App? Schreib uns 👋',
@@ -61,7 +62,7 @@
         'Fragen zum Preis? Ein Preis für die ganze Familie, frag einfach 👋'
       ],
       skriv: 'Schreib deine Nachricht…',
-      brand: 'Bereitgestellt von Unser Zuhause',
+      brand: 'KI-Assistent von Unser Zuhause',
       banner: 'Jemand aus dem Team ist im Chat',
       teamTag: 'Unser Zuhause Team',
       nyttigt: 'Hilfreich?', tak: 'Danke für dein Feedback',
@@ -72,7 +73,8 @@
       mailFejl: 'Bitte gib eine gültige E-Mail-Adresse ein.',
       mailGem: 'E-Mail speichern',
       mailSpring: 'Nein danke, ich schreibe einfach weiter',
-      mailSmaat: 'Wir nutzen deine E-Mail nur, um dir zu antworten. Datenschutz auf unserzuhauseapp.de.',
+      feltNavn: 'Deine Nachricht', mailNavn: 'Deine E-Mail-Adresse',
+      mailSmaat: 'Wir nutzen deine E-Mail nur, um dir zu antworten. Mehr in der <a href="https://www.unserzuhauseapp.de/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a>.',
       netfejl: 'Entschuldige, gerade gibt es Verbindungsprobleme. Schreib gern an support@unserzuhauseapp.de.'
     }
   };
@@ -127,8 +129,9 @@
     '.launcher{ position:fixed; right:24px; bottom:24px; width:62px; height:62px; border-radius:50%; border:none; cursor:pointer; z-index:2147483000; box-shadow:0 10px 30px rgba(108,71,255,.45); display:flex; align-items:center; justify-content:center; transition:transform .18s ease, box-shadow .18s ease; }',
     '.launcher:hover{ transform:translateY(-2px) scale(1.04); box-shadow:0 14px 36px rgba(108,71,255,.55); }',
     '.launcher svg{ width:28px; height:28px; fill:#fff; }',
-    '.panel{ position:fixed; right:24px; bottom:100px; width:376px; max-width:calc(100vw - 32px); height:560px; max-height:calc(100vh - 130px); background:#fff; border-radius:22px; z-index:2147483000; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 24px 70px rgba(27,22,51,.28); opacity:0; transform:translateY(14px) scale(.98); pointer-events:none; transition:opacity .2s ease, transform .2s ease; }',
-    '.panel.open{ opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }',
+    '.panel{ position:fixed; right:24px; bottom:100px; width:376px; max-width:calc(100vw - 32px); height:560px; max-height:calc(100vh - 130px); background:#fff; border-radius:22px; z-index:2147483000; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 24px 70px rgba(27,22,51,.28); opacity:0; transform:translateY(14px) scale(.98); pointer-events:none; visibility:hidden; transition:opacity .2s ease, transform .2s ease, visibility 0s linear .2s; }',
+    '.panel.open{ opacity:1; transform:translateY(0) scale(1); pointer-events:auto; visibility:visible; transition-delay:0s; }',
+    '.panel:focus{ outline:none; }',
     '.head{ padding:16px 18px; color:#fff; display:flex; align-items:center; gap:12px; }',
     '.head img{ width:40px; height:40px; border-radius:50%; object-fit:cover; background:#fff; }',
     '.head .ttl{ font-weight:700; font-size:16px; line-height:1.2; }',
@@ -164,7 +167,8 @@
     '.gate input:focus{ border-color:#6C47FF; }',
     '.gate .err{ color:#d64545; font-size:12.5px; display:none; }',
     '.gate button{ border:none; border-radius:12px; padding:12px; color:#fff; font-size:15px; font-weight:700; cursor:pointer; }',
-    '.gate .fine{ font-size:11px; color:#a9a4bd; line-height:1.4; }',
+    '.gate .fine{ font-size:11px; color:#6E6A85; line-height:1.4; }',
+    '.gate .fine a{ color:#6C47FF; text-decoration:underline; }',
     '.gate.askmail{ background:#fff; border:1px solid #ece9f7; border-radius:16px; padding:14px; margin-top:6px; gap:9px; box-shadow:0 1px 2px rgba(27,22,51,.05); }',
     '.gate.askmail .h{ font-size:14.5px; }',
     '.gate.askmail .d{ font-size:12.5px; }',
@@ -176,30 +180,32 @@
     '.send{ width:42px; height:42px; border-radius:12px; border:none; cursor:pointer; flex:0 0 42px; display:flex; align-items:center; justify-content:center; }',
     '.send:disabled{ opacity:.5; cursor:default; }',
     '.send svg{ width:20px; height:20px; fill:#fff; }',
-    '.brand{ text-align:center; font-size:11px; color:#a9a4bd; padding:6px 0 9px; background:#fff; }',
+    '.brand{ text-align:center; font-size:11px; color:#6E6A85; padding:6px 0 9px; background:#fff; }',
     // Hurtig-svar-knapper
     '.chips{ display:flex; flex-wrap:wrap; gap:8px; margin:4px 0 0 34px; }',
     '.chip{ background:#fff; border:1px solid #e3e0ef; color:#6C47FF; border-radius:16px; padding:8px 13px; font-size:13px; font-weight:600; cursor:pointer; text-align:left; }',
     '.chip:hover{ background:#f1edff; border-color:#6C47FF; }',
     // Tommel-feedback
     '.fb{ display:flex; gap:5px; align-items:center; margin:4px 0 2px 34px; }',
-    '.fb .q{ font-size:11.5px; color:#a9a4bd; }',
+    '.fb .q{ font-size:11.5px; color:#6E6A85; }',
     '.fb button{ background:none; border:none; cursor:pointer; font-size:14px; opacity:.5; padding:2px 4px; border-radius:6px; line-height:1; }',
     '.fb button:hover{ opacity:1; background:#f1edff; }',
     '.fb .done{ font-size:11.5px; color:#8b86a5; }',
     // Nudge-teaser
-    '.nudge{ position:fixed; right:24px; bottom:100px; max-width:230px; background:#fff; color:#1B1633; border-radius:16px; padding:13px 32px 13px 15px; font-size:13.5px; line-height:1.4; box-shadow:0 12px 30px rgba(27,22,51,.22); z-index:2147483000; cursor:pointer; opacity:0; transform:translateY(8px); pointer-events:none; transition:opacity .25s ease, transform .25s ease; }',
-    '.nudge.show{ opacity:1; transform:translateY(0); pointer-events:auto; }',
+    '.nudge{ position:fixed; right:24px; bottom:100px; max-width:230px; background:#fff; color:#1B1633; border-radius:16px; padding:13px 32px 13px 15px; font-size:13.5px; line-height:1.4; box-shadow:0 12px 30px rgba(27,22,51,.22); z-index:2147483000; cursor:pointer; opacity:0; transform:translateY(8px); pointer-events:none; visibility:hidden; transition:opacity .25s ease, transform .25s ease, visibility 0s linear .25s; }',
+    '.nudge.show{ opacity:1; transform:translateY(0); pointer-events:auto; visibility:visible; transition-delay:0s; }',
     '.nudge .nx{ position:absolute; top:5px; right:8px; border:none; background:none; font-size:17px; color:#a9a4bd; cursor:pointer; line-height:1; padding:2px; }',
-    '@media (max-width:480px){ .panel{ right:0; bottom:0; width:100vw; height:100dvh; max-height:100dvh; border-radius:0; } .launcher{ right:16px; bottom:16px; } .nudge{ right:16px; bottom:88px; } }',
+    '@media (max-width:480px){ .launcher{ right:16px; bottom:16px; } .nudge{ right:16px; bottom:88px; } }',
+    // Samme regel som FULD nedenfor: her er chatten et modalt vindue i fuld skærm
+    '@media (max-width:480px), (max-height:500px){ .panel{ right:0; bottom:0; width:100vw; max-width:100vw; height:100dvh; max-height:100dvh; border-radius:0; } .foot textarea, .gate input{ font-size:16px; } }',
     '</style>',
 
-    '<button class="launcher grad" aria-label="' + T.aabn + '">',
+    '<button class="launcher grad" aria-label="' + T.aabn + '" aria-expanded="false">',
     '<svg viewBox="0 0 24 24"><path d="M12 3C6.5 3 2 6.6 2 11c0 2.4 1.3 4.6 3.4 6-.2 1-.8 2.3-1.7 3.3-.2.2 0 .6.3.5 1.9-.4 3.4-1.1 4.4-1.8 1.1.3 2.3.5 3.6.5 5.5 0 10-3.6 10-8s-4.5-8-10-8z"/></svg>',
     '</button>',
     '<div class="nudge"><button class="nx" aria-label="' + T.luk + '">&times;</button><span class="ntxt">' + NUDGE_TEXT + '</span></div>',
 
-    '<div class="panel" role="dialog" aria-label="' + T.titel + '">',
+    '<div class="panel" role="dialog" aria-label="' + T.titel + '" tabindex="-1">',
       '<div class="head grad">',
         '<img src="' + AVATAR + '" alt="" onerror="this.style.display=\'none\'">',
         '<div><div class="ttl">' + T.titel + '</div><div class="sub"><span class="dot"></span>' + T.status + '</div></div>',
@@ -207,7 +213,7 @@
       '</div>',
       '<div class="body"></div>',
       '<div class="foot">',
-        '<textarea rows="1" placeholder="' + T.skriv + '"></textarea>',
+        '<textarea rows="1" placeholder="' + T.skriv + '" aria-label="' + T.feltNavn + '"></textarea>',
         '<button class="send grad" aria-label="' + T.send + '"><svg viewBox="0 0 24 24"><path d="M3.4 20.4l17.5-7.5c.8-.4.8-1.5 0-1.9L3.4 3.6c-.7-.3-1.4.2-1.4 1L2 9.1c0 .5.4.9.9 1l11.1 1.9L2.9 13.9c-.5.1-.9.5-.9 1l0 4.5c0 .8.7 1.3 1.4 1z"/></svg></button>',
       '</div>',
       '<div class="brand">' + T.brand + '</div>',
@@ -221,6 +227,12 @@
   var foot = root.querySelector('.foot');
   var ta = root.querySelector('textarea');
   var sendBtn = root.querySelector('.send');
+
+  // Fuld skærm (samme regel som i CSS'en): så er chatten et modalt vindue, og Tab bliver i den
+  var FULD = '(max-width:480px), (max-height:500px)';
+  function fuldSkaerm() { try { return window.matchMedia(FULD).matches; } catch (e) { return false; } }
+  // Kun med mus får feltet fokus af sig selv. På touch ville tastaturet ellers springe op og dække chatten.
+  function harHover() { try { return window.matchMedia('(hover:hover)').matches; } catch (e) { return true; } }
 
   // ---------- formatering ----------
   function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
@@ -312,7 +324,7 @@
     return '<div class="gate askmail">' +
       '<div class="h">' + T.mailTitel + '</div>' +
       '<div class="d">' + T.mailTekst + '</div>' +
-      '<input type="email" placeholder="' + T.mailFelt + '" autocomplete="email">' +
+      '<input type="email" placeholder="' + T.mailFelt + '" autocomplete="email" aria-label="' + T.mailNavn + '">' +
       '<div class="err">' + T.mailFejl + '</div>' +
       '<button class="grad">' + T.mailGem + '</button>' +
       '<button class="skip" type="button">' + T.mailSpring + '</button>' +
@@ -334,14 +346,14 @@
       // uden id er der ingen samtale endnu; mailen sendes så med den første besked
       if (convId) { try { api({ action: 'set_email', conversationId: convId, email: email }); } catch (e) {} }
       renderChat(false);
-      setTimeout(function () { ta.focus(); }, 60);
+      setTimeout(function () { if (harHover()) ta.focus(); }, 60);
     }
     btn.addEventListener('click', submit);
     skip.addEventListener('click', function () {
       emailSkipped = true;
       try { sessionStorage.setItem(SKIPNØGLE, '1'); } catch (e) {}
       renderChat(false);
-      setTimeout(function () { ta.focus(); }, 60);
+      setTimeout(function () { if (harHover()) ta.focus(); }, 60);
     });
     inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); submit(); } });
   }
@@ -413,18 +425,44 @@
 
   function open() {
     panel.classList.add('open');
+    launcher.setAttribute('aria-expanded', 'true');
+    if (fuldSkaerm()) panel.setAttribute('aria-modal', 'true'); else panel.removeAttribute('aria-modal');
     dismissNudge();
     // Fri chat: ingen email-gate — man skriver bare løs
     foot.style.display = 'flex';
     renderChat(false);
     startPolling();
-    setTimeout(function () { ta.focus(); }, 200);
+    // på touch får selve vinduet fokus i stedet for feltet, så skærmlæsere er i chatten uden at tastaturet åbner
+    setTimeout(function () { if (harHover()) ta.focus(); else panel.focus(); }, 200);
   }
-  function close() { panel.classList.remove('open'); stopPolling(); }
+  function close() {
+    panel.classList.remove('open');
+    panel.removeAttribute('aria-modal');
+    launcher.setAttribute('aria-expanded', 'false');
+    stopPolling();
+  }
+  // Lukkes chatten fra tastaturet eller krydset, kommer fokus tilbage til boblen
+  function lukOgTilbage() { close(); launcher.focus(); }
+  // Fokusfælde i fuld skærm: Tab fra det sidste går til det første og omvendt, aldrig ud til siden bagved
+  function faelde(e) {
+    var ting = Array.prototype.filter.call(panel.querySelectorAll('button, textarea, input, a[href]'), function (el) {
+      return !el.disabled && el.getClientRects().length > 0;
+    });
+    if (!ting.length) return;
+    var foerste = ting[0], sidste = ting[ting.length - 1], aktiv = root.activeElement;
+    var inde = aktiv && aktiv !== panel && panel.contains(aktiv);
+    if (e.shiftKey && (!inde || aktiv === foerste)) { e.preventDefault(); sidste.focus(); }
+    else if (!e.shiftKey && (!inde || aktiv === sidste)) { e.preventDefault(); foerste.focus(); }
+  }
+  root.addEventListener('keydown', function (e) {
+    if (!panel.classList.contains('open')) return;
+    if (e.key === 'Escape' || e.key === 'Esc') { e.preventDefault(); lukOgTilbage(); return; }
+    if (e.key === 'Tab' && fuldSkaerm()) faelde(e);
+  });
   function toggle() { panel.classList.contains('open') ? close() : open(); }
 
   launcher.addEventListener('click', toggle);
-  closeBtn.addEventListener('click', close);
+  closeBtn.addEventListener('click', lukOgTilbage);
   ta.addEventListener('input', function () { ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 96) + 'px'; });
   ta.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
   sendBtn.addEventListener('click', send);
