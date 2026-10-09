@@ -50,15 +50,15 @@
   --text: #0F0E1A;
   --text-body: #3A3552;
   --text-secondary: #5E5A7A;
-  --text-muted: #9B97B5;
+  --text-muted: #625E7E;
   --border: #E8E5FF;
   --font: 'Plus Jakarta Sans', sans-serif;
   --radius: 16px;
   --shadow: 0 8px 32px rgba(108,71,255,0.12);
   --shadow-lg: 0 24px 80px rgba(108,71,255,0.18);
 }
-html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100%; }
-body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; max-width: 100%; }
+html { scroll-behavior: smooth; overflow-x: hidden; overflow-x: clip; max-width: 100%; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; overflow-x: clip; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
 .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
 .schmal { max-width: 760px; margin: 0 auto; padding: 0 24px; }
@@ -76,6 +76,10 @@ body > nav {
 .back-link:hover { color: var(--purple); }
 .back-link svg { width: 15px; height: 15px; }
 .back-link .k-label { display: none; }
+/* Lille linkraekke til hovedsiderne (testudgave) */
+.nav-mini { display: flex; align-items: center; gap: 24px; margin-left: auto; margin-right: 12px; }
+.nav-mini a { font-size: 14px; font-weight: 600; color: var(--text-secondary); transition: color 0.2s; white-space: nowrap; }
+.nav-mini a:hover, .nav-mini a[aria-current="page"] { color: var(--purple); }
 
 /* ─── KOPF ─── */
 .kopf {
@@ -150,6 +154,12 @@ body > nav {
 }
 .app-hinweis h2 { margin-top: 0; font-size: 22px; }
 .artikel .app-hinweis p:last-child { margin-bottom: 0; }
+.app-hinweis { display: flow-root; }
+.app-bild { float: right; width: 180px; margin: 0 0 16px 28px; }
+.app-bild img { display: block; width: 100%; height: auto; border-radius: 18px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+/* Telefon-mockup: skaer den gennemsigtige kant omkring telefonen vaek */
+.app-bild.geraet { aspect-ratio: 391 / 786; overflow: hidden; }
+.app-bild.geraet img { width: 173.9%; max-width: none; margin: -26.3% 0 0 -36.8%; border: 0; border-radius: 0; box-shadow: none; }
 
 /* ─── FAQ ─── */
 .faq { padding: 8px 0 24px; }
@@ -174,7 +184,7 @@ body > nav {
 /* ─── CTA ─── */
 #cta { padding: 24px 0 48px; }
 .cta-karte {
-  background: var(--gradient); border-radius: 28px; padding: 44px 36px; text-align: center;
+  background: linear-gradient(135deg, #4F32CC 0%, #1D4ED8 55%, #BE185D 100%); border-radius: 28px; padding: 44px 36px; text-align: center;
   color: #fff; position: relative; overflow: hidden; box-shadow: var(--shadow-lg);
 }
 .cta-karte::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 30%, rgba(255,255,255,0.14), transparent 55%); pointer-events: none; }
@@ -182,10 +192,10 @@ body > nav {
 .cta-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); border-radius: 100px; font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 18px; }
 .cta-badge svg { width: 13px; height: 13px; }
 .cta-karte h2 { font-size: clamp(26px, 3.4vw, 34px); font-weight: 800; letter-spacing: -1px; line-height: 1.15; margin-bottom: 12px; color: #fff; }
-.cta-karte p { font-size: 16.5px; color: rgba(255,255,255,0.82); line-height: 1.6; max-width: 520px; margin: 0 auto 26px; }
+.cta-karte p { font-size: 16.5px; color: #fff; line-height: 1.6; max-width: 520px; margin: 0 auto 26px; }
 .btn-white { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 16px 32px; border-radius: 16px; background: #fff; color: var(--purple); font-size: 16px; font-weight: 800; box-shadow: 0 4px 20px rgba(0,0,0,0.12); transition: transform 0.2s, box-shadow 0.2s; }
 .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.18); }
-.cta-trust { font-size: 14px; color: rgba(255,255,255,0.7); margin-top: 18px; }
+.cta-trust { font-size: 14px; color: #fff; margin-top: 18px; }
 .cta-trust span { color: #fff; font-weight: 700; white-space: nowrap; }
 
 /* ─── WEITERLESEN / KARTEN ─── */
@@ -209,6 +219,7 @@ body > nav {
 .uebersicht-kopf h1 {
   font-size: clamp(42px, 6vw, 68px); letter-spacing: -2.5px; line-height: 1.08;
   background: var(--gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  padding-bottom: 0.12em; /* plads til g'ets underlaengde, ellers skaeres den af */
 }
 .uebersicht-kopf .lead { max-width: 580px; margin: 0 auto; }
 .uebersicht { padding: 64px 0 32px; }
@@ -249,9 +260,19 @@ body > nav {
   .back-link .lang { display: none; }
   .back-link .k-label { display: inline; }
 }
+@media (max-width: 760px) {
+  .nav-inner { flex-wrap: wrap; height: auto; row-gap: 0; }
+  .nav-logo, .back-link { height: 68px; }
+  .nav-mini { order: 3; flex-basis: 100%; flex-wrap: wrap; column-gap: 28px; row-gap: 6px; margin: 0; padding: 9px 0 11px; border-top: 1px solid rgba(108,71,255,0.08); }
+}
 @media (max-width: 600px) {
   footer p { white-space: normal !important; }
+  footer { padding-bottom: 150px !important; }
   .nav-logo img { height: 46px !important; }
+  .nav-mini { justify-content: space-between; column-gap: 12px; }
+  .nav-mini a { font-size: 13.5px; }
+  .app-hinweis { display: flex; flex-direction: column; }
+  .app-bild { float: none; order: 1; width: 190px; margin: 22px auto 0; }
 }
 </style>
 </head>
@@ -262,6 +283,7 @@ body > nav {
       <a href="/" class="nav-logo">
         <img src="/images/logo.webp" alt="Unser Zuhause" style="height:58px;width:auto;display:block;">
       </a>
+      <div class="nav-mini"><a href="/#features">Funktionen</a><a href="/#cta">Preis</a><a href="/ratgeber">Ratgeber</a><a href="/support">Support</a></div>
       <a href="/ratgeber" class="back-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg><span class="lang">Alle Ratgeber-Artikel</span><span class="k-label">Ratgeber</span></a>
     </div>
   </div>
@@ -288,7 +310,7 @@ body > nav {
   <div class="schmal">
     <div class="kurz">
       <p class="kurz-titel">Kurz gesagt</p>
-      <p>Ein Familienkalender funktioniert, wenn es genau einen gemeinsamen Ort für alle Termine gibt, wer etwas zuerst erfährt, es sofort einträgt, und ihr einmal pro Woche gemeinsam draufschaut. Eine Farbe pro Person und kurze Notizen wie „Turnbeutel mitnehmen“ sparen viele Rückfragen.</p>
+      <p>Ein Familienkalender funktioniert, wenn es genau einen gemeinsamen Ort für alle Termine gibt, wenn jeder neue Termine sofort selbst einträgt und wenn ihr einmal pro Woche gemeinsam draufschaut. Eine Farbe pro Person und kurze Notizen wie „Turnbeutel mitnehmen“ sparen viele Rückfragen.</p>
     </div>
 
     <p>Montagmorgen, 7:20 Uhr. Dein Kind steht schon in der Tür und erwähnt ganz nebenbei, dass heute Wandertag ist. Gleichzeitig fällt dir ein, dass der Termin beim Kinderarzt auf Donnerstag verschoben wurde. Die Nachricht dazu steckt irgendwo im Familienchat. Kommt dir das bekannt vor?</p>
@@ -335,6 +357,7 @@ body > nav {
     </ul>
 
     <div class="app-hinweis">
+      <figure class="app-bild"><img src="/images/kal_1.webp" width="680" height="1473" loading="lazy" decoding="async" alt="Familienkalender in der App Unser Zuhause: Monatsansicht für Juni mit markierten Tagen, darunter die Termine des ausgewählten Tages"></figure>
       <h2>So geht es mit Unser Zuhause</h2>
       <p>In Unser Zuhause teilt ihr einen <a href="/kalender">Kalender für die ganze Familie</a>. Alle können Termine eintragen, jede Person hat ihre eigene Farbe, und feste Termine wiederholen sich wöchentlich, monatlich oder jährlich. Termine, die nur Erwachsene sehen sollen, markierst du als privat. Wer keine Admin-Rechte hat, sieht dann nur „Privat“.</p>
       <p>Pflegst du deine Termine schon in Google oder im Kalender deines Handys, holt die <a href="/synchronisierung">Kalender-Synchronisierung</a> sie in den Familienkalender. Das geht nur in eine Richtung, dein eigener Kalender bleibt unverändert. Kinder und Großeltern melden sich mit dem Familiencode an und brauchen dafür keine eigene E-Mail-Adresse.</p>
@@ -411,7 +434,7 @@ body > nav {
 
       <!-- Informationssider -->
       <div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Infoseiten</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Infoseiten</p>
         <div style="display:flex; flex-direction:column; gap:10px;">
           <a href="https://www.unserzuhauseapp.de/kalender" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Kalender</a>
           <a href="https://www.unserzuhauseapp.de/essenpläne" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Essenspläne</a>
@@ -425,16 +448,16 @@ body > nav {
       </div>
 
       <div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Soziale Medien</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Soziale Medien</p>
         <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:28px;">
           <a href="https://www.facebook.com/profile.php?id=61590361744172" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Facebook</a>
           <a href="https://www.tiktok.com/@unserzuhause" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">TikTok</a>
         </div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Kontakt</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Kontakt</p>
         <a href="https://www.unserzuhauseapp.de/support" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Support</a>
       </div>
       <div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Richtlinien</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Rechtliches</p>
         <div style="display:flex; flex-direction:column; gap:10px;">
           <a href="https://www.unserzuhauseapp.de/impressum" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Impressum</a> <a href="https://www.iubenda.com/privacy-policy/77031753" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Datenschutzerklärung</a>
           <a href="https://www.iubenda.com/privacy-policy/77031753/cookie-policy" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Cookie-Richtlinie</a>
@@ -443,9 +466,9 @@ body > nav {
       </div>
     </div>
     <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
-      <p style="font-size:12px; color:rgba(255,255,255,0.3); white-space:nowrap;">© 2026 Vores Hjem I/S · CVR 45804445 · Alle Rechte vorbehalten.</p>
-      <a href="https://backend.unserzuhauseapp.de" target="_blank" rel="nofollow noopener" style="font-size:12px; color:rgba(255,255,255,0.3); text-decoration:none; white-space:nowrap;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Mitarbeiter</a>
-      <p style="font-size:12px; color:rgba(255,255,255,0.3); white-space:nowrap;">Entwickelt in Dänemark 🇩🇰</p>
+      <p style="font-size:12px; color:rgba(255,255,255,0.55); white-space:nowrap;">© 2026 Vores Hjem I/S · CVR 45804445 · Alle Rechte vorbehalten.</p>
+      <a href="https://backend.unserzuhauseapp.de" target="_blank" rel="nofollow noopener" style="font-size:12px; color:rgba(255,255,255,0.55); text-decoration:none; white-space:nowrap;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">Mitarbeiter</a>
+      <p style="font-size:12px; color:rgba(255,255,255,0.55); white-space:nowrap;">Entwickelt in Dänemark 🇩🇰</p>
     </div>
   </div>
 </footer>
