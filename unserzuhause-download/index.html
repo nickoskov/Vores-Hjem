@@ -2,7 +2,11 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
+<link rel="preload" href="fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>@font-face{font-family:'Plus Jakarta Sans';font-style:normal;font-weight:200 800;font-display:swap;src:url(fonts/plus-jakarta-sans-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}</style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Nur helles Design: verhindert, dass Samsung Internet und Chrome (Android) Logo und QR-Code dunkel umfärben -->
+<meta name="color-scheme" content="only light">
 <title>Unser Zuhause herunterladen | App Store &amp; Google Play</title>
 <meta name="description" content="Lade Unser Zuhause herunter: Kalender, Essensplan, Einkauf und Aufgaben für die ganze Familie in einer App. 14 Tage kostenlos testen. Für iPhone und Android.">
 <!-- Vorschau beim Teilen (Facebook/Messenger/Instagram/LinkedIn) -->
@@ -20,15 +24,16 @@
 <meta name="twitter:title" content="Unser Zuhause, die App für die ganze Familie">
 <meta name="twitter:description" content="Der ganze Familienalltag in einer App. 14 Tage kostenlos testen.">
 <meta name="twitter:image" content="https://unserzuhause-download.netlify.app/og-billede.png">
-<link rel="icon" href="logo.png">
+<link rel="icon" type="image/png" href="favicon.png">
 <link rel="canonical" href="https://unserzuhause-download.netlify.app/">
 <!-- Structured data: sagt Google und der KI-Suche genau, was die App ist -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "MobileApplication",
+  "@id": "https://www.unserzuhauseapp.de/#app",
   "name": "Unser Zuhause",
-  "url": "https://unserzuhause-download.netlify.app/",
+  "url": "https://www.unserzuhauseapp.de/",
   "description": "Familien-App, die den Alltag des ganzen Haushalts an einem Ort bündelt: gemeinsamer Kalender, Essensplan, Einkaufsliste und Aufgaben. Bis zu 7 Personen pro Konto.",
   "operatingSystem": "iOS, Android",
   "applicationCategory": "LifestyleApplication",
@@ -42,9 +47,6 @@
   "publisher": { "@type": "Organization", "name": "Vores Hjem I/S", "url": "https://www.unserzuhauseapp.de/" }
 }
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
@@ -73,7 +75,7 @@
     display:inline-flex;
     align-items:center;
     gap:8px;
-    background:linear-gradient(135deg, #6C47FF 0%, #3B82F6 55%, #EC4899 100%);
+    background:linear-gradient(135deg, #5B3DF5 0%, #2563EB 55%, #DB2777 100%);
     color:#fff;
     font-size:14px;
     font-weight:800;
@@ -105,6 +107,28 @@
     border-radius:25px;
     background:#EEF0FF;
   }
+  /* Pause-Knopf für das Video (WCAG 2.2.2), unten rechts im Telefonrahmen */
+  .vid-pause {
+    position:absolute;
+    right:16px;
+    bottom:16px;
+    width:36px;
+    height:36px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:0;
+    border-radius:50%;
+    background:rgba(18,16,31,.62);
+    color:#fff;
+    cursor:pointer;
+  }
+  .vid-pause[hidden] { display:none; }
+  .vid-pause:hover { background:rgba(18,16,31,.8); }
+  .vid-pause:focus-visible { outline:3px solid #5B3DF5; outline-offset:2px; }
+  .vid-pause svg { width:16px; height:16px; }
+  .vid-pause .ikon-pause, .vid-pause.spiller .ikon-play { display:none; }
+  .vid-pause.spiller .ikon-pause { display:block; }
   h1 {
     font-size:26px;
     font-weight:800;
@@ -162,9 +186,10 @@
   }
   .web-btn:hover { transform:translateY(-2px); background:#E9E4FF; }
   .web-btn svg { width:20px; height:20px; flex-shrink:0; }
-  /* QR-Code, nur am Computer: das Handy scannt und landet selbst im richtigen Store (backend.unserzuhauseapp.de/hent/app) */
+  /* QR-Code, nur am Computer: das Handy scannt und landet selbst im richtigen Store (backend.unserzuhauseapp.de/hent/app).
+     hover/pointer: nur mit Maus, also nicht auf dem iPad oder dem quer gehaltenen Handy */
   .qr { display:none; }
-  @media (min-width:820px) {
+  @media (min-width:820px) and (hover:hover) and (pointer:fine) {
     .qr { display:flex; align-items:center; gap:18px; text-align:left; background:#F8F7FF; border:1.5px solid #E8E5FF;
           border-radius:20px; padding:16px 18px; margin-bottom:22px; }
     .qr-ramme { position:relative; width:132px; height:132px; flex-shrink:0; border-radius:10px; background:#fff; padding:6px; box-shadow:0 6px 18px rgba(76,71,180,.12); }
@@ -182,22 +207,30 @@
     font-weight:600;
     color:#6C47FF;
   }
-  .trial span { display:block; font-weight:500; color:#8B849B; font-size:13px; margin-top:4px; }
+  .trial span { display:block; font-weight:500; color:#6E6880; font-size:13px; margin-top:4px; }
+  /* Rechtliches: Impressum, Datenschutz, Nutzungsbedingungen */
+  .recht { margin-top:18px; font-size:12px; line-height:1.5; color:#6E6880; }
+  .recht a { display:inline-block; padding:4px 0; color:#6E6880; text-decoration:none; }
+  .recht a:hover, .recht a:focus-visible { text-decoration:underline; }
 </style>
 </head>
 <body>
-  <div class="card">
-    <img src="logo.png" alt="Unser Zuhause" class="logo" width="647" height="512">
+  <main class="card">
+    <img src="logo-lille.webp" alt="Unser Zuhause" class="logo" width="120" height="95">
     <div class="free-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.3L19 9l-5.2 1.7L12 16l-1.8-5.3L5 9l5.2-1.7L12 2z"/></svg>14 TAGE KOSTENLOS TESTEN</div>
     <div class="phone-frame">
-      <video autoplay muted loop playsinline preload="auto" poster="video-poster.webp" width="540" height="960" aria-label="Demo der App Unser Zuhause">
+      <video muted loop playsinline preload="metadata" poster="video-poster.webp" width="540" height="960" aria-label="Demo der App Unser Zuhause">
         <source src="app-demo.mp4" type="video/mp4">
       </video>
+      <button type="button" class="vid-pause" aria-label="Video abspielen" hidden>
+        <svg class="ikon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+        <svg class="ikon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 8 4.5z"/></svg>
+      </button>
     </div>
     <h1>Hol dir <span class="grad">Unser Zuhause</span></h1>
     <p class="sub">Der ganze Familienalltag in einer App: Kalender, Essensplan, Einkauf und Aufgaben.</p>
     <div class="qr">
-      <div class="qr-ramme"><img class="kode" src="/qr-hent.svg" alt="QR-Code, der Unser Zuhause auf dein Handy holt" width="120" height="120"><img class="logo-midt" src="/logo.png" alt="" width="40" height="32"></div>
+      <div class="qr-ramme"><img class="kode" src="/qr-hent.svg" alt="QR-Code, der Unser Zuhause auf dein Handy holt" width="120" height="120"><img class="logo-midt" src="/logo-lille.webp" alt="" width="40" height="32"></div>
       <div><b>Mit dem Handy scannen</b><span>Halte die Kamera deines Handys auf den Code. Dann öffnet sich der App Store oder Google Play von selbst.</span></div>
     </div>
     <div class="store-btns">
@@ -215,7 +248,35 @@
       </a>
     </div>
     <div class="trial">14 Tage kostenlos, keine Bindung<span>5,99 €/Monat · bis zu 7 Personen</span></div>
-  </div>
+    <p class="recht"><a href="https://www.unserzuhauseapp.de/impressum">Impressum</a> · <a href="https://www.unserzuhauseapp.de/datenschutz">Datenschutz</a> · <a href="https://www.unserzuhauseapp.de/nutzungsbedingungen">Nutzungsbedingungen</a></p>
+  </main>
+  <!-- Video nur von selbst abspielen, wenn "Bewegung reduzieren" nicht eingeschaltet ist (sonst bleibt das Standbild stehen).
+       Der Knopf hält es jederzeit an oder startet es (WCAG 2.2.2). -->
+  <script>
+    (function () {
+      var v = document.querySelector('.phone-frame video');
+      var b = document.querySelector('.vid-pause');
+      if (!v) return;
+      function zeige(spielt) {
+        if (!b) return;
+        b.classList.toggle('spiller', spielt);
+        b.setAttribute('aria-label', spielt ? 'Video anhalten' : 'Video abspielen');
+      }
+      function spiele() {
+        v.muted = true;
+        var p = v.play();
+        if (p && p.catch) p.catch(function () { zeige(false); });
+      }
+      v.addEventListener('play', function () { zeige(true); });
+      v.addEventListener('pause', function () { zeige(false); });
+      if (b) {
+        b.hidden = false;
+        b.addEventListener('click', function () { if (v.paused) spiele(); else v.pause(); });
+      }
+      if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      spiele();
+    })();
+  </script>
   <!-- Besuchsstatistik: derselbe cookiefreie Zähler wie auf unserzuhauseapp.de. Die Seite zählt dort als /download. -->
   <script src="https://www.unserzuhauseapp.de/taeller.js" defer></script>
 <script src="https://www.unserzuhauseapp.de/butik.js" defer></script>
