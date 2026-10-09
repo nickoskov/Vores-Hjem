@@ -2,7 +2,11 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
+<link rel="preload" href="fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>@font-face{font-family:'Plus Jakarta Sans';font-style:normal;font-weight:200 800;font-display:swap;src:url(fonts/plus-jakarta-sans-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}</style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Nur helles Design: verhindert, dass Samsung Internet und Chrome (Android) Logo und QR-Code dunkel umfärben -->
+<meta name="color-scheme" content="only light">
 <title>Unser Zuhause herunterladen | App Store &amp; Google Play</title>
 <meta name="description" content="Lade Unser Zuhause herunter: Kalender, Essensplan, Einkauf und Aufgaben für die ganze Familie in einer App. 14 Tage kostenlos testen. Für iPhone und Android.">
 <!-- Vorschau beim Teilen (Facebook/Messenger/Instagram/LinkedIn) -->
@@ -20,15 +24,16 @@
 <meta name="twitter:title" content="Unser Zuhause, die App für die ganze Familie">
 <meta name="twitter:description" content="Der ganze Familienalltag in einer App. 14 Tage kostenlos testen.">
 <meta name="twitter:image" content="https://unserzuhause-download.netlify.app/og-billede.png">
-<link rel="icon" href="logo.png">
+<link rel="icon" type="image/png" href="favicon.png">
 <link rel="canonical" href="https://unserzuhause-download.netlify.app/">
 <!-- Structured data: sagt Google und der KI-Suche genau, was die App ist -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "MobileApplication",
+  "@id": "https://www.unserzuhauseapp.de/#app",
   "name": "Unser Zuhause",
-  "url": "https://unserzuhause-download.netlify.app/",
+  "url": "https://www.unserzuhauseapp.de/",
   "description": "Familien-App, die den Alltag des ganzen Haushalts an einem Ort bündelt: gemeinsamer Kalender, Essensplan, Einkaufsliste und Aufgaben. Bis zu 7 Personen pro Konto.",
   "operatingSystem": "iOS, Android",
   "applicationCategory": "LifestyleApplication",
@@ -42,9 +47,6 @@
   "publisher": { "@type": "Organization", "name": "Vores Hjem I/S", "url": "https://www.unserzuhauseapp.de/" }
 }
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
@@ -186,18 +188,18 @@
 </style>
 </head>
 <body>
-  <div class="card">
-    <img src="logo.png" alt="Unser Zuhause" class="logo" width="647" height="512">
+  <main class="card">
+    <img src="logo-lille.webp" alt="Unser Zuhause" class="logo" width="120" height="95">
     <div class="free-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.3L19 9l-5.2 1.7L12 16l-1.8-5.3L5 9l5.2-1.7L12 2z"/></svg>14 TAGE KOSTENLOS TESTEN</div>
     <div class="phone-frame">
-      <video autoplay muted loop playsinline preload="auto" poster="video-poster.webp" width="540" height="960" aria-label="Demo der App Unser Zuhause">
+      <video autoplay muted loop playsinline preload="metadata" poster="video-poster.webp" width="540" height="960" aria-label="Demo der App Unser Zuhause">
         <source src="app-demo.mp4" type="video/mp4">
       </video>
     </div>
     <h1>Hol dir <span class="grad">Unser Zuhause</span></h1>
     <p class="sub">Der ganze Familienalltag in einer App: Kalender, Essensplan, Einkauf und Aufgaben.</p>
     <div class="qr">
-      <div class="qr-ramme"><img class="kode" src="/qr-hent.svg" alt="QR-Code, der Unser Zuhause auf dein Handy holt" width="120" height="120"><img class="logo-midt" src="/logo.png" alt="" width="40" height="32"></div>
+      <div class="qr-ramme"><img class="kode" src="/qr-hent.svg" alt="QR-Code, der Unser Zuhause auf dein Handy holt" width="120" height="120"><img class="logo-midt" src="/logo-lille.webp" alt="" width="40" height="32"></div>
       <div><b>Mit dem Handy scannen</b><span>Halte die Kamera deines Handys auf den Code. Dann öffnet sich der App Store oder Google Play von selbst.</span></div>
     </div>
     <div class="store-btns">
@@ -215,7 +217,7 @@
       </a>
     </div>
     <div class="trial">14 Tage kostenlos, keine Bindung<span>5,99 €/Monat · bis zu 7 Personen</span></div>
-  </div>
+  </main>
   <!-- Besuchsstatistik: derselbe cookiefreie Zähler wie auf unserzuhauseapp.de. Die Seite zählt dort als /download. -->
   <script src="https://www.unserzuhauseapp.de/taeller.js" defer></script>
 <script src="https://www.unserzuhauseapp.de/butik.js" defer></script>
