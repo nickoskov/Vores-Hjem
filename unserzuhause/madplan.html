@@ -47,11 +47,13 @@
   --success: #10B981;
   --warning: #F59E0B;
   --gradient: linear-gradient(135deg, #6C47FF 0%, #3B82F6 55%, #EC4899 100%);
+  /* til flader med hvid tekst: samme farver, men mørke nok til hvid tekst (6-8:1) */
+  --gradient-dyb: linear-gradient(135deg, #4F32CC 0%, #1D4ED8 55%, #BE185D 100%);
   --bg: #FFFFFF;
   --bg-subtle: #F8F7FF;
   --text: #0F0E1A;
   --text-secondary: #5E5A7A;
-  --text-muted: #9B97B5;
+  --text-muted: #625E7E;
   --border: #E8E5FF;
   --border-light: #F0EEF9;
   --font: 'Plus Jakarta Sans', sans-serif;
@@ -61,8 +63,8 @@
   --shadow-xl: 0 40px 120px rgba(108,71,255,0.22);
 }
 
-html { scroll-behavior: smooth; overflow-x: hidden; }
-body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+html { scroll-behavior: smooth; overflow-x: hidden; overflow-x: clip; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; overflow-x: clip; }
 a { color: inherit; text-decoration: none; }
 .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
 
@@ -80,6 +82,16 @@ nav {
 .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--text-secondary); transition: color 0.2s; }
 .back-link:hover { color: var(--purple); }
 .back-link svg { width: 16px; height: 16px; }
+/* Samme lille linkrække som på forsiden. Under 960 px får den sin egen række under logoet. */
+.nav-links { display: flex; align-items: center; gap: 28px; margin-left: auto; margin-right: 36px; }
+.nav-links a { font-size: 14px; font-weight: 500; color: var(--text-secondary); transition: color 0.2s; }
+.nav-links a:hover { color: var(--purple); }
+@media (max-width: 960px) {
+  .nav-inner { flex-wrap: wrap; height: auto; min-height: 68px; padding-top: 5px; }
+  .nav-links { order: 3; width: 100%; justify-content: center; gap: 22px; margin: 0; padding: 2px 0 10px; }
+  .nav-links a { font-size: 13.5px; font-weight: 600; }
+}
+@media (max-width: 360px) { .nav-links { gap: 16px; } .nav-links a { font-size: 13px; } }
 
 /* ─── HERO ─── */
 #hero {
@@ -93,7 +105,7 @@ nav {
 @keyframes blobFloat { from { transform: translate(0,0) scale(1); } to { transform: translate(30px,-40px) scale(1.05); } }
 
 .hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; position: relative; z-index: 1; }
-.badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: rgba(108,71,255,0.08); border: 1px solid rgba(108,71,255,0.18); border-radius: 100px; font-size: 13px; font-weight: 600; color: var(--purple); margin-bottom: 20px; }
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: rgba(108,71,255,0.08); border: 1px solid rgba(108,71,255,0.18); border-radius: 100px; font-size: 13px; font-weight: 600; color: #5B36F0; margin-bottom: 20px; }
 .badge svg { width: 13px; height: 13px; }
 .hero-h1 { font-size: clamp(36px, 4.5vw, 58px); font-weight: 800; letter-spacing: -2px; line-height: 1.08; margin-bottom: 18px; }
 .gradient-text { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -146,6 +158,16 @@ nav {
 .float-card-3 { bottom: 60px; right: -10px; animation: fc3Float 7s ease-in-out infinite; }
 @keyframes fc3Float { 0%,100%{transform:translateY(0) rotate(1deg)} 50%{transform:translateY(-8px) rotate(0.5deg)} }
 
+/* Tablet: kortene placeres i forhold til telefonen, så det øverste ikke klistrer til skærmkanten */
+@media (min-width: 901px) and (max-width: 1164px) {
+  .float-card-1, .float-card-3 { right: 0; }
+}
+@media (min-width: 601px) and (max-width: 900px) {
+  .float-card-1 { right: auto; left: calc(50% + 50px); }
+  .float-card-2 { left: auto; right: calc(50% + 60px); }
+  .float-card-3 { right: auto; left: calc(50% + 40px); }
+}
+
 .scene-platform { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 260px; height: 40px; background: radial-gradient(ellipse, rgba(108,71,255,0.18) 0%, transparent 70%); filter: blur(20px); border-radius: 50%; animation: platformFloat 6s ease-in-out infinite alternate; }
 @keyframes platformFloat { from{transform:translateX(-50%) scaleX(1)} to{transform:translateX(-50%) scaleX(0.85) scaleY(0.7)} }
 
@@ -193,19 +215,19 @@ nav {
 .step-row.reverse { direction: rtl; }
 .step-row.reverse > * { direction: ltr; }
 
-.step-num { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; background: var(--gradient); border-radius: 13px; font-size: 17px; font-weight: 800; color: #fff; margin-bottom: 18px; box-shadow: 0 8px 24px rgba(108,71,255,0.3); }
+.step-num { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; background: var(--gradient-dyb); border-radius: 13px; font-size: 17px; font-weight: 800; color: #fff; margin-bottom: 18px; box-shadow: 0 8px 24px rgba(108,71,255,0.3); }
 .step-h3 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.2; margin-bottom: 12px; }
 .step-p { font-size: 16px; color: var(--text-secondary); line-height: 1.65; }
 .step-p strong { color: var(--text); }
 
 .step-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .step-tag { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 100px; font-size: 12px; font-weight: 700; }
-.tag-red { background: rgba(232,64,64,0.08); color: #E84040; }
-.tag-blue { background: rgba(59,130,246,0.08); color: var(--blue); }
-.tag-green { background: rgba(16,185,129,0.08); color: var(--success); }
-.tag-orange { background: rgba(249,115,22,0.08); color: #F97316; }
+.tag-red { background: rgba(232,64,64,0.08); color: #C62828; }
+.tag-blue { background: rgba(59,130,246,0.08); color: #1D4ED8; }
+.tag-green { background: rgba(16,185,129,0.08); color: #047857; }
+.tag-orange { background: rgba(249,115,22,0.08); color: #C2410C; }
 .tag-purple { background: rgba(108,71,255,0.08); color: var(--purple); }
-.tag-pink { background: rgba(236,72,153,0.08); color: var(--pink); }
+.tag-pink { background: rgba(236,72,153,0.08); color: #BE185D; }
 .tag-dot { width: 7px; height: 7px; border-radius: 50%; }
 
 .step-divider { display: flex; align-items: center; gap: 16px; margin-bottom: 80px; }
@@ -222,7 +244,7 @@ nav {
 .step-phone-frame img { aspect-ratio: 680 / 1473; height: auto; width: 100%; border-radius: 40px; display: block; border: 3px solid rgba(255,255,255,0.85); box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 20px 56px rgba(0,0,0,0.14); }
 
 /* ─── CTA ─── */
-#cta { background: var(--gradient); padding: 110px 0; text-align: center; position: relative; overflow: hidden; }
+#cta { background: var(--gradient-dyb); padding: 110px 0; text-align: center; position: relative; overflow: hidden; }
 #cta::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.08), transparent 50%), radial-gradient(ellipse at 80% 30%, rgba(255,255,255,0.06), transparent 50%); pointer-events: none; }
 .cta-shape { position: absolute; border-radius: 50%; pointer-events: none; opacity: 0.15; }
 .cta-shape-1 { width: 300px; height: 300px; top: -100px; left: -80px; background: rgba(255,255,255,0.3); filter: blur(60px); animation: ctaFloat 10s ease-in-out infinite alternate; }
@@ -231,7 +253,7 @@ nav {
 .cta-inner { position: relative; z-index: 1; }
 .cta-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); border-radius: 100px; font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 24px; backdrop-filter: blur(10px); }
 .cta-h2 { font-size: clamp(36px, 5.5vw, 64px); font-weight: 800; letter-spacing: -2px; line-height: 1.08; color: #fff; margin-bottom: 16px; }
-.cta-sub { font-size: 18px; color: rgba(255,255,255,0.75); margin-bottom: 40px; line-height: 1.6; }
+.cta-sub { font-size: 18px; color: #fff; margin-bottom: 40px; line-height: 1.6; }
 .cta-buttons { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 14px; font-family: var(--font); font-size: 15px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s ease; }
 .btn-white { background: #fff; color: var(--purple); font-weight: 700; box-shadow: 0 4px 20px rgba(0,0,0,0.12); }
@@ -239,10 +261,10 @@ nav {
 .btn-outline-white { background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.4); color: #fff; font-weight: 600; backdrop-filter: blur(10px); }
 .btn-outline-white:hover { background: rgba(255,255,255,0.2); }
 .btn-lg { padding: 17px 36px; font-size: 16px; border-radius: 16px; }
-.cta-trust { font-size: 14px; color: rgba(255,255,255,0.6); }
-.cta-trust span { color: rgba(255,255,255,0.9); font-weight: 600; }
-.cta-back { color: rgba(255,255,255,0.55); }
-.cta-back:hover { color: #fff; }
+.cta-trust { font-size: 14px; color: #fff; }
+.cta-trust span { color: #fff; font-weight: 600; }
+.cta-back { color: #fff; }
+.cta-back:hover { text-decoration: underline !important; }
 
 /* ─── TOAST ─── */
 #not-launched-toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1A1A2E; color: #fff; padding: 14px 20px; border-radius: 16px; display: flex; align-items: center; gap: 12px; box-shadow: 0 16px 48px rgba(0,0,0,0.3); z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.35s cubic-bezier(0.16,1,0.3,1); white-space: nowrap; }
@@ -298,6 +320,15 @@ nav {
 }
 @media (max-width: 700px) { .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 32px !important; } }
 @media (max-width: 420px) { .footer-grid { grid-template-columns: 1fr !important; gap: 28px !important; } }
+/* de svævende knapper (Kostenlos testen og chatten) må ikke dække CVR-linjen nederst */
+@media (max-width: 600px) { footer { padding-bottom: 150px !important; } }
+/* ─── RATGEBER-LINK ─── */
+.ratgeber-tip { padding: 30px 0; text-align: center; background: #fff; border-top: 1px solid var(--border-light); }
+.ratgeber-tip p { font-size: 15px; color: var(--text-secondary); line-height: 1.6; }
+.ratgeber-tip a { color: #5B36F0; font-weight: 700; }
+.ratgeber-tip a:hover { text-decoration: underline; }
+.ratgeber-tip .tip-sep { color: var(--text-muted); margin: 0 6px; }
+
 /* ─── SPRING TIL INDHOLD ─── */
 .skip-link { position: absolute; left: 16px; top: -80px; z-index: 1000; background: #fff; color: var(--text); padding: 10px 16px; border-radius: 10px; font-size: 14px; font-weight: 700; box-shadow: var(--shadow); }
 .skip-link:focus { top: 12px; }
@@ -338,6 +369,12 @@ nav {
       <a href="https://www.unserzuhauseapp.de" target="_top" class="nav-logo">
         <img src="/images/logo.webp" alt="Unser Zuhause" style="height:58px;width:auto;display:block;">
       </a>
+      <div class="nav-links">
+        <a href="/#features">Funktionen</a>
+        <a href="/#price-band">Preis</a>
+        <a href="/ratgeber">Ratgeber</a>
+        <a href="/support">Support</a>
+      </div>
       <a href="./index.html" class="back-link">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         Zurück zur Startseite
@@ -359,7 +396,7 @@ nav {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3h18v4H3z"/><path d="M3 10h18v4H3z"/><path d="M3 17h18v4H3z"/></svg>
           Essensplan
         </div>
-        <h1 class="hero-h1"><span class="gradient-text">Informationsseite</span><br>Essensplan</h1>
+        <h1 class="hero-h1">Der <span class="gradient-text">Essensplan</span> für die ganze Woche</h1>
         <p class="hero-sub">Plane das Essen der Familie für die ganze Woche, an einem Ort.</p>
         <div class="hero-store-btns">
           <a href="https://apps.apple.com/de/app/unser-zuhause/id6771931999" target="_blank" rel="noopener" class="hero-store-btn">
@@ -618,7 +655,7 @@ nav {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="3"/><path d="M12 8v8M8 12h8"/></svg>
         </div>
         <div class="f-title">3 Mahlzeiten-Typen</div>
-        <div class="f-desc">Wähle zwischen Frühstück, Mittag- und Abendessen: jeweils mit eigener Farbe und Symbol, damit alles übersichtlich bleibt.</div>
+        <div class="f-desc">Wähle zwischen Frühstück, Mittag- und Abendessen: jeweils mit eigener Farbe und eigenem Symbol, damit alles übersichtlich bleibt.</div>
       </div>
       <div class="feature-card reveal reveal-delay-3">
         <div class="f-icon fi-blue">
@@ -646,7 +683,7 @@ nav {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
         </div>
         <div class="f-title">Im Voraus planen</div>
-        <div class="f-desc">Nutze die Pfeile, um in den Wochen vorzublättern: plane die nächste Woche schon am Wochenende, dann steht der Alltag.</div>
+        <div class="f-desc">Nutze die Pfeile, um in den Wochen vorzublättern: plane die nächste Woche schon am Wochenende, dann ist der Alltag schon geplant.</div>
       </div>
     </div>
   </div>
@@ -888,7 +925,7 @@ nav {
         <p class="step-p">Öffne den Essensplan und sieh die Mahlzeiten der Woche auf einen Blick. Alle Tage sind mit Frühstück, Mittag- und Abendessen aufgelistet, klare Farben und Symbole sorgen für Übersicht.</p>
         <div class="step-tags">
           <span class="step-tag tag-pink"><span class="tag-dot" style="background:var(--pink);"></span>Frühstück</span>
-          <span class="step-tag tag-purple"><span class="tag-dot" style="background:var(--purple);"></span>Mittag</span>
+          <span class="step-tag tag-purple"><span class="tag-dot" style="background:var(--purple);"></span>Mittagessen</span>
           <span class="step-tag tag-blue"><span class="tag-dot" style="background:var(--blue);"></span>Abendessen</span>
         </div>
       </div>
@@ -916,7 +953,7 @@ nav {
       <div>
         <div class="step-num">2</div>
         <h3 class="step-h3">Füge eine Mahlzeit in unter 30 Sekunden hinzu</h3>
-        <p class="step-p">Tippe auf <strong>+ Essen hinzufügen</strong> und wähle Tag, Mahlzeit-Typ und den Namen des Gerichts. Füge eine optionale Beschreibung mit Notizen oder Vorbereitung hinzu, tippe auf Speichern und du bist fertig.</p>
+        <p class="step-p">Tippe auf <strong>+ Mahlzeit hinzufügen</strong> und wähle Tag, Mahlzeit-Typ und den Namen des Gerichts. Füge eine optionale Beschreibung mit Notizen oder Vorbereitung hinzu, tippe auf Speichern und du bist fertig.</p>
         <div class="step-tags">
           <span class="step-tag tag-green"><span class="tag-dot" style="background:var(--success);"></span>Tag wählen</span>
           <span class="step-tag tag-pink"><span class="tag-dot" style="background:var(--pink);"></span>Mahlzeit-Typ wählen</span>
@@ -925,7 +962,7 @@ nav {
       </div>
       <div class="step-phone">
         <div class="trin-demo" id="trin2">
-          <div class="td-top"><span class="td-titel">Essen hinzufügen</span></div>
+          <div class="td-top"><span class="td-titel">Mahlzeit hinzufügen</span></div>
           <div class="td-boks" style="min-height:200px;">
             <div class="td-felt" data-f="1"><div class="td-felt-navn">Tag</div>
               <div class="td-chips">
@@ -971,8 +1008,8 @@ nav {
           </div>
           <div class="td-set">Sichtbar für</div>
           <div class="td-avatarer">
-            <span class="td-av" style="background:#22C55E">F</span>
-            <span class="td-av" style="background:#3B82F6">N</span>
+            <span class="td-av" style="background:#22C55E">L</span>
+            <span class="td-av" style="background:#3B82F6">M</span>
             <span class="td-av" style="background:#F59E0B">E</span>
             <span class="td-av" style="background:#EC4899">B</span>
           </div>
@@ -982,6 +1019,13 @@ nav {
     </div>
   </div>
 </section>
+
+<!-- RATGEBER -->
+<div class="ratgeber-tip">
+  <div class="container">
+    <p>Tipps aus dem Ratgeber: <a href="/ratgeber/wochenplan-essen-familie">So erstellt ihr einen Essensplan für die Familie →</a></p>
+  </div>
+</div>
 
 <!-- CTA -->
 <section id="cta">
@@ -1032,7 +1076,7 @@ nav {
 
       <!-- Informationssider -->
       <div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Infoseiten</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Infoseiten</p>
         <div style="display:flex; flex-direction:column; gap:10px;">
           <a href="https://www.unserzuhauseapp.de/kalender" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Kalender</a>
           <a href="https://www.unserzuhauseapp.de/essenpläne" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Essenspläne</a>
@@ -1047,18 +1091,18 @@ nav {
 
       <!-- Sociale medier + Kontakt -->
       <div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Soziale Medien</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Soziale Medien</p>
         <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:28px;">
           <a href="https://www.facebook.com/profile.php?id=61590361744172" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Facebook</a>
           <a href="https://www.tiktok.com/@unserzuhause" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">TikTok</a>
         </div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Kontakt</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Kontakt</p>
         <a href="https://www.unserzuhauseapp.de/support" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Support</a>
       </div>
 
       <!-- Politikker -->
       <div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Richtlinien</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Rechtliches</p>
         <div style="display:flex; flex-direction:column; gap:10px;">
           <a href="https://www.unserzuhauseapp.de/impressum" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Impressum</a> <a href="https://www.iubenda.com/privacy-policy/77031753" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Datenschutzerklärung</a>
           <a href="https://www.iubenda.com/privacy-policy/77031753/cookie-policy" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Cookie-Richtlinie</a>
@@ -1070,9 +1114,9 @@ nav {
 
     <!-- Bottom: copyright -->
     <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
-      <p style="font-size:12px; color:rgba(255,255,255,0.3); white-space:nowrap;">© 2026 Vores Hjem I/S · CVR 45804445 · Alle Rechte vorbehalten.</p>
-      <a href="https://backend.unserzuhauseapp.de" target="_blank" rel="nofollow noopener" style="font-size:12px; color:rgba(255,255,255,0.3); text-decoration:none; white-space:nowrap;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Mitarbeiter</a>
-      <p style="font-size:12px; color:rgba(255,255,255,0.3); white-space:nowrap;">Entwickelt in Dänemark 🇩🇰</p>
+      <p style="font-size:12px; color:rgba(255,255,255,0.55); white-space:nowrap;">© 2026 Vores Hjem I/S · CVR 45804445 · Alle Rechte vorbehalten.</p>
+      <a href="https://backend.unserzuhauseapp.de" target="_blank" rel="nofollow noopener" style="font-size:12px; color:rgba(255,255,255,0.55); text-decoration:none; white-space:nowrap;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">Mitarbeiter</a>
+      <p style="font-size:12px; color:rgba(255,255,255,0.55); white-space:nowrap;">Entwickelt in Dänemark 🇩🇰</p>
     </div>
 
   </div>

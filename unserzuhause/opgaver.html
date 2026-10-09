@@ -47,11 +47,13 @@
   --success: #10B981;
   --warning: #F59E0B;
   --gradient: linear-gradient(135deg, #6C47FF 0%, #3B82F6 55%, #EC4899 100%);
+  /* til flader med hvid tekst: samme farver, men mørke nok til hvid tekst (6-8:1) */
+  --gradient-dyb: linear-gradient(135deg, #4F32CC 0%, #1D4ED8 55%, #BE185D 100%);
   --bg: #FFFFFF;
   --bg-subtle: #F8F7FF;
   --text: #0F0E1A;
   --text-secondary: #5E5A7A;
-  --text-muted: #9B97B5;
+  --text-muted: #625E7E;
   --border: #E8E5FF;
   --border-light: #F0EEF9;
   --font: 'Plus Jakarta Sans', sans-serif;
@@ -61,8 +63,8 @@
   --shadow-xl: 0 40px 120px rgba(108,71,255,0.22);
 }
 
-html { scroll-behavior: smooth; overflow-x: hidden; }
-body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+html { scroll-behavior: smooth; overflow-x: hidden; overflow-x: clip; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; overflow-x: clip; }
 a { color: inherit; text-decoration: none; }
 .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
 
@@ -80,6 +82,16 @@ nav {
 .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--text-secondary); transition: color 0.2s; }
 .back-link:hover { color: var(--purple); }
 .back-link svg { width: 16px; height: 16px; }
+/* Samme lille linkrække som på forsiden. Under 960 px får den sin egen række under logoet. */
+.nav-links { display: flex; align-items: center; gap: 28px; margin-left: auto; margin-right: 36px; }
+.nav-links a { font-size: 14px; font-weight: 500; color: var(--text-secondary); transition: color 0.2s; }
+.nav-links a:hover { color: var(--purple); }
+@media (max-width: 960px) {
+  .nav-inner { flex-wrap: wrap; height: auto; min-height: 68px; padding-top: 5px; }
+  .nav-links { order: 3; width: 100%; justify-content: center; gap: 22px; margin: 0; padding: 2px 0 10px; }
+  .nav-links a { font-size: 13.5px; font-weight: 600; }
+}
+@media (max-width: 360px) { .nav-links { gap: 16px; } .nav-links a { font-size: 13px; } }
 
 /* ─── HERO ─── */
 #hero {
@@ -93,7 +105,7 @@ nav {
 @keyframes blobFloat { from { transform: translate(0,0) scale(1); } to { transform: translate(30px,-40px) scale(1.05); } }
 
 .hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; position: relative; z-index: 1; }
-.badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: rgba(108,71,255,0.08); border: 1px solid rgba(108,71,255,0.18); border-radius: 100px; font-size: 13px; font-weight: 600; color: var(--purple); margin-bottom: 20px; }
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: rgba(108,71,255,0.08); border: 1px solid rgba(108,71,255,0.18); border-radius: 100px; font-size: 13px; font-weight: 600; color: #5B36F0; margin-bottom: 20px; }
 .badge svg { width: 13px; height: 13px; }
 .hero-h1 { font-size: clamp(36px, 4.5vw, 58px); font-weight: 800; letter-spacing: -2px; line-height: 1.08; margin-bottom: 18px; }
 .gradient-text { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -147,6 +159,16 @@ nav {
 .float-card-3 { bottom: 60px; right: -10px; animation: fc3Float 7s ease-in-out infinite; }
 @keyframes fc3Float { 0%,100%{transform:translateY(0) rotate(1deg)} 50%{transform:translateY(-8px) rotate(0.5deg)} }
 
+/* Tablet: kortene placeres i forhold til telefonen, så det øverste ikke klistrer til skærmkanten */
+@media (min-width: 901px) and (max-width: 1164px) {
+  .float-card-1, .float-card-3 { right: 0; }
+}
+@media (min-width: 601px) and (max-width: 900px) {
+  .float-card-1 { right: auto; left: calc(50% + 50px); }
+  .float-card-2 { left: auto; right: calc(50% + 60px); }
+  .float-card-3 { right: auto; left: calc(50% + 40px); }
+}
+
 .scene-platform { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 260px; height: 40px; background: radial-gradient(ellipse, rgba(108,71,255,0.18) 0%, transparent 70%); filter: blur(20px); border-radius: 50%; animation: platformFloat 6s ease-in-out infinite alternate; }
 @keyframes platformFloat { from{transform:translateX(-50%) scaleX(1)} to{transform:translateX(-50%) scaleX(0.85) scaleY(0.7)} }
 
@@ -194,19 +216,19 @@ nav {
 .step-row.reverse { direction: rtl; }
 .step-row.reverse > * { direction: ltr; }
 
-.step-num { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; background: var(--gradient); border-radius: 13px; font-size: 17px; font-weight: 800; color: #fff; margin-bottom: 18px; box-shadow: 0 8px 24px rgba(108,71,255,0.3); }
+.step-num { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; background: var(--gradient-dyb); border-radius: 13px; font-size: 17px; font-weight: 800; color: #fff; margin-bottom: 18px; box-shadow: 0 8px 24px rgba(108,71,255,0.3); }
 .step-h3 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.2; margin-bottom: 12px; }
 .step-p { font-size: 16px; color: var(--text-secondary); line-height: 1.65; }
 .step-p strong { color: var(--text); }
 
 .step-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .step-tag { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 100px; font-size: 12px; font-weight: 700; }
-.tag-red { background: rgba(232,64,64,0.08); color: #E84040; }
-.tag-blue { background: rgba(59,130,246,0.08); color: var(--blue); }
-.tag-green { background: rgba(16,185,129,0.08); color: var(--success); }
-.tag-orange { background: rgba(249,115,22,0.08); color: #F97316; }
+.tag-red { background: rgba(232,64,64,0.08); color: #C62828; }
+.tag-blue { background: rgba(59,130,246,0.08); color: #1D4ED8; }
+.tag-green { background: rgba(16,185,129,0.08); color: #047857; }
+.tag-orange { background: rgba(249,115,22,0.08); color: #C2410C; }
 .tag-purple { background: rgba(108,71,255,0.08); color: var(--purple); }
-.tag-pink { background: rgba(236,72,153,0.08); color: var(--pink); }
+.tag-pink { background: rgba(236,72,153,0.08); color: #BE185D; }
 .tag-dot { width: 7px; height: 7px; border-radius: 50%; }
 
 .step-divider { display: flex; align-items: center; gap: 16px; margin-bottom: 80px; }
@@ -223,7 +245,7 @@ nav {
 .step-phone-frame img { aspect-ratio: 680 / 1473; height: auto; width: 100%; border-radius: 40px; display: block; border: 3px solid rgba(255,255,255,0.85); box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 20px 56px rgba(0,0,0,0.14); }
 
 /* ─── CTA ─── */
-#cta { background: var(--gradient); padding: 110px 0; text-align: center; position: relative; overflow: hidden; }
+#cta { background: var(--gradient-dyb); padding: 110px 0; text-align: center; position: relative; overflow: hidden; }
 #cta::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.08), transparent 50%), radial-gradient(ellipse at 80% 30%, rgba(255,255,255,0.06), transparent 50%); pointer-events: none; }
 .cta-shape { position: absolute; border-radius: 50%; pointer-events: none; opacity: 0.15; }
 .cta-shape-1 { width: 300px; height: 300px; top: -100px; left: -80px; background: rgba(255,255,255,0.3); filter: blur(60px); animation: ctaFloat 10s ease-in-out infinite alternate; }
@@ -232,7 +254,7 @@ nav {
 .cta-inner { position: relative; z-index: 1; }
 .cta-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); border-radius: 100px; font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 24px; backdrop-filter: blur(10px); }
 .cta-h2 { font-size: clamp(36px, 5.5vw, 64px); font-weight: 800; letter-spacing: -2px; line-height: 1.08; color: #fff; margin-bottom: 16px; }
-.cta-sub { font-size: 18px; color: rgba(255,255,255,0.75); margin-bottom: 40px; line-height: 1.6; }
+.cta-sub { font-size: 18px; color: #fff; margin-bottom: 40px; line-height: 1.6; }
 .cta-buttons { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 14px; font-family: var(--font); font-size: 15px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s ease; }
 .btn-white { background: #fff; color: var(--purple); font-weight: 700; box-shadow: 0 4px 20px rgba(0,0,0,0.12); }
@@ -240,10 +262,10 @@ nav {
 .btn-outline-white { background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.4); color: #fff; font-weight: 600; backdrop-filter: blur(10px); }
 .btn-outline-white:hover { background: rgba(255,255,255,0.2); }
 .btn-lg { padding: 17px 36px; font-size: 16px; border-radius: 16px; }
-.cta-trust { font-size: 14px; color: rgba(255,255,255,0.6); }
-.cta-trust span { color: rgba(255,255,255,0.9); font-weight: 600; }
-.cta-back { color: rgba(255,255,255,0.55); }
-.cta-back:hover { color: #fff; }
+.cta-trust { font-size: 14px; color: #fff; }
+.cta-trust span { color: #fff; font-weight: 600; }
+.cta-back { color: #fff; }
+.cta-back:hover { text-decoration: underline !important; }
 
 /* ─── TOAST ─── */
 #not-launched-toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1A1A2E; color: #fff; padding: 14px 20px; border-radius: 16px; display: flex; align-items: center; gap: 12px; box-shadow: 0 16px 48px rgba(0,0,0,0.3); z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.35s cubic-bezier(0.16,1,0.3,1); white-space: nowrap; }
@@ -300,6 +322,15 @@ nav {
 }
 @media (max-width: 700px) { .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 32px !important; } }
 @media (max-width: 420px) { .footer-grid { grid-template-columns: 1fr !important; gap: 28px !important; } }
+/* de svævende knapper (Kostenlos testen og chatten) må ikke dække CVR-linjen nederst */
+@media (max-width: 600px) { footer { padding-bottom: 150px !important; } }
+/* ─── RATGEBER-LINK ─── */
+.ratgeber-tip { padding: 30px 0; text-align: center; background: #fff; border-top: 1px solid var(--border-light); }
+.ratgeber-tip p { font-size: 15px; color: var(--text-secondary); line-height: 1.6; }
+.ratgeber-tip a { color: #5B36F0; font-weight: 700; }
+.ratgeber-tip a:hover { text-decoration: underline; }
+.ratgeber-tip .tip-sep { color: var(--text-muted); margin: 0 6px; }
+
 /* ─── SPRING TIL INDHOLD ─── */
 .skip-link { position: absolute; left: 16px; top: -80px; z-index: 1000; background: #fff; color: var(--text); padding: 10px 16px; border-radius: 10px; font-size: 14px; font-weight: 700; box-shadow: var(--shadow); }
 .skip-link:focus { top: 12px; }
@@ -340,6 +371,12 @@ nav {
       <a href="https://www.unserzuhauseapp.de" target="_top" class="nav-logo">
         <img src="/images/logo.webp" alt="Unser Zuhause" style="height:58px;width:auto;display:block;">
       </a>
+      <div class="nav-links">
+        <a href="/#features">Funktionen</a>
+        <a href="/#price-band">Preis</a>
+        <a href="/ratgeber">Ratgeber</a>
+        <a href="/support">Support</a>
+      </div>
       <a href="./index.html" class="back-link">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         Zurück zur Startseite
@@ -361,7 +398,7 @@ nav {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
           Aufgaben
         </div>
-        <h1 class="hero-h1"><span class="gradient-text">Informationsseite</span><br>Aufgaben</h1>
+        <h1 class="hero-h1"><span class="gradient-text">Aufgaben</span> im Haushalt fair verteilen</h1>
         <p class="hero-sub">Verteilt die Hausarbeit fair, Aufgaben mit Frist und Namen.</p>
         <div class="hero-store-btns">
           <a href="https://apps.apple.com/de/app/unser-zuhause/id6771931999" target="_blank" rel="noopener" class="hero-store-btn">
@@ -467,7 +504,7 @@ nav {
   display:flex; align-items:center; justify-content:center;
   font-size:10.5px; font-weight:800; color:#fff;
   /* farven skifter med det samme sammen med bogstavet, glider den, kan man nå at se
-     et "F" på Maxs blå cirkel. Det er pulsen nedenfor der markerer skiftet. */
+     et "L" på Max' blå cirkel. Det er pulsen nedenfor der markerer skiftet. */
   transition: transform 0.45s cubic-bezier(.34,1.56,.64,1);
 }
 .og-hvem.skifter { transform:scale(1.32); }
@@ -505,7 +542,7 @@ nav {
     <div class="og-header reveal">
       <span class="badge" style="margin-bottom:20px;">So sieht es aus</span>
       <h2 class="og-h2">Die Aufgaben werden verteilt</h2>
-      <p class="og-text">Alles lag bei Lena. Seht, was passiert, wenn die Aufgaben Namen bekommen, und abgehakt werden.</p>
+      <p class="og-text">Alles lag bei Lena. Seht, was passiert, wenn die Aufgaben Namen bekommen und abgehakt werden.</p>
     </div>
 
     <div class="og-inner">
@@ -513,7 +550,7 @@ nav {
         <div class="opg-demo" id="opg-demo">
           <div class="og-top">
             <span class="og-titel">Aufgaben</span>
-            <span class="og-chips"><span class="og-chip aktiv">Aktiv</span><span class="og-chip">Erledigt</span></span>
+            <span class="og-chips"><span class="og-chip aktiv">Aktive</span><span class="og-chip">Abgeschlossen</span></span>
           </div>
 
           <div class="og-liste" id="og-liste"></div>
@@ -536,8 +573,8 @@ nav {
   if (!demo) return;
   var liste = document.getElementById('og-liste');
 
-  var FREYA = { bogstav: 'F', farve: '#22C55E' };
-  var NICKO = { bogstav: 'N', farve: '#3B82F6' };
+  var LENA = { bogstav: 'L', farve: '#22C55E' };
+  var MAX  = { bogstav: 'M', farve: '#3B82F6' };
 
   var OPGAVER = [
     { navn: 'Abwasch machen',    frist: 'Heute' },
@@ -582,7 +619,7 @@ nav {
   function vent(ms, fn) { timere.push(setTimeout(fn, ms)); }
 
   function nulstil() {
-    raekker.forEach(function (r, i) { r.classList.remove('faerdig'); saetHvem(i, FREYA); });
+    raekker.forEach(function (r, i) { r.classList.remove('faerdig'); saetHvem(i, LENA); });
   }
 
   function spil() {
@@ -590,8 +627,8 @@ nav {
     koerer = true; ryd(); nulstil();
 
     // 1) alt ligger hos Lena, så flytter to opgaver over til Max
-    vent(1000, function () { saetHvem(1, NICKO); pulsHvem(1); });
-    vent(1850, function () { saetHvem(3, NICKO); pulsHvem(3); });
+    vent(1000, function () { saetHvem(1, MAX); pulsHvem(1); });
+    vent(1850, function () { saetHvem(3, MAX); pulsHvem(3); });
 
     // 2) …og så bliver de faktisk lavet
     vent(2950, function () { raekker[1].classList.add('faerdig'); });
@@ -676,8 +713,8 @@ nav {
         <div class="f-icon fi-orange">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         </div>
-        <div class="f-title">Aktive &amp; erledigte</div>
-        <div class="f-desc">Wechsle zwischen <strong>Aktiven</strong> und <strong>Erledigten</strong> Aufgaben und sortiere nach <strong>Eigene</strong> oder <strong>Alle/Gemeinsam</strong>.</div>
+        <div class="f-title">Aktive &amp; abgeschlossene</div>
+        <div class="f-desc">Wechsle zwischen <strong>Aktiven</strong> und <strong>Abgeschlossenen</strong> Aufgaben und sortiere nach <strong>Meine</strong> oder <strong>Alle/Gemeinsam</strong>.</div>
       </div>
       <div class="feature-card reveal reveal-delay-3">
         <div class="f-icon fi-yellow">
@@ -973,22 +1010,22 @@ nav {
       <div>
         <div class="step-num">2</div>
         <h3 class="step-h3">Verteilen und im Blick behalten</h3>
-        <p class="step-p">Alle aktiven Aufgaben werden mit Frist und Verantwortlichem angezeigt. Wechsle zwischen <strong>Eigene</strong> und <strong>Alle/Gemeinsam</strong>, um zu sehen, was noch offen ist.</p>
+        <p class="step-p">Alle aktiven Aufgaben werden mit Frist und Verantwortlichem angezeigt. Wechsle zwischen <strong>Meine</strong> und <strong>Alle/Gemeinsam</strong>, um zu sehen, was noch offen ist.</p>
         <div class="step-tags">
           <span class="step-tag tag-blue"><span class="tag-dot" style="background:var(--blue);"></span>Aktive</span>
-          <span class="step-tag tag-purple"><span class="tag-dot" style="background:var(--purple);"></span>Eigene / Alle</span>
+          <span class="step-tag tag-purple"><span class="tag-dot" style="background:var(--purple);"></span>Meine / Alle</span>
         </div>
       </div>
       <div class="step-phone">
         <div class="trin-demo" id="trin2">
           <div class="td-faner">
-            <span class="td-fane aktiv" id="o2-egne">Eigene</span>
+            <span class="td-fane aktiv" id="o2-egne">Meine</span>
             <span class="td-fane" id="o2-alle">Alle / gemeinsam</span>
           </div>
           <div class="td-liste" style="min-height:164px;" id="o2-liste">
-            <div class="td-r" data-hvem="egne" style="border-left-color:#3B82F6"><span class="td-r-krop"><span class="td-r-t">Mit dem Hund raus</span><div class="td-r-m">Heute · 17:00</div></span><span class="td-hvem" style="background:#3B82F6">N</span></div>
-            <div class="td-r" data-hvem="egne" style="border-left-color:#3B82F6"><span class="td-r-krop"><span class="td-r-t">Wäsche waschen</span><div class="td-r-m">Donnerstag</div></span><span class="td-hvem" style="background:#3B82F6">N</span></div>
-            <div class="td-r" data-hvem="andre" style="border-left-color:#22C55E"><span class="td-r-krop"><span class="td-r-t">Abwasch machen</span><div class="td-r-m">Heute</div></span><span class="td-hvem" style="background:#22C55E">F</span></div>
+            <div class="td-r" data-hvem="egne" style="border-left-color:#3B82F6"><span class="td-r-krop"><span class="td-r-t">Mit dem Hund raus</span><div class="td-r-m">Heute · 17:00</div></span><span class="td-hvem" style="background:#3B82F6">M</span></div>
+            <div class="td-r" data-hvem="egne" style="border-left-color:#3B82F6"><span class="td-r-krop"><span class="td-r-t">Wäsche waschen</span><div class="td-r-m">Donnerstag</div></span><span class="td-hvem" style="background:#3B82F6">M</span></div>
+            <div class="td-r" data-hvem="andre" style="border-left-color:#22C55E"><span class="td-r-krop"><span class="td-r-t">Abwasch machen</span><div class="td-r-m">Heute</div></span><span class="td-hvem" style="background:#22C55E">L</span></div>
             <div class="td-r" data-hvem="andre" style="border-left-color:#F59E0B"><span class="td-r-krop"><span class="td-r-t">Zimmer aufräumen</span><div class="td-r-m">Morgen</div></span><span class="td-hvem" style="background:#F59E0B">E</span></div>
           </div>
         </div>
@@ -1002,18 +1039,18 @@ nav {
       <div>
         <div class="step-num">3</div>
         <h3 class="step-h3">Hak ab, wenn es erledigt ist</h3>
-        <p class="step-p">Markiere die Aufgabe als erledigt, sie wird durchgestrichen und in <strong>Erledigte</strong> verschoben. Erledigte Aufgaben werden nach einer Woche automatisch gelöscht.</p>
+        <p class="step-p">Markiere die Aufgabe als erledigt, sie wird durchgestrichen und in den Reiter <strong>Abgeschlossen</strong> verschoben. Erledigte Aufgaben werden nach einer Woche automatisch gelöscht.</p>
         <div class="step-tags">
           <span class="step-tag tag-green"><span class="tag-dot" style="background:var(--success);"></span>Abhaken</span>
-          <span class="step-tag tag-orange"><span class="tag-dot" style="background:#F97316;"></span>Erledigte</span>
+          <span class="step-tag tag-orange"><span class="tag-dot" style="background:#F97316;"></span>Abgeschlossen</span>
           <span class="step-tag tag-purple"><span class="tag-dot" style="background:var(--purple);"></span>Auto-Löschen</span>
         </div>
       </div>
       <div class="step-phone">
         <div class="trin-demo" id="trin3">
           <div class="td-faner">
-            <span class="td-fane aktiv" id="o3-aktive">Aktiv</span>
-            <span class="td-fane" id="o3-afsluttede">Erledigt</span>
+            <span class="td-fane aktiv" id="o3-aktive">Aktive</span>
+            <span class="td-fane" id="o3-afsluttede">Abgeschlossen</span>
           </div>
           <div class="td-liste" style="min-height:150px;">
             <div class="td-r on" style="opacity:1; transform:none;"><span class="td-cirkel"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="td-r-krop"><span class="td-r-t">Abwasch machen</span><div class="td-r-m">Heute</div></span></div>
@@ -1119,7 +1156,7 @@ nav {
 
 @media (max-width: 900px) {
   #lommepenge { padding: 56px 0; }
-  .lp-inner { grid-template-columns: 1fr; gap: 36px; }
+  .lp-inner { grid-template-columns: minmax(0,1fr); gap: 36px; }
   .lp-header { margin-bottom: 30px; }
   .lp-h2 { font-size: 28px; }
   .star-demo { padding: 24px 20px 22px; }
@@ -1142,6 +1179,12 @@ nav {
   .sd-check svg { width:11px; height:11px; }
   .sd-goal { margin-top:16px; }
   .sd-hint { margin-top:12px; font-size:11.5px; }
+}
+/* Smal telefon: titel og point på hver sin linje, ellers bliver point og beløb skåret af */
+@media (max-width: 400px) {
+  .sd-body { display:block; }
+  .sd-title { white-space:normal; }
+  .sd-meta { margin-top:2px; white-space:normal; }
 }
 </style>
 
@@ -1287,6 +1330,13 @@ nav {
 </script>
 </section>
 
+<!-- RATGEBER -->
+<div class="ratgeber-tip">
+  <div class="container">
+    <p>Tipps aus dem Ratgeber: <a href="/ratgeber/aufgaben-fuer-kinder-im-haushalt">Aufgaben für Kinder nach Alter →</a><span class="tip-sep" aria-hidden="true">·</span><a href="/ratgeber/mental-load-familie">Mental Load in der Familie fair verteilen →</a></p>
+  </div>
+</div>
+
 <!-- CTA -->
 <section id="cta">
   <div class="cta-shape cta-shape-1"></div>
@@ -1336,7 +1386,7 @@ nav {
 
       <!-- Informationssider -->
       <div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Infoseiten</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Infoseiten</p>
         <div style="display:flex; flex-direction:column; gap:10px;">
           <a href="https://www.unserzuhauseapp.de/kalender" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Kalender</a>
           <a href="https://www.unserzuhauseapp.de/essenpläne" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Essenspläne</a>
@@ -1351,18 +1401,18 @@ nav {
 
       <!-- Sociale medier + Kontakt -->
       <div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Soziale Medien</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Soziale Medien</p>
         <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:28px;">
           <a href="https://www.facebook.com/profile.php?id=61590361744172" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Facebook</a>
           <a href="https://www.tiktok.com/@unserzuhause" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">TikTok</a>
         </div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Kontakt</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Kontakt</p>
         <a href="https://www.unserzuhauseapp.de/support" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Support</a>
       </div>
 
       <!-- Politikker -->
       <div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Richtlinien</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Rechtliches</p>
         <div style="display:flex; flex-direction:column; gap:10px;">
           <a href="https://www.unserzuhauseapp.de/impressum" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Impressum</a> <a href="https://www.iubenda.com/privacy-policy/77031753" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Datenschutzerklärung</a>
           <a href="https://www.iubenda.com/privacy-policy/77031753/cookie-policy" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Cookie-Richtlinie</a>
@@ -1374,9 +1424,9 @@ nav {
 
     <!-- Bottom: copyright -->
     <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
-      <p style="font-size:12px; color:rgba(255,255,255,0.3); white-space:nowrap;">© 2026 Vores Hjem I/S · CVR 45804445 · Alle Rechte vorbehalten.</p>
-      <a href="https://backend.unserzuhauseapp.de" target="_blank" rel="nofollow noopener" style="font-size:12px; color:rgba(255,255,255,0.3); text-decoration:none; white-space:nowrap;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Mitarbeiter</a>
-      <p style="font-size:12px; color:rgba(255,255,255,0.3); white-space:nowrap;">Entwickelt in Dänemark 🇩🇰</p>
+      <p style="font-size:12px; color:rgba(255,255,255,0.55); white-space:nowrap;">© 2026 Vores Hjem I/S · CVR 45804445 · Alle Rechte vorbehalten.</p>
+      <a href="https://backend.unserzuhauseapp.de" target="_blank" rel="nofollow noopener" style="font-size:12px; color:rgba(255,255,255,0.55); text-decoration:none; white-space:nowrap;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">Mitarbeiter</a>
+      <p style="font-size:12px; color:rgba(255,255,255,0.55); white-space:nowrap;">Entwickelt in Dänemark 🇩🇰</p>
     </div>
 
   </div>

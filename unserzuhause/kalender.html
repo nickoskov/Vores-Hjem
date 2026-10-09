@@ -47,11 +47,13 @@
   --success: #10B981;
   --warning: #F59E0B;
   --gradient: linear-gradient(135deg, #6C47FF 0%, #3B82F6 55%, #EC4899 100%);
+  /* til flader med hvid tekst: samme farver, men mørke nok til hvid tekst (6-8:1) */
+  --gradient-dyb: linear-gradient(135deg, #4F32CC 0%, #1D4ED8 55%, #BE185D 100%);
   --bg: #FFFFFF;
   --bg-subtle: #F8F7FF;
   --text: #0F0E1A;
   --text-secondary: #5E5A7A;
-  --text-muted: #9B97B5;
+  --text-muted: #625E7E;
   --border: #E8E5FF;
   --border-light: #F0EEF9;
   --font: 'Plus Jakarta Sans', sans-serif;
@@ -61,8 +63,8 @@
   --shadow-xl: 0 40px 120px rgba(108,71,255,0.22);
 }
 
-html { scroll-behavior: smooth; overflow-x: hidden; }
-body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+html { scroll-behavior: smooth; overflow-x: hidden; overflow-x: clip; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; overflow-x: clip; }
 a { color: inherit; text-decoration: none; }
 .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
 
@@ -80,6 +82,16 @@ nav {
 .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--text-secondary); transition: color 0.2s; }
 .back-link:hover { color: var(--purple); }
 .back-link svg { width: 16px; height: 16px; }
+/* Samme lille linkrække som på forsiden. Under 960 px får den sin egen række under logoet. */
+.nav-links { display: flex; align-items: center; gap: 28px; margin-left: auto; margin-right: 36px; }
+.nav-links a { font-size: 14px; font-weight: 500; color: var(--text-secondary); transition: color 0.2s; }
+.nav-links a:hover { color: var(--purple); }
+@media (max-width: 960px) {
+  .nav-inner { flex-wrap: wrap; height: auto; min-height: 68px; padding-top: 5px; }
+  .nav-links { order: 3; width: 100%; justify-content: center; gap: 22px; margin: 0; padding: 2px 0 10px; }
+  .nav-links a { font-size: 13.5px; font-weight: 600; }
+}
+@media (max-width: 360px) { .nav-links { gap: 16px; } .nav-links a { font-size: 13px; } }
 
 /* ─── HERO ─── */
 #hero {
@@ -94,14 +106,14 @@ nav {
 
 .hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; position: relative; z-index: 1; }
 .hero-left {}
-.badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: rgba(108,71,255,0.08); border: 1px solid rgba(108,71,255,0.18); border-radius: 100px; font-size: 13px; font-weight: 600; color: var(--purple); margin-bottom: 20px; }
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: rgba(108,71,255,0.08); border: 1px solid rgba(108,71,255,0.18); border-radius: 100px; font-size: 13px; font-weight: 600; color: #5B36F0; margin-bottom: 20px; }
 .badge svg { width: 13px; height: 13px; }
 .hero-h1 { font-size: clamp(36px, 4.5vw, 58px); font-weight: 800; letter-spacing: -2px; line-height: 1.08; margin-bottom: 18px; }
 .gradient-text { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .hero-sub { font-size: 18px; color: var(--text-secondary); line-height: 1.65; margin-bottom: 36px; max-width: 440px; }
 .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 28px; }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 14px; font-family: var(--font); font-size: 15px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s ease; }
-.btn-primary { background: var(--gradient); color: #fff; box-shadow: 0 4px 24px rgba(108,71,255,0.4); }
+.btn-primary { background: var(--gradient-dyb); color: #fff; box-shadow: 0 4px 24px rgba(108,71,255,0.4); }
 .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 36px rgba(108,71,255,0.5); }
 .btn-secondary { background: rgba(255,255,255,0.9); color: var(--text); border: 1.5px solid var(--border); }
 .btn-secondary:hover { border-color: var(--purple); color: var(--purple); }
@@ -160,6 +172,16 @@ nav {
 .float-card-3 { bottom: 60px; right: -10px; animation: fc3Float 7s ease-in-out infinite; }
 @keyframes fc3Float { 0%,100%{transform:translateY(0) rotate(1deg)} 50%{transform:translateY(-8px) rotate(0.5deg)} }
 
+/* Tablet: kortene placeres i forhold til telefonen, så det øverste ikke klistrer til skærmkanten */
+@media (min-width: 901px) and (max-width: 1164px) {
+  .float-card-1, .float-card-3 { right: 0; }
+}
+@media (min-width: 601px) and (max-width: 900px) {
+  .float-card-1 { right: auto; left: calc(50% + 50px); }
+  .float-card-2 { left: auto; right: calc(50% + 60px); }
+  .float-card-3 { right: auto; left: calc(50% + 40px); }
+}
+
 /* Platform shadow */
 .scene-platform { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 260px; height: 40px; background: radial-gradient(ellipse, rgba(108,71,255,0.18) 0%, transparent 70%); filter: blur(20px); border-radius: 50%; animation: platformFloat 6s ease-in-out infinite alternate; }
 @keyframes platformFloat { from{transform:translateX(-50%) scaleX(1)} to{transform:translateX(-50%) scaleX(0.85) scaleY(0.7)} }
@@ -208,17 +230,17 @@ nav {
 .step-row.reverse { direction: rtl; }
 .step-row.reverse > * { direction: ltr; }
 
-.step-num { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; background: var(--gradient); border-radius: 13px; font-size: 17px; font-weight: 800; color: #fff; margin-bottom: 18px; box-shadow: 0 8px 24px rgba(108,71,255,0.3); }
+.step-num { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; background: var(--gradient-dyb); border-radius: 13px; font-size: 17px; font-weight: 800; color: #fff; margin-bottom: 18px; box-shadow: 0 8px 24px rgba(108,71,255,0.3); }
 .step-h3 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.2; margin-bottom: 12px; }
 .step-p { font-size: 16px; color: var(--text-secondary); line-height: 1.65; }
 .step-p strong { color: var(--text); }
 
 .step-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .step-tag { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 100px; font-size: 12px; font-weight: 700; }
-.tag-red { background: rgba(232,64,64,0.08); color: #E84040; }
-.tag-blue { background: rgba(59,130,246,0.08); color: var(--blue); }
-.tag-green { background: rgba(16,185,129,0.08); color: var(--success); }
-.tag-orange { background: rgba(249,115,22,0.08); color: #F97316; }
+.tag-red { background: rgba(232,64,64,0.08); color: #C62828; }
+.tag-blue { background: rgba(59,130,246,0.08); color: #1D4ED8; }
+.tag-green { background: rgba(16,185,129,0.08); color: #047857; }
+.tag-orange { background: rgba(249,115,22,0.08); color: #C2410C; }
 .tag-purple { background: rgba(108,71,255,0.08); color: var(--purple); }
 .tag-dot { width: 7px; height: 7px; border-radius: 50%; }
 
@@ -281,7 +303,7 @@ nav {
 .stjerne-list li strong { color: var(--text); }
 
 /* ─── CTA ─── */
-#cta { background: var(--gradient); padding: 110px 0; text-align: center; position: relative; overflow: hidden; }
+#cta { background: var(--gradient-dyb); padding: 110px 0; text-align: center; position: relative; overflow: hidden; }
 #cta::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.08), transparent 50%), radial-gradient(ellipse at 80% 30%, rgba(255,255,255,0.06), transparent 50%); pointer-events: none; }
 .cta-shape { position: absolute; border-radius: 50%; pointer-events: none; opacity: 0.15; }
 .cta-shape-1 { width: 300px; height: 300px; top: -100px; left: -80px; background: rgba(255,255,255,0.3); filter: blur(60px); animation: ctaFloat 10s ease-in-out infinite alternate; }
@@ -290,16 +312,16 @@ nav {
 .cta-inner { position: relative; z-index: 1; }
 .cta-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); border-radius: 100px; font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 24px; backdrop-filter: blur(10px); }
 .cta-h2 { font-size: clamp(36px, 5.5vw, 64px); font-weight: 800; letter-spacing: -2px; line-height: 1.08; color: #fff; margin-bottom: 16px; }
-.cta-sub { font-size: 18px; color: rgba(255,255,255,0.75); margin-bottom: 40px; line-height: 1.6; }
+.cta-sub { font-size: 18px; color: #fff; margin-bottom: 40px; line-height: 1.6; }
 .cta-buttons { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
 .btn-white { background: #fff; color: var(--purple); font-weight: 700; box-shadow: 0 4px 20px rgba(0,0,0,0.12); }
 .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.18); }
 .btn-outline-white { background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.4); color: #fff; font-weight: 600; backdrop-filter: blur(10px); }
 .btn-outline-white:hover { background: rgba(255,255,255,0.2); }
-.cta-trust { font-size: 14px; color: rgba(255,255,255,0.6); }
-.cta-trust span { color: rgba(255,255,255,0.9); font-weight: 600; }
-.cta-back { color: rgba(255,255,255,0.55); }
-.cta-back:hover { color: #fff; }
+.cta-trust { font-size: 14px; color: #fff; }
+.cta-trust span { color: #fff; font-weight: 600; }
+.cta-back { color: #fff; }
+.cta-back:hover { text-decoration: underline !important; }
 
 /* ─── SCROLL REVEAL ─── */
 .js .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.65s cubic-bezier(0.16,1,0.3,1); }
@@ -312,6 +334,8 @@ nav {
 /* ─── FOOTER ─── */
 @media (max-width: 700px) { .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 32px !important; } }
 @media (max-width: 420px) { .footer-grid { grid-template-columns: 1fr !important; gap: 28px !important; } }
+/* de svævende knapper (Kostenlos testen og chatten) må ikke dække CVR-linjen nederst */
+@media (max-width: 600px) { footer { padding-bottom: 150px !important; } }
 
 /* ─── RESPONSIVE ─── */
 @media (max-width: 900px) {
@@ -354,6 +378,13 @@ nav {
   .cta-h2 { font-size: 28px; }
   #features, #how, #stjerne, #cta { padding: 64px 0; }
 }
+/* ─── RATGEBER-LINK ─── */
+.ratgeber-tip { padding: 30px 0; text-align: center; background: #fff; border-top: 1px solid var(--border-light); }
+.ratgeber-tip p { font-size: 15px; color: var(--text-secondary); line-height: 1.6; }
+.ratgeber-tip a { color: #5B36F0; font-weight: 700; }
+.ratgeber-tip a:hover { text-decoration: underline; }
+.ratgeber-tip .tip-sep { color: var(--text-muted); margin: 0 6px; }
+
 /* ─── SPRING TIL INDHOLD ─── */
 .skip-link { position: absolute; left: 16px; top: -80px; z-index: 1000; background: #fff; color: var(--text); padding: 10px 16px; border-radius: 10px; font-size: 14px; font-weight: 700; box-shadow: var(--shadow); }
 .skip-link:focus { top: 12px; }
@@ -394,6 +425,12 @@ nav {
       <a href="https://www.unserzuhauseapp.de" target="_top" class="nav-logo">
         <img src="/images/logo.webp" alt="Unser Zuhause" style="height:58px;width:auto;display:block;">
       </a>
+      <div class="nav-links">
+        <a href="/#features">Funktionen</a>
+        <a href="/#price-band">Preis</a>
+        <a href="/ratgeber">Ratgeber</a>
+        <a href="/support">Support</a>
+      </div>
       <a href="./index.html" class="back-link">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         Zurück zur Startseite
@@ -415,7 +452,7 @@ nav {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           Kalender
         </div>
-        <h1 class="hero-h1"><span class="gradient-text">Informationsseite</span><br>Kalender</h1>
+        <h1 class="hero-h1">Der gemeinsame <span class="gradient-text">Familienkalender</span></h1>
         <p class="hero-sub">Ein Kalender für die ganze Familie.</p>
         <div class="hero-store-btns">
           <a href="https://apps.apple.com/de/app/unser-zuhause/id6771931999" target="_blank" rel="noopener" class="hero-store-btn">
@@ -451,7 +488,7 @@ nav {
           <div style="font-size:16px;">⭐</div>
           <div class="fc-info">
             <div class="fc-title">Krankenhaus</div>
-            <div class="fc-time">Nur für Admins sichtbar</div>
+            <div class="fc-time">Titel nur für Admins sichtbar</div>
           </div>
         </div>
 
@@ -614,7 +651,7 @@ nav {
         <ul class="kd-list2">
           <li><span class="kd-check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Alle können eintragen</strong><span class="mob-kort"><br>auch Kinder und Großeltern</span></span></li>
           <li><span class="kd-check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Eine Farbe pro Person</strong><span class="mob-kort"><br>so seht ihr auf einen Blick, wer was hat</span></span></li>
-          <li><span class="kd-check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Termine aus deinem eigenen Kalender holen</strong><span class="mob-kort"><br>Google, Outlook und der Kalender deines Handys, ganz automatisch</span></span></li>
+          <li><span class="kd-check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Termine aus deinem eigenen Kalender holen</strong><span class="mob-kort"><br>Google und der Kalender deines Handys, ganz automatisch</span></span></li>
           <li><span class="kd-check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Private Termine bleiben privat</strong><span class="mob-kort"><br>markiere sie, dann sehen die Kinder nur „🔒 Privat“</span></span></li>
         </ul>
       </div>
@@ -634,9 +671,9 @@ nav {
   var TOM_FOER = 5, DAGE = 31, IDAG = 5;
   var EVENTS = [
     { d: 5,  t: 'Fußball',        m: 'Mittwoch · 16:30',        who: 'E', c: '#3B82F6' },
-    { d: 12, t: 'Zahnarzt',       m: 'Mittwoch · 09:00',        who: 'F', c: '#EF4444' },
-    { d: 18, t: 'Oma kommt',  m: 'Dienstag · ganztägig',  who: 'B', c: '#22C55E' },
-    { d: 21, t: 'Elternabend',   m: 'Freitag · 19:00',        who: 'N', c: '#F59E0B' }
+    { d: 12, t: 'Zahnarzt',       m: 'Mittwoch · 09:00',        who: 'L', c: '#EF4444' },
+    { d: 21, t: 'Elternabend',   m: 'Freitag · 19:00',        who: 'M', c: '#F59E0B' },
+    { d: 22, t: 'Oma kommt',     m: 'Samstag · ganztägig',     who: 'B', c: '#22C55E' }
   ];
 
   // byg måneden én gang
@@ -745,7 +782,7 @@ nav {
         Alles, was du brauchst
       </span>
       <h2 class="section-h2">Der Kalender, der<br>die Familie vereint</h2>
-      <p class="section-sub">Entwickelt, damit alle, auch Kinder und Großeltern ihn mühelos nutzen können.</p>
+      <p class="section-sub">Entwickelt, damit alle, auch Kinder und Großeltern, ihn mühelos nutzen können.</p>
     </div>
     <div class="features-grid">
       <div class="feature-card reveal reveal-delay-1">
@@ -767,7 +804,7 @@ nav {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
         </div>
         <div class="f-title">5 Ereignistypen</div>
-        <div class="f-desc">Wähle Farbe und Kategorie für jedes Ereignis: Meeting, Geburtstag, Termin, Urlaub oder Sonstiges.</div>
+        <div class="f-desc">Wähle Farbe und Kategorie für jedes Ereignis: Besprechung, Geburtstag, Termin, Urlaub oder Sonstiges.</div>
       </div>
       <div class="feature-card reveal reveal-delay-1">
         <div class="f-icon fi-green">
@@ -788,7 +825,7 @@ nav {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         </div>
         <div class="f-title">Stern-Markierung</div>
-        <div class="f-desc">Markiere ein Ereignis mit dem Stern, es ist dann nur für die Administratoren der Familie sichtbar. Perfekt für Termine, von denen die Kinder nichts wissen müssen.</div>
+        <div class="f-desc">Markiere ein Ereignis mit dem Stern, dann sehen nur die Administratoren der Familie den Titel, alle anderen sehen „🔒 Privat“. Praktisch für Arzttermine oder Überraschungen.</div>
       </div>
     </div>
   </div>
@@ -983,7 +1020,17 @@ nav {
   // ── Trin 1: tryk på en dag, og dagens aftaler dukker op ──
   motor('trin1', function (vent, el) {
     var dage = qa(el, '.kd-d'), raekker = qa(el, '.td-r'), tael = q(el, '#k1-dag');
+    // række 0 er først Emils fodbold og bliver fredag til Max' forældremøde,
+    // så den sættes tilbage hver gang, ellers starter næste runde med forældremødet
+    function raekke0(titel, tid, bogstav, farve) {
+      var hvem = q(raekker[0], '.td-hvem');
+      q(raekker[0], '.td-r-t').textContent = titel;
+      q(raekker[0], '.td-r-m').textContent = tid;
+      hvem.textContent = bogstav; hvem.style.background = farve;
+      raekker[0].style.borderLeftColor = farve;
+    }
     ryd_alle(el); tael.textContent = '·';
+    raekke0('Fußball', '16:30 · Emil', 'E', '#3B82F6');
     vent(700,  function () { dage[2].classList.add('valgt'); tael.textContent = 'Mittwoch, 5.'; });
     vent(1150, function () { raekker[0].classList.add('on'); });
     vent(1550, function () { raekker[1].classList.add('on'); });
@@ -993,9 +1040,8 @@ nav {
       dage[4].classList.add('valgt'); tael.textContent = 'Freitag, 7.';
     });
     vent(3700, function () {
+      raekke0('Elternabend', '19:00 · Max', 'M', '#F59E0B');
       raekker[0].classList.add('on');
-      q(raekker[0], '.td-r-t').textContent = 'Elternabend';
-      q(raekker[0], '.td-r-m').textContent = '19:00 · Max';
     });
     return 5600;
   });
@@ -1013,7 +1059,7 @@ nav {
     var t2 = skriv(vent, q(f[1], '.td-felt-vaerdi'), 'Samstag, 8. Aug · 13:00', t + 500, 34);
     vent(t2 + 300, function () { f[1].classList.remove('aktiv'); f[2].classList.add('aktiv'); });
     vent(t2 + 800, function () {
-      var c = chips[0];
+      var c = chips[1];                       // Geburtstag
       c.classList.add('valgt');
       c.style.background = 'rgba(236,72,153,.13)'; c.style.color = '#EC4899'; c.style.borderColor = '#EC4899';
     });
@@ -1070,7 +1116,7 @@ nav {
           </div>
           <div class="td-liste" style="margin-top:14px; min-height:104px;">
             <div class="td-r" style="border-left-color:#3B82F6"><span class="td-r-krop"><span class="td-r-t">Fußball</span><div class="td-r-m">16:30 · Emil</div></span><span class="td-hvem" style="background:#3B82F6">E</span></div>
-            <div class="td-r" style="border-left-color:#EF4444"><span class="td-r-krop"><span class="td-r-t">Zahnarzt</span><div class="td-r-m">09:00 · Lena</div></span><span class="td-hvem" style="background:#EF4444">F</span></div>
+            <div class="td-r" style="border-left-color:#EF4444"><span class="td-r-krop"><span class="td-r-t">Zahnarzt</span><div class="td-r-m">09:00 · Lena</div></span><span class="td-hvem" style="background:#EF4444">L</span></div>
           </div>
         </div>
       </div>
@@ -1085,8 +1131,8 @@ nav {
         <h3 class="step-h3">Füge ein Ereignis in unter 30 Sekunden hinzu</h3>
         <p class="step-p">Tippe auf <strong>+ Ereignis erstellen</strong> und gib Titel, Datum und Uhrzeit ein. Wähle den Ereignistyp mit Farbe, lege eine Wiederholung fest und aktiviere eine Erinnerung, alles auf einem Bildschirm.</p>
         <div class="step-tags">
+          <span class="step-tag tag-blue"><span class="tag-dot" style="background:var(--blue);"></span>Besprechung</span>
           <span class="step-tag tag-red"><span class="tag-dot" style="background:#E84040;"></span>Geburtstag</span>
-          <span class="step-tag tag-blue"><span class="tag-dot" style="background:var(--blue);"></span>Meeting</span>
           <span class="step-tag tag-green"><span class="tag-dot" style="background:var(--success);"></span>Termin</span>
           <span class="step-tag tag-orange"><span class="tag-dot" style="background:#F97316;"></span>Urlaub</span>
           <span class="step-tag tag-purple"><span class="tag-dot" style="background:var(--purple);"></span>Sonstiges</span>
@@ -1094,19 +1140,20 @@ nav {
       </div>
       <div class="step-phone">
         <div class="trin-demo" id="trin2">
-          <div class="td-top"><span class="td-titel">Termin hinzufügen</span></div>
+          <div class="td-top"><span class="td-titel">Ereignis erstellen</span></div>
           <div class="td-boks" style="min-height:196px;">
             <div class="td-felt" data-f="1"><div class="td-felt-navn">Titel</div><div class="td-felt-vaerdi"></div></div>
             <div class="td-felt" data-f="2"><div class="td-felt-navn">Datum und Uhrzeit</div><div class="td-felt-vaerdi"></div></div>
             <div class="td-felt" data-f="3"><div class="td-felt-navn">Art</div>
               <div class="td-chips">
+                <span class="td-chip" data-c="#3B82F6">Besprechung</span>
                 <span class="td-chip" data-c="#EC4899">Geburtstag</span>
-                <span class="td-chip" data-c="#3B82F6">Termin</span>
-                <span class="td-chip" data-c="#6C47FF">Verabredung</span>
+                <span class="td-chip" data-c="#22C55E">Termin</span>
                 <span class="td-chip" data-c="#F59E0B">Urlaub</span>
+                <span class="td-chip" data-c="#A855F7">Sonstiges</span>
               </div>
             </div>
-            <div class="td-knapper"><span class="td-knap ja">Termin speichern</span></div>
+            <div class="td-knapper"><span class="td-knap ja">Ereignis hinzufügen</span></div>
             <div class="td-kvit"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Im Familienkalender gespeichert</span></div>
           </div>
         </div>
@@ -1129,13 +1176,13 @@ nav {
       <div class="step-phone">
         <div class="trin-demo" id="trin3">
           <div class="td-top"><span class="td-titel">Familienkalender</span></div>
-          <div class="td-r on" style="border-left-color:#6C47FF; margin-bottom:15px; opacity:1; transform:none;">
+          <div class="td-r on" style="border-left-color:#EC4899; margin-bottom:15px; opacity:1; transform:none;">
             <span class="td-r-krop"><span class="td-r-t">Omas Geburtstag</span><div class="td-r-m">Samstag · 13:00</div></span>
           </div>
           <div class="td-set">Sichtbar für</div>
           <div class="td-avatarer">
-            <span class="td-av" style="background:#22C55E">F</span>
-            <span class="td-av" style="background:#3B82F6">N</span>
+            <span class="td-av" style="background:#22C55E">L</span>
+            <span class="td-av" style="background:#3B82F6">M</span>
             <span class="td-av" style="background:#F59E0B">E</span>
             <span class="td-av" style="background:#EC4899">B</span>
           </div>
@@ -1340,15 +1387,15 @@ nav {
       <div class="reveal reveal-delay-2">
         <div class="star-badge">⭐ Stern-Funktion</div>
         <h2 class="stjerne-h2">Manche Termine sind nur für die Erwachsenen</h2>
-        <p class="stjerne-p">Markiere ein Ereignis mit dem Stern, es ist dann nur für Familienmitglieder mit Administratorrechten sichtbar. Die Kinder sehen es nie.</p>
+        <p class="stjerne-p">Markiere ein Ereignis mit dem Stern, dann sehen Familienmitglieder ohne Administratorrechte nur „🔒 Privat“ statt des Titels.</p>
         <div class="shield-callout">
           <svg viewBox="0 0 24 24" fill="currentColor" style="width:20px;height:20px;flex-shrink:0;"><path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.35C16.5 22.15 20 17.25 20 12V6L12 2z"/></svg>
-          <span>Um Stern-Ereignisse sehen zu können, braucht man ein <strong>Schild</strong>, das vergibst du selbst in den Einstellungen unter Familienmitglieder</span>
+          <span>Um Stern-Ereignisse sehen zu können, braucht man einen <strong>Schild</strong>, den vergibst du selbst in den Einstellungen unter Familienmitglieder</span>
         </div>
         <ul class="stjerne-list">
           <li>
             <span class="sl-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
-            <span><strong>Tippe beim Erstellen auf ☆</strong>, der Stern wird gelb und das Ereignis wird für alle ohne Schild ausgeblendet</span>
+            <span><strong>Tippe beim Erstellen auf ☆</strong>, der Stern wird gelb, und alle ohne Schild sehen nur „🔒 Privat“ statt des Titels</span>
           </li>
           <li>
             <span class="sl-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
@@ -1356,13 +1403,20 @@ nav {
           </li>
           <li>
             <span class="sl-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
-            <span><strong>Du bestimmst, wer ein Schild hat</strong>, und damit, wer die privaten Termine sehen kann</span>
+            <span><strong>Du bestimmst, wer einen Schild hat</strong>, und damit, wer die privaten Termine sehen kann</span>
           </li>
         </ul>
       </div>
     </div>
   </div>
 </section>
+
+<!-- RATGEBER -->
+<div class="ratgeber-tip">
+  <div class="container">
+    <p>Tipps aus dem Ratgeber: <a href="/ratgeber/familienkalender-organisieren">So organisiert ihr euren Familienkalender →</a></p>
+  </div>
+</div>
 
 <!-- CTA -->
 <section id="cta">
@@ -1413,7 +1467,7 @@ nav {
 
       <!-- Informationssider -->
       <div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Infoseiten</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Infoseiten</p>
         <div style="display:flex; flex-direction:column; gap:10px;">
           <a href="https://www.unserzuhauseapp.de/kalender" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Kalender</a>
           <a href="https://www.unserzuhauseapp.de/essenpläne" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Essenspläne</a>
@@ -1428,18 +1482,18 @@ nav {
 
       <!-- Sociale medier + Kontakt -->
       <div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Soziale Medien</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Soziale Medien</p>
         <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:28px;">
           <a href="https://www.facebook.com/profile.php?id=61590361744172" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Facebook</a>
           <a href="https://www.tiktok.com/@unserzuhause" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">TikTok</a>
         </div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Kontakt</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Kontakt</p>
         <a href="https://www.unserzuhauseapp.de/support" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Support</a>
       </div>
 
       <!-- Politikker -->
       <div>
-        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Richtlinien</p>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Rechtliches</p>
         <div style="display:flex; flex-direction:column; gap:10px;">
           <a href="https://www.unserzuhauseapp.de/impressum" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Impressum</a> <a href="https://www.iubenda.com/privacy-policy/77031753" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Datenschutzerklärung</a>
           <a href="https://www.iubenda.com/privacy-policy/77031753/cookie-policy" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Cookie-Richtlinie</a>
@@ -1451,9 +1505,9 @@ nav {
 
     <!-- Bottom: copyright -->
     <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
-      <p style="font-size:12px; color:rgba(255,255,255,0.3); white-space:nowrap;">© 2026 Vores Hjem I/S · CVR 45804445 · Alle Rechte vorbehalten.</p>
-      <a href="https://backend.unserzuhauseapp.de" target="_blank" rel="nofollow noopener" style="font-size:12px; color:rgba(255,255,255,0.3); text-decoration:none; white-space:nowrap;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Mitarbeiter</a>
-      <p style="font-size:12px; color:rgba(255,255,255,0.3); white-space:nowrap;">Entwickelt in Dänemark 🇩🇰</p>
+      <p style="font-size:12px; color:rgba(255,255,255,0.55); white-space:nowrap;">© 2026 Vores Hjem I/S · CVR 45804445 · Alle Rechte vorbehalten.</p>
+      <a href="https://backend.unserzuhauseapp.de" target="_blank" rel="nofollow noopener" style="font-size:12px; color:rgba(255,255,255,0.55); text-decoration:none; white-space:nowrap;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">Mitarbeiter</a>
+      <p style="font-size:12px; color:rgba(255,255,255,0.55); white-space:nowrap;">Entwickelt in Dänemark 🇩🇰</p>
     </div>
 
   </div>
