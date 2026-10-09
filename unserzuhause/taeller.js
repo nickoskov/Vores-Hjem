@@ -19,6 +19,10 @@
       else fetch(MAAL, { method: 'POST', body: b, keepalive: true, mode: 'no-cors' });
     } catch (e) {}
   }
+  function computer() {
+    var mobil = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.maxTouchPoints || 0) > 1;
+    return !mobil && !!window.matchMedia && window.matchMedia('(min-width:820px)').matches;
+  }
   send({ u: location.href, r: document.referrer || '', nf: /nicht gefunden/i.test(document.title || '') ? 1 : 0 });
   document.addEventListener('click', function (e) {
     var a = e.target && e.target.closest ? e.target.closest('a, button') : null;
@@ -32,12 +36,18 @@
         u.searchParams.set('sti', location.pathname);
         // knapper uden for et afsnit (den svaevende i hentknap.js) siger selv, hvad de er
         u.searchParams.set('sted', a.getAttribute('data-sted') || (omr0 ? omr0.id : a.closest('nav') ? 'menu' : a.closest('footer') ? 'footer' : ''));
+        // Safari paa iPad udgiver sig for at vaere en Mac, saa backenden ville sende den til download-siden.
+        // En iPad kan installere fra App Store, saa den sendes direkte dertil.
+        if (/Macintosh/.test(navigator.userAgent) && (navigator.maxTouchPoints || 0) > 1) u.pathname = u.pathname.replace(/\/hent\/app$/, '/hent/appstore');
         a.href = u.toString();
       } catch (e2) {}
       return;
     }
     var butik = /apps\.apple\.com/.test(h) ? 'appstore' : /play\.google\.com/.test(h) ? 'googleplay' : /showNotLaunched/.test(oc) ? 'app' : '';
     if (!butik) return;
+    // Paa en computer sender butik.js App Store-knapperne til download-siden (samme test som der).
+    // "app" faar backenden til at skrive det ned som hent-siden ud fra enheden.
+    if (butik === 'appstore' && !e.metaKey && !e.ctrlKey && !e.shiftKey && computer() && document.querySelector('script[src*="butik.js"]')) butik = 'app';
     var omr = a.closest('section[id]');
     var sted = omr ? omr.id : a.closest('nav') ? 'menu' : a.closest('footer') ? 'footer' : '';
     send({ k: 'klik', u: location.href, sted: String(sted).slice(0, 60), butik: butik });

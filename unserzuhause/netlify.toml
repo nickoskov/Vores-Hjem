@@ -27,6 +27,7 @@ for = "/*"
   X-Content-Type-Options = "nosniff"
   Referrer-Policy = "strict-origin-when-cross-origin"
   X-Frame-Options = "SAMEORIGIN"
+  Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
 
 [[headers]]
 for = "/fonts/*"
@@ -223,11 +224,24 @@ force = false
 
   [redirects.headers]
 
+# Stavemaaden med fuge-s ("Essenspläne") skal ogsaa finde madplanen
+[[redirects]]
+from = "/essenspl%C3%A4ne"
+to = "/essenpl%C3%A4ne"
+status = 301
+force = false
+
+[[redirects]]
+from = "/essensplaene"
+to = "/essenpl%C3%A4ne"
+status = 301
+force = false
+
 [[redirects]]
 from = "/kontakt"
 to = "/support"
 status = 301
-force = false
+force = true
 
   [redirects.query]
 
@@ -293,4 +307,113 @@ force = false
 from = "/kontakt-os"
 to = "/support"
 status = 301
+force = false
+
+# Filnavnene og de danske dubletter (kontakt.html, slet-konto.html) skal ende paa de tyske adresser.
+# force, fordi filerne findes og Netlify ellers viser filen i stedet for at sende videre.
+# /support og /konto-loeschen viser stadig filerne med 200 (reglerne laengere oppe).
+[[redirects]]
+from = "/kontakt.html"
+to = "/support"
+status = 301
+force = true
+
+[[redirects]]
+from = "/slet-konto"
+to = "/konto-loeschen"
+status = 301
+force = true
+
+[[redirects]]
+from = "/slet-konto.html"
+to = "/konto-loeschen"
+status = 301
+force = true
+
+# Gamle Wix-adresser fra foer omdoebningen (Wix sendte dem selv videre indtil flytningen 6. okt. 2026).
+# /blank var den oprindelige adresse til "Konto loeschen", som Google Play linker til.
+[[redirects]]
+from = "/blank"
+to = "/konto-loeschen"
+status = 301
+force = false
+
+[[redirects]]
+from = "/blank-1"
+to = "/support"
+status = 301
+force = false
+
+[[redirects]]
+from = "/blank-2"
+to = "/kalender"
+status = 301
+force = false
+
+[[redirects]]
+from = "/blank-3"
+to = "/essenpl%C3%A4ne"
+status = 301
+force = false
+
+[[redirects]]
+from = "/blank-4"
+to = "/einkaufsliste"
+status = 301
+force = false
+
+[[redirects]]
+from = "/blank-5"
+to = "/aufgaben"
+status = 301
+force = false
+
+[[redirects]]
+from = "/home"
+to = "/"
+status = 301
+force = false
+
+# Adresser, folk gaetter paa (/blog bruges paa den danske side)
+[[redirects]]
+from = "/blog"
+to = "/ratgeber"
+status = 301
+force = false
+
+[[redirects]]
+from = "/blog/*"
+to = "/ratgeber"
+status = 301
+force = false
+
+[[redirects]]
+from = "/faq"
+to = "/support"
+status = 301
+force = false
+
+[[redirects]]
+from = "/hilfe"
+to = "/support"
+status = 301
+force = false
+
+[[redirects]]
+from = "/ueber-uns"
+to = "/#founder"
+status = 301
+force = false
+
+[[redirects]]
+from = "/preise"
+to = "/#price-band"
+status = 301
+force = false
+
+# 302, saa hent-knappens maal kan aendres senere uden at browserne har husket det
+[[redirects]]
+from = "/download"
+to = "https://backend.unserzuhauseapp.de/hent/app"
+status = 302
 force = false
