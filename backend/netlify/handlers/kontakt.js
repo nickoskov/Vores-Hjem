@@ -55,7 +55,9 @@ exports.handler = async (ev) => {
 
   // 2. tidsfælde: siden sætter et tidsstempel ved indlæsning, under 2,5 sek er ikke et menneske
   const t = Number(q.get('t') || 0);
-  if (!t || Date.now() - t < 2500) return svar(200, oprindelse, { modtaget: true });
+  // en negativ alder betyder, at den besoegendes ur gaar foran serverens. Det er et menneske, ikke en bot.
+  const alder = Date.now() - t;
+  if (!t || (alder >= 0 && alder < 2500)) return svar(200, oprindelse, { modtaget: true });
 
   const navn = rens(q.get('navn'), 100), email = rens(q.get('email'), 200),
         emne = rens(q.get('emne'), 150), besked = rens(q.get('besked'), 4000);

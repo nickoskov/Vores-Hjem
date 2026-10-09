@@ -2221,7 +2221,9 @@ function blokvagtIndhold(b) {
     (b.gammel ? '<div class="besked advar" style="margin:0 0 10px">' + sik(b.gammel) + '</div>' : '') +
     (f == null ? '<div class="besked advar" style="margin:0 0 10px">' + sik(b.grund || 'Ukendt, hvad vagten fandt.') + '</div>'
       : f.length ? '<div class="besked slem" style="margin:0 0 10px"><b>' + (f.length === 1 ? 'Én aktiv blokering' : f.length + ' aktive blokeringer') + '</b><br>' +
-          f.map(x => '<b>' + sik(x.navn) + '</b> hos ' + sik(x.filter) + ': ' + sik(x.hvordan)).join('<br>') + '</div>'
+          f.map(x => '<b>' + sik(x.navn) + '</b> hos ' + sik(x.filter) + ': ' + sik(x.hvordan) + (x.uafklaret ? ' (kunne ikke tjekkes i dag, står ved fra sidst)' : '')).join('<br>') + '</div>'
+      : !b.adresser ? '<div class="besked advar" style="margin:0 0 10px">Vagten kunne ikke slå nogen adresser op, så intet blev tjekket.</div>'
+      : (u.length || sp.length) ? '<div class="besked advar" style="margin:0 0 10px">Ingen blokeringer fundet, men ' + T(u.length + sp.length) + ' tjek kunne ikke gennemføres (se nedenfor).</div>'
       : '<div class="besked godt" style="margin:0 0 10px">Ingen blokeringer.</div>') +
     '<div style="font-size:12.5px;color:var(--svag);line-height:1.6">' + sik(tjekket) +
       (u.length ? ' ' + T(u.length) + ' tjek kunne ikke gennemføres: ' + sik(u.slice(0, 3).join('; ')) + (u.length > 3 ? ' og ' + T(u.length - 3) + ' til' : '') + '.' : '') +

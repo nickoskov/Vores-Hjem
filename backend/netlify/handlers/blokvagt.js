@@ -64,7 +64,8 @@ async function safeBrowsing(navn) {
 
 /** Alle adresser gennem alle filtre. Returnerer fundne blokeringer og hvad der ikke kunne tjekkes. */
 async function tjekAlt() {
-  const fund = [], usikre = [], sprunget = [], tjekket = [];
+  // rene: de par (adresse|filter), der beviseligt var fri i dag. Kun de kan meldes "ikke laengere blokeret".
+  const fund = [], usikre = [], sprunget = [], tjekket = [], rene = [];
   await Promise.all(profil.vagtAdresser.map(async navn => {
     const kontrol = await opslag(KONTROL, navn);
     if (!kontrol.ip) { sprunget.push(navn + ' (findes ikke i almindelig DNS: ' + kontrol.fejl + ')'); return; }
@@ -79,13 +80,15 @@ async function tjekAlt() {
       const ukendte = s.ip.filter(ip => !kontrol.ip.includes(ip));
       if (s.ip.some(ip => SINKHUL.test(ip))) { fund.push({ navn, filter: f.navn, hvordan: 'svarer med ' + s.ip.join(', ') + ' i stedet for siden' }); continue; }
       if (ukendte.length && !(await viserSiden(ukendte[0], navn))) fund.push({ navn, filter: f.navn, hvordan: 'sender til ' + ukendte[0] + ', som ikke viser siden' });
+      else rene.push(navn + '|' + f.navn);
     }
     const sb = await safeBrowsing(navn);
     if (sb.blokeret) fund.push({ navn, filter: 'Google Safe Browsing', hvordan: 'markerer siden som farlig (status ' + sb.status + ')' });
     else if (sb.fejl) usikre.push(navn + ' hos Google Safe Browsing: ' + sb.fejl);
+    else rene.push(navn + '|Google Safe Browsing');
   }));
   // i profilens raekkefoelge, ikke i den raekkefoelge opslagene blev faerdige
-  return { fund, usikre, sprunget, tjekket: profil.vagtAdresser.filter(n => tjekket.includes(n)) };
+  return { fund, usikre, sprunget, rene, tjekket: profil.vagtAdresser.filter(n => tjekket.includes(n)) };
 }
 
 const noegle = f => f.navn + '|' + f.filter;
@@ -99,11 +102,16 @@ exports.handler = async () => {
   // sidste koersels blokeringer, saa der kun skrives, naar noget har aendret sig
   let foer = [];
   try { const g = await sql`SELECT vaerdi FROM vh_cache WHERE noegle = 'blokvagt-sidst'`; foer = (g[0] && g[0].vaerdi && g[0].vaerdi.fund) || []; } catch (e) {}
-  const nu = new Set(r.fund.map(noegle)), gl = new Set(foer.map(noegle));
-  const nye = r.fund.filter(f => !gl.has(noegle(f))), fri = foer.filter(f => !nu.has(noegle(f)));
+  const nu = new Set(r.fund.map(noegle)), gl = new Set(foer.map(noegle)), rene = new Set(r.rene);
+  // en blokering fra i gaar er kun vaek, hvis samme filter beviseligt svarede rigtigt i dag. Kunne den ikke
+  // tjekkes (timeout, kontrolopslaget fejlede), staar den ved, saa der hverken skrives "fri" eller alarmeres igen.
+  const fri = foer.filter(f => !nu.has(noegle(f)) && rene.has(noegle(f)));
+  const ved = foer.filter(f => !nu.has(noegle(f)) && !rene.has(noegle(f))).map(f => ({ ...f, uafklaret: true }));
+  const nye = r.fund.filter(f => !gl.has(noegle(f)));
+  const aktive = [...r.fund, ...ved];
   // panelets Oppetid viser det gemte: hvornaar, hvad der blev tjekket (filtre og adresser), hvad der blev fundet,
   // og hvad der ikke kunne tjekkes. Noeglen har ingen udgave foran, saa cache.js ikke rydder den som en gammel cache.
-  const gem = { fund: r.fund, hvornaar: new Date().toISOString(), filtre: [...FILTRE.map(f => f.navn), 'Google Safe Browsing'],
+  const gem = { fund: aktive, hvornaar: new Date().toISOString(), filtre: [...FILTRE.map(f => f.navn), 'Google Safe Browsing'],
     adresser: r.tjekket, usikre: r.usikre, sprunget: r.sprunget };
   try {
     await sql`INSERT INTO vh_cache (noegle, vaerdi, udloeber) VALUES ('blokvagt-sidst', ${JSON.stringify(gem)}::jsonb, now() + interval '400 days')
@@ -114,10 +122,12 @@ exports.handler = async () => {
     '<p>Folk, der bruger det filter (via deres internetudbyder, arbejde, skole eller et sikkerhedsprogram), kan ikke åbne siden. ' +
     'Filteret har typisk taget fejl efter et skift af hosting eller adresser. Skriv til filterets support og bed om at få siden fjernet som falsk positiv: ' +
     'siden tilhører Vores Hjem I/S, CVR 45804445, og appen ligger i App Store og Google Play.</p>' +
-    (r.fund.length > nye.length ? '<p>Stadig blokeret fra før:</p>' + liste(r.fund.filter(f => gl.has(noegle(f)))) : '')).catch(() => {});
-  if (fri.length) await mail.send(profil.navn + ' er ikke længere blokeret' + (r.fund.length ? ' alle steder' : ''),
-    '<p><b>Disse blokeringer er væk:</b></p>' + liste(fri) + (r.fund.length ? '<p>Stadig blokeret:</p>' + liste(r.fund) : '<p>Siden er fri hos alle de filtre, vagten tjekker.</p>')).catch(() => {});
-  await log('blokeringsvagt', (r.fund.length ? r.fund.length + ' blokeringer: ' + r.fund.map(noegle).join('; ').slice(0, 300) : 'ingen blokeringer, ' + FILTRE.length + ' filtre og Google Safe Browsing')
+    (aktive.length > nye.length ? '<p>Stadig blokeret fra før:</p>' + liste(aktive.filter(f => gl.has(noegle(f)))) : '')).catch(() => {});
+  if (fri.length) await mail.send(profil.navn + ' er ikke længere blokeret' + (aktive.length ? ' alle steder' : ''),
+    '<p><b>Disse blokeringer er væk:</b></p>' + liste(fri) + (aktive.length ? '<p>Stadig blokeret' + (ved.length ? ' eller ikke tjekket i dag' : '') + ':</p>' + liste(aktive)
+      : '<p>Siden er fri hos alle de filtre, vagten tjekker.</p>')).catch(() => {});
+  await log('blokeringsvagt', (aktive.length ? aktive.length + ' blokeringer: ' + aktive.map(noegle).join('; ').slice(0, 300)
+      : !r.tjekket.length ? 'ingen adresser kunne slaas op, intet tjekket' : 'ingen blokeringer, ' + FILTRE.length + ' filtre og Google Safe Browsing')
     + (r.usikre.length ? '. Kunne ikke tjekkes: ' + r.usikre.length : '') + (r.sprunget.length ? '. Sprunget over: ' + r.sprunget.join('; ').slice(0, 160) : ''), 'blokvagt');
-  return { statusCode: 200, body: JSON.stringify({ ...r, nye: nye.length, fri: fri.length }) };
+  return { statusCode: 200, body: JSON.stringify({ ...r, aktive, nye: nye.length, fri: fri.length }) };
 };
