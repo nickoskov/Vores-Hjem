@@ -11,7 +11,7 @@
  * Hoejst én koersel pr. dansk dag (laas i vh_koersel).
  * Chatbottens tabeller (side.js, botTabeller) ligger i begge databaser: den danske har den faelles
  * bots samtaler (ogsaa de tyske fra foer den tyske bot), den tyske har sin egen bots. Hver backend
- * rydder sine egne.
+ * rydder sine egne. Bottens IP-loft (vh_bot_ip, saltet hash) ryddes for alt aeldre end en time.
  */
 const { sql, opret, log } = require('../lib/db.js');
 const K = require('../lib/koersel.js');
@@ -34,6 +34,9 @@ exports.handler = async () => {
     ud.samtaler = gamle.length;
   } catch (e) { ud.samtalerFejl = e.message; }
   if (profil.botTabeller) try { const r = await sql`DELETE FROM vh_feedback WHERE ts < now() - make_interval(days => ${DAGE}::int) RETURNING id`; ud.feedback = r.length; } catch (e) {}
+  // chatbottens IP-loft (saltet hash af adressen) skal kun bruges en time. Botten rydder selv ved nye beskeder,
+  // men kommer der ingen, sletter natten resten. try, fordi tabellen foerst findes efter bottens foerste besked.
+  if (profil.botTabeller) try { const r = await sql`DELETE FROM vh_bot_ip WHERE ts < now() - interval '1 hour' RETURNING ip`; ud.botIp = r.length; } catch (e) {}
   try { const r = await sql`DELETE FROM vh_login WHERE hvornaar < now() - interval '1 day' RETURNING id`; ud.login = r.length; } catch (e) {}
   try { const r = await sql`DELETE FROM vh_klik WHERE ts < now() - make_interval(days => ${DAGE}::int) RETURNING id`; ud.klik = r.length; } catch (e) {}
   try { const r = await sql`DELETE FROM vh_besoeg WHERE ts < now() - make_interval(days => ${DAGE}::int) RETURNING id`; ud.besoeg = r.length; } catch (e) {}

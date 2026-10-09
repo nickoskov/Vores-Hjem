@@ -52,7 +52,8 @@ const PROFILER = {
     // download-siden (unserzuhause-download.netlify.app, hvor bio-links peger hen) taelles med som /download
     tilladt: /(^|\.)unserzuhauseapp\.de$|^verdant-strudel-af7a88\.netlify\.app$|^unserzuhause-download\.netlify\.app$/i,
     egen: /(^|\.)unserzuhauseapp\.de$|^verdant-strudel-af7a88\.netlify\.app$|^unserzuhause-download\.netlify\.app$/i,
-    foran: { 'unserzuhause-download.netlify.app': '/download' },
+    // download.unserzuhauseapp.de er download-sidens planlagte adresse; den er med nu, saa intet blandes ved flytningen
+    foran: { 'unserzuhause-download.netlify.app': '/download', 'download.unserzuhauseapp.de': '/download' },
     chat: 'de',
     vagtAdresser: ['www.unserzuhauseapp.de', 'unserzuhauseapp.de', 'backend.unserzuhauseapp.de', 'download.unserzuhauseapp.de', 'unserzuhause-download.netlify.app'],
     appStoreId: '6771931999', playPakke: 'com.unserzuhause.app',
@@ -82,7 +83,7 @@ const PROFILER = {
       kvittering: {
         emne: 'Danke für deine Nachricht',
         tekst: 'Hallo,\n\ndanke für deine Nachricht an Unser Zuhause. Wir haben sie erhalten und antworten dir an Werktagen innerhalb von 24 Stunden.\n\n' +
-          'Viele Antworten findest du schon jetzt auf unserer Hilfeseite: https://www.unserzuhauseapp.de/support\n\nViele Grüße\ndein Team von Unser Zuhause'
+          'Viele Antworten findest du schon jetzt auf unserer Hilfeseite: https://www.unserzuhauseapp.de/support\n\nViele Grüße\nDein Team von Unser Zuhause'
       },
       // citatlinjen over kundens egen besked i svaret: 'Am 8. Oktober 2026 um 18:02 schrieb Max <max@...>:'
       citat: (dato, hvem) => 'Am ' + dato + ' schrieb ' + hvem + ':',
