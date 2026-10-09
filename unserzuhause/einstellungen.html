@@ -2,6 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
+<script>document.documentElement.classList.add('js')</script>
 <link rel="preload" href="/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <style>@font-face{font-family:'Plus Jakarta Sans';font-style:normal;font-weight:200 800;font-display:swap;src:url(/fonts/plus-jakarta-sans-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}</style>
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -9,6 +10,7 @@
 <link rel="apple-touch-icon" href="/favicon.png">
 <script>window.__uzT = Date.now();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="only light">
 <title>Einstellungen und Familienkonto | Unser Zuhause</title>
 <!-- SEO til eget domæne (tilføjet ved flytningen fra Wix) -->
 <link rel="canonical" href="https://www.unserzuhauseapp.de/einstellungen">
@@ -27,9 +29,10 @@
 <meta name="twitter:image" content="https://www.unserzuhauseapp.de/images/og.jpg">
 <link rel="alternate" hreflang="de" href="https://www.unserzuhauseapp.de/einstellungen">
 <link rel="alternate" hreflang="da" href="https://www.voreshjem.dk/indstillinger">
-<link rel="alternate" hreflang="x-default" href="https://www.unserzuhauseapp.de/einstellungen">
+<link rel="alternate" hreflang="x-default" href="https://www.voreshjem.dk/indstillinger">
 
 <meta name="description" content="Verwalte das Konto der ganzen Familie an einem Ort: Mitglieder, Rollen, Familiencode, Abo, Sprache und Feiertage. Der Hauptnutzer behält die volle Kontrolle.">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Startseite","item":"https://www.unserzuhauseapp.de/"},{"@type":"ListItem","position":2,"name":"Einstellungen","item":"https://www.unserzuhauseapp.de/einstellungen"}]}</script>
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -291,14 +294,16 @@ nav {
 .btn-outline-white:hover { background: rgba(255,255,255,0.2); }
 .cta-trust { font-size: 14px; color: rgba(255,255,255,0.6); }
 .cta-trust span { color: rgba(255,255,255,0.9); font-weight: 600; }
+.cta-back { display: inline-flex; align-items: center; gap: 6px; margin-top: 24px; font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; transition: color 0.2s; }
+.cta-back:hover { color: #fff; }
 
 /* ─── SCROLL REVEAL ─── */
-.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.65s cubic-bezier(0.16,1,0.3,1); }
-.reveal.visible { opacity: 1; transform: none; }
+.js .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.65s cubic-bezier(0.16,1,0.3,1); }
+.js .reveal.visible { opacity: 1; transform: none; }
 .reveal-delay-1 { transition-delay: 0.08s; }
 .reveal-delay-2 { transition-delay: 0.16s; }
 .reveal-delay-3 { transition-delay: 0.24s; }
-@media (max-width: 768px) { .reveal, .reveal.visible { opacity: 1; transform: none; transition: none; } }
+@media (max-width: 768px) { .js .reveal, .js .reveal.visible { opacity: 1; transform: none; transition: none; } }
 
 /* ─── FOOTER ─── */
 @media (max-width: 700px) { .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 32px !important; } }
@@ -345,61 +350,14 @@ nav {
   .cta-h2 { font-size: 28px; }
   #features, #how, #stjerne, #cta { padding: 64px 0; }
 }
-/* ─── CONTACT MODAL ─── */
-#contact-modal-overlay {
-  position: fixed; inset: 0; z-index: 1100;
-  background: rgba(10,8,30,0.55);
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-  display: flex; align-items: center; justify-content: center; padding: 24px;
-  opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+/* Genvej til indholdet: kun synlig, når den får fokus med tastaturet */
+.skip-link { position: fixed; left: -9999px; top: 12px; z-index: 1000; padding: 10px 18px; background: #fff; color: var(--text); border: 2px solid var(--purple); border-radius: 10px; font-size: 14px; font-weight: 700; }
+.skip-link:focus { left: 16px; }
+/* Respektér "Bewegung reduzieren" */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto !important; }
 }
-#contact-modal-overlay.open { opacity: 1; pointer-events: auto; }
-.contact-modal {
-  background: #fff; border-radius: 24px; padding: 44px 40px 36px;
-  max-width: 480px; width: 100%;
-  box-shadow: 0 40px 120px rgba(108,71,255,0.22), 0 8px 32px rgba(0,0,0,0.12);
-  position: relative;
-  transform: scale(0.92) translateY(16px);
-  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
-}
-#contact-modal-overlay.open .contact-modal { transform: scale(1) translateY(0); }
-.contact-modal-close {
-  position: absolute; top: 16px; right: 16px;
-  width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer;
-  background: #F1F0FA; color: #5E5A7A;
-  display: flex; align-items: center; justify-content: center; transition: background 0.2s;
-}
-.contact-modal-close:hover { background: #E8E5FF; }
-.contact-modal-close svg { width: 16px; height: 16px; }
-.contact-modal h3 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
-.contact-modal > p { font-size: 14px; color: #5E5A7A; margin-bottom: 24px; }
-.contact-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
-.contact-field label { font-size: 13px; font-weight: 700; color: #0F0E1A; }
-.contact-field input, .contact-field textarea {
-  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px;
-  border: 1.5px solid #E8E5FF; border-radius: 12px; padding: 12px 14px;
-  background: #F8F7FF; color: #0F0E1A; outline: none; transition: border-color 0.2s; resize: none;
-}
-.contact-field input:focus, .contact-field textarea:focus { border-color: #6C47FF; background: #fff; }
-.contact-submit {
-  width: 100%; padding: 14px; border-radius: 14px; border: none;
-  background: linear-gradient(135deg, #6C47FF 0%, #3B82F6 55%, #EC4899 100%);
-  color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 700;
-  cursor: pointer; margin-top: 8px;
-  box-shadow: 0 4px 24px rgba(108,71,255,0.35); transition: transform 0.2s, box-shadow 0.2s;
-}
-.contact-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(108,71,255,0.45); }
-.contact-submit:disabled { opacity: 0.6; cursor: default; transform: none; }
-.contact-error { display: none; color: #E84040; font-size: 13px; font-weight: 600; margin-top: 4px; }
-.contact-success {
-  text-align: center; padding: 16px 0 8px;
-  display: none; flex-direction: column; align-items: center; gap: 12px;
-}
-.contact-success-icon { width: 56px; height: 56px; background: rgba(16,185,129,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-.contact-success-icon svg { width: 28px; height: 28px; color: #10B981; }
-.contact-success h4 { font-size: 18px; font-weight: 800; }
-.contact-success p { font-size: 14px; color: #5E5A7A; margin: 0; }
-@media (max-width: 600px) { .contact-modal { padding: 32px 24px 28px; } }
 </style>
 <style>
 /* MOBIL-FIX: tysk tekst er længere, fjern nowrap så lange linjer ombrydes i stedet for at klippes */
@@ -419,6 +377,7 @@ nav {
 </style>
 </head>
 <body>
+<a class="skip-link" href="#inhalt">Zum Inhalt springen</a>
 <nav>
   <div class="container">
     <div class="nav-inner">
@@ -555,6 +514,7 @@ nav {
 .td-r.fremhaevet { box-shadow:0 6px 20px rgba(108,71,255,.16); transform:translateX(3px); }
 
 </style>
+<main id="inhalt">
 <!-- HERO -->
 <section id="hero">
   <div class="blob blob-1"></div>
@@ -1018,17 +978,18 @@ nav {
       <h2 class="cta-h2">Bereit für mehr Ruhe<br>im Alltag?</h2>
       <p class="cta-sub">Eine App. Die ganze Familie. Volle Kontrolle.</p>
       <div class="cta-buttons">
-        <a href="#" onclick="goToStore(event)" class="btn btn-white btn-lg">Kostenlos testen</a>
-        <a href="./kontakt.html" target="_top" onclick="window.top.location.href='./kontakt.html';return false;" class="btn btn-outline-white btn-lg">Kontakt aufnehmen</a>
+        <a href="https://backend.unserzuhauseapp.de/hent/app" target="_blank" rel="noopener" class="btn btn-white btn-lg">Kostenlos testen</a>
+        <a href="/support" target="_top" class="btn btn-outline-white btn-lg">Kontakt aufnehmen</a>
       </div>
       <p class="cta-trust">Nach 14 Tagen: <span>5,99 €/Monat</span> oder <span>24,99 €/Halbjahr</span> · Jederzeit kündbar</p>
-      <a href="./index.html" style="display:inline-flex; align-items:center; gap:6px; margin-top:24px; font-size:14px; font-weight:600; color:rgba(255,255,255,0.55); text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">
+      <a href="./index.html" class="cta-back">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="15 18 9 12 15 6"/></svg>
         Zurück zur Startseite
       </a>
     </div>
   </div>
 </section>
+</main>
 
 <footer style="background:#0F0E1A; color:#fff; padding: 64px 0 32px; font-family:'Plus Jakarta Sans',sans-serif;">
   <div style="max-width:1200px; margin:0 auto; padding:0 32px;">
@@ -1048,14 +1009,14 @@ nav {
       <div>
         <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Infoseiten</p>
         <div style="display:flex; flex-direction:column; gap:10px;">
-          <a href="https://www.unserzuhauseapp.de/kalender" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/kalender';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Kalender</a>
-          <a href="https://www.unserzuhauseapp.de/essenpläne" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/essenpläne';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Essenspläne</a>
-          <a href="https://www.unserzuhauseapp.de/einkaufsliste" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/einkaufsliste';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Einkaufsliste</a>
-          <a href="https://www.unserzuhauseapp.de/aufgaben" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/aufgaben';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Aufgaben</a>
-          <a href="https://www.unserzuhauseapp.de/ratgeber" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/ratgeber';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Ratgeber</a>
+          <a href="https://www.unserzuhauseapp.de/kalender" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Kalender</a>
+          <a href="https://www.unserzuhauseapp.de/essenpläne" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Essenspläne</a>
+          <a href="https://www.unserzuhauseapp.de/einkaufsliste" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Einkaufsliste</a>
+          <a href="https://www.unserzuhauseapp.de/aufgaben" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Aufgaben</a>
+          <a href="https://www.unserzuhauseapp.de/ratgeber" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Ratgeber</a>
           <a href="https://www.unserzuhauseapp.de/einstellungen" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Einstellungen</a>
           <a href="https://www.unserzuhauseapp.de/synchronisierung" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Synchronisierung</a>
-          <a href="https://www.unserzuhauseapp.de/konto-loeschen" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/konto-loeschen';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Konto löschen</a>
+          <a href="https://www.unserzuhauseapp.de/konto-loeschen" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Konto löschen</a>
         </div>
       </div>
 
@@ -1064,10 +1025,10 @@ nav {
         <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Soziale Medien</p>
         <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:28px;">
           <a href="https://www.facebook.com/profile.php?id=61590361744172" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Facebook</a>
-          <a href="https://www.tiktok.com/@unserzuhause?_r=1&amp;_t=ZG-97Tx5A9mGki" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">TikTok</a>
+          <a href="https://www.tiktok.com/@unserzuhause" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">TikTok</a>
         </div>
         <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Kontakt</p>
-        <a href="https://www.unserzuhauseapp.de/support" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/support';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Support</a>
+        <a href="https://www.unserzuhauseapp.de/support" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Support</a>
       </div>
 
       <!-- Politikker -->
@@ -1122,44 +1083,6 @@ window.addEventListener('scroll', () => {
     window.scrollY > 20 ? '0 4px 24px rgba(108,71,255,0.08)' : 'none';
 });
 
-// Contact modal
-function openContactModal() {
-  document.getElementById('contact-modal-overlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeContactModal() {
-  document.getElementById('contact-modal-overlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-function closeContactModalOutside(e) {
-  if (e.target === document.getElementById('contact-modal-overlay')) closeContactModal();
-}
-async function submitContact() {
-  const name = document.getElementById('c-name').value.trim();
-  const email = document.getElementById('c-email').value.trim();
-  const msg = document.getElementById('c-msg').value.trim();
-  const err = document.getElementById('contact-error');
-  err.style.display = 'none';
-  if (!name || !email || !msg) { err.textContent = 'Bitte fülle alle Felder aus.'; err.style.display = 'block'; return; }
-  const btn = document.getElementById('contact-submit-btn');
-  btn.disabled = true; btn.textContent = 'Senden…';
-  try {
-    const __d = { name, email, message: msg };
-    const __r = await fetch('https://backend.unserzuhauseapp.de/formular/kontakt', { method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ navn: __d.name || '', email: __d.email || '', emne: __d.subject || '',
-        besked: __d.message || '', t: String(window.__uzT || 0),
-        hjemmeside: (document.getElementById('uz-hp') || {}).value || '', side: 'de' }) });
-    if (!__r.ok) throw new Error('Senden fehlgeschlagen');
-    document.getElementById('contact-form-wrap').style.display = 'none';
-    document.getElementById('contact-success').style.display = 'flex';
-  } catch(e) {
-    btn.disabled = false; btn.textContent = 'Nachricht senden';
-    err.textContent = 'Etwas ist schiefgelaufen. Versuche es erneut oder schreibe an support@unserzuhauseapp.de';
-    err.style.display = 'block';
-  }
-}
-
 // Not launched toast
 let toastTimer;
 function showNotLaunched(e) {
@@ -1171,41 +1094,8 @@ function showNotLaunched(e) {
 }
 </script>
 
-<!-- CONTACT MODAL -->
-<div id="contact-modal-overlay" onclick="closeContactModalOutside(event)">
-  <div class="contact-modal">
-    <button class="contact-modal-close" onclick="closeContactModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-    <div id="contact-form-wrap">
-      <h3>Schreib uns</h3>
-      <p>Wir antworten an Werktagen innerhalb von 24 Stunden.</p>
-      <div class="contact-field"><label for="c-name">Name</label><input type="text" id="c-name" placeholder="Dein Name"></div>
-      <div class="contact-field"><label for="c-email">E-Mail</label><input type="email" id="c-email" placeholder="deine@email.de"></div>
-      <div class="contact-field"><label for="c-msg">Nachricht</label><textarea id="c-msg" rows="4" placeholder="Worum geht es?"></textarea><input type="text" id="uz-hp" name="hjemmeside" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0"></div>
-      <p class="contact-error" id="contact-error"></p>
-      <button class="contact-submit" id="contact-submit-btn" onclick="submitContact()">Nachricht senden</button>
-    </div>
-    <div class="contact-success" id="contact-success">
-      <div class="contact-success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
-      <h4>Nachricht gesendet!</h4>
-      <p>Wir melden uns so schnell wie möglich bei dir.</p>
-    </div>
-  </div>
-</div>
 
 
-<script>
-/* Wix-iframe: hold interne links i SAMME fane (top-navigation); eksterne (_blank) urørt */
-document.addEventListener('click',function(e){
-  var a=e.target&&e.target.closest?e.target.closest('a'):null;
-  if(!a) return;
-  if(a.getAttribute('target')==='_blank') return;            // ekstern -> ny fane (uændret)
-  var href=a.getAttribute('href');
-  if(!href||href.charAt(0)==='#'||href.indexOf('javascript:')===0) return; // knapper/anchors
-  e.preventDefault();
-  try{ (window.top||window).location.href=href; }            // samme fane, bryd ud af iframe
-  catch(err){ window.location.href=href; }
-},true);
-</script>
 
 <script src="/taeller.js" defer></script>
 <!-- chatten (fra den tyske backend) og den svaevende hent-knap, som paa voreshjem.dk -->

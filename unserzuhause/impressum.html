@@ -9,6 +9,7 @@
 <link rel="apple-touch-icon" href="/favicon.png">
 <script>window.__uzT = Date.now();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="only light">
 <title>Impressum | Unser Zuhause App</title>
 <!-- SEO til eget domæne (tilføjet ved flytningen fra Wix) -->
 <link rel="canonical" href="https://www.unserzuhauseapp.de/impressum">
@@ -28,6 +29,7 @@
 
 <meta name="description" content="Impressum der Unser Zuhause App: Anbieter ist Vores Hjem I/S, Tværgade 5, 5500 Middelfart, Dänemark. CVR 45804445, E-Mail: support@unserzuhauseapp.de.">
 <meta name="robots" content="index,follow">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Startseite","item":"https://www.unserzuhauseapp.de/"},{"@type":"ListItem","position":2,"name":"Impressum","item":"https://www.unserzuhauseapp.de/impressum"}]}</script>
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -284,6 +286,14 @@ nav {
   .step-divider { margin-bottom: 56px; }
   .contact-cta h2 { font-size: 22px; }
 }
+/* Genvej til indholdet: kun synlig, når den får fokus med tastaturet */
+.skip-link { position: fixed; left: -9999px; top: 12px; z-index: 1000; padding: 10px 18px; background: #fff; color: var(--text); border: 2px solid var(--purple); border-radius: 10px; font-size: 14px; font-weight: 700; }
+.skip-link:focus { left: 16px; }
+/* Respektér "Bewegung reduzieren" */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto !important; }
+}
 </style>
 
 <style>
@@ -319,6 +329,7 @@ nav {
 
 </head>
 <body>
+<a class="skip-link" href="#inhalt">Zum Inhalt springen</a>
 <!-- NAV -->
 <nav>
   <div class="nav-inner">
@@ -334,6 +345,7 @@ nav {
   </div>
 </nav>
 
+<main id="inhalt">
 <section class="hero">
   <div class="container">
     <div class="hero-badge">
@@ -432,6 +444,7 @@ nav {
 
   </div>
 </section>
+</main>
 
 <footer style="background:#0F0E1A; color:#fff; padding: 64px 0 32px; font-family:'Plus Jakarta Sans',sans-serif;">
   <div style="max-width:1200px; margin:0 auto; padding:0 32px;">
@@ -447,14 +460,14 @@ nav {
       <div>
         <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Infoseiten</p>
         <div style="display:flex; flex-direction:column; gap:10px;">
-          <a href="https://www.unserzuhauseapp.de/kalender" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/kalender';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Kalender</a>
-          <a href="https://www.unserzuhauseapp.de/essenpläne" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/essenpläne';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Essenspläne</a>
-          <a href="https://www.unserzuhauseapp.de/einkaufsliste" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/einkaufsliste';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Einkaufsliste</a>
-          <a href="https://www.unserzuhauseapp.de/aufgaben" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/aufgaben';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Aufgaben</a>
-          <a href="https://www.unserzuhauseapp.de/ratgeber" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/ratgeber';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Ratgeber</a>
+          <a href="https://www.unserzuhauseapp.de/kalender" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Kalender</a>
+          <a href="https://www.unserzuhauseapp.de/essenpläne" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Essenspläne</a>
+          <a href="https://www.unserzuhauseapp.de/einkaufsliste" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Einkaufsliste</a>
+          <a href="https://www.unserzuhauseapp.de/aufgaben" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Aufgaben</a>
+          <a href="https://www.unserzuhauseapp.de/ratgeber" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Ratgeber</a>
           <a href="https://www.unserzuhauseapp.de/einstellungen" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Einstellungen</a>
           <a href="https://www.unserzuhauseapp.de/synchronisierung" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Synchronisierung</a>
-          <a href="https://www.unserzuhauseapp.de/konto-loeschen" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/konto-loeschen';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Konto löschen</a>
+          <a href="https://www.unserzuhauseapp.de/konto-loeschen" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Konto löschen</a>
         </div>
       </div>
 
@@ -462,10 +475,10 @@ nav {
         <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Soziale Medien</p>
         <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:28px;">
           <a href="https://www.facebook.com/profile.php?id=61590361744172" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Facebook</a>
-          <a href="https://www.tiktok.com/@unserzuhause?_r=1&amp;_t=ZG-97Tx5A9mGki" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">TikTok</a>
+          <a href="https://www.tiktok.com/@unserzuhause" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">TikTok</a>
         </div>
         <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Kontakt</p>
-        <a href="https://www.unserzuhauseapp.de/support" target="_top" onclick="window.top.location.href='https://www.unserzuhauseapp.de/support';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Support</a>
+        <a href="https://www.unserzuhauseapp.de/support" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Support</a>
       </div>
       <div>
         <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Richtlinien</p>
@@ -483,19 +496,6 @@ nav {
     </div>
   </div>
 </footer>
-<script>
-/* Wix-iframe: hold interne links i SAMME fane (top-navigation); eksterne (_blank) urørt */
-document.addEventListener('click',function(e){
-  var a=e.target&&e.target.closest?e.target.closest('a'):null;
-  if(!a) return;
-  if(a.getAttribute('target')==='_blank') return;            // ekstern -> ny fane (uændret)
-  var href=a.getAttribute('href');
-  if(!href||href.charAt(0)==='#'||href.indexOf('javascript:')===0) return; // knapper/anchors
-  e.preventDefault();
-  try{ (window.top||window).location.href=href; }            // samme fane, bryd ud af iframe
-  catch(err){ window.location.href=href; }
-},true);
-</script>
 <script src="/taeller.js" defer></script>
 <!-- chatten (fra den tyske backend) og den svaevende hent-knap, som paa voreshjem.dk -->
 <script src="https://backend.unserzuhauseapp.de/widget.js" data-site="de" defer></script>
