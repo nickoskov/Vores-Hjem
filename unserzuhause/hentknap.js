@@ -38,6 +38,27 @@
     } catch (e) {}
   }
 
+  /* Knappen er altid synlig (Nicko 10. okt. 2026), men daekker den en App Store- eller Google Play-knap,
+     bliver den til en lille rund knap ude ved kanten, indtil butiksknappen er rullet forbi. */
+  var fuldBredde = 0;
+  function undgaa() {
+    try {
+      if (!a) return;
+      if (window.matchMedia && window.matchMedia('(max-height:500px)').matches) { a.classList.remove('vh-lille'); return; }
+      if (!a.classList.contains('vh-lille')) fuldBredde = a.offsetWidth;
+      var r = a.getBoundingClientRect();
+      var hoejre = r.right, venstre = r.right - (fuldBredde || r.width);
+      var knapper = document.querySelectorAll('a[href*="apps.apple.com"], a[href*="play.google.com"]');
+      var ram = false;
+      for (var i = 0; i < knapper.length && !ram; i++) {
+        var k = knapper[i].getBoundingClientRect();
+        if (k.width < 20 || k.height < 20) continue;
+        ram = k.right > venstre - 8 && k.left < hoejre + 8 && k.bottom > r.top - 8 && k.top < r.bottom + 8;
+      }
+      if (ram !== a.classList.contains('vh-lille')) a.classList.toggle('vh-lille', ram);
+    } catch (e) {}
+  }
+
   function start() {
     if (document.getElementById('vh-hent')) return;
     var stil = document.createElement('style');
@@ -56,6 +77,9 @@
       '#vh-hent.vh-vis{ opacity:1; transform:none; pointer-events:auto; }',
       '#vh-hent:hover{ box-shadow:0 18px 44px -10px rgba(108,71,255,.92); }',
       '#vh-hent svg{ flex:none; }',
+      /* Lille rund udgave, mens knappen ellers ville daekke App Store- eller Google Play-knapperne */
+      '#vh-hent.vh-lille{ width:52px; height:52px; padding:0; gap:0; justify-content:center; }',
+      '#vh-hent.vh-lille span{ display:none; }',
       /* Chatboblen er 62 px hoej og sidder 24 px oppe, saa knappen laegger sig over den */
       '@media (max-width:480px){',
         '#vh-hent{ right:16px; bottom:90px; padding:13px 18px; font-size:14.5px; }',
@@ -92,8 +116,14 @@
        saa knappen glider blidt ind i stedet for at springe frem. */
     requestAnimationFrame(function () { a.classList.add('vh-vis'); });
 
-    placer();
-    setInterval(placer, 1000);
-    window.addEventListener('resize', placer, { passive: true });
+    placer(); undgaa();
+    setInterval(function () { placer(); undgaa(); }, 1000);
+    window.addEventListener('resize', function () { placer(); undgaa(); }, { passive: true });
+    var venter = false;
+    window.addEventListener('scroll', function () {
+      if (venter) return;
+      venter = true;
+      requestAnimationFrame(function () { venter = false; undgaa(); });
+    }, { passive: true });
   }
 })();
