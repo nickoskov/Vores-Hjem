@@ -212,11 +212,18 @@
   .recht { margin-top:18px; font-size:12px; line-height:1.5; color:#6E6880; }
   .recht a { display:inline-block; padding:4px 0; color:#6E6880; text-decoration:none; }
   .recht a:hover, .recht a:focus-visible { text-decoration:underline; }
+  /* Tilbage-knap oeverst i kortet, paa sin egen linje (Nicko 10. okt. 2026) */
+  .tilbage-raekke { text-align:left; margin:-18px -10px 16px; }
+  .tilbage { display:inline-flex; align-items:center; gap:3px; padding:8px 14px 8px 9px; border-radius:99px; background:#F3F0FF; color:#4F32CC; font-size:13.5px; font-weight:700; text-decoration:none; line-height:1.1; }
+  .tilbage:hover, .tilbage:focus-visible { background:#E9E4FF; }
+  .tilbage svg { width:17px; height:17px; flex-shrink:0; }
+  .logo-link { display:block; width:max-content; margin:0 auto; }
 </style>
 </head>
 <body>
   <main class="card">
-    <img src="logo-lille.webp" alt="Unser Zuhause" class="logo" width="120" height="95">
+    <div class="tilbage-raekke"><a href="https://www.unserzuhauseapp.de/" class="tilbage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Zurück zur Startseite</a></div>
+    <a href="https://www.unserzuhauseapp.de/" class="logo-link" aria-label="Zur Startseite von Unser Zuhause"><img src="logo-lille.webp" alt="Unser Zuhause" class="logo" width="120" height="95"></a>
     <div class="free-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.3L19 9l-5.2 1.7L12 16l-1.8-5.3L5 9l5.2-1.7L12 2z"/></svg>14 TAGE KOSTENLOS TESTEN</div>
     <div class="phone-frame">
       <video muted loop playsinline preload="metadata" poster="video-poster.webp" width="540" height="960" aria-label="Demo der App Unser Zuhause">
@@ -280,5 +287,18 @@
   <!-- Besuchsstatistik: derselbe cookiefreie Zähler wie auf unserzuhauseapp.de. Die Seite zählt dort als /download. -->
   <script src="https://www.unserzuhauseapp.de/taeller.js" defer></script>
 <script src="https://www.unserzuhauseapp.de/butik.js" defer></script>
+  <!-- Kom man fra hjemmesiden i samme fane, gaar knappen tilbage dertil, saa man lander samme sted som foer -->
+  <script>
+    (function () {
+      var t = document.querySelector('.tilbage');
+      if (!t) return;
+      t.addEventListener('click', function (e) {
+        try {
+          var fra = document.referrer ? new URL(document.referrer) : null;
+          if (fra && /(^|\.)unserzuhauseapp\.de$/.test(fra.hostname) && fra.pathname.indexOf('/hent') !== 0 && history.length > 1) { e.preventDefault(); history.back(); }
+        } catch (x) {}
+      });
+    })();
+  </script>
 </body>
 </html>
