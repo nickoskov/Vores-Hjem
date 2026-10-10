@@ -194,6 +194,8 @@
     // Nudge-teaser
     '.nudge{ position:fixed; right:24px; bottom:100px; max-width:230px; background:#fff; color:#1B1633; border-radius:16px; padding:13px 32px 13px 15px; font-size:13.5px; line-height:1.4; box-shadow:0 12px 30px rgba(27,22,51,.22); z-index:2147483000; cursor:pointer; opacity:0; transform:translateY(8px); pointer-events:none; visibility:hidden; transition:opacity .25s ease, transform .25s ease, visibility 0s linear .25s; }',
     '.nudge.show{ opacity:1; transform:translateY(0); pointer-events:auto; visibility:visible; transition-delay:0s; }',
+    /* gemmer sig, mens den ellers ville daekke App Store- eller Google Play-knapperne paa siden */
+    '.nudge.show.vige{ opacity:0; pointer-events:none; }',
     '.nudge .nx{ position:absolute; top:5px; right:8px; border:none; background:none; font-size:17px; color:#a9a4bd; cursor:pointer; line-height:1; padding:2px; }',
     '@media (max-width:480px){ .launcher{ right:16px; bottom:16px; } .nudge{ right:16px; bottom:88px; } }',
     // Samme regel som FULD nedenfor: her er chatten et modalt vindue i fuld skærm
@@ -487,6 +489,28 @@
     if (e.target.classList.contains('nx')) { e.stopPropagation(); dismissNudge(); return; }
     open();
   });
+  // Teaseren maa ikke daekke sidens butiksknapper (Nicko 10. okt. 2026). Den viger, mens de er under den.
+  function vigForButik() {
+    try {
+      if (!nudge.classList.contains('show')) return;
+      var r = nudge.getBoundingClientRect(), ram = false;
+      var knapper = document.querySelectorAll('a[href*="apps.apple.com"], a[href*="play.google.com"]');
+      for (var i = 0; i < knapper.length && !ram; i++) {
+        var k = knapper[i].getBoundingClientRect();
+        if (k.width < 20 || k.height < 20) continue;
+        ram = k.right > r.left - 8 && k.left < r.right + 8 && k.bottom > r.top - 8 && k.top < r.bottom + 8;
+      }
+      if (ram !== nudge.classList.contains('vige')) nudge.classList.toggle('vige', ram);
+    } catch (e) {}
+  }
+  var vigVenter = false;
+  window.addEventListener('scroll', function () {
+    if (vigVenter) return;
+    vigVenter = true;
+    requestAnimationFrame(function () { vigVenter = false; vigForButik(); });
+  }, { passive: true });
+  window.addEventListener('resize', vigForButik, { passive: true });
+
   setTimeout(function () {
     if (nudgeDone || panel.classList.contains('open')) return;
     // Vælg teaser efter hvor langt brugeren er scrollet (top = generel, midt = familie, bund = pris)
@@ -497,5 +521,6 @@
       var t = nudge.querySelector('.ntxt'); if (t) t.textContent = msg;
     } catch (e) {}
     nudge.classList.add('show');
+    vigForButik();
   }, 15000);
 })();
