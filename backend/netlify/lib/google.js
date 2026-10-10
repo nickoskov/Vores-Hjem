@@ -16,15 +16,33 @@ const OMRAADER = [
 
 let token = null;   // gemmes mellem kald, så vi ikke beder Google om et nyt hver gang
 
+// Hvorfor noeglen ikke kunne laeses, uden at noget af dens indhold kommer med (vises i panelet).
+let kontoGrund = 'GA4_CREDENTIALS mangler i Netlify';
+
 function konto() {
   const raa = process.env.GA4_CREDENTIALS || '';
-  if (!raa) return null;
-  try {
-    // feltet tåler både ren JSON og base64, alt efter hvordan det blev indsat
-    const t = raa.trim().startsWith('{') ? raa : Buffer.from(raa, 'base64').toString('utf8');
-    const k = JSON.parse(t);
-    return (k.client_email && k.private_key) ? k : null;
-  } catch (e) { return null; }
+  if (!raa.trim()) { kontoGrund = 'GA4_CREDENTIALS mangler i Netlify'; return null; }
+  // feltet tåler ren JSON, base64 og ekstra tekst før eller efter filens indhold (fx et filnavn)
+  let t = raa.trim();
+  if (!t.includes('{')) { try { t = Buffer.from(t.replace(/\s+/g, ''), 'base64').toString('utf8'); } catch (e) {} }
+  const fra = t.indexOf('{'), til = t.lastIndexOf('}');
+  if (fra < 0 || til <= fra) {
+    kontoGrund = 'GA4_CREDENTIALS ligner ikke indholdet af JSON-filen fra Google (der er ingen { og }). Åbn filen i TextEdit, og indsæt hele indholdet.';
+    return null;
+  }
+  // kroellede anfoerselstegn kommer fra tekstbehandling og goer JSON ugyldig
+  t = t.slice(fra, til + 1).replace(/[\u201C\u201D\u201E]/g, '"');
+  let k;
+  try { k = JSON.parse(t); }
+  catch (e) {
+    kontoGrund = 'GA4_CREDENTIALS er ikke hel. Teksten kunne ikke læses som JSON (' + t.length + ' tegn; en nøglefil fra Google fylder ca. 2.300). Indsæt hele filens indhold igen.';
+    return null;
+  }
+  if (!k.client_email || !k.private_key) {
+    kontoGrund = 'GA4_CREDENTIALS er en JSON-fil, men ikke en nøgle til en servicekonto (' + (k.client_email ? 'private_key' : 'client_email') + ' mangler). Lav en ny nøgle under Keys, vælg JSON.';
+    return null;
+  }
+  return k;
 }
 
 const b64 = o => Buffer.from(typeof o === 'string' ? o : JSON.stringify(o))
@@ -33,7 +51,7 @@ const b64 = o => Buffer.from(typeof o === 'string' ? o : JSON.stringify(o))
 async function adgang() {
   if (token && token.udloeber > Date.now() + 60000) return token.vaerdi;
   const k = konto();
-  if (!k) throw new Error('GA4_CREDENTIALS mangler i Netlify');
+  if (!k) throw new Error(kontoGrund);
 
   const nu = Math.floor(Date.now() / 1000);
   const krav = b64({alg:'RS256', typ:'JWT'}) + '.' + b64({
@@ -208,5 +226,6 @@ async function hastighedEn(url, strategi) {
 
 const opsat    = () => !!(konto() && ejendom());
 const opsatGsc = () => !!konto();
+const kontoFejl = () => (konto() ? null : kontoGrund);
 
-module.exports = { rapport, realtid, raekker, raekkerEllerNull, samlet, soegning, alle, hastighed, opsat, opsatGsc };
+module.exports = { rapport, realtid, raekker, raekkerEllerNull, samlet, soegning, alle, hastighed, opsat, opsatGsc, kontoFejl };

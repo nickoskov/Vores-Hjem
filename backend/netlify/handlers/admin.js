@@ -1660,7 +1660,7 @@ exports.handler = async (ev) => {
   // offentlig: profilen (det, der alligevel staar paa siden) og hvad der er sat op. Databasen er
   // false, naar den mangler eller er afvist af ejermaerket (db.js), og databaseFejl siger hvorfor.
   if (d === 'status') { const db = await dbStatus(); return svar(200, { ok:true, side: profil.offentlig(), opsat: {
-    kode: auth.harKode(), database: db.ok, databaseFejl: db.fejl, analytics: G.opsat(), soegning: G.opsatGsc(),
+    kode: auth.harKode(), database: db.ok, databaseFejl: db.fejl, analytics: G.opsat(), soegning: G.opsatGsc(), googleFejl: G.kontoFejl ? G.kontoFejl() : null,
     meta: meta.opsat(), googleads: gads.opsat(), appstore: asc.opsat(), googleplay: gplay.opsat(),
     mail: mail.opsat(), udgivelse: !!process.env.NETLIFY_BUILD_HOOK, webhook: !!process.env.WEBHOOK_SECRET, soro: soro.opsat(), bot: botOpsat(), claude: forfatter.opsat(), netlify: udgivelse.opsat(), support: sager.status() } }); }
 
