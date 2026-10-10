@@ -52,3 +52,11 @@ for = "/*.png"
 
   [headers.values]
   Cache-Control = "public, max-age=604800"
+
+# Den gamle Netlify-adresse (bio-links paa Instagram og TikTok) sendes videre til jeres eget domaene.
+# Proeveudgaver (<id>--unserzuhause-download.netlify.app) rammes ikke.
+[[redirects]]
+from = "https://unserzuhause-download.netlify.app/*"
+to = "https://download.unserzuhauseapp.de/:splat"
+status = 301
+force = true
