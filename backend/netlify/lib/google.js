@@ -38,7 +38,7 @@ function konto() {
     // kun feltnavne, laengder og placering, aldrig indholdet
     const felter = ['type', 'project_id', 'private_key_id', 'private_key', 'client_email', 'client_id', 'universe_domain'].filter(f => t.includes('"' + f + '"'));
     const pos = (/position (\d+)/.exec(String(e && e.message)) || [])[1];
-    kontoGrund = 'GA4_CREDENTIALS er ikke hel. Teksten kunne ikke læses som JSON (' + t.length + ' tegn af ' + raa.length + ' i feltet; en nøglefil fra Google fylder ca. 2.300). Felter fundet: ' + (felter.join(', ') || 'ingen') + '.' + (pos ? ' Fejlen sidder ved tegn ' + pos + '.' : '') + ' Indsæt hele filens indhold igen.';
+    kontoGrund = 'GA4_CREDENTIALS er ikke hel. Teksten kunne ikke læses som JSON (' + t.length + ' tegn af ' + raa.length + ' i feltet; en nøglefil fra Google fylder ca. 2.300). Felter fundet: ' + (felter.join(', ') || 'ingen') + '.' + (pos ? ' Fejlen sidder ved tegn ' + pos + '.' : '') + ' Feltet starter med ' + JSON.stringify(raa.trim().slice(0, 12)) + (/\\rtf/.test(raa) ? ', som er formateret tekst (RTF) fra TextEdit. Vælg Format > Lav til ren tekst i TextEdit, eller åbn filen med Åbn med > TextEdit igen' : '') + '. Indsæt hele filens indhold igen.';
     return null;
   }
   if (!k.client_email || !k.private_key) {
