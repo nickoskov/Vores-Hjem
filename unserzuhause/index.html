@@ -912,7 +912,7 @@ footer { background: var(--text); color: rgba(255,255,255,0.45); padding: 56px 0
 
 /* ─── SAMMENLIGNING ─── */
 .compare-grid {
-  display: grid; grid-template-columns: 1fr 1fr;
+  display: grid; grid-template-columns: minmax(0, 480px); justify-content: center;
   gap: 20px; max-width: 780px; margin: 0 auto;
 }
 .compare-card {
@@ -944,7 +944,7 @@ footer { background: var(--text); color: rgba(255,255,255,0.45); padding: 56px 0
 .compare-list li.hasnt svg { color: #D1D5DB; }
 .compare-list li.hasnt { color: #9CA3AF; }
 @media (max-width: 600px) {
-  .compare-grid { grid-template-columns: 1fr; gap: 16px; max-width: 100%; }
+  .compare-grid { grid-template-columns: minmax(0, 1fr); gap: 16px; max-width: 100%; }
   .compare-card { padding: 24px 20px; }
   .compare-price { font-size: 28px; }
   .compare-card-title { font-size: 17px; }
@@ -2526,23 +2526,7 @@ footer { background: var(--text); color: rgba(255,255,255,0.45); padding: 56px 0
       <p class="section-sub" style="max-width:480px;margin:14px auto 0;">Alles was ihr braucht, nichts was ihr nicht braucht.</p>
     </div>
     <div class="compare-grid reveal">
-      <div class="compare-card">
-        <div class="compare-card-header">
-          <div class="compare-card-title">Andere Apps</div>
-          <div class="compare-card-sub">Typische Familien-App</div>
-        </div>
-        <ul class="compare-list">
-          <li class="has"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Gemeinsamer Kalender</li>
-          <li class="hasnt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Essensplan</li>
-          <li class="hasnt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Geteilte Einkaufsliste</li>
-          <li class="hasnt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Aufgaben mit Namen</li>
-          <li class="hasnt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Familiencode (keine E-Mail)<li>
-          <li class="hasnt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Dänisch & DSGVO-konform</li>
-          <li class="hasnt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>14 Tage kostenlos testen</li>
-        </ul>
-      </div>
       <div class="compare-card compare-card-featured">
-        <div class="compare-recommended">EMPFOHLEN</div>
         <div class="compare-card-header">
           <div class="compare-card-title">Unser Zuhause App</div>
           <div class="compare-card-sub">Dänische Familien-App</div>
@@ -2553,7 +2537,7 @@ footer { background: var(--text); color: rgba(255,255,255,0.45); padding: 56px 0
           <li class="has"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Essensplan</li>
           <li class="has"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Geteilte Einkaufsliste</li>
           <li class="has"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Aufgaben mit Namen</li>
-          <li class="has"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Familiencode (keine E-Mail)<li>
+          <li class="has"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Familiencode (keine E-Mail)</li>
           <li class="has"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Dänisch & DSGVO-konform</li>
           <li class="has"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>14 Tage kostenlos testen</li>
         </ul>
