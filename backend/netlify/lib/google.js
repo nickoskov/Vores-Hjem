@@ -18,9 +18,11 @@ let token = null;   // gemmes mellem kald, så vi ikke beder Google om et nyt hv
 
 // Hvorfor noeglen ikke kunne laeses, uden at noget af dens indhold kommer med (vises i panelet).
 let kontoGrund = 'GA4_CREDENTIALS mangler i Netlify';
+let kontoStart = '';
 
 function konto() {
   const raa = process.env.GA4_CREDENTIALS || '';
+  kontoStart = '';
   if (!raa.trim()) { kontoGrund = 'GA4_CREDENTIALS mangler i Netlify'; return null; }
   // feltet tåler ren JSON, base64 og ekstra tekst før eller efter filens indhold (fx et filnavn)
   let t = raa.trim();
@@ -38,7 +40,9 @@ function konto() {
     // kun feltnavne, laengder og placering, aldrig indholdet
     const felter = ['type', 'project_id', 'private_key_id', 'private_key', 'client_email', 'client_id', 'universe_domain'].filter(f => t.includes('"' + f + '"'));
     const pos = (/position (\d+)/.exec(String(e && e.message)) || [])[1];
-    kontoGrund = 'GA4_CREDENTIALS er ikke hel. Teksten kunne ikke læses som JSON (' + t.length + ' tegn af ' + raa.length + ' i feltet; en nøglefil fra Google fylder ca. 2.300). Felter fundet: ' + (felter.join(', ') || 'ingen') + '.' + (pos ? ' Fejlen sidder ved tegn ' + pos + '.' : '') + ' Feltet starter med ' + JSON.stringify(raa.trim().slice(0, 12)) + (/\\rtf/.test(raa) ? ', som er formateret tekst (RTF) fra TextEdit. Vælg Format > Lav til ren tekst i TextEdit, eller åbn filen med Åbn med > TextEdit igen' : '') + '. Indsæt hele filens indhold igen.';
+    kontoGrund = 'GA4_CREDENTIALS er ikke hel. Teksten kunne ikke læses som JSON (' + t.length + ' tegn af ' + raa.length + ' i feltet; en nøglefil fra Google fylder ca. 2.300). Felter fundet: ' + (felter.join(', ') || 'ingen') + '.' + (pos ? ' Fejlen sidder ved tegn ' + pos + '.' : '') + (/\\rtf/.test(raa) ? ' Det er formateret tekst (RTF) fra TextEdit. Vælg Format > Lav til ren tekst, og kopiér igen.' : '') + ' Indsæt hele filens indhold igen.';
+    // starten af teksten vises kun i panelet bag login, aldrig i den offentlige status
+    kontoStart = ' Feltet starter med ' + JSON.stringify(raa.trim().slice(0, 12)) + '.';
     return null;
   }
   if (!k.client_email || !k.private_key) {
@@ -54,7 +58,7 @@ const b64 = o => Buffer.from(typeof o === 'string' ? o : JSON.stringify(o))
 async function adgang() {
   if (token && token.udloeber > Date.now() + 60000) return token.vaerdi;
   const k = konto();
-  if (!k) throw new Error(kontoGrund);
+  if (!k) throw new Error(kontoGrund + kontoStart);
 
   const nu = Math.floor(Date.now() / 1000);
   const krav = b64({alg:'RS256', typ:'JWT'}) + '.' + b64({
