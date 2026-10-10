@@ -1,12 +1,12 @@
 /* Paa en computer kan App Store-linket ikke bruges: Mac'ens App Store-program viser ikke iPhone-apps
-   ("Kan ikke oprette forbindelse til App Store"). Saa sender App Store-knapperne til /hent/, hvor QR-koden
-   kan scannes med telefonen, og paa /hent/ selv peges der paa QR-koden. Telefoner og tablets roeres ikke,
-   og Google Play-knapperne heller ikke (Google Plays hjemmeside kan installere paa telefonen fra computeren). */
+   ("Kan ikke oprette forbindelse til App Store"). Saa sender butiksknapperne til /hent/, hvor QR-koden
+   kan scannes med telefonen, og paa /hent/ selv peges der paa QR-koden. Telefoner og tablets roeres ikke.
+   Google Play-knapperne goer det samme paa en computer (Nicko 10. okt. 2026), saa begge knapper viser QR-koden. */
 (function () {
   var mobil = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.maxTouchPoints || 0) > 1;
   function computer() { return !mobil && window.matchMedia && window.matchMedia('(min-width:820px)').matches; }
   document.addEventListener('click', function (e) {
-    var a = e.target && e.target.closest ? e.target.closest('a[href*="apps.apple.com"], a[href*="/hent/appstore"]') : null;
+    var a = e.target && e.target.closest ? e.target.closest('a[href*="apps.apple.com"], a[href*="/hent/appstore"], a[href*="play.google.com"], a[href*="/hent/googleplay"]') : null;
     if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || !computer()) return;
     e.preventDefault();
     var qr = document.querySelector('.qr');
