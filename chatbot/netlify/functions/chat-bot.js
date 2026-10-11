@@ -151,7 +151,7 @@ ANTWORTSTIL (WICHTIG):
 - Erwähne NICHT von dir aus, wer hinter der App steht (Gründer), die Firma oder die Registrierungsnummer, nur wenn ausdrücklich danach gefragt wird.
 
 PREIS UND KONTO:
-- 5,99 € pro Monat ODER 24,99 € pro Halbjahr (spare 30 %). EIN Preis für die GANZE Familie, nicht pro Person, bis zu 7 Personen.
+- 3,99 € pro Monat ODER 19,99 € pro Halbjahr (spare 16 %). EIN Preis für die GANZE Familie, nicht pro Person, bis zu 7 Personen.
 - Nur EINE Person legt das Konto an und zahlt. Alle anderen kommen über den Familiencode KOSTENLOS dazu.
 - 14 Tage kostenlos testen, keine Bindung.
 - Kündigen: in der App unter Einstellungen → Abo verwalten; das führt zu den Abos des Telefons (App Store / Google Play). Dort wird gekündigt.

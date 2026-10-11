@@ -1,13 +1,13 @@
 # Unser Zuhause
 
-> Unser Zuhause ist eine Familien-App für iPhone und Android, die den Alltag der ganzen Familie in einer gemeinsamen App bündelt: Familienkalender mit Übernahme von Terminen aus Google und dem Kalender des Handys, Essensplan, gemeinsame Einkaufsliste, Aufgaben im Haushalt sowie Punkte und Taschengeld für Kinder. Der Preis beträgt 5,99 € pro Monat oder 24,99 € pro Halbjahr für die ganze Familie. Man kann die App 14 Tage kostenlos testen, ohne Bindung. Ein Abo gilt für bis zu 7 Personen, und es gibt keine Werbung. Unser Zuhause ist die deutsche Ausgabe der dänischen App Vores Hjem und wird von Vores Hjem I/S (CVR 45804445) in Middelfart, Dänemark, entwickelt.
+> Unser Zuhause ist eine Familien-App für iPhone und Android, die den Alltag der ganzen Familie in einer gemeinsamen App bündelt: Familienkalender mit Übernahme von Terminen aus Google und dem Kalender des Handys, Essensplan, gemeinsame Einkaufsliste, Aufgaben im Haushalt sowie Punkte und Taschengeld für Kinder. Der Preis beträgt 3,99 € pro Monat oder 19,99 € pro Halbjahr für die ganze Familie. Man kann die App 14 Tage kostenlos testen, ohne Bindung. Ein Abo gilt für bis zu 7 Personen, und es gibt keine Werbung. Unser Zuhause ist die deutsche Ausgabe der dänischen App Vores Hjem und wird von Vores Hjem I/S (CVR 45804445) in Middelfart, Dänemark, entwickelt.
 
 Wichtige Fakten (Stand: 9. Oktober 2026):
 
 - Name: Unser Zuhause, die Familien-App. Slogan: "Mehr Ruhe im Alltag".
 - Anbieter: Vores Hjem I/S, CVR 45804445, Tværgade 5, 5500 Middelfart, Dänemark.
 - Gründer: Nicko Skovgaard, Haris Loganathan und Brigitte Skovgaard.
-- Preis: 5,99 € pro Monat oder 24,99 € pro Halbjahr (rund 30 % günstiger). Ein Preis für die ganze Familie, nicht pro Person. Keine zusätzlichen Gebühren.
+- Preis: 3,99 € pro Monat oder 19,99 € pro Halbjahr (rund 16 % günstiger). Ein Preis für die ganze Familie, nicht pro Person. Keine zusätzlichen Gebühren.
 - Testzeitraum: 14 Tage kostenlos, keine Bindung. Das Abo wird im App Store oder bei Google Play abgeschlossen und dort gekündigt.
 - Nach den 14 Testtagen verlängert sich das Abo automatisch, wenn man nicht vorher kündigt.
 - Kündigen: in der App unter Einstellungen → Abonnement verwalten, auf dem iPhone unter Einstellungen → [Name] → Abonnements, auf Android im Google Play Store unter Zahlungen und Abos → Abos.
