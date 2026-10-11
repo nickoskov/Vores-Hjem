@@ -740,7 +740,7 @@ async function trafikEgen(dage) {
   // ingen doede adresser registreret endnu er et rigtigt "ingen". Svarede taelleren ikke, er listen ukendt.
   const doede = doedeFejl ? null : egenDoede ? egenD.raekker : [];
   return {
-    kilde: 'egen', kildeTekst: 'Jeres egen tæller, uden cookies. Tæller alle besøgende, også dem der ikke har svaret på cookies.',
+    kilde: 'egen', kildeTekst: 'Uden cookies. Tæller alle besøgende, robotter er sorteret fra.',
     type: p.type, visning: p.visning, fra: p.fra, til: p.til, note: p.note || null,
     daekning: dN, taellerStart: s ? s.tid : null,
     landing, kilder, time, timeTil: null, ugedag,
