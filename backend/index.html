@@ -1503,14 +1503,12 @@ function doegnTimer(raekker, felt) {
   return sum.slice(0, sidste + 1).map((n, h) => ({ hour: String(h), [felt]: n !== undefined ? n : idag && h > sidstMedTal ? null : 0 }));
 }
 /* Trafik er Google Analytics, som kun tæller dem, der har sagt ja til cookies. Det står øverst og ved hver boks.
-   Hver liste er null, når Googles rapport fejlede ("Kunne ikke hentes"), og ialt er periodens rigtige totaler til "% af alle".
+   Uden Google Analytics (fx den tyske side, valgt med vilje) kommer tallene fra den egne tæller (d.kilde 'egen'), som tæller alle:
+   samme kasser, men lande og enheder i stedet for byer, browser og styresystem, som tælleren ikke gemmer.
+   Hver liste er null, når kilden ikke svarede ("Kunne ikke hentes"), og ialt er periodens rigtige totaler til "% af alle".
    Konverteringer (keyEvents) er null, når der ingen nøglehændelser er sat op i Google Analytics, og står så som –. */
 async function visTrafik(m) {
-  // en side, der bevidst ikke bruger Google Analytics (fx den tyske), faar ikke at vide, at noget "mangler"
-  if (!opsat.analytics && profil.ga4 === false) { m.innerHTML = hoved('Trafik','Hvem besøger siden') +
-    '<div class="besked info">' + sik(profil.navn) + ' bruger ikke Google Analytics. Det er valgt med vilje, så siden ikke sætter cookies. ' +
-    'Jeres egen tæller tæller alle besøgende, og tallene står på <b>Oversigt</b>: besøg, hvor de kom fra, mest læste sider, lande, enheder og tryk på hent-knapperne.</div>'; return; }
-  if (!opsat.analytics) { m.innerHTML = hoved('Trafik','Hvem besøger siden') + ingenTal; return; }
+  if (!opsat.analytics && opsat.database === false) { m.innerHTML = hoved('Trafik','Hvem besøger siden') + (dbBesked() || ingenTal); return; }
   const v = vaerktoej(periodevaelger());
   m.innerHTML = hoved('Trafik','Hvem besøger siden', v) + skeletKort(2);
   const d = await kald('trafik', { dage });
@@ -1521,24 +1519,42 @@ async function visTrafik(m) {
   const konvNote = kv.maales === false && kv.grund ? '<p style="font-size:12px;color:var(--svag);margin-top:8px">Konverteringer: ' + sik(kv.grund) + '</p>' : '';
   const kl = (felt, ekstra) => kildeLinje(kf[felt] || (typeof d.kilde === 'string' ? d.kilde : 'ga4'), daek, ekstra);
   const doedeEgen = d.doedeKilde === 'egen';
+  const egen = d.kilde === 'egen', lille = t => t ? '<p style="font-size:12px;color:var(--svag);margin-top:8px">' + sik(t) + '</p>' : '';
+  // den egne tæller: hvad konverteringer og afvisning betyder her, og hvis klik-tælleren startede senere
+  const egenNote = egen ? lille([d.noter && d.noter.afvisning, kv.tekst, kv.grund].filter(Boolean).join(' ')) : '';
+  const kildeKol = egen
+    ? [{navn:'Kanal og kilde', felt:'kanal', bar:'sessions', total: ia.kilder, form:(v, r) => sik(kanal(v)) + (r && r.kilde ? '<span style="color:var(--svag)">, ' + sik(r.kilde) + '</span>' : '')},
+       {navn:'Besøg', felt:'sessions', h:true}, {navn:'Konverteringer', felt:'keyEvents', h:true}]
+    : [{navn:'Kilde og medie', felt:'sessionSourceMedium', bar:'sessions', total: ia.kilder, form:v => sik(kilde(v))}, {navn:'Besøg', felt:'sessions', h:true},
+       {navn:'Konverteringer', felt:'keyEvents', h:true}];
+  const sidsteRaekke = egen
+    ? '<div class="net n2">' +
+        '<div class="kort"><h3>Lande</h3>' + kl('lande') + tabel('t-lande', samlVist(d.lande, 'countryId', land), [{navn:'Land', felt:'countryId', bar:'activeUsers', total: ia.lande, form:v => sik(land(v))}, {navn:'Besøgende', felt:'activeUsers', h:true}], 'Ingen data') + '</div>' +
+        '<div class="kort"><h3>Enhed</h3>' + kl('enheder') + donut(samlVist(d.enheder, 'deviceCategory', enhed), 'deviceCategory', 'activeUsers', enhed) + '</div></div>' +
+      lille(d.ikkeMaalt)
+    : '<div class="net n3">' +
+      '<div class="kort"><h3>Byer</h3>' + kl('byer') + tabel('t-by', samlVist(d.byer, 'city', ukendt), [{navn:'By', felt:'city', bar:'activeUsers', total: ia.byer, form:v => sik(ukendt(v))}, {navn:'Besøgende', felt:'activeUsers', h:true}], 'Ingen data') + '</div>' +
+      '<div class="kort"><h3>Browser</h3>' + kl('browser') + tabel('t-br', samlVist(d.browser, 'browser', ukendt), [{navn:'Browser', felt:'browser', bar:'activeUsers', total: ia.browser}, {navn:'Besøgende', felt:'activeUsers', h:true}], 'Ingen data') + '</div>' +
+      '<div class="kort"><h3>Styresystem</h3>' + kl('os') + tabel('t-os', samlVist(d.os, 'operatingSystem', ukendt), [{navn:'System', felt:'operatingSystem', bar:'activeUsers', total: ia.os}, {navn:'Besøgende', felt:'activeUsers', h:true}], 'Ingen data') + '</div></div>';
   m.innerHTML = hoved('Trafik', 'Hvem besøger siden, og hvordan de kom ind. ' + periodeTekst(d), v) + hentetLinje(d) + delfejl(d) +
-    '<div class="besked info"><b>Fra Google Analytics.</b> ' + sik((d.kildeTekst || '').replace(/^Google Analytics\.\s*/, '') || 'Tæller kun besøgende, der har sagt ja til cookies, så tallene er lavere end jeres egen tæller på Oversigt.') +
-      (d.note ? ' ' + sik(d.note) : '') + '</div>' +
+    (egen ? '<div class="besked info"><b>Fra jeres egen tæller.</b> ' + sik(d.kildeTekst || 'Uden cookies. Tæller alle besøgende.') +
+        (d.note ? ' ' + sik(d.note) : '') + '</div>'
+      : '<div class="besked info"><b>Fra Google Analytics.</b> ' + sik((d.kildeTekst || '').replace(/^Google Analytics\.\s*/, '') || 'Tæller kun besøgende, der har sagt ja til cookies, så tallene er lavere end jeres egen tæller på Oversigt.') +
+        (d.note ? ' ' + sik(d.note) : '') + '</div>') +
     daekBesked(daek) +
     '<div class="kort" style="margin-bottom:14px"><h3>Hvor de lander først' + udtrKnap('t-land','landingssider') + '</h3>' + kl('landing') +
       tabel('t-land', samlVist(d.landing, 'landingPage', ukendt, 'sessions'), [
         {navn:'Landingsside', felt:'landingPage', bar:'sessions', total: ia.landing, form:v => sik(ukendt(v))}, {navn:'Besøg', felt:'sessions', h:true},
         {navn:'Afvisning', felt:'bounceRate', h:true, form:v => pct(v)}, {navn:'Konverteringer', felt:'keyEvents', h:true}], 'Ingen data') +
-      ((d.noter && d.noter.landing && (d.landing||[]).some(r => r.ukendt || erUkendt(r.landingPage))) ? '<p style="font-size:12px;color:var(--svag);margin-top:8px">' + sik(d.noter.landing) + '</p>' : '') + konvNote + '</div>' +
+      ((d.noter && d.noter.landing && (d.landing||[]).some(r => r.ukendt || erUkendt(r.landingPage))) ? '<p style="font-size:12px;color:var(--svag);margin-top:8px">' + sik(d.noter.landing) + '</p>' : '') + konvNote + egenNote + '</div>' +
     '<div class="net n2"><div class="kort"><h3>Hvornår på døgnet</h3>' + kl('time', 'dansk tid') +
         soejler(doegnTimer(d.time, 'sessions'), 'hour', 'sessions', h => String(h).padStart(2,'0') + ':00', 3) +
         // I dag: backenden siger, hvilke timer Google endnu ikke har talt (de står som –, ikke 0)
         (d.noter && d.noter.time ? '<p style="font-size:12px;color:var(--svag);margin-top:8px">' + sik(d.noter.time) + '</p>' : '') + '</div>' +
       '<div class="kort"><h3>Hvilke ugedage</h3>' + kl('ugedag') + soejler(d.ugedag, 'dayOfWeek', 'sessions', dagnavn) + '</div></div>' +
     '<div class="kort" style="margin-bottom:14px"><h3>Kilder i detaljer' + udtrKnap('t-kilde','kilder') + '</h3>' + kl('kilder') +
-      tabel('t-kilde', samlVist(kilder, 'sessionSourceMedium', kilde), [
-        {navn:'Kilde og medie', felt:'sessionSourceMedium', bar:'sessions', total: ia.kilder, form:v => sik(kilde(v))}, {navn:'Besøg', felt:'sessions', h:true},
-        {navn:'Konverteringer', felt:'keyEvents', h:true}], 'Ingen data') + konvNote + '</div>' +
+      tabel('t-kilde', egen ? kilder : samlVist(kilder, 'sessionSourceMedium', kilde), kildeKol, 'Ingen data') + konvNote +
+      (egen ? lille('Kanalen og siden, de kom fra, ved besøgets første side.') : '') + '</div>' +
     // døde links står altid, også når der ingen er, så man kan se, at de bliver talt
     '<div class="kort" style="margin-bottom:14px;' + ((d.doede||[]).length ? 'border-color:#FECACA' : '') + '"><h3>Døde links' +
         ((d.doede||[]).length ? udtrKnap('t-doede','doede-links') : '') + '</h3>' +
@@ -1548,10 +1564,7 @@ async function visTrafik(m) {
         {navn:'Gange', felt:'screenPageViews', h:true, std:true}].concat(doedeEgen ? [{navn:'Besøgende', felt:'besoegende', h:true}] : []),
         sik(d.doedeTomTekst || 'Ingen døde adresser i perioden.')) +
       ((d.doede||[]).length ? '<p style="font-size:12.5px;color:var(--svag);margin-top:10px">"Kom fra" viser hvor linket sidder. Er det jeres egen side, retter I linket. Er det en anden side, kan I lave en omdirigering i _redirects, så folk lander rigtigt.</p>' : '') + '</div>' +
-    '<div class="net n3">' +
-      '<div class="kort"><h3>Byer</h3>' + kl('byer') + tabel('t-by', samlVist(d.byer, 'city', ukendt), [{navn:'By', felt:'city', bar:'activeUsers', total: ia.byer, form:v => sik(ukendt(v))}, {navn:'Besøgende', felt:'activeUsers', h:true}], 'Ingen data') + '</div>' +
-      '<div class="kort"><h3>Browser</h3>' + kl('browser') + tabel('t-br', samlVist(d.browser, 'browser', ukendt), [{navn:'Browser', felt:'browser', bar:'activeUsers', total: ia.browser}, {navn:'Besøgende', felt:'activeUsers', h:true}], 'Ingen data') + '</div>' +
-      '<div class="kort"><h3>Styresystem</h3>' + kl('os') + tabel('t-os', samlVist(d.os, 'operatingSystem', ukendt), [{navn:'System', felt:'operatingSystem', bar:'activeUsers', total: ia.os}, {navn:'Besøgende', felt:'activeUsers', h:true}], 'Ingen data') + '</div></div>';
+    sidsteRaekke;
 }
 
 /* ══ SØGEORD ══ */

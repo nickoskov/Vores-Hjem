@@ -674,6 +674,98 @@ async function trafik(dage) {
   };
 }
 
+/* ── trafik fra den egne taeller ───────────────────────────────────────────
+   Til en side uden Google Analytics (den tyske, valgt med vilje, saa siden ikke saetter cookies).
+   Samme form som trafik(), med kilde 'egen'. Et besoeg er sidevisninger fra samme gaest uden 30
+   minutters stilhed imellem (som hos Google). Gaeste-id'et skifter ved midnat, saa et besoeg slutter
+   senest der. Landingssiden, kanalen, enheden og landet er dem ved besoegets foerste side. Afvisning er
+   besoeg med kun én sidevisning. Konverteringer er besoeg med et tryk paa en hent-knap, der sendte
+   videre til App Store eller Google Play. Taelleren gemmer ikke by, browser og styresystem, saa der
+   staar lande og enheder i stedet. */
+const qTrafikEgen = v => sql`WITH r AS (
+    SELECT id, ts, sti, kilde, kanal, enhed, land, gaest,
+      CASE WHEN lag(ts) OVER w IS NULL OR ts - lag(ts) OVER w > interval '30 minutes' THEN 1 ELSE 0 END AS ny
+    FROM vh_besoeg WHERE ts >= (${v.a}::timestamp AT TIME ZONE 'Europe/Copenhagen') AND ts < (${v.b}::timestamp AT TIME ZONE 'Europe/Copenhagen')
+    WINDOW w AS (PARTITION BY gaest ORDER BY ts, id)),
+  n AS (SELECT *, sum(ny) OVER (PARTITION BY gaest ORDER BY ts, id) AS nr FROM r),
+  b AS (SELECT gaest, nr, min(ts) AS start, max(ts) AS slut, count(*)::int AS sider,
+      (array_agg(sti ORDER BY ts, id))[1] AS landing, (array_agg(kanal ORDER BY ts, id))[1] AS kanal,
+      (array_agg(kilde ORDER BY ts, id))[1] AS kilde, (array_agg(enhed ORDER BY ts, id))[1] AS enhed,
+      (array_agg(land ORDER BY ts, id))[1] AS land
+    FROM n GROUP BY gaest, nr),
+  k AS (SELECT b.*, (start AT TIME ZONE 'Europe/Copenhagen')::date AS dag,
+      extract(hour FROM start AT TIME ZONE 'Europe/Copenhagen')::int AS time,
+      extract(dow FROM start AT TIME ZONE 'Europe/Copenhagen')::int AS ugedag,
+      EXISTS (SELECT 1 FROM vh_klik c WHERE c.gaest = b.gaest AND c.butik IN ('appstore','googleplay')
+        AND c.ts >= b.start AND c.ts < b.slut + interval '30 minutes') AS konv
+    FROM b)
+  SELECT CASE WHEN grouping(landing) = 0 THEN 'landing' WHEN grouping(time) = 0 THEN 'time' WHEN grouping(ugedag) = 0 THEN 'ugedag'
+      WHEN grouping(kanal) = 0 THEN 'kilder' WHEN grouping(land) = 0 THEN 'lande' WHEN grouping(enhed) = 0 THEN 'enheder' ELSE 'ialt' END AS dim,
+    landing, time, ugedag, kanal, kilde, land, enhed,
+    count(*)::int AS besoeg, count(*) FILTER (WHERE sider = 1)::int AS enkelt, count(*) FILTER (WHERE konv)::int AS konv,
+    count(DISTINCT dag::text || gaest)::int AS besoegende, coalesce(sum(sider), 0)::int AS visninger
+  FROM k GROUP BY GROUPING SETS ((landing), (time), (ugedag), (kanal, kilde), (land), (enhed), ())`;
+async function trafikEgen(dage) {
+  const p = omfang(dage), fejl = [];
+  if (!sql) return { kilde: 'egen', type: p.type, visning: p.visning, fra: p.fra, til: p.til, grund: 'Databasen er ikke sat op.',
+    landing: null, time: null, ugedag: null, kilder: null, lande: null, enheder: null, doede: null, byer: null, browser: null, os: null,
+    ialt: {}, kildeFor: {}, fejl: [fejlObj('db', 'Databasen er ikke sat op.')] };
+  const start = await taellerStart().catch(e => { fejl.push(fejlObj('egen', e)); return undefined; });
+  const s = start && start.besoeg, sK = start && start.klik;
+  const dN = daekning(p.fra, p.til, s);
+  const v = dN.fra ? vindue(dN.fra, dN.til, p.klokke) : null;
+  let doedeFejl = false;
+  const [raa, egenD] = await Promise.all([
+    v ? qTrafikEgen(v).catch(e => { fejl.push(fejlObj('egen', e)); return null; }) : Promise.resolve(start === undefined ? null : []),
+    doedeEgen(p).catch(e => { doedeFejl = true; fejl.push(fejlObj('egen', e, 'Den egne tæller svarede ikke om døde adresser: ' + String(e.message || e).slice(0, 160))); return null; })
+  ]);
+  // raa null = taelleren svarede ikke (listerne bliver null, "Kunne ikke hentes"). [] = ingen hele dage med tal i
+  // perioden (listerne er tomme, og grunden staar i daekningen). Ellers er der altid en ialt-raekke, ogsaa med 0 besoeg.
+  const del = dim => raa ? raa.filter(r => r.dim === dim) : null;
+  const top = (l, n, felt) => l ? l.sort((a, b) => b[felt] - a[felt]).slice(0, n) : null;
+  const tom = !!raa && !raa.length;
+  const I = raa && !tom ? del('ialt')[0] : null;
+  const t = f => I ? I[f] : null;
+  const landingAlle = del('landing'), kilderAlle = del('kilder'), landeAlle = del('lande'), enhAlle = del('enheder');
+  const landing = top(landingAlle && landingAlle.map(r => ({ landingPage: r.landing, sessions: r.besoeg,
+    bounceRate: r.besoeg ? r.enkelt / r.besoeg : null, keyEvents: r.konv })), 25, 'sessions');
+  const kilder = top(kilderAlle && kilderAlle.map(r => ({ kanal: r.kanal, kilde: r.kilde, sessions: r.besoeg, keyEvents: r.konv })), 20, 'sessions');
+  const time = !raa || tom ? (raa ? [] : null)
+    : alleTimer(del('time').map(r => ({ hour: String(r.time), sessions: r.besoeg })), p.type === 'idag' ? p.time : 23, null);
+  const ugedag = !raa || tom ? (raa ? [] : null) : alleUgedage(del('ugedag').map(r => ({ dayOfWeek: String(r.ugedag), sessions: r.besoeg })), dN.fra, dN.til);
+  // klik-taelleren kan vaere startet senere end besoegstaelleren. Saa er konverteringerne foer den ikke med.
+  const dK = daekning(p.fra, p.til, sK);
+  const konvGrund = sK && dK.fra && dN.fra && dK.fra > dN.fra ? punktum(start.klik.tekst) + ' Konverteringer før den dag er ikke med.' : null;
+  const egenDato = egenD ? dkNu(egenD.fra).dato : null, egenDoede = !!egenD && egenDato <= p.til;
+  // ingen doede adresser registreret endnu er et rigtigt "ingen". Svarede taelleren ikke, er listen ukendt.
+  const doede = doedeFejl ? null : egenDoede ? egenD.raekker : [];
+  return {
+    kilde: 'egen', kildeTekst: 'Jeres egen tæller, uden cookies. Tæller alle besøgende, også dem der ikke har svaret på cookies.',
+    type: p.type, visning: p.visning, fra: p.fra, til: p.til, note: p.note || null,
+    daekning: dN, taellerStart: s ? s.tid : null,
+    landing, kilder, time, timeTil: null, ugedag,
+    lande: top(landeAlle && landeAlle.filter(r => r.land).map(r => ({ countryId: r.land, activeUsers: r.besoegende })), 15, 'activeUsers'),
+    enheder: top(enhAlle && enhAlle.map(r => ({ deviceCategory: r.enhed, activeUsers: r.besoegende })), 5, 'activeUsers'),
+    byer: null, browser: null, os: null,
+    ikkeMaalt: 'By, browser og styresystem gemmer tælleren ikke. Det er en del af, at den ikke bruger cookies og ikke kan genkende nogen.',
+    doede, doedeKilde: 'egen', doedeFra: egenD ? egenD.fra : null,
+    doedeTekst: egenDoede ? punktum('Egen tæller, alle besøgende. Den har kun tal for døde adresser fra ' + dkTekst(egenDato)) + (p.fra < egenDato ? ' Dagene før er ikke med.' : '')
+      : 'Egen tæller, alle besøgende.',
+    doedeTomTekst: 'Ingen døde adresser i perioden.', doedeGa4: null,
+    ialt: { besoeg: t('besoeg'), besoegende: t('besoegende'), visninger: t('visninger'),
+      landing: t('besoeg'), kilder: t('besoeg'), time: t('besoeg'), ugedag: t('besoeg'),
+      lande: t('besoegende'), enheder: t('besoegende'), doede: doedeFejl ? null : egenDoede ? egenD.ialt : 0, konverteringer: t('konv') },
+    ialtTekst: 'Hele periodens samlede tal, også rækker der ikke står i listen. Brug det til "% af alle".',
+    besoegendeTekst: p.timer ? 'Forskellige besøgende i løbet af dagen.' : 'Besøgende pr. dag, lagt sammen. Tælleren kan ikke genkende nogen fra dag til dag.',
+    konverteringer: { maales: true, kilde: 'egen', grund: konvGrund,
+      tekst: 'Konverteringer er besøg, hvor nogen trykkede på en hent-knap, der sendte dem til App Store eller Google Play.' },
+    noter: { landing: null, time: p.type === 'idag' ? 'Timerne frem til nu.' : null, ugedag: 'dage er, hvor mange af hver ugedag perioden har.',
+      afvisning: 'Afvisning er besøg, hvor der kun blev set én side.' },
+    kildeFor: { landing: 'egen', time: 'egen', ugedag: 'egen', kilder: 'egen', lande: 'egen', enheder: 'egen', doede: 'egen' },
+    fejl
+  };
+}
+
 /* ── annoncer ──────────────────────────────────────────────────────────────
    Besoeg og konverteringer fra Google Analytics (kun cookie-ja). Forbrug fra de annoncekonti,
    der er koblet paa (lige nu kun Meta). Svarer en konto ikke, er forbruget ukendt (null), aldrig
@@ -1696,7 +1788,8 @@ exports.handler = async (ev) => {
     switch (d) {
       case 'live':      return svar(200, await husk('live', 30 * SEK, medLog(live)));
       case 'oversigt':  return svar(200, await cachet('oversigt', () => oversigt(dage)));
-      case 'trafik':    return svar(200, await cachet('trafik',   () => trafik(dage)));
+      // uden Google Analytics (fx den tyske side, med vilje) kommer Trafik fra den egne taeller
+      case 'trafik':    return svar(200, await cachet('trafik',   () => G.opsat() ? trafik(dage) : trafikEgen(dage)));
       case 'annoncer':  return svar(200, await cachet('annoncer', () => annoncer(dage)));
       case 'soegeord':  return svar(200, await cachet('soegeord', () => soegeord(dage)));
       case 'downloads': return svar(200, await cachet('downloads', () => downloads(dage), TIME));
