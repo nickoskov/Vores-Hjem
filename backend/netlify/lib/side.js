@@ -108,6 +108,6 @@ module.exports = {
   // eget stykke foran, saa dens forside ikke blandes med sidens forside
   sti: (vaert, sti) => { const f = (profil.foran || {})[String(vaert || '').toLowerCase().replace(/^www\./, '')];
     return f ? f + (sti === '/' ? '' : sti) : sti; },
-  offentlig: () => ({ kode: profil.kode, brand: profil.brand, navn: profil.navn, site: profil.site, backend: profil.backend,
+  offentlig: () => ({ kode: profil.kode, brand: profil.brand, navn: profil.navn, site: profil.site, backend: profil.backend, ga4: !!profil.ga4Kode,
     chat: profil.chat, skjul: profil.skjul.slice() })
 };

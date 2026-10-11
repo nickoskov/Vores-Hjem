@@ -1506,6 +1506,10 @@ function doegnTimer(raekker, felt) {
    Hver liste er null, når Googles rapport fejlede ("Kunne ikke hentes"), og ialt er periodens rigtige totaler til "% af alle".
    Konverteringer (keyEvents) er null, når der ingen nøglehændelser er sat op i Google Analytics, og står så som –. */
 async function visTrafik(m) {
+  // en side, der bevidst ikke bruger Google Analytics (fx den tyske), faar ikke at vide, at noget "mangler"
+  if (!opsat.analytics && profil.ga4 === false) { m.innerHTML = hoved('Trafik','Hvem besøger siden') +
+    '<div class="besked info">' + sik(profil.navn) + ' bruger ikke Google Analytics. Det er valgt med vilje, så siden ikke sætter cookies. ' +
+    'Jeres egen tæller tæller alle besøgende, og tallene står på <b>Oversigt</b>: besøg, hvor de kom fra, mest læste sider, lande, enheder og tryk på hent-knapperne.</div>'; return; }
   if (!opsat.analytics) { m.innerHTML = hoved('Trafik','Hvem besøger siden') + ingenTal; return; }
   const v = vaerktoej(periodevaelger());
   m.innerHTML = hoved('Trafik','Hvem besøger siden', v) + skeletKort(2);
