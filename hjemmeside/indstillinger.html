@@ -1129,6 +1129,7 @@ function goToStore(e){ if(e) e.preventDefault();
   }
 </style>
 
+<style>.hent-flyd.lille{width:52px!important;height:52px!important;padding:0!important;gap:0!important;justify-content:center}.hent-flyd.lille span{display:none}</style>
 <a class="hent-flyd" id="hent-flyd" href="/hent/" data-sted="flydeknap">
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/>
@@ -1151,6 +1152,26 @@ function goToStore(e){ if(e) e.preventDefault();
   // synlig hele tiden, ogsaa oeverst paa siden (Nicko 8. okt. 2026). Klassen saettes i naeste billede,
   // saa knappen glider blidt ind i stedet for at springe frem.
   requestAnimationFrame(function(){ k.classList.add('vis'); });
+
+  // Daekker knappen en App Store- eller Google Play-knap eller en hovedknap, bliver den til en
+  // lille rund knap ude ved kanten, indtil den er rullet forbi (som paa den tyske side).
+  var fuld = 0;
+  function undgaa(){ try {
+    if (window.matchMedia && matchMedia('(max-height:500px)').matches) { k.classList.remove('lille'); return; }
+    if (!k.classList.contains('lille')) fuld = k.offsetWidth;
+    var r = k.getBoundingClientRect(), hoejre = r.right, venstre = r.right - (fuld || r.width), ram = false;
+    var kn = document.querySelectorAll('a[href*="apps.apple.com"], a[href*="play.google.com"], a[href*="/hent/appstore"], a[href*="/hent/googleplay"], .btn-primary');
+    for (var i = 0; i < kn.length && !ram; i++) {
+      if (kn[i] === k) continue;
+      var b = kn[i].getBoundingClientRect(); if (b.width < 20 || b.height < 20) continue;
+      ram = b.right > venstre - 8 && b.left < hoejre + 8 && b.bottom > r.top - 8 && b.top < r.bottom + 8;
+    }
+    if (ram !== k.classList.contains('lille')) k.classList.toggle('lille', ram);
+  } catch (e) {} }
+  var venter = false;
+  window.addEventListener('scroll', function(){ if (venter) return; venter = true; requestAnimationFrame(function(){ venter = false; undgaa(); }); }, { passive: true });
+  window.addEventListener('resize', undgaa, { passive: true });
+  setInterval(undgaa, 1000); undgaa();
 })();
 </script>
 
