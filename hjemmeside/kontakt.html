@@ -553,8 +553,8 @@ nav::before {
           <p>Udfyld formularen, så vender vi tilbage hurtigst muligt.</p>
         </div>
 
-        <div class="form-error" id="formError">Noget gik galt. Prøv igen eller skriv direkte til kontakt@vores-hjem.dk</div>
-        <div class="form-success" id="formSuccess">
+        <div class="form-error" id="formError" role="alert" tabindex="-1">Noget gik galt. Prøv igen eller skriv direkte til kontakt@vores-hjem.dk</div>
+        <div class="form-success" id="formSuccess" role="status" tabindex="-1">
           <div class="form-success-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
@@ -566,19 +566,19 @@ nav::before {
           <div class="field-row">
             <div class="field">
               <label for="navn">Navn <span style="color:#EC4899;">*</span></label>
-              <input type="text" id="navn" name="navn" placeholder="Dit navn" required>
+              <input type="text" id="navn" name="navn" placeholder="Dit navn" autocomplete="name" required>
             </div>
             <div class="field">
               <label for="email">Email <span style="color:#EC4899;">*</span></label>
-              <input type="email" id="email" name="email" placeholder="din@email.dk" required>
+              <input type="email" id="email" name="email" placeholder="din@email.dk" autocomplete="email" required>
             </div>
           </div>
           <div class="field">
-            <label for="emne">Emne</label>
+            <label for="emne">Emne <span style="color:#EC4899;">*</span></label>
             <input type="text" id="emne" name="emne" placeholder="Hvad handler det om?" required>
           </div>
           <div class="field">
-            <label for="besked">Besked</label>
+            <label for="besked">Besked <span style="color:#EC4899;">*</span></label>
             <textarea id="besked" name="besked" placeholder="Skriv din besked her..." required></textarea>
           </div>
           <!-- Kun bots udfylder dette felt. Ægte besøgende ser det aldrig. -->
@@ -610,8 +610,8 @@ nav::before {
               headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
               body: new URLSearchParams(new FormData(form)) })
               .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
-              .then(function () { form.style.display = 'none'; success.style.display = 'block'; })
-              .catch(function () { error.style.display = 'block'; btn.disabled = false; btn.innerHTML = oprindelig; });
+              .then(function () { form.style.display = 'none'; success.style.display = 'block'; success.focus(); })
+              .catch(function () { error.style.display = 'block'; error.focus(); btn.disabled = false; btn.innerHTML = oprindelig; });
           });
         </script>
         <style>@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }</style>
