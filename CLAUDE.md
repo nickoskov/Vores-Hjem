@@ -43,4 +43,4 @@ Mappen `minbolighandel/` hører ikke til Vores Hjem og skal ikke med.
   prøveperiode, der fornyes automatisk, ingen reklamer, iPhone og Android. Kontakt: kontakt@vores-hjem.dk.
   Support svarer inden for 24 timer på hverdage. Data opbevares i EU, primært i Frankfurt.
   Børn uden admin ser "🔒 Privat" ved private aftaler. Kalendervisninger: dag, uge, 2 uger, 4 uger.
-  Maks. 200 varer. Outlook-synkronisering er ikke bekræftet; skriv den ikke ind nye steder.
+  Maks. 200 varer. Outlook-synkronisering virker (bekræftet af Nicko 15. okt. 2026), når Outlook-kontoen ligger i telefonens Kalender-app; den må stå på begge sider.
