@@ -50,10 +50,15 @@
   hent('https://cdn.iubenda.com/cs/gpp/stub.js');
   hent('https://cdn.iubenda.com/cs/iubenda_cs.js', { charset: 'UTF-8' });
 
-  /* 3. Google Analytics 4. Maaler kun, naar samtykket er givet. */
-  hent('https://www.googletagmanager.com/gtag/js?id=G-ZFW1KE91LV');
-  gtag('js', new Date());
-  gtag('config', 'G-ZFW1KE91LV');
+  /* 3. Google Analytics 4. Hentes foerst, naar cookiebanneret melder ja til maaling
+        (analytics_storage granted). Foer det faar Google intet, heller ikke IP-adressen. */
+  var analyseStartet = false;
+  function startAnalyse() {
+    if (analyseStartet) return; analyseStartet = true;
+    hent('https://www.googletagmanager.com/gtag/js?id=G-ZFW1KE91LV');
+    gtag('js', new Date());
+    gtag('config', 'G-ZFW1KE91LV');
+  }
 
   /* 3b. Google Ads. Der er ingen Ads-kode endnu. Naar I opretter en konvertering
          i Google Ads, faar I et id som AW-123456789. Saet det ind og fjern //
@@ -84,9 +89,9 @@
   var set = 0, vagt = setInterval(function () {
     for (; set < dataLayer.length; set++) {
       var a = dataLayer[set];
-      if (a && a[0] === 'consent' && a[2] && a[2].ad_storage === 'granted') {
-        startReklame(); clearInterval(vagt); return;
-      }
+      if (a && a[0] === 'consent' && a[2] && a[2].analytics_storage === 'granted') startAnalyse();
+      if (a && a[0] === 'consent' && a[2] && a[2].ad_storage === 'granted') startReklame();
+      if (analyseStartet && reklameStartet) { clearInterval(vagt); return; }
     }
   }, 400);
 
