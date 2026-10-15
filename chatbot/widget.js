@@ -26,8 +26,8 @@
   var TEKSTER = {
     dk: {
       titel: 'Vores Hjem',
-      status: 'Vi svarer typisk med det samme',
-      velkomst: 'Hej! Jeg er Vores Hjem-assistenten. Spørg mig om pris, hvordan appen virker, familiemedlemmer, funktioner, hvad som helst.',
+      status: 'AI-assistent, svarer med det samme',
+      velkomst: 'Hej! Jeg er Vores Hjems AI-assistent. Spørg mig om pris, hvordan appen virker, familiemedlemmer eller funktioner. Ved behov tager en fra teamet over.',
       hurtige: ['Hvad koster det?', 'Hvordan kommer jeg i gang?', 'Kan jeg prøve gratis?', 'Kan jeg synkronisere kalenderen?'],
       // Teaser efter hvor langt brugeren er kommet på siden (top / midt / bund)
       teaser: [
@@ -36,7 +36,7 @@
         'Spørgsmål om prisen? Én pris for hele familien, spørg løs 👋'
       ],
       skriv: 'Skriv din besked…',
-      brand: 'Drevet af Vores Hjem',
+      brand: 'AI-assistent fra Vores Hjem',
       banner: 'En fra teamet er med i chatten',
       teamTag: 'Vores Hjem-team',
       nyttigt: 'Nyttigt?', tak: 'Tak for din feedback',

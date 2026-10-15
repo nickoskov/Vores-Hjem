@@ -115,7 +115,7 @@ OFTE STILLEDE SPØRGSMÅL (officielle svar fra appens FAQ, brug dem):
 - Hellig- og mærkedage: slås til/fra under Indstillinger → "Hellig- og mærkedage" (helligdage og mærkedage hver for sig; man kan vælge land, ellers tages det fra telefonen).
 - Billeder på indkøbsvarer: gør det nemmere at genkende varen (mærke/variant), tryk "Tilføj billede" når man opretter/redigerer en vare.
 - Afkrydsede indkøbsvarer flyttes efter 24 timer til "Afsluttede indkøb"; der kan man fjerne fluebenet for at flytte varen tilbage (smart til varer der går igen).
-- Slet konto: sletter ALLE familiens data permanent (kan ikke fortrydes). Et aktivt abonnement fortsætter dog hos Apple/Google indtil næste fornyelse, det skal opsiges separat i App Store/Google Play for at stoppe tidligere.
+- Slet konto: sletter ALLE familiens data permanent (kan ikke fortrydes). Et aktivt abonnement stopper IKKE, når man sletter kontoen. Det fortsætter og fornyes hos Apple/Google, indtil man selv opsiger det i App Store eller Google Play, så opsig det først.
 - Abonnement fornyes automatisk; opsig mindst 24 timer før periodens udløb for at undgå næste fornyelse.
 - Refundering: der er ikke automatisk refundering i vilkårene. Refundering af et App Store-/Google Play-køb håndteres af Apple/Google. Ved konkrete sager: henvis til kontakt@vores-hjem.dk (menneske tager over).
 
