@@ -63,7 +63,7 @@ function lavSide(skabelon, p, alle) {
 function lavForside(skabelon, alle) {
   const kort = alle.map((p, i) => {
     const doven = i < 6 ? '' : ' loading="lazy" decoding="async"';
-    const billede = p.billede ? '<img src="' + esc(p.billede) + '" alt="" class="bk-bil"' + doven + '>' :
+    const billede = p.billede ? '<img src="' + esc(p.billede) + '" alt="' + esc(p.titel) + '" class="bk-bil"' + doven + '>' :
       '<div class="bk-bil bk-tom"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3 2 12h3v8h5v-6h4v6h5v-8h3L12 3z"/></svg></div>';
     return '      <a class="bk" href="/post/' + esc(p.slug) + '">\n        <div class="bk-ramme">' + billede + '</div>\n        <div class="bk-ind">\n          <time class="bk-dato" datetime="' + p.dato + '">' + dansk(p.dato) + '</time>\n          <h2 class="bk-titel">' + esc(p.titel) + '</h2>\n          <p class="bk-tekst">' + esc(p.resume) + '</p>\n          <span class="bk-mere">Læs indlægget\n            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>\n          </span>\n        </div>\n      </a>';
   }).join('\n');
