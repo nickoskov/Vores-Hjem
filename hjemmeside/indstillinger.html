@@ -471,6 +471,7 @@ nav::before {
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Indstillinger | Vores Hjem","description":"Styr familiens konto i Vores Hjem: profil, familiemedlemmer og roller, familiekode, abonnement, 7 sprog, hellig- og mærkedage og meget mere.","url":"https://www.voreshjem.dk/indstillinger","isPartOf":{"@id":"https://www.voreshjem.dk/#website"},"about":{"@id":"https://www.voreshjem.dk/#app"},"dateModified":"2026-10-07"}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","@id":"https://www.voreshjem.dk/indstillinger#faq","url":"https://www.voreshjem.dk/indstillinger","inLanguage":"da","mainEntity":[{"@type":"Question","name":"Hvorfor får jeg ikke påmindelser, selvom jeg har slået dem til?","acceptedAnswer":{"@type":"Answer","text":"Hvis notifikationer er slået fra under din telefons indstillinger, modtager du ingen påmindelser, også selvom du har slået dem til i appen. Du får kun påmindelser hvis begivenheden har et starttidspunkt, og de sendes 3 timer før den begynder."}},{"@type":"Question","name":"Hvorfor kan jeg ikke oprette opgaver?","acceptedAnswer":{"@type":"Answer","text":"Der skal være oprettet familiemedlemmer først. Det gør hovedbrugeren (den der logger ind via mail) under Indstillinger. Når der er medlemmer, kan der oprettes opgaver."}},{"@type":"Question","name":"Hvorfor kan jeg ikke finde varer, jeg har vinget af på indkøbslisten?","acceptedAnswer":{"@type":"Answer","text":"Efter 24 timer flyttes overstregede varer til \"Afsluttede indkøb\". Fjern fluebenet, så ryger varen tilbage på listen: så slipper du for at oprette varer, der går igen."}},{"@type":"Question","name":"Hvorfor kan jeg ikke tilføje flere varer på indkøbslisten?","acceptedAnswer":{"@type":"Answer","text":"Der kan maksimalt oprettes 200 produkter/varer i appen."}},{"@type":"Question","name":"Hvordan får man adgang som kode-bruger?","acceptedAnswer":{"@type":"Answer","text":"Hovedbrugeren (mail-kontoen) skal først oprette familiemedlemmer under Indstillinger. Derefter kan kode-brugeren logge ind med sit navn og den familiekode, der står under Indstillinger."}},{"@type":"Question","name":"Hvor mange kode-brugere kan der oprettes?","acceptedAnswer":{"@type":"Answer","text":"Der kan maksimalt oprettes 6 ekstra medlemmer/familiemedlemmer under hver konto."}},{"@type":"Question","name":"Hvordan slår jeg hellig- og mærkedage til eller fra?","acceptedAnswer":{"@type":"Answer","text":"Gå til Indstillinger → \"Hellig- og mærkedage\". Her kan du slå officielle helligdage (fx jul, påske og Store Bededag) og mærkedage (fx mors dag, fars dag og valentinsdag) til og fra hver for sig, og vælge hvilket land de vises for."}},{"@type":"Question","name":"Jeg har glemt min adgangskode, hvad gør jeg?","acceptedAnswer":{"@type":"Answer","text":"Tryk \"Glemt adgangskode\" på login-skærmen og indtast din e-mail. Du modtager en mail med et link til at nulstille kodeordet. Når du er logget ind, kan du også ændre den under Indstillinger → \"Nulstil adgangskode\"."}},{"@type":"Question","name":"Hvorfor kan jeg tilføje billeder til mine indkøbsvarer?","acceptedAnswer":{"@type":"Answer","text":"Et billede gør det nemmere at genkende varen, især når en anden er på indkøb og er i tvivl om mærke eller variant. Tryk \"Tilføj billede\" når du opretter eller redigerer en vare."}},{"@type":"Question","name":"Hvad betyder \"Privat begivenhed\" i kalenderen?","acceptedAnswer":{"@type":"Answer","text":"Markerer du en begivenhed som privat (stjerne-ikonet), kan kode-brugere uden admin-rettigheder ikke se titlen, kun \"🔒 Privat\". Hovedbrugeren og kode-brugere med admin-rettigheder ser altid alt. Nyttigt til fx lægeaftaler eller overraskelser."}},{"@type":"Question","name":"Hvad sker der, hvis jeg sletter min konto?","acceptedAnswer":{"@type":"Answer","text":"Al data tilknyttet din familie slettes permanent: begivenheder, opgaver, madplaner, indkøbslister og familiemedlemmer. Dit abonnement bliver ikke opsagt af, at du sletter kontoen, og det fornyes fortsat automatisk. Opsig det selv først i App Store (iPhone: Indstillinger → [dit navn] → Abonnementer → Vores Hjem) eller i Google Play. Sletningen kan ikke fortrydes."}},{"@type":"Question","name":"Hvad gør person-ikonet ved et familiemedlem?","acceptedAnswer":{"@type":"Answer","text":"Tryk på person-ikonet for at markere medlemmet som dig. Så vises de opgaver, der er tildelt den person, under \"Egne\" i Opgaver. Du kan kun have ét medlem markeret ad gangen, og valget gælder kun på den enhed, du sidder ved."}}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Forside","item":"https://www.voreshjem.dk/"},{"@type":"ListItem","position":2,"name":"Indstillinger","item":"https://www.voreshjem.dk/indstillinger"}]}</script>
+<style>#contact-modal-overlay{visibility:hidden}#contact-modal-overlay.open{visibility:visible}</style>
 </head>
 <body>
 
@@ -1026,11 +1027,11 @@ window.addEventListener('scroll', () => {
 
 // Contact modal
 function openContactModal() {
-  document.getElementById('contact-modal-overlay').classList.add('open');
+  document.getElementById('contact-modal-overlay').classList.add('open'); document.getElementById('contact-modal-overlay').removeAttribute('aria-hidden');
   document.body.style.overflow = 'hidden';
 }
 function closeContactModal() {
-  document.getElementById('contact-modal-overlay').classList.remove('open');
+  document.getElementById('contact-modal-overlay').classList.remove('open'); document.getElementById('contact-modal-overlay').setAttribute('aria-hidden','true');
   document.body.style.overflow = '';
 }
 function closeContactModalOutside(e) {
@@ -1074,9 +1075,9 @@ function goToStore(e){ if(e) e.preventDefault();
 </script>
 
 <!-- CONTACT MODAL -->
-<div id="contact-modal-overlay" onclick="closeContactModalOutside(event)">
+<div id="contact-modal-overlay" onclick="closeContactModalOutside(event)" aria-hidden="true">
   <div class="contact-modal">
-    <button class="contact-modal-close" onclick="closeContactModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <button class="contact-modal-close" onclick="closeContactModal()" aria-label="Luk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     <div id="contact-form-wrap">
       <h3>Skriv til os</h3>
       <p>Vi svarer inden for 24 timer på hverdage.</p>
