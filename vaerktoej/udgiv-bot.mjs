@@ -50,8 +50,8 @@ const SITE = { navn: 'voreshjem-bot', id: '1bfbc454-43f3-4117-b90d-6b824193e79e'
 // Samme netlify-cli som ved gennemgangen. Dens esbuild gav byte for byte den kørende funktion.
 const CLI = 'netlify-cli@27.12.0';
 
-// chatbot/ som udgivet live 16. okt. 2026 (commit 363acd6), efter gennemgang af ændringerne siden a9e32ad.
-const VERIFICERET = { commit: '363acd66352ef2f83ef3e6b74237a8650f325528', trae: '3925cc4ec43071bfe870aac7ded7d4c61b31ead7' };
+// chatbot/ som udgivet live 16. okt. 2026 (commit d883e10), efter gennemgang af ændringerne siden a9e32ad.
+const VERIFICERET = { commit: 'd883e10f30cc3e498c83e207872a8006f39d0111', trae: '48e435e7a877d4c691e1713322b180b01318bfd0' };
 // Live, da scriptet blev skrevet: udgivet 6. okt. 2026 fra ~/voreshjem-bot. De statiske filer er dem i commit
 // 9bbd261, og funktionen er byte for byte bygget af chatbot/netlify/functions/chat-bot.js fra samme commit.
 const KENDT_LIVE = { deploy: '6ac50c1fd252f300becee5a8', kilde: '9bbd2613593aef62dd8497636c05b0a5db44a7e4' };
