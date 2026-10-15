@@ -27,6 +27,43 @@ for = "/fonts/*"
   Cache-Control = "public, max-age=31536000, immutable"
 
 # Gamle Wix-adresser fra Search Console (404), okt. 2026
+# Interne arbejdsfiler (flyer, reklame, brandguide) er flyttet til brand/ i repoet og udgives ikke mere (16. okt. 2026)
+[[redirects]]
+  from = "/flyer.html"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/flyer"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/reklame_1.html"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/reklame_1"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/brand-guideline.html"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/brand-guideline"
+  to = "/"
+  status = 301
+  force = true
+
 [[redirects]]
 from = "/home"
 to = "/"
