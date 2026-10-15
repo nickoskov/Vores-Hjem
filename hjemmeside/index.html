@@ -139,6 +139,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","@id":"https://www.voreshjem.dk/#webpage","url":"https://www.voreshjem.dk/","name":"Familieapp med kalender, madplan og indkøbsliste | Vores Hjem","inLanguage":"da","isPartOf":{"@id":"https://www.voreshjem.dk/#website"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://www.voreshjem.dk/images/og.jpg","width":1200,"height":630},"about":{"@id":"https://www.voreshjem.dk/#app"},"dateModified":"2026-10-07"}</script>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Hvad koster Vores Hjem?", "acceptedAnswer": {"@type": "Answer", "text": "39 kr/md eller 199 kr/halvår (spar 15%). Det er én pris for hele familien, ikke pr. person, og dækker op til 7 personer på samme konto."}}, {"@type": "Question", "name": "Hvad sker der efter de 14 gratis dage?", "acceptedAnswer": {"@type": "Answer", "text": "Efter de 14 dage fortsætter abonnementet automatisk til 39 kr./md. eller 199 kr./halvår, medmindre I opsiger det i App Store eller Google Play, inden prøveperioden slutter. Der er ingen binding, så I kan opsige når som helst."}}, {"@type": "Question", "name": "Kan børn og bedsteforældre være med?", "acceptedAnswer": {"@type": "Answer", "text": "Ja! Med familiekoden logger de ind på sekunder, helt uden email eller kodeord. Familie-administratoren opretter dem under Indstillinger og deler familiekoden (to bogstaver og seks cifre, fx AA-123456)."}}, {"@type": "Question", "name": "Hvor mange kan være med på én konto?", "acceptedAnswer": {"@type": "Answer", "text": "Op til 7 personer: forældre, børn, bedsteforældre eller bofæller. Alle ser det samme fælles overblik."}}, {"@type": "Question", "name": "Skal vi droppe vores egen kalender?", "acceptedAnswer": {"@type": "Answer", "text": "Nej. Behold din egen kalender, Vores Hjem er familiens fælles kalender ved siden af, så alle aftaler der vedrører hjemmet ligger ét sted."}}, {"@type": "Question", "name": "Er der reklamer eller skjulte gebyrer?", "acceptedAnswer": {"@type": "Answer", "text": "Nej. Ingen reklamer, ingen ekstra gebyrer, ingen overraskelser. Appen er bygget i Danmark til danske familier."}}]}</script>
 <style>#contact-modal-overlay{visibility:hidden}#contact-modal-overlay.open{visibility:visible}</style>
+<style>@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto!important}}</style>
 </head>
 <body>
 
@@ -1180,7 +1181,7 @@
         vids.forEach(function(v){
           if(!visible(v)) return;
           if(v!==main){ try{ if(Math.abs(v.currentTime-main.currentTime)>0.3) v.currentTime=main.currentTime; }catch(e){} }
-          if(v.paused){ var p=v.play(); if(p&&p.catch) p.catch(function(){}); }
+          if(v.paused && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)){ var p=v.play(); if(p&&p.catch) p.catch(function(){}); }
         });
       }
       setInterval(function(){
@@ -1910,6 +1911,7 @@ window.addEventListener('scroll', () => {
     if (!s) return;
     s.src = s.dataset.src; s.removeAttribute('data-src');
     el.load();
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     var p = el.play(); if (p && p.catch) p.catch(function(){});
   }
   if (!('IntersectionObserver' in window)) { v.forEach(hent); return; }
