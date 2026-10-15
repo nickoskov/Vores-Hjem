@@ -39,7 +39,11 @@
   }
 
   /* 2. Cookiebanner, iubenda. siteId 4517758, cookiePolicyId 85951957. */
-  hent('https://embeds.iubenda.com/widgets/c4881ab1-9037-47e2-b5ce-d1950889d637.js');
+  /* Banneret hentes, lige efter at siden er tegnet, saa det ikke konkurrerer med sidens
+     eget indhold om nettet. Samtykket staar stadig til 'denied', saa intet maales foer svaret. */
+  function startBanner() { hent('https://embeds.iubenda.com/widgets/c4881ab1-9037-47e2-b5ce-d1950889d637.js'); }
+  function senere() { if ('requestIdleCallback' in window) requestIdleCallback(startBanner, { timeout: 1500 }); else setTimeout(startBanner, 300); }
+  if (document.readyState === 'complete') senere(); else window.addEventListener('load', senere);
 
   /* 3. Google Analytics 4. Hentes foerst, naar cookiebanneret melder ja til maaling
         (analytics_storage granted). Foer det faar Google intet, heller ikke IP-adressen. */
