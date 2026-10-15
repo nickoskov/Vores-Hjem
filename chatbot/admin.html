@@ -377,7 +377,7 @@ async function api(payload){
   const res = await fetch(ENDPOINT, {method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify(Object.assign({password:PW, site:SITE}, payload))});
   return res.json();
 }
-function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 function fmtTime(iso){
   if(!iso) return '';
   const d = new Date(iso), now = new Date();

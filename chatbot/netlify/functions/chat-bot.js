@@ -632,6 +632,9 @@ async function summarizeIssue(list, site) {
 // ---------- PERIODER TIL STATISTIKKEN (dansk kalendertid) ----------
 // Serveren kører i UTC. En dag i statistikken er en dansk kalenderdag fra
 // midnat til midnat, aldrig "minus 24 timer", så sommertid ikke flytter noget.
+// En mailadresse fra en besoegende: kun gyldig form, uden anfoerselstegn og vinkelparenteser (de kunne
+// ellers bruges til at snige kode ind i panelet). Ugyldig giver tom tekst.
+const gyldigMail = v => { const m = (typeof v === 'string' ? v : '').trim().slice(0, 120); return /^[^@\s"'<>]+@[^@\s"'<>]+\.[^@\s"'<>]+$/.test(m) ? m : ''; };
 const TZ = 'Europe/Copenhagen';
 const MARKED_NAVN = { dk: 'Dansk', de: 'Tysk', alle: 'Dansk og tysk' };
 function dkIdag() {
@@ -756,7 +759,7 @@ async function behandl(event) {
         .map(m => ({ role: m.role, content: m.content })).slice(-30) : [];
 
       let meta = await loadMeta(id);
-      if (!meta) meta = { id, site: cleanSite(body.site), email: (body.email || '').slice(0, 120), createdAt: nowISO(), human: false, needsHuman: false, alerted: false, firstQ: content.slice(0, 120), n: 0 };
+      if (!meta) meta = { id, site: cleanSite(body.site), email: gyldigMail(body.email), createdAt: nowISO(), human: false, needsHuman: false, alerted: false, firstQ: content.slice(0, 120), n: 0 };
       // Findes samtalen, gælder dens eget marked — widgeten kan ikke flytte den
       const site = cleanSite(meta.site || body.site);
       const S = cfg(site);
@@ -826,7 +829,7 @@ async function behandl(event) {
     if (action === 'set_email') {
       const id = cleanId(body.conversationId);
       const em = (typeof body.email === 'string' ? body.email : '').trim().slice(0, 120);
-      if (!id || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) return json(400, { error: 'ugyldig email' });
+      if (!id || !gyldigMail(em)) return json(400, { error: 'ugyldig email' });
       await sql`UPDATE vh_conversations SET email = ${em}, updated_at = now() WHERE id = ${id}`;
       return json(200, { ok: true });
     }
