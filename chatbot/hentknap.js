@@ -32,6 +32,13 @@
       var butik = /apps\.apple\.com/.test(h) ? 'appstore' : /play\.google\.com/.test(h) ? 'googleplay'
                 : /voreshjem-bot\.netlify\.app\/hent\/(app|appstore|googleplay)/.test(h) ? RegExp.$1 : egen ? 'app' : '';
       if (!butik) return;
+      /* Paa en computer sender butik.js App Store- og Google Play-knapperne til QR-koden paa /hent/,
+         ikke til butikken. Saa taelles trykket som 'app', som backenden skriver som 'hentside',
+         og Google Analytics faar klik_hent i stedet for et klik til en butik. */
+      if ((butik === 'appstore' || butik === 'googleplay') && document.querySelector('script[src*="butik.js"]')) {
+        var mob = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent || '') || (navigator.maxTouchPoints || 0) > 1;
+        if (!mob && !(e.metaKey || e.ctrlKey || e.shiftKey) && window.matchMedia && window.matchMedia('(min-width:820px)').matches) butik = 'app';
+      }
       if (egen) {
         var ua = navigator.userAgent || '';
         var direkte = /iPhone|iPad|iPod/.test(ua) ? 'https://apps.apple.com/dk/app/vores-hjem/id6758346281'

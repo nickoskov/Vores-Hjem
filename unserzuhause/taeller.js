@@ -45,9 +45,9 @@
     }
     var butik = /apps\.apple\.com/.test(h) ? 'appstore' : /play\.google\.com/.test(h) ? 'googleplay' : /showNotLaunched/.test(oc) ? 'app' : '';
     if (!butik) return;
-    // Paa en computer sender butik.js App Store-knapperne til download-siden (samme test som der).
+    // Paa en computer sender butik.js App Store- og Google Play-knapperne til download-siden (samme test som der).
     // "app" faar backenden til at skrive det ned som hent-siden ud fra enheden.
-    if (butik === 'appstore' && !e.metaKey && !e.ctrlKey && !e.shiftKey && computer() && document.querySelector('script[src*="butik.js"]')) butik = 'app';
+    if ((butik === 'appstore' || butik === 'googleplay') && !e.metaKey && !e.ctrlKey && !e.shiftKey && computer() && document.querySelector('script[src*="butik.js"]')) butik = 'app';
     var omr = a.closest('section[id]');
     var sted = omr ? omr.id : a.closest('nav') ? 'menu' : a.closest('footer') ? 'footer' : '';
     send({ k: 'klik', u: location.href, sted: String(sted).slice(0, 60), butik: butik });
