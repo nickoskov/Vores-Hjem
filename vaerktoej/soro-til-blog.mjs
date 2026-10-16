@@ -81,6 +81,20 @@ function retLink(href) {
   return p + u.search + u.hash;
 }
 
+// Bindestreger brugt som tankestreg (" - ") skrives om til komma, eller parentes om et indskud med kommaer
+// i. Tal-intervaller (fx 15 - 17) røres ikke (fund L11, 16. okt. 2026).
+function udenStreg(t) {
+  const beskyt = String(t).replace(/(\d) - (\d)/g, '$1§TAL§$2');
+  const ny = beskyt.replace(/[^.!?\n]+[.!?]?/g, (x) => {
+    const d = x.split(' - ');
+    if (d.length === 3) return d[1].includes(',') ? d[0] + ' (' + d[1] + ') ' + d[2] : d[0] + ', ' + d[1] + ', ' + d[2];
+    return x.split(' - ').join(', ');
+  });
+  return ny.split('§TAL§').join(' - ').split(', , ').join(', ');
+}
+const udenStregHtml = (h) => String(h).split(/(<(?:style|script)[\s\S]*?<\/(?:style|script)>)/i)
+  .map((d, i) => i % 2 ? d : d.replace(/>([^<>]*)</g, (m, t) => t.includes(' - ') ? '>' + udenStreg(t) + '<' : m)).join('');
+
 // --- Soros feed ---
 const xml = await (await fetch(feedUrl)).text();
 const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].map((m) => m[1]);
@@ -88,7 +102,7 @@ const titler = new Map(indlaeg.map((d) => [norm(d.titel), d.slug]));
 const filer = new Set(fs.readdirSync(path.join(H, 'blog/post')).map((f) => f.replace(/\.html$/, '')));
 const nye = [], sprunget = [];
 for (const it of items) {
-  const titel = felt(it, 'title').trim(), slug = felt(it, 'link').replace(/\/$/, '').split('/').pop();
+  const titel = udenStreg(felt(it, 'title').trim()), slug = felt(it, 'link').replace(/\/$/, '').split('/').pop();
   const eks = titler.get(norm(titel));
   if (eks && SAML[eks]) { sprunget.push(`${titel}: lagt sammen med /post/${SAML[eks]}`); continue; }
   if (eks || filer.has(slug)) { sprunget.push(`${titel}: findes allerede (/post/${eks || slug})`); continue; }
@@ -100,9 +114,10 @@ for (const it of items) {
   const omdobt = indlaeg.find((x) => x.dato === dato && ord.every((o) => x.slug.split('-').includes(o)));
   if (omdobt) { sprunget.push(`${titel}: findes allerede med ny titel (/post/${omdobt.slug})`); continue; }
   let brod = felt(it, 'content:encoded') || felt(it, 'description');
+  brod = udenStregHtml('<x>' + brod + '</x>').slice(3, -4);
   brod = brod.replace(/<h1(\s[^>]*)?>([\s\S]*?)<\/h1>/gi, '<h2>$2</h2>').replace(/href="([^"]+)"/g, (_, h) => `href="${esc(retLink(entiteter(h)))}"`).trim();
   const billede = (/<enclosure[^>]*url="([^"]+)"/.exec(it) || /<media:content[^>]*url="([^"]+)"/.exec(it) || [])[1] || '';
-  nye.push({ slug, titel, dato, resume: tekstAf(felt(it, 'description')), brod, kildeBillede: billede, kategori: kategori(slug, titel) });
+  nye.push({ slug, titel, dato, resume: udenStreg(tekstAf(felt(it, 'description'))), brod, kildeBillede: billede, kategori: kategori(slug, titel) });
 }
 
 console.log(`Soros feed: ${items.length} indlæg. Nye: ${nye.length}. Sprunget over: ${sprunget.length}.`);
