@@ -26,7 +26,8 @@
     "resume": "Træning, fødselsdage, tandlæge og forældremøde ét sted. Sådan samler I familiens aftaler i én app, så ingen længere spørger, hvem der henter.",
     "billede": "",
     "dato": "2026-07-31",
-    "kategori": "kalender"
+    "kategori": "kalender",
+    "samlet": "faelles-familiekalender-giver-ro-i-hverdagen"
   },
   {
     "slug": "bedste-apps-til-familielogistik-i-en-travl-hverdag",
@@ -56,7 +57,8 @@
     "billede": "https://www.voreshjem.dk/images/blog/w703d9637ce.webp",
     "dato": "2026-08-30",
     "kategori": "opgaver",
-    "billede700": "https://www.voreshjem.dk/images/blog/w703d9637ce-700.webp"
+    "billede700": "https://www.voreshjem.dk/images/blog/w703d9637ce-700.webp",
+    "samlet": "hvordan-fungerer-familiepoint-i-hverdagen"
   },
   {
     "slug": "boernepoint-til-daglige-opgaver-med-god-mening",
@@ -66,7 +68,8 @@
     "billede": "https://www.voreshjem.dk/images/blog/wa78f0aae02.webp",
     "dato": "2026-08-28",
     "kategori": "opgaver",
-    "billede700": "https://www.voreshjem.dk/images/blog/wa78f0aae02-700.webp"
+    "billede700": "https://www.voreshjem.dk/images/blog/wa78f0aae02-700.webp",
+    "samlet": "hvordan-fungerer-familiepoint-i-hverdagen"
   },
   {
     "slug": "del-ansvar-mellem-foraeldre-uden-flere-paamindelser",
@@ -76,7 +79,8 @@
     "billede": "https://www.voreshjem.dk/images/blog/wb3f9136ae5.webp",
     "dato": "2026-08-16",
     "kategori": "opgaver",
-    "billede700": "https://www.voreshjem.dk/images/blog/wb3f9136ae5-700.webp"
+    "billede700": "https://www.voreshjem.dk/images/blog/wb3f9136ae5-700.webp",
+    "samlet": "saadan-kan-familien-mindske-mental-load-hjemme"
   },
   {
     "slug": "delt-kalender-familie-giver-ro-i-hverdagen",
@@ -85,7 +89,8 @@
     "resume": "En delt familiekalender giver ro, fordi alle ser de samme aftaler. Læs, hvordan I kommer i gang, og hvad der skal med, for at det holder.",
     "billede": "",
     "dato": "2026-07-30",
-    "kategori": "kalender"
+    "kategori": "kalender",
+    "samlet": "faelles-familiekalender-giver-ro-i-hverdagen"
   },
   {
     "slug": "faelles-familiekalender-giver-ro-i-hverdagen",
@@ -104,7 +109,8 @@
     "resume": "En fælles indkøbsliste, som alle kan skrive på og krydse af i butikken. Slut med dobbeltkøb og glemt mælk. Sådan gør I det i praksis.",
     "billede": "",
     "dato": "2026-08-06",
-    "kategori": "indkøb"
+    "kategori": "indkøb",
+    "samlet": "saadan-deler-du-indkoebsliste-med-familien"
   },
   {
     "slug": "familie-app-til-mere-ro-i-en-travl-hverdag",
@@ -113,7 +119,8 @@
     "resume": "Vores Hjem samler kalender, madplan, indkøbsliste og opgaver i én app til hele familien. Læs, hvordan det giver mere ro i en travl hverdag.",
     "billede": "https://www.voreshjem.dk/images/og.jpg",
     "dato": "2026-07-28",
-    "kategori": "apps"
+    "kategori": "apps",
+    "samlet": "bedste-apps-til-familielogistik-i-en-travl-hverdag"
   },
   {
     "slug": "familieapp-med-gratis-proeveperiode-i-14-dage",
@@ -133,7 +140,8 @@
     "billede": "https://www.voreshjem.dk/images/blog/w566b07e63c.webp",
     "dato": "2026-09-01",
     "kategori": "apps",
-    "billede700": "https://www.voreshjem.dk/images/blog/w566b07e63c-700.webp"
+    "billede700": "https://www.voreshjem.dk/images/blog/w566b07e63c-700.webp",
+    "samlet": "anmeldelse-af-danske-familieapps-hvad-virker"
   },
   {
     "slug": "familiekalender-for-travle-foraeldre-med-overblik",
@@ -142,7 +150,8 @@
     "resume": "Travle forældre har brug for ét sted med alle aftaler. Sådan bruger I en familiekalender, der giver overblik uden at kræve ekstra arbejde.",
     "billede": "",
     "dato": "2026-08-02",
-    "kategori": "kalender"
+    "kategori": "kalender",
+    "samlet": "faelles-familiekalender-giver-ro-i-hverdagen"
   },
   {
     "slug": "guide-til-boerns-huslige-ansvar-i-hverdagen",
@@ -267,7 +276,8 @@
     "resume": "En ugentlig madplan til børnefamilien med mindre bøvl: enkle retter, genbrug af rester og en indkøbsliste, der næsten laver sig selv.",
     "billede": "",
     "dato": "2026-08-05",
-    "kategori": "madplan"
+    "kategori": "madplan",
+    "samlet": "hvordan-laver-man-en-madplan-for-familien"
   },
   {
     "slug": "opgavepoint-eller-lommepenge",

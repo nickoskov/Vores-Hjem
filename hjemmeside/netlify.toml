@@ -690,7 +690,7 @@ force = false
 
 [[redirects]]
 from = "/post/app-til-at-samle-familiens-aftaler-%C3%A9t-sted"
-to = "/post/app-til-at-samle-familiens-aftaler-et-sted"
+to = "/post/faelles-familiekalender-giver-ro-i-hverdagen"
 status = 301
 force = false
 
@@ -714,7 +714,7 @@ force = false
 
 [[redirects]]
 from = "/post/b%C3%B8rneopgaver-og-bel%C3%B8nning-i-en-travl-hverdag"
-to = "/post/boerneopgaver-og-beloenning-i-en-travl-hverdag"
+to = "/post/hvordan-fungerer-familiepoint-i-hverdagen"
 status = 301
 force = false
 
@@ -726,7 +726,7 @@ force = false
 
 [[redirects]]
 from = "/post/b%C3%B8rnepoint-til-daglige-opgaver-med-god-mening"
-to = "/post/boernepoint-til-daglige-opgaver-med-god-mening"
+to = "/post/hvordan-fungerer-familiepoint-i-hverdagen"
 status = 301
 force = false
 
@@ -738,7 +738,7 @@ force = false
 
 [[redirects]]
 from = "/post/del-ansvar-mellem-for%C3%A6ldre-uden-flere-p%C3%A5mindelser"
-to = "/post/del-ansvar-mellem-foraeldre-uden-flere-paamindelser"
+to = "/post/saadan-kan-familien-mindske-mental-load-hjemme"
 status = 301
 force = false
 
@@ -762,7 +762,7 @@ force = false
 
 [[redirects]]
 from = "/post/familiekalender-for-travle-for%C3%A6ldre-med-overblik"
-to = "/post/familiekalender-for-travle-foraeldre-med-overblik"
+to = "/post/faelles-familiekalender-giver-ro-i-hverdagen"
 status = 301
 force = false
 
@@ -786,7 +786,7 @@ force = false
 
 [[redirects]]
 from = "/post/f%C3%A6lles-indk%C3%B8bsliste-app-til-en-lettere-hverdag"
-to = "/post/faelles-indkoebsliste-app-til-en-lettere-hverdag"
+to = "/post/saadan-deler-du-indkoebsliste-med-familien"
 status = 301
 force = false
 
@@ -894,7 +894,7 @@ force = false
 
 [[redirects]]
 from = "/post/ugentlig-madplan-til-b%C3%B8rnefamilie-med-mindre-b%C3%B8vl"
-to = "/post/ugentlig-madplan-til-boernefamilie-med-mindre-boevl"
+to = "/post/hvordan-laver-man-en-madplan-for-familien"
 status = 301
 force = false
 
@@ -915,6 +915,67 @@ force = false
   [redirects.conditions]
 
   [redirects.headers]
+
+# 10 næsten ens indlæg lagt sammen med indlægget om samme emne (16. okt. 2026, fund L12)
+[[redirects]]
+from = "/post/delt-kalender-familie-giver-ro-i-hverdagen"
+to = "/post/faelles-familiekalender-giver-ro-i-hverdagen"
+status = 301
+force = true
+
+[[redirects]]
+from = "/post/familiekalender-for-travle-foraeldre-med-overblik"
+to = "/post/faelles-familiekalender-giver-ro-i-hverdagen"
+status = 301
+force = true
+
+[[redirects]]
+from = "/post/app-til-at-samle-familiens-aftaler-et-sted"
+to = "/post/faelles-familiekalender-giver-ro-i-hverdagen"
+status = 301
+force = true
+
+[[redirects]]
+from = "/post/familieapp-sammenligning-for-en-roligere-hverdag"
+to = "/post/anmeldelse-af-danske-familieapps-hvad-virker"
+status = 301
+force = true
+
+[[redirects]]
+from = "/post/familie-app-til-mere-ro-i-en-travl-hverdag"
+to = "/post/bedste-apps-til-familielogistik-i-en-travl-hverdag"
+status = 301
+force = true
+
+[[redirects]]
+from = "/post/boernepoint-til-daglige-opgaver-med-god-mening"
+to = "/post/hvordan-fungerer-familiepoint-i-hverdagen"
+status = 301
+force = true
+
+[[redirects]]
+from = "/post/boerneopgaver-og-beloenning-i-en-travl-hverdag"
+to = "/post/hvordan-fungerer-familiepoint-i-hverdagen"
+status = 301
+force = true
+
+[[redirects]]
+from = "/post/del-ansvar-mellem-foraeldre-uden-flere-paamindelser"
+to = "/post/saadan-kan-familien-mindske-mental-load-hjemme"
+status = 301
+force = true
+
+[[redirects]]
+from = "/post/faelles-indkoebsliste-app-til-en-lettere-hverdag"
+to = "/post/saadan-deler-du-indkoebsliste-med-familien"
+status = 301
+force = true
+
+[[redirects]]
+from = "/post/ugentlig-madplan-til-boernefamilie-med-mindre-boevl"
+to = "/post/hvordan-laver-man-en-madplan-for-familien"
+status = 301
+force = true
 
 [[redirects]]
 from = "/post/*"
