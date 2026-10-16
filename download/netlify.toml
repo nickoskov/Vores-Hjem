@@ -30,9 +30,3 @@ status = 301
 force = true
 
 
-# Ukendte adresser lander paa selve download-siden i stedet for Netlifys engelske 404 (16. okt. 2026)
-[[redirects]]
-from = "/*"
-to = "/"
-status = 302
-force = false
