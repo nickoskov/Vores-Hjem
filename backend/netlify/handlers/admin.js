@@ -1942,8 +1942,9 @@ exports.handler = async (ev) => {
       case 'blog-slet': skriv(); await opret(); await sql`DELETE FROM vh_blog WHERE id=${Number(k.id)}`;
         await log('blogindlæg slettet', String(k.id), bruger.navn); return svar(200, { slettet:true });
 
-      case 'blog-udgiv': { ejer(); const r = await blogbyg.byg();
-        await log('bloggen udgivet', (r.nyeSider||[]).length + ' nye sider, ' + r.antalIalt + ' i alt', bruger.navn); await glem('seo'); return svar(200, r); }
+      // Bloggen udgives nu fra repoet (vaerktoej/soro-til-blog.mjs), og siden er laast i Netlify. Bygningen herfra
+      // ville skrive en forkert /blog (gamle Wix-billeder, forkert broedkrumme), saa knappen siger det i stedet (fund L133, 16. okt. 2026).
+      case 'blog-udgiv': ejer(); return svar(409, { fejl: 'Bloggen udgives nu fra repoet. Bed Claude om at "udgive nye blogindlæg", så tjekkes de og lægges op derfra.' });
       case 'brugere':     ejer(); return svar(200, { brugere: await auth.brugere() });
       case 'bruger-gem':  { ejer(); const r = await auth.gemBruger(k); await log('bruger gemt', k.navn, bruger.navn); return svar(200, r); }
       case 'bruger-slet': ejer(); await auth.sletBruger(k.id); await log('bruger slettet', String(k.id), bruger.navn); return svar(200, { ok:true });

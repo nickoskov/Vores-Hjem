@@ -35,6 +35,20 @@
   status = 301
   force = true
 
+# Den tyske backends netlify.app-adresse: panelet sendes videre til domaenet (fund L125, 16. okt. 2026).
+# Kun selve siden, saa webhooks fra Apple og Google, taelleren og /api stadig virker paa den gamle adresse.
+[[redirects]]
+  from = "https://unserzuhause-backend.netlify.app/"
+  to   = "https://backend.unserzuhauseapp.de/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://unserzuhause-backend.netlify.app/index.html"
+  to   = "https://backend.unserzuhauseapp.de/"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "/t"
   to   = "/.netlify/functions/taeller"

@@ -42,7 +42,7 @@
       if (egen) {
         var ua = navigator.userAgent || '';
         var direkte = /iPhone|iPad|iPod/.test(ua) ? 'https://apps.apple.com/dk/app/vores-hjem/id6758346281'
-                    : /Android/.test(ua) ? 'https://play.google.com/store/apps/details?id=com.voreshjem.app' : '';
+                    : /Android/.test(ua) ? 'https://play.google.com/store/apps/details?id=com.voreshjem.app&referrer=utm_source%3Dwebsite' : '';
         if (direkte) { e.preventDefault(); setTimeout(function () { location.href = direkte; }, 0); }
       }
       if (ansat) return;

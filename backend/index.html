@@ -502,6 +502,8 @@ const tid = s => { s = Math.round(Number(s)||0);
   return s < 60 ? s + ' sek' : Math.floor(s/60) + ' min ' + String(s%60).padStart(2,'0') + ' sek'; };
 const sik = s => String(s==null?'':s).replace(/[&<>"']/g, c =>
   ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// til onclick: lav vaerdien om til en JavaScript-streng foerst, saa et ' i vaerdien ikke kan bryde ud (fund L134)
+const jsArg = v => sik(JSON.stringify(String(v==null?'':v)));
 const dagnavn = n => ['Søndag','Mandag','Tirsdag','Onsdag','Torsdag','Fredag','Lørdag'][Number(n)] || n;
 const datoKort = s => !s ? '' : s.length === 10 ? s.slice(8,10) + ':00'
   : s.length === 8 ? Number(s.slice(6,8)) + '/' + Number(s.slice(4,6)) : s;
@@ -759,6 +761,13 @@ const SIDER = [
    Samme panel koerer paa backend.voreshjem.dk og backend.unserzuhauseapp.de. Status (offentlig) siger hvilken
    (side), og saa skiftes navnene, og sider der kun giver mening for den danske side, skjules. Uden svar: den danske. */
 let profil = { kode:'dk', brand:'Vores Hjem', navn:'voreshjem.dk', site:'https://www.voreshjem.dk', backend:'https://backend.voreshjem.dk', chat:'dk', skjul:[] };
+// Paa den tyske adresse starter panelet som Unser Zuhause med det samme, ikke foerst naar status svarer,
+// saa navn, logo og ikon aldrig staar paa dansk (fund L129/L130, 16. okt. 2026)
+if (/(^|\.)unserzuhause/i.test(location.hostname)) {
+  profil = { kode:'de', brand:'Unser Zuhause', navn:'unserzuhauseapp.de', site:'https://www.unserzuhauseapp.de', backend:'https://backend.unserzuhauseapp.de', chat:'de', skjul:[] };
+  document.documentElement.lang = 'de';
+  try { saetNavne(); } catch (e) {}
+}
 // Support findes kun, hvor backenden har support-mail (status siger det i opsat.support, i dag den tyske)
 const skjult = id => (profil.skjul || []).includes(id) || (id === 'support' && !(opsat && opsat.support));
 const synligeSider = () => SIDER.filter(s => !skjult(s.id));
@@ -1035,7 +1044,7 @@ function storKurve(nu, foer, noter, enhed) {
   const nm = (noter||[]).map(nt => {
     const i = nu.findIndex(r => r.date === String(nt.dato).replace(/-/g,''));
     if (i < 0) return '';
-    return '<g class="note-mk" data-tip="' + sik('<b>' + nt.tekst + '</b>' + datoDk(nt.dato)) + '">' +
+    return '<g class="note-mk" data-tip="' + sik('<b>' + sik(nt.tekst) + '</b>' + datoDk(nt.dato)) + '">' +
       '<line x1="' + x(i,a.length) + '" y1="' + pv + '" x2="' + x(i,a.length) + '" y2="' + (H-bund) + '" stroke="#EC4899" stroke-width="1.5" stroke-dasharray="2 3"/>' +
       '<circle cx="' + x(i,a.length) + '" cy="' + (pv+2) + '" r="6" fill="#EC4899"/>' +
       '<text x="' + x(i,a.length) + '" y="' + (pv+6) + '" font-size="9" fill="#fff" text-anchor="middle" font-weight="800">!</text></g>';
@@ -1203,7 +1212,7 @@ async function hentRaad() {
   const e = document.getElementById('ov-raad'); if (!e) return;
   try { const r = await kald('raad');
     const per = r.periode && r.periode.fra ? ', ' + datoDk(r.periode.fra) + (r.periode.til && r.periode.til !== r.periode.fra ? ' til ' + datoDk(r.periode.til) : '') : '';
-    e.innerHTML = (r.punkter||[]).length ? '<ul class="raad">' + r.punkter.map(p => '<li class="raad-' + sik(p.grad) + '" onclick="gaaTil(\'' + sik(p.side) + '\')"><span class="raad-prik"></span><span>' + sik(p.tekst) + '</span><span class="raad-pil">›</span></li>').join('') + '</ul>' +
+    e.innerHTML = (r.punkter||[]).length ? '<ul class="raad">' + r.punkter.map(p => '<li class="raad-' + sik(p.grad) + '" onclick="gaaTil(' + jsArg(p.side) + ')"><span class="raad-prik"></span><span>' + sik(p.tekst) + '</span><span class="raad-pil">›</span></li>').join('') + '</ul>' +
       '<p style="font-size:12px;color:var(--svag);margin-top:8px">Ud fra den seneste uge' + per + ', uanset perioden ovenfor. Klik på et punkt for at gå til siden.</p>' : '<div class="tom">Ikke nok tal endnu til at sige noget. Kig igen om et par dage.</div>';
   } catch (err) { e.innerHTML = '<div class="tom">' + sik(err.message) + '</div>'; }
 }
@@ -1788,7 +1797,7 @@ async function visSeo(m) {
         {navn:'Søgning', felt:'ord', bar:'gevinst'}, {navn:'Rammer', felt:'side', daemp:true, form:v => { try { return sik(decodeURIComponent(v)); } catch (e) { return sik(v); } }},
         {navn:'Plads', felt:'plads', h:true, form:v => P(v)}, {navn:'Vist', felt:'visninger', h:true}, {navn:'Klik', felt:'klik', h:true},
         {navn: sik((mu.skoen && mu.skoen.kolonne) || 'Klik at hente, skøn'), felt:'gevinst', h:true, std:true, form:v => '+' + T(v)},
-        ...(kanSkrive() && opsat.claude && !skjult('blog') ? [{navn:'', felt:'ord', h:true, form:v => '<button class="knap lille" onclick="skrivUdkast(this,\'' + sik(v).replace(/'/g,'&#39;') + '\')">Skriv udkast</button>'}] : [])
+        ...(kanSkrive() && opsat.claude && !skjult('blog') ? [{navn:'', felt:'ord', h:true, form:v => '<button class="knap lille" onclick="skrivUdkast(this,' + jsArg(v) + ')">Skriv udkast</button>'}] : [])
       ], 'Ingen ord i vinduet plads 4 til 20 endnu. Det kommer med tiden.') +
       (mu.skoen && mu.skoen.tekst ? lille(sik(mu.skoen.tekst)) : '') +
       (mu.brandUdeladt && mu.brandUdeladt.tekst ? lille(sik(mu.brandUdeladt.tekst)) : '') +
@@ -1804,7 +1813,7 @@ async function visSeo(m) {
     (g ? '<div class="kort" id="seo-opgaver"><h3>Det der skal rettes, vigtigste først' + udtrKnap('seo-opg','seo-opgaver') + '</h3>' +
       '<div class="vaelg" style="display:inline-flex;margin-bottom:12px">' + [['alle','Alle ' + g.opgaver.length],['fejl','Fejl'],['advar','Advarsler'],['info','Bemærkninger']].map(([k,n]) =>
         '<button class="' + (seoValgt===k?'valgt':'') + '" onclick="seoFilter(\'' + k + '\')">' + n + '</button>').join('') + '</div>' +
-      (g.opgaver.filter(o => seoValgt==='alle' || o.grad===seoValgt).length ? g.opgaver.filter(o => seoValgt==='alle' || o.grad===seoValgt).map((o, i) => '<div class="opg' + (seoAaben===o.kode+'|'+o.hvad?' aaben':'') + '" onclick="if(!event.target.closest(\'.rett\'))aabnOpg(\'' + sik(o.kode+'|'+o.hvad).replace(/'/g,'&#39;') + '\')"><span class="grad g-' + o.grad + '"></span><div class="t"><b>' + sik(o.hvad) + '</b><p>' + sik(o.hvordan) + '</p>' +
+      (g.opgaver.filter(o => seoValgt==='alle' || o.grad===seoValgt).length ? g.opgaver.filter(o => seoValgt==='alle' || o.grad===seoValgt).map((o, i) => '<div class="opg' + (seoAaben===o.kode+'|'+o.hvad?' aaben':'') + '" onclick="if(!event.target.closest(\'.rett\'))aabnOpg(' + jsArg(o.kode+'|'+o.hvad) + ')"><span class="grad g-' + o.grad + '"></span><div class="t"><b>' + sik(o.hvad) + '</b><p>' + sik(o.hvordan) + '</p>' +
         (seoAaben===o.kode+'|'+o.hvad ? rettelser(g, o) : '<small>' + o.sider.slice(0,4).map(sik).join(' · ') + (o.sider.length > 4 ? ' · og ' + (o.sider.length-4) + ' til' : '') + ' · <span style="color:var(--lilla)">tryk for at se og rette</span></small>') + '</div>' +
         '<span class="n">' + o.sider.length + '</span></div>').join('') :
         '<div class="tom">' + (seoValgt==='alle' ? 'Ingenting at rette. Det sker ikke tit.' : 'Ingen i den gruppe.') + '</div>') + '</div>' : '');
@@ -1828,7 +1837,7 @@ function rettelser(g, o) {
     return '<div class="rett-side"><div class="u">' + sik(u) + (gemt != null ? ' <span class="maerke m-kladde">rettet, ikke udgivet</span>' : '') + '</div>' +
       '<div class="nu">Nu: <b>' + (nu ? sik(nu) : '<i>ingen</i>') + '</b>' + (nu ? ' <span style="color:var(--svag)">(' + nu.length + ' tegn)</span>' : '') + '</div>' +
       (kanRette() ? '<div class="form"><input value="' + sik(v) + '" maxlength="' + (felt==='titel'?70:170) + '" oninput="taelLen(this,\'' + felt + '\')" data-url="' + sik(u) + '" data-felt="' + felt + '"><span class="len ' + lenKlasse(v.length, felt) + '">' + v.length + ' tegn</span>' +
-        (opsat.claude ? '<button class="knap grim lille" onclick="foreslaa(this,\'' + felt + '\',\'' + sik(u) + '\')">Foreslå</button>' : '') +
+        (opsat.claude ? '<button class="knap grim lille" onclick="foreslaa(this,\'' + felt + '\',' + jsArg(u) + ')">Foreslå</button>' : '') +
         '<button class="knap lille" onclick="gemRettelse(this)">Gem</button></div><div class="forslag"></div>' :
         '<div class="nu" style="margin-top:6px;color:var(--svag)">' + (skjult('indhold') ? 'Rettes i sidens html. Panelet udgiver ikke på ' + sik(profil.navn) + '.' : 'Du kan kun læse. Bed ejeren om adgang til at rette.') + '</div>') + '</div>';
   }).join('') +
@@ -1905,7 +1914,7 @@ async function hentSamtaler(stille) {
   const b = d.badges || {};
   ['dk','de'].forEach(x => { const e = document.getElementById('b-' + x); if (e) e.innerHTML = (b[x]||{}).unread ? ' <span style="display:inline-block;min-width:16px;padding:0 4px;border-radius:8px;background:var(--pink);color:#fff;font-size:10px;text-align:center">' + b[x].unread + '</span>' : ''; });
   const l = d.conversations || [];
-  el.innerHTML = l.length ? l.map(c => '<div class="samt-rk' + (chatValgt===c.id?' valgt':'') + '" onclick="aabnSamtale(\'' + sik(c.id) + '\')">' +
+  el.innerHTML = l.length ? l.map(c => '<div class="samt-rk' + (chatValgt===c.id?' valgt':'') + '" onclick="aabnSamtale(' + jsArg(c.id) + ')">' +
     '<span class="prik' + (c.unread?'':' laest') + '"></span><div class="ind"><b>' + sik(c.email || 'Uden mail') +
     (c.needsHuman ? ' <span class="maerke" style="background:#FEF2F2;color:#991B1B;font-size:10px">vil have et menneske</span>' : '') +
     (c.human ? ' <span class="maerke m-udgivet" style="font-size:10px">du svarer</span>' : '') + '</b>' +
@@ -2079,8 +2088,8 @@ async function visLinks(m) {
     '<div class="kort"><h3>Gemte links</h3>' + (l.length ? '<div class="rul"><table><thead><tr><th>Navn</th><th>Kampagne</th><th>Kilde</th><th>Link</th><th></th></tr></thead><tbody>' +
       l.map(x => '<tr><td><b>' + sik(x.navn) + '</b><div style="font-size:12px;color:var(--svag)">' + datoDk(x.oprettet) + '</div></td><td class="d">' + sik(x.kampagne) + '</td><td class="d">' + sik(x.kilde) + (x.medie ? ', ' + sik(x.medie) : '') + '</td>' +
         '<td><div class="navn" style="font-family:ui-monospace,monospace;font-size:12px;max-width:260px">' + sik(x.url) + '</div></td>' +
-        '<td class="h"><button class="knap grim lille" onclick="navigator.clipboard.writeText(\'' + sik(x.url) + '\');flash(\'Kopieret\',\'godt\')">Kopiér</button> ' +
-        '<button class="knap grim lille" onclick="visQr(\'' + sik(x.url) + '\',\'' + sik(x.navn) + '\')">QR</button>' + (kanSkrive() ? ' <button class="knap fare lille" onclick="sletLink(' + x.id + ')">Slet</button>' : '') + '</td></tr>').join('') +
+        '<td class="h"><button class="knap grim lille" onclick="navigator.clipboard.writeText(' + jsArg(x.url) + ');flash(\'Kopieret\',\'godt\')">Kopiér</button> ' +
+        '<button class="knap grim lille" onclick="visQr(' + jsArg(x.url) + ',' + jsArg(x.navn) + ')">QR</button>' + (kanSkrive() ? ' <button class="knap fare lille" onclick="sletLink(' + x.id + ')">Slet</button>' : '') + '</td></tr>').join('') +
       '</tbody></table></div>' : '<div class="tom">Ingen links gemt endnu. Byg det første ovenfor.</div>') + '</div>';
 }
 function lFelter() { return { kilde: document.getElementById('l-kilde').value, medie: document.getElementById('l-medie').value, kampagne: document.getElementById('l-kampagne').value, indhold: document.getElementById('l-indhold').value, landing: document.getElementById('l-landing').value }; }
@@ -2128,10 +2137,10 @@ async function visIndhold(m) {
         '<div class="raekke" style="align-items:center">' + ((x.vaerdi||'').length > 90
           ? '<textarea data-n="' + sik(x.noegle) + '" style="min-height:70px"' + (kanSkrive()?'':' readonly') + '>' + sik(x.vaerdi) + '</textarea>'
           : '<input data-n="' + sik(x.noegle) + '" value="' + sik(x.vaerdi) + '"' + (kanSkrive()?'':' readonly') + '>') +
-        (kanSkrive() ? '<button class="knap lille" onclick="gemFelt(this)">Gem</button>' + (x.aendret ? '<button class="knap grim lille" onclick="fortrydFelt(\'' + sik(x.noegle) + '\')">Fortryd</button>' : '') : '') + '</div></div>').join('') + '</div>').join('') +
+        (kanSkrive() ? '<button class="knap lille" onclick="gemFelt(this)">Gem</button>' + (x.aendret ? '<button class="knap grim lille" onclick="fortrydFelt(' + jsArg(x.noegle) + ')">Fortryd</button>' : '') : '') + '</div></div>').join('') + '</div>').join('') +
     '<div class="kort"><h3>Rettelser der venter på udgivelse <span class="ret" style="font-weight:500">' + (ventende ? 'titler, beskrivelser og felter' : 'ingen') + '</span></h3>' +
       (ventende ? '<div class="rul"><table><thead><tr><th>Side</th><th>Hvad</th><th>Ny tekst</th><th></th></tr></thead><tbody>' + rl.map(x => '<tr><td><div class="navn" style="max-width:200px">' + sik(SIDENAVN[x.url] || x.url) + '</div></td><td class="d">' + (x.felt==='titel'?'Titel':x.felt==='besk'?'Beskrivelse':feltNavn(x.noegle||'')) + '</td>' +
-        '<td><div style="font-size:13px;line-height:1.5">' + sik(x.vaerdi) + '</div></td><td class="h">' + (kanSkrive() ? '<button class="knap fare lille" onclick="' + (x.felt==='vh' ? 'fortrydFelt(\'' + sik(x.noegle) + '\')' : 'sletRettelse(\'' + x.felt + '\',\'' + sik(x.url) + '\')') + '">Fjern</button>' : '') + '</td></tr>').join('') + '</tbody></table></div>' :
+        '<td><div style="font-size:13px;line-height:1.5">' + sik(x.vaerdi) + '</div></td><td class="h">' + (kanSkrive() ? '<button class="knap fare lille" onclick="' + (x.felt==='vh' ? 'fortrydFelt(' + jsArg(x.noegle) + ')' : 'sletRettelse(\'' + x.felt + '\',' + jsArg(x.url) + ')') + '">Fjern</button>' : '') + '</td></tr>').join('') + '</tbody></table></div>' :
         '<div class="tom">Ingen rettelser venter</div>') + '</div>';
 }
 async function scanFelter() { flash('Henter felterne fra siden', 'info'); try { const r = await kald('indhold-scan'); flash(r.fundet + ' felter hentet', 'godt'); vis(); } catch (e) { flash(e.message, 'slem'); } }

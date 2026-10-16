@@ -160,7 +160,7 @@ for (const p of nye) {
     .replace(/(<meta name="twitter:image" content=")[^"]*(")/i, `$1${esc(p.billede || BASE + '/images/og.jpg')}$2`)
     .replace(/<script type="application\/ld\+json">\{"@context":"https:\/\/schema\.org","@type":"BlogPosting"[\s\S]*?<\/script>/i, `<script type="application/ld+json">${JSON.stringify(ld)}</script>`)
     .replace(/<script type="application\/ld\+json">\{"@context":"https:\/\/schema\.org","@type":"BreadcrumbList"[\s\S]*?<\/script>/i, `<script type="application/ld+json">${JSON.stringify(sti)}</script>`);
-  const krop = '<article class="indlaeg">\n    <div class="container">\n      <a class="tilbage" href="/blog.html">&lsaquo; Alle indlæg</a>\n' +
+  const krop = '<article class="indlaeg">\n    <div class="container">\n      <a class="tilbage" href="/blog">&lsaquo; Alle indlæg</a>\n' +
     `      <h1>${esc(p.titel)}</h1>\n      <div class="meta">${p.dato.split('-').reverse().join('.')} · ${min} min læsning · <a href="/blog">${NAVN[p.kategori]}</a></div>\n` +
     '      ' + p.brod + '\n' +
     '      <div class="slutkort">\n        <p><strong>Vores Hjem</strong> samler kalender, madplan, indkøbsliste og opgaver\n           ét sted, så hele familien kan se det samme.</p>\n' +

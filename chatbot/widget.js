@@ -64,7 +64,7 @@
       skriv: 'Schreib deine Nachricht…',
       brand: 'KI-Assistent von Unser Zuhause',
       banner: 'Jemand aus dem Team ist im Chat',
-      teamTag: 'Unser Zuhause Team',
+      teamTag: 'Unser-Zuhause-Team',
       nyttigt: 'Hilfreich?', tak: 'Danke für dein Feedback',
       aabn: 'Chat öffnen', luk: 'Schließen', send: 'Senden', ja: 'Ja', nej: 'Nein',
       mailTitel: 'Sollen wir dich erreichen können?',

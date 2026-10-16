@@ -19,6 +19,8 @@ const PROFILER = {
     netlifySiteId: 'fff8c0f6-c7e6-42c1-889d-8e128f9f070b', backendSiteId: 'd34e1582-bbea-4f03-91a9-f23119ea4a35',
     // hvorfra taelleren og kontaktformularen tager imod
     tilladt: /(^|\.)voreshjem\.dk$|^stirring-cactus-7010c5\.netlify\.app$/i,
+    // download-siden faar sit eget stykke foran, saa den ikke blandes med forsiden (fund L83, 16. okt. 2026)
+    foran: { 'download.voreshjem.dk': '/download' },
     // henvisninger herfra er klik inde paa siden. Botten viser den danske hent-side.
     egen: /(^|\.)voreshjem\.dk$|^stirring-cactus-7010c5\.netlify\.app$|^voreshjem-bot\.netlify\.app$/i,
     chat: 'dk',
