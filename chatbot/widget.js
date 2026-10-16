@@ -80,7 +80,7 @@
   };
   var T = TEKSTER[SITE] || TEKSTER.dk;
   // Hvert marked sit eget logo, ellers stod der Vores Hjem på den tyske side
-  var AVATAR = BASE + '/' + (SITE === 'de' ? 'avatar-de.png' : 'avatar.png');
+  var AVATAR = BASE + '/' + (SITE === 'de' ? 'avatar-de.png' : 'avatar-112.png');
   var WELCOME = T.velkomst;
   var QUICK = T.hurtige;
   var NUDGES = T.teaser;
