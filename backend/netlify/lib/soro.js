@@ -76,6 +76,16 @@ async function hent() {
   const alle = laes(xml);
   await opret();
   const side = await paaSiden();
+  // gamle Soro-kladder, der allerede ligger live paa bloggen (samme titel eller adresse), fjernes fra
+  // kladdelisten, saa ingen kommer til at udgive den samme artikel to gange (16. okt. 2026)
+  let ryddet = 0;
+  if (side.titler.size || side.slugs.size) {
+    const kl = await sql`SELECT id, slug, titel FROM vh_blog WHERE status = 'kladde' AND kilde = 'soro'`;
+    for (const k of kl) if (findes(k, side)) {
+      await sql`DELETE FROM vh_blog WHERE id = ${k.id} AND status = 'kladde'`; ryddet++;
+      try { await sql`INSERT INTO vh_log (hvad, detalje, hvem) VALUES ('Soro-kladde fjernet (findes allerede på bloggen)', ${k.slug}, 'soro')`; } catch (e) {}
+    }
+  }
   let nye = 0, kendte = 0;
   const status = process.env.WEBHOOK_AUTOUDGIV === 'ja' ? 'udgivet' : 'kladde';
   for (const i of alle) {
@@ -87,7 +97,7 @@ async function hent() {
       ON CONFLICT (slug) DO NOTHING RETURNING id`;
     if (res.length) { nye++; try { await sql`INSERT INTO vh_log (hvad, detalje, hvem) VALUES ('indlæg hentet fra Soro', ${i.slug}, 'soro')`; } catch (e) {} }
   }
-  return { ifeed: alle.length, nye, kendte, status };
+  return { ifeed: alle.length, nye, kendte, status, ryddet };
 }
 
 module.exports = { opsat, hent, laes };
