@@ -190,6 +190,11 @@ let resten = blog.slice(efterStart).replace(/<img ([^>]*class="bk-bil")(?![^>]*l
 blog = blog.slice(0, efterStart) + '\n' + kort + resten;
 const antal = (blog.match(/<a class="bk" href=/g) || []).length;
 blog = blog.replace(/<div class="bo-antal">\d+ indlæg<\/div>/, `<div class="bo-antal">${antal} indlæg</div>`);
+// Blog-blokken i den strukturerede data skal liste alle indlæg på siden, ikke kun dem fra Wix.
+const poster = [...indlaeg, ...nye].sort((a, b) => b.dato.localeCompare(a.dato))
+  .map((d) => ({ '@type': 'BlogPosting', headline: d.titel, datePublished: d.dato, url: `${BASE}/post/${d.slug}` }));
+blog = blog.replace(/(<script type="application\/ld\+json">)(\{"@context": ?"https:\/\/schema\.org", ?"@type": ?"Blog"[\s\S]*?)(<\/script>)/,
+  (_, a, json, c) => a + JSON.stringify({ ...JSON.parse(json), blogPost: poster }) + c);
 fs.writeFileSync(path.join(H, 'blog.html'), blog);
 
 // --- manifest og sitemap ---
