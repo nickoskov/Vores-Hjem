@@ -111,6 +111,7 @@
 <!-- ══ SPORING SLUT ══ -->
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="format-detection" content="telephone=no">
 <title>Fælles familiekalender til hele familien | Vores Hjem</title>
 <link rel="canonical" href="https://www.voreshjem.dk/kalender">
 <link rel="alternate" hreflang="da" href="https://www.voreshjem.dk/kalender">
@@ -149,7 +150,7 @@
   --shadow-xl: 0 40px 120px rgba(108,71,255,0.22);
 }
 
-html { scroll-behavior: smooth; overflow-x: hidden; }
+html { scroll-behavior: smooth; scroll-padding-top: 90px; }
 body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
 a { color: inherit; text-decoration: none; }
 .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
@@ -1172,7 +1173,7 @@ nav::before {
     vent(600, function () { f[0].classList.add('aktiv'); });
     var t = skriv(vent, q(f[0], '.td-felt-vaerdi'), 'Farmors fødselsdag', 800, 42);
     vent(t + 300, function () { f[0].classList.remove('aktiv'); f[1].classList.add('aktiv'); });
-    var t2 = skriv(vent, q(f[1], '.td-felt-vaerdi'), 'Lørdag 8. aug · 13:00', t + 500, 34);
+    var t2 = skriv(vent, q(f[1], '.td-felt-vaerdi'), 'Lørdag 8. aug. · 13:00', t + 500, 34);
     vent(t2 + 300, function () { f[1].classList.remove('aktiv'); f[2].classList.add('aktiv'); });
     vent(t2 + 800, function () {
       var c = chips[0];
@@ -1282,7 +1283,7 @@ nav::before {
       <div>
         <div class="step-num">3</div>
         <h3 class="step-h3">Hele familien ser det, med det samme</h3>
-        <p class="step-p">Så snart du gemmer begivenheden, ser alle familiemedlemmer den i deres kalender. Ingen SMS, ingen at huske at fortælle nogen, det sker automatisk.</p>
+        <p class="step-p">Så snart du gemmer begivenheden, ser alle familiemedlemmer den i deres kalender. Ingen sms, og ingen skal huske at give det videre. Det sker automatisk.</p>
         <div class="step-tags">
           <span class="step-tag tag-green"><span class="tag-dot" style="background:var(--success);"></span>Realtid</span>
           <span class="step-tag tag-purple"><span class="tag-dot" style="background:var(--purple);"></span>Alle ser det</span>
@@ -1301,7 +1302,7 @@ nav::before {
             <span class="td-av" style="background:#F59E0B">E</span>
             <span class="td-av" style="background:#EC4899">B</span>
           </div>
-          <div class="td-alle"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Alle ser den nu, ingen SMS</div>
+          <div class="td-alle"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Alle ser den nu, ingen sms</div>
         </div>
       </div>
     </div>
@@ -1510,11 +1511,11 @@ nav::before {
         <ul class="stjerne-list">
           <li>
             <span class="sl-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
-            <span><strong>Tryk på ☆ når du opretter</strong>, stjernen bliver gul og begivenheden skjules for alle uden skjold</span>
+            <span><strong>Tryk på ☆ når du opretter</strong>, stjernen bliver gul, og titlen skjules for alle uden skjold</span>
           </li>
           <li>
             <span class="sl-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
-            <span><strong>Privat fra børnene</strong>: sygehusbesøg, lægetime og følsomme aftaler forbliver skjult</span>
+            <span><strong>Privat fra børnene</strong>: sygehusbesøg, lægetider og følsomme aftaler viser kun 🔒 Privat</span>
           </li>
           <li>
             <span class="sl-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>

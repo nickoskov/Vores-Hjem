@@ -11,6 +11,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <script>window.__uzT = Date.now();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="format-detection" content="telephone=no">
 <title>Familienplaner-App für die ganze Familie | Unser Zuhause</title>
 <!-- SEO til eget domæne (tilføjet ved flytningen fra Wix) -->
 <link rel="canonical" href="https://www.unserzuhauseapp.de/">
@@ -66,7 +67,7 @@
   --shadow-xl: 0 40px 120px rgba(108,71,255,0.22);
 }
 
-html { scroll-behavior: smooth; overflow-x: hidden; overflow-x: clip; max-width: 100%; }
+html { scroll-behavior: smooth; max-width: 100%; scroll-padding-top: 90px; }
 body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; overflow-x: clip; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
 
@@ -2219,7 +2220,7 @@ footer { background: var(--text); color: rgba(255,255,255,0.45); padding: 56px 0
       <div class="id-content reveal reveal-delay-2">
         <ul class="id-list2">
           <li><span class="id-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Alle können hinzufügen und abhaken</strong><span class="mob-kort"><br>auch die Kinder, wenn sie mit im Laden sind</span></span></li>
-          <li><span class="id-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Foto von der Ware machen</strong><span class="mob-kort"><br>damit nicht die falsche Marke im Wagen landet</span></span></li>
+          <li><span class="id-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Foto vom Artikel machen</strong><span class="mob-kort"><br>damit nicht die falsche Marke im Wagen landet</span></span></li>
           <li><span class="id-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Gekauftes bleibt einen Tag stehen</strong><span class="mob-kort"><br>so könnt ihr es zurücksetzen, falls etwas schiefging</span></span></li>
                   </ul>
       </div>
@@ -3115,14 +3116,18 @@ window.addEventListener('scroll', () => {
 })();
 </script>
 <script>
-/* Pauseknap: stopper alle tre videoer og holder dem stoppet (fund L126) */
+/* Pauseknap: stopper alle tre videoer og holder dem stoppet (fund L126). Knappen følger hovedvideoen, så den også
+   viser rigtigt, når iPhone i strømsparetilstand ikke vil starte videoen af sig selv (fund L173). */
 (function(){
   var b=document.querySelector('#video-demo .vid-pause'); if(!b) return;
   var vids=document.querySelectorAll('#video-demo video');
-  function vis(stop){ b.classList.toggle('spiller',!stop); b.setAttribute('aria-label', stop?'Video abspielen':'Video pausieren'); }
-  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches){ window.__vhVidStop=true; vis(true); }
-  b.addEventListener('click',function(){ var stop=!window.__vhVidStop; window.__vhVidStop=stop;
-    vids.forEach(function(v){ if(stop) v.pause(); else { var p=v.play(); if(p&&p.catch) p.catch(function(){}); } }); vis(stop); });
+  var main=document.querySelector('#video-demo .demo-main video')||vids[0];
+  function vis(spiller){ b.classList.toggle('spiller',spiller); b.setAttribute('aria-label', spiller?'Video pausieren':'Video abspielen'); }
+  if(main){ main.addEventListener('play',function(){ vis(true); }); main.addEventListener('pause',function(){ vis(false); }); }
+  vis(!!main && !main.paused);
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches){ window.__vhVidStop=true; vis(false); }
+  b.addEventListener('click',function(){ var stop=main ? !main.paused : !window.__vhVidStop; window.__vhVidStop=stop;
+    vids.forEach(function(v){ if(stop) v.pause(); else { var p=v.play(); if(p&&p.catch) p.catch(function(){}); } }); if(stop) vis(false); });
 })();
 </script>
 </body>

@@ -3,6 +3,7 @@
 //
 //   node vaerktoej/soro-til-blog.mjs <soro-rss-adresse>           viser hvad der ville ske
 //   node vaerktoej/soro-til-blog.mjs <soro-rss-adresse> --skriv   laver filerne i hjemmeside/
+//   node vaerktoej/soro-til-blog.mjs --adresser                    opdaterer kun 301'erne fra Soros adresser i netlify.toml
 //
 // Adressen står i Netlify som SORO_RSS_URL på voreshjem-backend. Den skrives ikke i repoet.
 // Bagefter: node vaerktoej/udgiv.mjs hjemmeside (testudgave) og --live.
@@ -101,22 +102,27 @@ const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].map((m) => m[1]);
 const titler = new Map(indlaeg.map((d) => [norm(d.titel), d.slug]));
 const filer = new Set(fs.readdirSync(path.join(H, 'blog/post')).map((f) => f.replace(/\.html$/, '')));
 const nye = [], sprunget = [];
+// Soro deler indlæggene som www.voreshjem.dk/<soro-adresse>. Den adresse findes ikke her, så hver får en 301 til sit indlæg (M69).
+const soroAdr = new Map();
+const endelig = (x) => SAML[x] || (indlaeg.find((d) => d.slug === x) || {}).samlet || x;
 for (const it of items) {
   const titel = udenStreg(felt(it, 'title').trim()), slug = felt(it, 'link').replace(/\/$/, '').split('/').pop();
   const eks = titler.get(norm(titel));
-  if (eks && SAML[eks]) { sprunget.push(`${titel}: lagt sammen med /post/${SAML[eks]}`); continue; }
-  if (eks || filer.has(slug)) { sprunget.push(`${titel}: findes allerede (/post/${eks || slug})`); continue; }
+  const adr = (maal) => { if (/^[a-z0-9-]+$/.test(slug)) soroAdr.set(slug, endelig(maal)); };
+  if (eks && SAML[eks]) { adr(eks); sprunget.push(`${titel}: lagt sammen med /post/${SAML[eks]}`); continue; }
+  if (eks || filer.has(slug)) { adr(eks || slug); sprunget.push(`${titel}: findes allerede (/post/${eks || slug})`); continue; }
   if (!/^[a-z0-9-]+$/.test(slug)) { sprunget.push(`${titel}: adressen "${slug}" er ikke ren (a-z, 0-9, -)`); continue; }
   const d = new Date(felt(it, 'pubDate'));
   const dato = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Copenhagen' }).format(d);
   // Indlæg der har fået ny titel og længere adresse her: samme dato, og alle ord fra Soros adresse går igen.
   const ord = slug.split('-');
   const omdobt = indlaeg.find((x) => x.dato === dato && ord.every((o) => x.slug.split('-').includes(o)));
-  if (omdobt) { sprunget.push(`${titel}: findes allerede med ny titel (/post/${omdobt.slug})`); continue; }
+  if (omdobt) { adr(omdobt.slug); sprunget.push(`${titel}: findes allerede med ny titel (/post/${omdobt.slug})`); continue; }
   let brod = felt(it, 'content:encoded') || felt(it, 'description');
   brod = udenStregHtml('<x>' + brod + '</x>').slice(3, -4);
   brod = brod.replace(/<h1(\s[^>]*)?>([\s\S]*?)<\/h1>/gi, '<h2>$2</h2>').replace(/href="([^"]+)"/g, (_, h) => `href="${esc(retLink(entiteter(h)))}"`).trim();
   const billede = (/<enclosure[^>]*url="([^"]+)"/.exec(it) || /<media:content[^>]*url="([^"]+)"/.exec(it) || [])[1] || '';
+  adr(slug);
   nye.push({ slug, titel, dato, resume: udenStreg(tekstAf(felt(it, 'description'))), brod, kildeBillede: billede, kategori: kategori(slug, titel) });
 }
 
@@ -126,7 +132,21 @@ for (const p of nye) {
   const links = [...p.brod.matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
   console.log(`  NY  /post/${p.slug}  ${p.dato}  ${NAVN[p.kategori]}  ${tekstAf(p.brod).split(' ').length} ord  links: ${links.join(', ')}`);
 }
-if (!SKRIV) { console.log('\nIntet skrevet. Kør med --skriv for at lave filerne.'); process.exit(0); }
+// --- Soros adresser: 301 fra /<soro-adresse> til /post/<indlæg>, i en fast blok i netlify.toml ---
+const tomlSti = path.join(H, 'netlify.toml');
+const tomlNu = fs.readFileSync(tomlSti, 'utf8');
+const START = '# SORO-ADRESSER START (skrives af vaerktoej/soro-til-blog.mjs, ret ikke i hånden)', SLUT = '# SORO-ADRESSER SLUT';
+const optaget = (a) => fs.existsSync(path.join(H, a + '.html')) || fs.existsSync(path.join(H, a));
+const regler = [...soroAdr].filter(([a]) => !optaget(a)).sort(([a], [b]) => a.localeCompare(b))
+  .map(([a, m]) => `[[redirects]]\nfrom = "/${a}"\nto = "/post/${m}"\nstatus = 301\nforce = true\n`);
+const blok = `${START}\n${regler.join('\n')}${SLUT}\n\n`;
+let nyToml = tomlNu.includes(START) ? tomlNu.replace(new RegExp(START.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[\\s\\S]*?' + SLUT + '\\n\\n?'), blok)
+  : tomlNu.replace('[[redirects]]\nfrom = "/post/*"', blok + '[[redirects]]\nfrom = "/post/*"');
+if (!nyToml.includes(START)) throw new Error('Fandt ikke reglen for /post/* i netlify.toml');
+console.log(`\nSoros adresser: ${regler.length} viderestillinger${nyToml === tomlNu ? ' (uændret)' : ' (ændret)'}.`);
+if (SKRIV || flag.includes('--adresser')) { if (nyToml !== tomlNu) fs.writeFileSync(tomlSti, nyToml); if (!SKRIV) { console.log('netlify.toml opdateret (kun adresserne).'); process.exit(0); } }
+
+if (!SKRIV) { console.log('\nIntet skrevet. Kør med --skriv for at lave filerne (eller --adresser for kun viderestillingerne).'); process.exit(0); }
 
 // --- billeder ---
 for (const p of nye) {

@@ -42,13 +42,13 @@
       nyttigt: 'Nyttigt?', tak: 'Tak for din feedback',
       aabn: 'Åbn chat', luk: 'Luk', send: 'Send', ja: 'Ja', nej: 'Nej',
       mailTitel: 'Skal vi kunne vende tilbage?',
-      mailTekst: 'Skriv din email, så kan en fra teamet svare dig, også hvis du lukker chatten.',
+      mailTekst: 'Skriv din e-mail, så kan en fra teamet svare dig, også hvis du lukker chatten.',
       mailFelt: 'din@email.dk',
-      mailFejl: 'Skriv venligst en gyldig email.',
-      mailGem: 'Gem email',
+      mailFejl: 'Skriv venligst en gyldig e-mail.',
+      mailGem: 'Gem e-mail',
       mailSpring: 'Nej tak, jeg fortsætter bare',
-      mailSmaat: 'Vi bruger kun din email til at svare dig. Læs mere i vores <a href="https://www.iubenda.com/privacy-policy/85951957" target="_blank" rel="noopener">privatlivspolitik</a>.',
-      feltNavn: 'Din besked', mailNavn: 'Din email',
+      mailSmaat: 'Vi bruger kun din e-mail til at svare dig. Læs mere i vores <a href="https://www.iubenda.com/privacy-policy/85951957" target="_blank" rel="noopener">privatlivspolitik</a>.',
+      feltNavn: 'Din besked', mailNavn: 'Din e-mail',
       netfejl: 'Beklager, der er forbindelsesproblemer lige nu. Skriv gerne til kontakt@vores-hjem.dk.'
     },
     de: {
@@ -149,7 +149,7 @@
     '.dot{ width:7px; height:7px; border-radius:50%; background:#4ade80; box-shadow:0 0 0 3px rgba(74,222,128,.3); }',
     '.head .x{ margin-left:auto; background:transparent; border:none; color:#fff; cursor:pointer; font-size:22px; line-height:1; opacity:.85; padding:4px; }',
     '.head .x:hover{ opacity:1; }',
-    '.body{ flex:1; overflow-y:auto; padding:18px 16px; background:#F6F5FB; display:flex; flex-direction:column; gap:10px; }',
+    '.body{ flex:1; overflow-y:auto; overscroll-behavior:contain; padding:18px 16px; background:#F6F5FB; display:flex; flex-direction:column; gap:10px; }',
     '.banner{ background:#EAF7EE; color:#1B7A3D; font-size:12.5px; font-weight:600; text-align:center; padding:7px 10px; border-radius:10px; }',
     '.row{ display:flex; gap:8px; align-items:flex-end; max-width:100%; }',
     '.row.me{ justify-content:flex-end; }',
@@ -438,8 +438,17 @@
   try { nudgeDone = sessionStorage.getItem(TEASERNØGLE) === '1'; } catch (e) {}
   function dismissNudge() { nudge.classList.remove('show'); nudgeDone = true; try { sessionStorage.setItem(TEASERNØGLE, '1'); } catch (e) {} }
 
+  // L172: I fuld skærm på iPhone bliver vinduet ikke mindre, når tastaturet kommer frem; Safari skubber i stedet
+  // billedet op, så toppen med krydset forsvinder. Derfor følger panelet det synlige område (visualViewport).
+  var vv = window.visualViewport;
+  function tilpasPanel() {
+    if (!vv || !panel.classList.contains('open') || !fuldSkaerm()) { panel.style.top = ''; panel.style.height = ''; panel.style.bottom = ''; return; }
+    panel.style.top = vv.offsetTop + 'px'; panel.style.height = vv.height + 'px'; panel.style.bottom = 'auto';
+  }
+  if (vv) { vv.addEventListener('resize', tilpasPanel); vv.addEventListener('scroll', tilpasPanel); }
   function open() {
     panel.classList.add('open');
+    tilpasPanel();
     launcher.setAttribute('aria-expanded', 'true');
     if (fuldSkaerm()) panel.setAttribute('aria-modal', 'true'); else panel.removeAttribute('aria-modal');
     dismissNudge();
@@ -452,6 +461,7 @@
   }
   function close() {
     panel.classList.remove('open');
+    tilpasPanel();
     panel.removeAttribute('aria-modal');
     launcher.setAttribute('aria-expanded', 'false');
     stopPolling();

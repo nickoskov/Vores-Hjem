@@ -111,6 +111,7 @@
 <!-- ══ SPORING SLUT ══ -->
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="format-detection" content="telephone=no">
 <title>Opgaver og husarbejde fordelt i familien | Vores Hjem</title>
 <link rel="canonical" href="https://www.voreshjem.dk/opgaver">
 <link rel="alternate" hreflang="da" href="https://www.voreshjem.dk/opgaver">
@@ -149,7 +150,7 @@
   --shadow-xl: 0 40px 120px rgba(108,71,255,0.22);
 }
 
-html { scroll-behavior: smooth; overflow-x: hidden; }
+html { scroll-behavior: smooth; scroll-padding-top: 90px; }
 body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
 a { color: inherit; text-decoration: none; }
 .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
@@ -694,7 +695,7 @@ nav::before {
       <div class="og-content reveal reveal-delay-2">
         <ul class="og-list2">
           <li><span class="og-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Tildel til en person eller til hele familien</strong><span class="mob-kort"><br>så er der ikke tvivl om hvem der gør hvad</span></span></li>
-                    <li><span class="og-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Opgaver der går igen, kommer af sig selv</strong><span class="mob-kort"><br>opvasken skal ikke skrives ind hver dag</span></span></li>
+                    <li><span class="og-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Opgaver, der går igen, kommer af sig selv</strong><span class="mob-kort"><br>opvasken skal ikke skrives ind hver dag</span></span></li>
           <li><span class="og-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Færdige opgaver rydder op efter sig</strong><span class="mob-kort"><br>de bliver liggende en uge og forsvinder så automatisk</span></span></li>
         </ul>
       </div>
@@ -1587,7 +1588,7 @@ nav::before {
 <div class="container">
   <div class="vg-header">
     <div class="badge">Nyt: Vagter</div>
-    <h2 class="vg-h2">Tag et billede af lønsedlen, <em>så regner appen resten</em></h2>
+    <h2 class="vg-h2">Tag et billede af lønsedlen, <em>så regner appen resten ud</em></h2>
     <p class="vg-text">Vagter finder selv din timeløn og dine tillæg frem fra sedlen. Derefter
        ved den, hvad hver eneste vagt giver, også når aften, nat og weekend skifter midt i en
        nattevagt, og hvad der ender med at stå på kontoen.</p>
@@ -1633,20 +1634,20 @@ nav::before {
             <div class="mk-tal">
               <div><div class="st" id="mk-timer">0 t</div><div class="li">Timer</div></div>
               <div class="sk"></div>
-              <div><div class="st" id="mk-loen">0,00 Kr.</div><div class="li">Løn</div></div>
+              <div><div class="st" id="mk-loen">0,00 kr.</div><div class="li">Løn</div></div>
             </div>
             <div class="mk-note">Løn før pension, AM-bidrag, ATP og skat</div>
-            <div class="mk-netto"><span>Skønnet udbetalt</span><b id="mk-netto">~ 0,00 Kr.</b></div>
+            <div class="mk-netto"><span>Skønnet udbetalt</span><b id="mk-netto">~ 0,00 kr.</b></div>
           </div>
           <div class="vr" data-i="0"><span class="t"><b>Handicaphjælper</b>
             <span>fre. 11. sep. · 19.00&ndash;09.00</span></span>
-            <span class="h"><span>14 t</span><b>2.915,00 Kr.</b></span></div>
+            <span class="h"><span>14 t</span><b>2.915,00 kr.</b></span></div>
           <div class="vr" data-i="1"><span class="t"><b>Handicaphjælper</b>
             <span>lør. 12. sep. · 20.00&ndash;09.00</span></span>
-            <span class="h"><span>13 t</span><b>2.850,61 Kr.</b></span></div>
+            <span class="h"><span>13 t</span><b>2.850,61 kr.</b></span></div>
           <div class="vr" data-i="2"><span class="t"><b>Handicaphjælper Søndag</b>
             <span>søn. 13. sep. · 20.00&ndash;06.00</span></span>
-            <span class="h"><span>10 t</span><b>1.960,86 Kr.</b></span></div>
+            <span class="h"><span>10 t</span><b>1.960,86 kr.</b></span></div>
         </div>
 
       </div>
@@ -1685,8 +1686,8 @@ nav::before {
     document.getElementById('ls-status').classList.remove('vis');
     kort.querySelectorAll('.vr').forEach(function(v){ v.classList.remove('ind'); });
     document.getElementById('mk-timer').textContent = '0 t';
-    document.getElementById('mk-loen').textContent = '0,00 Kr.';
-    document.getElementById('mk-netto').textContent = '~ 0,00 Kr.';
+    document.getElementById('mk-loen').textContent = '0,00 kr.';
+    document.getElementById('mk-netto').textContent = '~ 0,00 kr.';
   }
 
   function spil(){
@@ -1712,8 +1713,8 @@ nav::before {
     });
     vent(4600, function(){
       taelOp(document.getElementById('mk-timer'), 37, 900, 0, ' t');
-      taelOp(document.getElementById('mk-loen'), 7726.47, 1300, 2, ' Kr.');
-      taelOp(document.getElementById('mk-netto'), 4410.47, 1300, 2, ' Kr.', '~ ');
+      taelOp(document.getElementById('mk-loen'), 7726.47, 1300, 2, ' kr.');
+      taelOp(document.getElementById('mk-netto'), 4410.47, 1300, 2, ' kr.', '~ ');
       kort.querySelectorAll('.vr').forEach(function(v,i){
         setTimeout(function(){ v.classList.add('ind'); }, 500 + i*240);
       });

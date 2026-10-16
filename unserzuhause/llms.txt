@@ -25,7 +25,7 @@ Wichtige Fakten (Stand: 16. Oktober 2026):
 - [Familienkalender](https://www.unserzuhauseapp.de/kalender): Alle Termine der Familie an einem Ort. Alle können Termine eintragen, auch Kinder und Großeltern. Private Termine (Stern) sehen Familienmitglieder ohne Admin-Rechte nur als „🔒 Privat“, ohne Titel.
 - [Kalender-Synchronisierung](https://www.unserzuhauseapp.de/synchronisierung): Holt Termine aus Google und dem Kalender des Handys in den gemeinsamen Familienkalender.
 - [Essensplan](https://www.unserzuhauseapp.de/essenpl%C3%A4ne): Die Mahlzeiten der Woche an einem Ort planen, damit niemand fragen muss, was es heute gibt.
-- [Einkaufsliste](https://www.unserzuhauseapp.de/einkaufsliste): Eine gemeinsame Liste, in der alle hinzufügen und abhaken. Änderungen sind sofort für alle sichtbar, und Waren können ein Foto haben.
+- [Einkaufsliste](https://www.unserzuhauseapp.de/einkaufsliste): Eine gemeinsame Liste, in der alle hinzufügen und abhaken. Änderungen sind sofort für alle sichtbar, und Artikel können ein Foto haben.
 - [Aufgaben, Punkte und Taschengeld](https://www.unserzuhauseapp.de/aufgaben): Hausarbeit mit Namen, Fälligkeit und automatischer Wiederholung verteilen. Aufgaben können Punkte geben, und die Familie legt den Kurs selbst fest, zum Beispiel 1 Punkt = 1 Cent oder gar kein Geld. Nur Erwachsene zahlen aus.
 - [Einstellungen und Familiencode](https://www.unserzuhauseapp.de/einstellungen): Familienmitglieder, Rollen, Familiencode, Abo und Sprache.
 

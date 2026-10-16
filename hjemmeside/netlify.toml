@@ -994,6 +994,290 @@ to = "/post/hvordan-laver-man-en-madplan-for-familien"
 status = 301
 force = true
 
+# SORO-ADRESSER START (skrives af vaerktoej/soro-til-blog.mjs, ret ikke i hånden)
+[[redirects]]
+from = "/alternativ-til-papir-familiekalender"
+to = "/post/alternativ-til-papir-familiekalender-for-familien"
+status = 301
+force = true
+
+[[redirects]]
+from = "/anmeldelse-af-danske-familieapps"
+to = "/post/anmeldelse-af-danske-familieapps-hvad-virker"
+status = 301
+force = true
+
+[[redirects]]
+from = "/app-til-at-samle-familiens-aftaler"
+to = "/post/faelles-familiekalender-giver-ro-i-hverdagen"
+status = 301
+force = true
+
+[[redirects]]
+from = "/bedste-apps-til-familielogistik"
+to = "/post/bedste-apps-til-familielogistik-i-en-travl-hverdag"
+status = 301
+force = true
+
+[[redirects]]
+from = "/bedste-vaerktoejer-til-hverdagsplanlaegning"
+to = "/post/bedste-vaerktoejer-til-hverdagsplanlaegning"
+status = 301
+force = true
+
+[[redirects]]
+from = "/begynderguide-til-digital-husstandsplanlaegning"
+to = "/post/begynderguide-til-digital-husstandsplanlaegning"
+status = 301
+force = true
+
+[[redirects]]
+from = "/boerneopgaver-og-beloenning-i-en-travl-hverdag"
+to = "/post/hvordan-fungerer-familiepoint-i-hverdagen"
+status = 301
+force = true
+
+[[redirects]]
+from = "/boernepoint-til-daglige-opgaver"
+to = "/post/hvordan-fungerer-familiepoint-i-hverdagen"
+status = 301
+force = true
+
+[[redirects]]
+from = "/del-ansvar-mellem-foraeldre"
+to = "/post/saadan-kan-familien-mindske-mental-load-hjemme"
+status = 301
+force = true
+
+[[redirects]]
+from = "/dele-indkoebsliste-med-familien"
+to = "/post/saadan-deler-du-indkoebsliste-med-familien"
+status = 301
+force = true
+
+[[redirects]]
+from = "/delt-kalender-familie"
+to = "/post/faelles-familiekalender-giver-ro-i-hverdagen"
+status = 301
+force = true
+
+[[redirects]]
+from = "/digital-organisering-af-hjemmet"
+to = "/post/digital-organisering-af-hjemmet"
+status = 301
+force = true
+
+[[redirects]]
+from = "/digitale-opgavetavler"
+to = "/post/digitale-opgavetavler"
+status = 301
+force = true
+
+[[redirects]]
+from = "/eksempel-paa-retfaerdig-opgavefordeling"
+to = "/post/eksempel-paa-retfaerdig-opgavefordeling"
+status = 301
+force = true
+
+[[redirects]]
+from = "/faa-overblik-over-hverdagen"
+to = "/post/faa-overblik-over-hverdagen"
+status = 301
+force = true
+
+[[redirects]]
+from = "/faelles-familiekalender"
+to = "/post/faelles-familiekalender-giver-ro-i-hverdagen"
+status = 301
+force = true
+
+[[redirects]]
+from = "/faelles-indkoebsliste-app"
+to = "/post/saadan-deler-du-indkoebsliste-med-familien"
+status = 301
+force = true
+
+[[redirects]]
+from = "/familie-app-til-mere-ro-i-en-travl-hverdag"
+to = "/post/bedste-apps-til-familielogistik-i-en-travl-hverdag"
+status = 301
+force = true
+
+[[redirects]]
+from = "/familieapp-med-gratis-proeveperiode"
+to = "/post/familieapp-med-gratis-proeveperiode-i-14-dage"
+status = 301
+force = true
+
+[[redirects]]
+from = "/familieapp-sammenligning"
+to = "/post/anmeldelse-af-danske-familieapps-hvad-virker"
+status = 301
+force = true
+
+[[redirects]]
+from = "/familiekalender-for-travle-foraeldre"
+to = "/post/faelles-familiekalender-giver-ro-i-hverdagen"
+status = 301
+force = true
+
+[[redirects]]
+from = "/familieplanlaegning-for-samboende"
+to = "/post/familieplanlaegning-for-samboende"
+status = 301
+force = true
+
+[[redirects]]
+from = "/fordel-dagens-praktiske-goeremaal"
+to = "/post/fordel-dagens-praktiske-goeremaal"
+status = 301
+force = true
+
+[[redirects]]
+from = "/fordele-huslige-pligter-retfaerdigt"
+to = "/post/saadan-kan-i-fordele-huslige-pligter-retfaerdigt"
+status = 301
+force = true
+
+[[redirects]]
+from = "/guide-til-boerns-huslige-ansvar"
+to = "/post/guide-til-boerns-huslige-ansvar-i-hverdagen"
+status = 301
+force = true
+
+[[redirects]]
+from = "/guide-til-planlaegning-af-skolehverdagen"
+to = "/post/guide-til-planlaegning-af-skolehverdagen"
+status = 301
+force = true
+
+[[redirects]]
+from = "/hvordan-fungerer-familiepoint"
+to = "/post/hvordan-fungerer-familiepoint-i-hverdagen"
+status = 301
+force = true
+
+[[redirects]]
+from = "/hvordan-laver-man-en-madplan-for-familien"
+to = "/post/hvordan-laver-man-en-madplan-for-familien"
+status = 301
+force = true
+
+[[redirects]]
+from = "/hvordan-undgaar-vi-dobbeltbookinger-hjemme"
+to = "/post/hvordan-undgaar-vi-dobbeltbookinger-hjemme"
+status = 301
+force = true
+
+[[redirects]]
+from = "/hvornar-faar-boern-huslige-pligter"
+to = "/post/hvornar-faar-boern-huslige-pligter"
+status = 301
+force = true
+
+[[redirects]]
+from = "/indkoebsliste-paa-papir-versus-app"
+to = "/post/indkoebsliste-paa-papir-versus-app"
+status = 301
+force = true
+
+[[redirects]]
+from = "/involver-boern-i-husarbejdet"
+to = "/post/involver-boern-i-husarbejdet"
+status = 301
+force = true
+
+[[redirects]]
+from = "/kan-boern-optjene-lommepenge-hjemme"
+to = "/post/kan-boern-optjene-lommepenge-hjemme-hver-uge"
+status = 301
+force = true
+
+[[redirects]]
+from = "/koordinere-boernenes-fritidsaktiviteter"
+to = "/post/koordinere-boernenes-fritidsaktiviteter-uden-kaos"
+status = 301
+force = true
+
+[[redirects]]
+from = "/madplan-app-familie"
+to = "/post/madplan-app-til-familie-giver-ro-om-aftensmaden"
+status = 301
+force = true
+
+[[redirects]]
+from = "/mindske-mental-load-hjemme"
+to = "/post/saadan-kan-familien-mindske-mental-load-hjemme"
+status = 301
+force = true
+
+[[redirects]]
+from = "/opgaveapp-til-familien"
+to = "/post/opgaveapp-til-familien-giver-ro-i-hverdagen"
+status = 301
+force = true
+
+[[redirects]]
+from = "/opgavepoint-eller-lommepenge"
+to = "/post/opgavepoint-eller-lommepenge"
+status = 301
+force = true
+
+[[redirects]]
+from = "/opret-faste-rutiner-med-boern"
+to = "/post/opret-faste-rutiner-med-boern"
+status = 301
+force = true
+
+[[redirects]]
+from = "/organiser-familiens-hverdagsrutiner"
+to = "/post/organiser-familiens-hverdagsrutiner"
+status = 301
+force = true
+
+[[redirects]]
+from = "/planlaeg-indkoeb-efter-ugens-retter"
+to = "/post/planlaeg-indkoeb-efter-ugens-retter"
+status = 301
+force = true
+
+[[redirects]]
+from = "/planlaeg-ugens-indkoeb-sammen"
+to = "/post/planlaeg-ugens-indkoeb-sammen"
+status = 301
+force = true
+
+[[redirects]]
+from = "/start-med-boernepoint-hjemme"
+to = "/post/start-med-boernepoint-hjemme"
+status = 301
+force = true
+
+[[redirects]]
+from = "/test-af-familieplanlaeggere"
+to = "/post/test-af-familieplanlaeggere"
+status = 301
+force = true
+
+[[redirects]]
+from = "/ugentlig-madplan-til-boernefamilie"
+to = "/post/hvordan-laver-man-en-madplan-for-familien"
+status = 301
+force = true
+
+[[redirects]]
+from = "/ugeplansapp-anmeldelse"
+to = "/post/ugeplansapp-anmeldelse"
+status = 301
+force = true
+
+[[redirects]]
+from = "/undgaa-glemte-indkoeb-hjemme"
+to = "/post/saadan-undgaar-familien-glemte-indkoeb-hjemme"
+status = 301
+force = true
+# SORO-ADRESSER SLUT
+
 [[redirects]]
 from = "/post/*"
 to = "/blog/post/:splat.html"
