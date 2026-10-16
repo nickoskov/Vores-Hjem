@@ -26,6 +26,19 @@ for = "/fonts/*"
   [headers.values]
   Cache-Control = "public, max-age=31536000, immutable"
 
+# Billeder og video gemmes en uge i browseren, som paa den tyske side (16. okt. 2026)
+[[headers]]
+for = "/images/*"
+
+  [headers.values]
+  Cache-Control = "public, max-age=604800"
+
+[[headers]]
+for = "/video/*"
+
+  [headers.values]
+  Cache-Control = "public, max-age=604800"
+
 # Gamle Wix-adresser fra Search Console (404), okt. 2026
 # Interne arbejdsfiler (flyer, reklame, brandguide) er flyttet til brand/ i repoet og udgives ikke mere (16. okt. 2026)
 # Netlify-adressen sender videre til domaenet, saa siden ikke findes to steder (16. okt. 2026)
