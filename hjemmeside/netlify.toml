@@ -28,6 +28,13 @@ for = "/fonts/*"
 
 # Gamle Wix-adresser fra Search Console (404), okt. 2026
 # Interne arbejdsfiler (flyer, reklame, brandguide) er flyttet til brand/ i repoet og udgives ikke mere (16. okt. 2026)
+# Netlify-adressen sender videre til domaenet, saa siden ikke findes to steder (16. okt. 2026)
+[[redirects]]
+from = "https://stirring-cactus-7010c5.netlify.app/*"
+to = "https://www.voreshjem.dk/:splat"
+status = 301
+force = true
+
 [[redirects]]
   from = "/flyer.html"
   to = "/"

@@ -83,7 +83,7 @@ Læs mere: https://www.voreshjem.dk/indkobsliste
 - Opgaver får titel, deadline og navn, så det er tydeligt, hvem der gør hvad.
 - En opgave kan tildeles én person eller "Fælles".
 - Man kan vælge færdige forslag som Støvsuge, Vaske tøj og Gå med hunden.
-- Opgaver kan gentages hver uge, hver 14. dag eller hver måned.
+- Opgaver kan gentages hver dag, hver 2. dag, hver uge, hver 14. dag, hver måned eller hvert år.
 - Opgaverne kan vises som "Egne" eller "Alle/fælles", og som aktive eller afsluttede.
 - Færdige opgaver slettes automatisk efter en uge.
 - Før man kan oprette opgaver, skal hovedbrugeren have oprettet familiemedlemmer.
@@ -187,7 +187,7 @@ Ja, i Vores Hjem hænger madplanen sammen med den delte indkøbsliste, så famil
 Med en delt indkøbsliste i en app kan alle i familien tilføje varer og krydse af på den samme liste fra hver sin telefon. I Vores Hjem opdateres listen for alle med det samme, og en vare kan tildeles et bestemt familiemedlem.
 
 **Hvordan fordeler man husarbejde i familien med en app?**
-I Vores Hjem fordeler familien opgaver og husarbejde med titel, deadline og navn, så alle kan se, hvem der gør hvad. En opgave kan tildeles én person eller være fælles, den kan gentages hver uge, hver 14. dag eller hver måned, og børn kan få point for løste opgaver.
+I Vores Hjem fordeler familien opgaver og husarbejde med titel, deadline og navn, så alle kan se, hvem der gør hvad. En opgave kan tildeles én person eller være fælles, den kan gentages hver dag, hver 2. dag, hver uge, hver 14. dag, hver måned eller hvert år, og børn kan få point for løste opgaver.
 
 **Hvordan virker point og lommepenge i Vores Hjem?**
 Børn optjener point i Vores Hjem, så snart en opgave, de har klaret, er krydset af. Familien bestemmer selv, hvad et point er værd, fx 1 krone eller slet ingen penge, og kun de voksne kan udbetale.
