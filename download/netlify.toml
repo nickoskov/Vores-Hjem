@@ -1,6 +1,5 @@
 plugins = []
 headers = []
-redirects = []
 
 [functions]
 
@@ -23,3 +22,10 @@ publishOrigin = "default"
     [build.processing.js]
 
   [build.services]
+# Netlify-adressen sender videre til domaenet, saa siden ikke findes to steder (16. okt. 2026)
+[[redirects]]
+from = "https://voreshjem-download.netlify.app/*"
+to = "https://download.voreshjem.dk/:splat"
+status = 301
+force = true
+
