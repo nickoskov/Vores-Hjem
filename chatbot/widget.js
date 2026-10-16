@@ -321,7 +321,7 @@
     renderChat(false);
   }
 
-  // Email spørges først når den er relevant — ikke som en bom foran chatten
+  // Email spørges først når den er relevant, ikke som en bom foran chatten
   function askEmailHTML() {
     return '<div class="gate askmail">' +
       '<div class="h">' + T.mailTitel + '</div>' +
@@ -363,7 +363,7 @@
   function applyState(data) {
     var msgs = (data && data.messages) ? data.messages : [];
     var h = !!(data && data.human);
-    // Voks/behold — skrump ALDRIG pga. forsinkede (eventual consistency) læsninger
+    // Voks/behold, skrump ALDRIG pga. forsinkede (eventual consistency) læsninger
     if (msgs.length >= serverMsgs.length) serverMsgs = msgs;
     human = h;
     if (data && typeof data.needsHuman !== 'undefined') needsHuman = !!data.needsHuman;
@@ -433,7 +433,7 @@
     launcher.setAttribute('aria-expanded', 'true');
     if (fuldSkaerm()) panel.setAttribute('aria-modal', 'true'); else panel.removeAttribute('aria-modal');
     dismissNudge();
-    // Fri chat: ingen email-gate — man skriver bare løs
+    // Fri chat: ingen email-gate, man skriver bare løs
     foot.style.display = 'flex';
     renderChat(false);
     startPolling();

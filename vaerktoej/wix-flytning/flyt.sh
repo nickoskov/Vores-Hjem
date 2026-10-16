@@ -12,7 +12,7 @@ BASE=${BASE:-https://www.voreshjem.dk}
 cd "$SITE"
 
 echo "== 1. panelets rettelser ind i filerne"
-if [ -n "${ADMIN_PASSWORD:-}${BACKEND_SEDDEL:-}" ]; then node hent_rettelser.js || echo "   (kunne ikke hente rettelser, fortsaetter)"; else echo "   springes over: saet ADMIN_PASSWORD=... foran kommandoen for at tage rettelser med"; fi
+if [ -n "${ADMIN_PASSWORD:-}${BACKEND_SEDDEL:-}" ]; then node ../vaerktoej/hent_rettelser.js || echo "   (kunne ikke hente rettelser, fortsaetter)"; else echo "   springes over: saet ADMIN_PASSWORD=... foran kommandoen for at tage rettelser med"; fi
 
 echo "== 2. udgiver siden med sporing"
 grep -q "GTM-TQ39D7RM" index.html || { echo "   FEJL: sporingsblokken mangler i index.html"; exit 1; }

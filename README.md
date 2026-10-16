@@ -27,7 +27,7 @@ Se også CLAUDE.md. `backend/` udgives med `node vaerktoej/udgiv-backend.mjs [--
 ## Mangler
 
 - App-koden (iPhone/Android)
-- `_redirects` til `hjemmeside/hent_rettelser.js` (scriptet, der henter rettelser fra backend-panelet før udgivelse)
+- `_redirects` til `vaerktoej/hent_rettelser.js` (scriptet, der henter rettelser fra backend-panelet før udgivelse)
 
 ## Værktøjer
 

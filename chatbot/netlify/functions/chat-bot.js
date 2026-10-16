@@ -1,5 +1,5 @@
-// Vores Hjem — chat-backend: egen widget + Claude + menneske-overtagelse.
-// Lager: Neon (Postgres) — pålideligt, stærkt konsistent. Tabeller med vh_-præfiks.
+// Vores Hjem, chat-backend: egen widget + Claude + menneske-overtagelse.
+// Lager: Neon (Postgres), pålideligt, stærkt konsistent. Tabeller med vh_-præfiks.
 // Email-alarm via din egen SMTP. ALLE hemmeligheder = Netlify env vars, ALDRIG i koden.
 
 const { neon } = require('@neondatabase/serverless');
@@ -18,7 +18,7 @@ const SITE_URL = (process.env.SITE_URL || 'https://voreshjem-bot.netlify.app').r
 let FAST_SITE = null;
 let PANEL_URL = null;
 
-// SMTP (din egen vores-hjem.dk-mail) — sæt som Netlify env vars
+// SMTP (din egen vores-hjem.dk-mail), sæt som Netlify env vars
 const SMTP_HOST = process.env.SMTP_HOST;
 const SMTP_PORT = parseInt(process.env.SMTP_PORT || '587', 10);
 const SMTP_USER = process.env.SMTP_USER;
@@ -448,7 +448,7 @@ async function loadMeta(id) {
   return rows.length ? rowToMeta(rows[0]) : null;
 }
 async function saveMeta(id, meta) {
-  // site sættes ved oprettelsen og røres aldrig igen — en samtale skifter ikke marked
+  // site sættes ved oprettelsen og røres aldrig igen, en samtale skifter ikke marked
   await sql`INSERT INTO vh_conversations (id, email, human, needs_human, alerted, n, seen, mood, archived, site, first_q, updated_at)
     VALUES (${id}, ${meta.email || ''}, ${!!meta.human}, ${!!meta.needsHuman}, ${!!meta.alerted}, ${meta.n || 0}, ${meta.seen === undefined ? true : !!meta.seen}, ${meta.mood || ''}, ${!!meta.archived}, ${cleanSite(meta.site)}, ${meta.firstQ || ''}, now())
     ON CONFLICT (id) DO UPDATE SET
@@ -526,7 +526,7 @@ ${resumeBlock}
 
 async function sendAlert(meta, lastText, resume, site) {
   const tx = transporter();
-  if (!tx) { console.log('ALARM sprunget over — SMTP ikke konfigureret'); return; }
+  if (!tx) { console.log('ALARM sprunget over, SMTP ikke konfigureret'); return; }
   const S = cfg(site), T = S.mail;
   // ?site= i linket åbner admin direkte på det rigtige marked
   // inde i en backend (brug()) er det backendens panel
@@ -679,7 +679,7 @@ function statPeriode(body) {
 
 function requireAdmin(body) { return ADMIN_PASSWORD && body.password === ADMIN_PASSWORD; }
 
-// VIGTIGT: ensureSchema køres ALDRIG automatisk — ALTER TABLE låser tabellerne og gav 15-30s
+// VIGTIGT: ensureSchema køres ALDRIG automatisk, ALTER TABLE låser tabellerne og gav 15-30s
 // udfald når nye funktions-instanser startede. Kør den manuelt efter skema-ændringer med POST
 // {"action":"admin_migrate","password":"<ADMIN_PASSWORD>"} (kræver koden og er bag spærringen).
 let _lastArchiveSweep = 0;
@@ -759,7 +759,7 @@ async function behandl(event) {
 
       let meta = await loadMeta(id);
       if (!meta) meta = { id, site: cleanSite(body.site), email: gyldigMail(body.email), createdAt: nowISO(), human: false, needsHuman: false, alerted: false, firstQ: content.slice(0, 120), n: 0 };
-      // Findes samtalen, gælder dens eget marked — widgeten kan ikke flytte den
+      // Findes samtalen, gælder dens eget marked, widgeten kan ikke flytte den
       const site = cleanSite(meta.site || body.site);
       const S = cfg(site);
       meta.site = site;
@@ -786,7 +786,7 @@ async function behandl(event) {
       meta.updatedAt = nowISO();
       meta.lastRole = 'user'; meta.lastText = content.slice(0, 80);
 
-      // Gem brugerens besked i baggrunden — mens Claude tænker (afventes til sidst)
+      // Gem brugerens besked i baggrunden, mens Claude tænker (afventes til sidst)
       const userMsgP = addMessage(id, 'user', content);
 
       const convo = prior.concat([{ role: 'user', content }]);
@@ -824,7 +824,7 @@ async function behandl(event) {
       return json(200, { messages: transcript, human: false });
     }
 
-    // Bruger giver email undervejs (chatten er fri — email er valgfri)
+    // Bruger giver email undervejs (chatten er fri, email er valgfri)
     if (action === 'set_email') {
       const id = cleanId(body.conversationId);
       const em = (typeof body.email === 'string' ? body.email : '').trim().slice(0, 120);
@@ -1083,7 +1083,7 @@ async function behandl(event) {
 
     if (action === 'admin_get') {
       const id = cleanId(body.conversationId);
-      // peek=true bruges til forudindlæsning — må IKKE markere samtalen som læst
+      // peek=true bruges til forudindlæsning, må IKKE markere samtalen som læst
       const peek = !!body.peek;
       const [metaR, messages] = await Promise.all([
         loadMeta(id),
@@ -1172,7 +1172,7 @@ async function behandl(event) {
       return json(200, { ok: true });
     }
 
-    // Redigér en agent-besked (kun 'agent'-beskeder — aldrig kundens/bottens)
+    // Redigér en agent-besked (kun 'agent'-beskeder, aldrig kundens/bottens)
     if (action === 'admin_edit_msg') {
       const id = cleanId(body.conversationId);
       const mid = parseInt(body.messageId, 10);
