@@ -11,6 +11,7 @@
 // andet (SAML i vaerktoej/vh-blog.js), så sammenlægningen ikke bliver omgjort.
 // Links i Soros tekst peger på gamle Wix-adresser; de rettes til den endelige side.
 // Billederne hentes og lægges i hjemmeside/images/blog/, som de andre indlægs billeder.
+import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -19,7 +20,12 @@ import { fileURLToPath } from 'node:url';
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const H = path.join(REPO, 'hjemmeside');
 const BASE = 'https://www.voreshjem.dk';
-const [feedUrl, ...flag] = process.argv.slice(2);
+// Uden adresse hentes den fra Netlify (voreshjem-backend), saa den aldrig skal skrives eller vises nogen steder.
+let [feedUrl, ...flag] = process.argv.slice(2);
+if (feedUrl && !/^https?:\/\//.test(feedUrl)) { flag.unshift(feedUrl); feedUrl = ''; }
+if (!feedUrl) {
+  try { feedUrl = execSync('netlify env:get SORO_RSS_URL --site d34e1582-bbea-4f03-91a9-f23119ea4a35', { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim().split('\n').pop().trim(); } catch (e) { feedUrl = ''; }
+}
 const SKRIV = flag.includes('--skriv');
 if (!feedUrl || !/^https?:\/\//.test(feedUrl)) { console.error('Angiv Soros RSS-adresse (SORO_RSS_URL).'); process.exit(1); }
 
@@ -89,6 +95,10 @@ for (const it of items) {
   if (!/^[a-z0-9-]+$/.test(slug)) { sprunget.push(`${titel}: adressen "${slug}" er ikke ren (a-z, 0-9, -)`); continue; }
   const d = new Date(felt(it, 'pubDate'));
   const dato = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Copenhagen' }).format(d);
+  // Indlæg der har fået ny titel og længere adresse her: samme dato, og alle ord fra Soros adresse går igen.
+  const ord = slug.split('-');
+  const omdobt = indlaeg.find((x) => x.dato === dato && ord.every((o) => x.slug.split('-').includes(o)));
+  if (omdobt) { sprunget.push(`${titel}: findes allerede med ny titel (/post/${omdobt.slug})`); continue; }
   let brod = felt(it, 'content:encoded') || felt(it, 'description');
   brod = brod.replace(/<h1(\s[^>]*)?>([\s\S]*?)<\/h1>/gi, '<h2>$2</h2>').replace(/href="([^"]+)"/g, (_, h) => `href="${esc(retLink(entiteter(h)))}"`).trim();
   const billede = (/<enclosure[^>]*url="([^"]+)"/.exec(it) || /<media:content[^>]*url="([^"]+)"/.exec(it) || [])[1] || '';
@@ -113,6 +123,17 @@ for (const p of nye) {
     if (!r.ok) { console.log('  billede kunne ikke hentes for', p.slug); continue; }
     fs.writeFileSync(fil, Buffer.from(await r.arrayBuffer()));
   }
+  // Samme størrelser som de øvrige kort: 1200 px bredt plus en 700 px-udgave til mobil (kræver cwebp).
+  const lille = fil.replace(/\.webp$/, '-700.webp');
+  try {
+    if (!fs.existsSync(lille)) {
+      const tmp = fil + '.tmp.webp';
+      execSync(`cwebp -quiet -q 80 -resize 1200 0 "${fil}" -o "${tmp}"`, { stdio: 'ignore' });
+      fs.renameSync(tmp, fil);
+      execSync(`cwebp -quiet -q 80 -resize 700 0 "${fil}" -o "${lille}"`, { stdio: 'ignore' });
+    }
+    p.billede700 = `${BASE}/images/blog/${path.basename(lille)}`;
+  } catch (e) { console.log('  700 px-billede kunne ikke laves for', p.slug, '(er cwebp installeret?)'); }
   p.billede = `${BASE}/images/blog/${navn}`;
 }
 
@@ -152,8 +173,10 @@ for (const p of nye) {
 // --- bloggens forside: de nye kort først (nyeste øverst), de gamle kort beholdes som de er ---
 let blog = fs.readFileSync(path.join(H, 'blog.html'), 'utf8');
 const kort = nye.slice().sort((a, b) => b.dato.localeCompare(a.dato)).map((p, i) => {
-  const doven = i < 6 ? '' : ' loading="lazy" decoding="async"';
-  const bil = p.billede ? `<img src="${esc(p.billede)}" alt="${esc(p.titel)}" class="bk-bil"${doven}>` :
+  // Kun det øverste kort hentes med det samme; resten venter, til man ruller ned.
+  const doven = i === 0 ? '' : ' loading="lazy" decoding="async"';
+  const saet = p.billede700 ? ` srcset="${esc(p.billede700)} 700w, ${esc(p.billede)} 1200w" sizes="(max-width: 700px) 92vw, 340px" width="1200" height="800"` : '';
+  const bil = p.billede ? `<img src="${esc(p.billede)}"${saet} alt="${esc(p.titel)}" class="bk-bil"${doven}>` :
     '<div class="bk-bil bk-tom"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3 2 12h3v8h5v-6h4v6h5v-8h3L12 3z"/></svg></div>';
   return `      <a class="bk" href="/post/${esc(p.slug)}">\n        <div class="bk-ramme">${bil}</div>\n        <div class="bk-ind">\n` +
     `          <time class="bk-dato" datetime="${p.dato}">${dansk(p.dato)}</time>\n          <h2 class="bk-titel">${esc(p.titel)}</h2>\n` +
@@ -170,7 +193,7 @@ blog = blog.replace(/<div class="bo-antal">\d+ indlæg<\/div>/, `<div class="bo-
 fs.writeFileSync(path.join(H, 'blog.html'), blog);
 
 // --- manifest og sitemap ---
-fs.writeFileSync(path.join(H, 'blog/indlaeg.json'), JSON.stringify([...indlaeg, ...nye.map((p) => ({ slug: p.slug, fil: `/blog/post/${p.slug}.html`, titel: p.titel, resume: p.resume, billede: p.billede || '', dato: p.dato, kategori: p.kategori }))], null, 1));
+fs.writeFileSync(path.join(H, 'blog/indlaeg.json'), JSON.stringify([...indlaeg, ...nye.map((p) => ({ slug: p.slug, fil: `/blog/post/${p.slug}.html`, titel: p.titel, resume: p.resume, billede: p.billede || '', dato: p.dato, kategori: p.kategori, ...(p.billede700 ? { billede700: p.billede700 } : {}) }))], null, 2));
 let sm = fs.readFileSync(path.join(H, 'sitemap.xml'), 'utf8');
 for (const p of nye) {
   const loc = `${BASE}/post/${p.slug}`;
