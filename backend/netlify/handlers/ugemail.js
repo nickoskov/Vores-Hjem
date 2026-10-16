@@ -20,13 +20,15 @@ const mail = require('../lib/mail.js');
 const K = require('../lib/koersel.js');
 const profil = require('../lib/side.js');
 const { sql, opret, log } = require('../lib/db.js');
+const S = require('../lib/sessioner.js');
+const kanalLib = require('../lib/kanal.js');
 
 const T = n => n == null ? '–' : (Number(n) || 0).toLocaleString('da-DK');
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const GRAA = 'color:#6B6785', LYS = 'color:#9B97B5';
 const KANAL = { 'Organic Search': 'Organisk søgning', 'Direct': 'Direkte', 'Paid Social': 'Betalt social',
   'Organic Social': 'Organisk social', 'Referral': 'Henvisning', 'Paid Search': 'Betalt søgning', 'Email': 'E-mail',
-  'Paid Other': 'Betalt, andet', 'Intern': 'Inde fra siden' };
+  'Paid Other': 'Betalt, andet', 'Intern': 'Inde fra siden', 'AI': 'AI-assistenter' };
 
 /* pil kun naar begge tal findes, og sammenligningsugen er dækket */
 const pil = (nu, foer, ok) => (!ok || nu == null || foer == null || !foer) ? '' :
@@ -60,12 +62,14 @@ async function egen(fra, til, fra2) {
             AND (ts AT TIME ZONE 'Europe/Copenhagen')::date BETWEEN ${fra2}::date AND ${til}::date GROUP BY 1`,
       sql`SELECT sti, count(*)::int AS n FROM vh_besoeg
           WHERE (ts AT TIME ZONE 'Europe/Copenhagen')::date BETWEEN ${fra}::date AND ${til}::date GROUP BY sti ORDER BY n DESC LIMIT 5`,
-      // hvor de kom fra: hver gaests foerste side paa dagen, saa klik inde paa siden ikke taeller som en kilde
-      sql`SELECT kanal, count(*)::int AS n FROM (
-            SELECT DISTINCT ON (gaest, (ts AT TIME ZONE 'Europe/Copenhagen')::date) kanal FROM vh_besoeg
-            WHERE (ts AT TIME ZONE 'Europe/Copenhagen')::date BETWEEN ${fra}::date AND ${til}::date
+      // hvor de kom fra: hver gaests foerste side paa dagen, saa klik inde paa siden ikke taeller som en kilde.
+      // Gamle raekker regnes om (lib/kanal.js), saa AI-assistenter staar for sig ogsaa for dagene foer 16. okt. 2026.
+      (() => { const p = S.parametre();
+        return sql(`SELECT kanal, count(*)::int AS n FROM (
+            SELECT DISTINCT ON (gaest, (ts AT TIME ZONE 'Europe/Copenhagen')::date) ${kanalLib.kanalSql('kanal', 'kilde', p)} AS kanal FROM vh_besoeg
+            WHERE (ts AT TIME ZONE 'Europe/Copenhagen')::date BETWEEN ${p(fra)}::date AND ${p(til)}::date
             ORDER BY gaest, (ts AT TIME ZONE 'Europe/Copenhagen')::date, ts) x
-          GROUP BY kanal ORDER BY n DESC LIMIT 6`,
+          GROUP BY kanal ORDER BY n DESC LIMIT 6`, p.liste); })(),
       sql`SELECT ((min(ts) AT TIME ZONE 'Europe/Copenhagen')::date)::text AS d FROM vh_besoeg`,
       sql`SELECT ((min(ts) AT TIME ZONE 'Europe/Copenhagen')::date)::text AS d FROM vh_klik WHERE butik IN ('appstore','googleplay')`
     ]);

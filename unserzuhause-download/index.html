@@ -28,24 +28,46 @@
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="canonical" href="https://download.unserzuhauseapp.de/">
 <!-- Structured data: sagt Google und der KI-Suche genau, was die App ist -->
+<!-- Dieselbe App wie auf www.unserzuhauseapp.de (gleiche @id), installiert wird aus App Store und Google Play (Befund S22, 16. Okt. 2026) -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "MobileApplication",
-  "@id": "https://www.unserzuhauseapp.de/#app",
-  "name": "Unser Zuhause",
-  "url": "https://www.unserzuhauseapp.de/",
-  "description": "Familien-App, die den Alltag des ganzen Haushalts an einem Ort bündelt: gemeinsamer Kalender, Essensplan, Einkaufsliste und Aufgaben. Bis zu 7 Personen pro Konto.",
-  "operatingSystem": "iOS, Android",
-  "applicationCategory": "LifestyleApplication",
-  "inLanguage": "de",
-  "image": "https://download.unserzuhauseapp.de/og-billede.png",
-  "installUrl": "https://download.unserzuhauseapp.de/",
-  "offers": [
-    { "@type": "Offer", "price": "3.99", "priceCurrency": "EUR", "description": "3,99 € pro Monat für die ganze Familie (bis zu 7 Personen). 14 Tage kostenlos testen, danach verlängert sich das Abo automatisch. Keine Bindung." },
-    { "@type": "Offer", "price": "19.99", "priceCurrency": "EUR", "description": "19,99 € pro Halbjahr für die ganze Familie (bis zu 7 Personen). 14 Tage kostenlos testen, danach verlängert sich das Abo automatisch. Keine Bindung." }
-  ],
-  "publisher": { "@type": "Organization", "name": "Vores Hjem I/S", "url": "https://www.unserzuhauseapp.de/" }
+  "@graph": [
+    {
+      "@type": "MobileApplication",
+      "@id": "https://www.unserzuhauseapp.de/#app",
+      "name": "Unser Zuhause",
+      "url": "https://www.unserzuhauseapp.de/",
+      "description": "Familien-App, die den Alltag des ganzen Haushalts an einem Ort bündelt: gemeinsamer Kalender, Essensplan, Einkaufsliste und Aufgaben. Bis zu 7 Personen pro Konto.",
+      "operatingSystem": "iOS, Android",
+      "applicationCategory": "LifestyleApplication",
+      "inLanguage": "de",
+      "image": "https://download.unserzuhauseapp.de/og-billede.png",
+      "installUrl": ["https://apps.apple.com/de/app/unser-zuhause/id6771931999", "https://play.google.com/store/apps/details?id=com.unserzuhause.app"],
+      "downloadUrl": ["https://apps.apple.com/de/app/unser-zuhause/id6771931999", "https://play.google.com/store/apps/details?id=com.unserzuhause.app"],
+      "sameAs": ["https://apps.apple.com/de/app/unser-zuhause/id6771931999", "https://play.google.com/store/apps/details?id=com.unserzuhause.app"],
+      "identifier": [
+        { "@type": "PropertyValue", "propertyID": "Apple App Store ID", "value": "6771931999" },
+        { "@type": "PropertyValue", "propertyID": "Google Play package name", "value": "com.unserzuhause.app" }
+      ],
+      "offers": [
+        { "@type": "Offer", "price": "3.99", "priceCurrency": "EUR", "availability": "https://schema.org/InStock", "seller": { "@id": "https://www.unserzuhauseapp.de/#organisation" }, "description": "3,99 € pro Monat für die ganze Familie (bis zu 7 Personen). 14 Tage kostenlos testen, danach verlängert sich das Abo automatisch. Keine Bindung." },
+        { "@type": "Offer", "price": "19.99", "priceCurrency": "EUR", "availability": "https://schema.org/InStock", "seller": { "@id": "https://www.unserzuhauseapp.de/#organisation" }, "description": "19,99 € pro Halbjahr für die ganze Familie (bis zu 7 Personen). 14 Tage kostenlos testen, danach verlängert sich das Abo automatisch. Keine Bindung." }
+      ],
+      "publisher": { "@type": "Organization", "@id": "https://www.unserzuhauseapp.de/#organisation", "name": "Vores Hjem I/S", "url": "https://www.unserzuhauseapp.de/" }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://download.unserzuhauseapp.de/#webpage",
+      "url": "https://download.unserzuhauseapp.de/",
+      "name": "Unser Zuhause herunterladen | App Store & Google Play",
+      "inLanguage": "de",
+      "about": { "@id": "https://www.unserzuhauseapp.de/#app" },
+      "mainEntity": { "@id": "https://www.unserzuhauseapp.de/#app" },
+      "publisher": { "@id": "https://www.unserzuhauseapp.de/#organisation" },
+      "primaryImageOfPage": { "@type": "ImageObject", "url": "https://download.unserzuhauseapp.de/og-billede.png", "width": 1200, "height": 630 }
+    }
+  ]
 }
 </script>
 <style>

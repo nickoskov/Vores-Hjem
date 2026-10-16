@@ -420,7 +420,7 @@ nav::before {
 }
 .contact-modal-close:hover { background: #E8E5FF; }
 .contact-modal-close svg { width: 16px; height: 16px; }
-.contact-modal h3 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
+.contact-modal .contact-modal-titel { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
 .contact-modal > p { font-size: 14px; color: #5E5A7A; margin-bottom: 24px; }
 .contact-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
 .contact-field label { font-size: 13px; font-weight: 700; color: #0F0E1A; }
@@ -446,7 +446,7 @@ nav::before {
 }
 .contact-success-icon { width: 56px; height: 56px; background: rgba(16,185,129,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 .contact-success-icon svg { width: 28px; height: 28px; color: #10B981; }
-.contact-success h4 { font-size: 18px; font-weight: 800; }
+.contact-success .contact-success-titel { font-size: 18px; font-weight: 800; }
 .contact-success p { font-size: 14px; color: #5E5A7A; margin: 0; }
 @media (max-width: 600px) { .contact-modal { padding: 32px 24px 28px; } }
 </style>
@@ -464,7 +464,7 @@ nav::before {
   <meta name="twitter:title" content="Delt indkøbsliste til hele familien | Vores Hjem">
   <meta name="twitter:description" content="Familiens fælles indkøbsliste: tilføj varer, sæt billeder på produkterne og kryds af i butikken. Alle ser listen i realtid. Prøv Vores Hjem gratis i 14 dage.">
   <meta name="twitter:image" content="https://www.voreshjem.dk/images/og.jpg">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Delt indkøbsliste til hele familien | Vores Hjem","description":"Familiens fælles indkøbsliste: tilføj varer, sæt billeder på produkterne og kryds af i butikken. Alle ser listen i realtid. Prøv Vores Hjem gratis i 14 dage.","url":"https://www.voreshjem.dk/indkobsliste","isPartOf":{"@id":"https://www.voreshjem.dk/#website"},"about":{"@id":"https://www.voreshjem.dk/#app"},"dateModified":"2026-10-07"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","@id":"https://www.voreshjem.dk/indkobsliste#webpage","name":"Delt indkøbsliste til hele familien | Vores Hjem","description":"Familiens fælles indkøbsliste: tilføj varer, sæt billeder på produkterne og kryds af i butikken. Alle ser listen i realtid. Prøv Vores Hjem gratis i 14 dage.","url":"https://www.voreshjem.dk/indkobsliste","inLanguage":"da","isPartOf":{"@id":"https://www.voreshjem.dk/#website"},"about":{"@id":"https://www.voreshjem.dk/#app"},"dateModified":"2026-10-16"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Forside","item":"https://www.voreshjem.dk/"},{"@type":"ListItem","position":2,"name":"Indkøbsliste","item":"https://www.voreshjem.dk/indkobsliste"}]}</script>
 <style id="geo-bokse">
 .kort-fortalt{margin:0 0 34px;padding:20px 24px;border-radius:16px;background:#F6F4FF;border:1px solid #E6E3F2;border-left:4px solid #6C47FF}
@@ -518,12 +518,12 @@ nav::before {
   <div class="blob blob-2"></div>
   <div class="container">
     <div class="hero-inner">
-      <div class="hero-left reveal">
+      <div class="hero-left">
         <div class="badge">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
           Indkøbsliste
         </div>
-        <h1 class="hero-h1"><span class="gradient-text">Indkøbsliste</span><br>som alle kan se</h1>
+        <h1 class="hero-h1"><span class="gradient-text">Indkøbsliste</span><br> som alle kan se</h1>
         <p class="hero-sub">Familiens fælles indkøbsliste: tilføj varer og kryds af i butikken.</p>
         <div class="hero-store-btns">
           <a target="_blank" rel="noopener" href="https://apps.apple.com/dk/app/vores-hjem/id6758346281" class="hero-store-btn">
@@ -537,7 +537,7 @@ nav::before {
         </div>
       </div>
 
-      <div class="hero-right reveal reveal-delay-2">
+      <div class="hero-right">
         <div class="scene-platform"></div>
 
         <!-- Floating item cards -->
@@ -564,7 +564,7 @@ nav::before {
         </div>
 
         <div class="phone-main">
-          <img src="/images/indkob_1.webp" srcset="/images/indkob_1-400.webp 400w, /images/indkob_1.webp 680w" sizes="190px" alt="Indkøbsliste i Vores Hjem" fetchpriority="high">
+          <img src="/images/indkob_1.webp" srcset="/images/indkob_1-400.webp 400w, /images/indkob_1.webp 680w" sizes="190px" alt="Delt indkøbsliste i appen Vores Hjem, hvor købte varer er krydset af, og nogle varer har et billede" fetchpriority="high">
         </div>
       </div>
     </div>
@@ -1328,7 +1328,7 @@ function goToStore(e){ if(e) e.preventDefault();
   <div class="contact-modal">
     <button class="contact-modal-close" onclick="closeContactModal()" aria-label="Luk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     <div id="contact-form-wrap">
-      <h3>Skriv til os</h3>
+      <div class="contact-modal-titel">Skriv til os</div>
       <p>Vi svarer inden for 24 timer på hverdage.</p>
       <div class="contact-field"><label for="c-name">Navn</label><input type="text" id="c-name" placeholder="Dit navn"></div>
       <div class="contact-field"><label for="c-email">E-mail</label><input type="email" id="c-email" placeholder="din@email.dk"></div>
@@ -1345,7 +1345,7 @@ function goToStore(e){ if(e) e.preventDefault();
     </div>
     <div class="contact-success" id="contact-success">
       <div class="contact-success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
-      <h4>Besked sendt!</h4>
+      <div class="contact-success-titel">Besked sendt!</div>
       <p>Vi vender tilbage til dig hurtigst muligt.</p>
     </div>
   </div>

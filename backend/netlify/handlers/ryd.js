@@ -8,6 +8,13 @@
  *
  * Bemaerk: besoeg og klik fra den egne taeller slettes ogsaa efter RYD_DAGE.
  * Den aeldste raekke er derfor "aeldste gemte", ikke "taelleren startede".
+ * Foer noget slettes, opsummeres alle hele dage, der mangler, i vh_dagtal (lib/dagtal.js, fund S19):
+ * kun optalte tal pr. dag uden gaeste-id, som gemmes uden tidsgraense, saa udviklingen over tid ikke
+ * forsvinder med de raa raekker. Sletningen efter RYD_DAGE er uaendret. Fejler opsummeringen, slettes der
+ * alligevel, og fejlen staar i loggen. Den naeste nat tager alle dage, der stadig mangler.
+ * Sletningen maa aldrig vente paa opsummeringen: den tager hoejst 14 dage pr. nat (lib/dagtal.js), og
+ * svarer den ikke inden OPSUM_MS, gaar oprydningen videre og skriver det i loggen. En planlagt funktion hos
+ * Netlify har 30 sekunder. Opsummeringen er én SQL-saetning, saa den kommer enten helt med eller slet ikke.
  * Hoejst én koersel pr. dansk dag (laas i vh_koersel).
  * Chatbottens tabeller (side.js, botTabeller) ligger i begge databaser: den danske har den faelles
  * bots samtaler (ogsaa de tyske fra foer den tyske bot), den tyske har sin egen bots. Hver backend
@@ -16,7 +23,17 @@
 const { sql, opret, log } = require('../lib/db.js');
 const K = require('../lib/koersel.js');
 const profil = require('../lib/side.js');
+const dagtal = require('../lib/dagtal.js');
 const DAGE = Math.max(7, parseInt(process.env.RYD_DAGE, 10) || 90);
+// saa laenge maa opsummeringen tage, foer oprydningen gaar videre uden den
+const OPSUM_MS = 15000;
+
+/** lover, eller en fejl med teksten, hvis den ikke er faerdig inden ms. */
+function medFrist(lover, ms, tekst) {
+  let ur;
+  const frist = new Promise((_, nej) => { ur = setTimeout(() => nej(new Error(tekst)), ms); });
+  return Promise.race([lover, frist]).finally(() => clearTimeout(ur));
+}
 
 exports.handler = async () => {
   if (!sql) return { statusCode: 200, body: 'ingen database' };
@@ -24,6 +41,13 @@ exports.handler = async () => {
   const dato = K.dansk().dato;
   if (!(await K.foersteGang('ryd', dato))) return { statusCode: 200, body: 'oprydningen har allerede koert i dag (' + dato + ')' };
   const ud = {};
+  // den daglige opsummering foerst, mens de raa raekker stadig findes
+  try { ud.dagtal = await medFrist(dagtal.opsummer(dato), OPSUM_MS, 'den svarede ikke inden ' + OPSUM_MS / 1000 + ' sekunder. Næste nat prøver den igen'); }
+  catch (e) { ud.dagtalFejl = String(e.message || e).slice(0, 160); }
+  // en fejl skal kunne ses under "Fejl i panelet", ikke kun i oprydningens loglinje
+  if (ud.dagtalFejl) await log('FEJL', ('[egen] Den daglige opsummering af tælleren fejlede: ' + ud.dagtalFejl).slice(0, 300), 'ryd');
+  // de gamle tyske besoeg i den danske database (arkiv, vises ikke i panelet). En fejl dér skal ogsaa kunne ses.
+  if (ud.dagtal && ud.dagtal.tyskFoerFejl) await log('FEJL', ('[egen] Opsummeringen af de gamle tyske besøg fejlede: ' + ud.dagtal.tyskFoerFejl).slice(0, 300), 'ryd');
   if (profil.botTabeller) try {
     const gamle = await sql`SELECT id FROM vh_conversations WHERE updated_at < now() - make_interval(days => ${DAGE}::int) AND NOT needs_human`;
     if (gamle.length) {
@@ -65,6 +89,9 @@ exports.handler = async () => {
   try { const r = await sql`DELETE FROM vh_koersel WHERE ts < now() - interval '60 days' RETURNING job`; ud.koersel = r.length; } catch (e) {}
   await log('oprydning', 'ældre end ' + DAGE + ' dage: ' + (profil.botTabeller ? 'samtaler ' + (ud.samtaler || 0) + ', ' : '') + 'besøg ' + (ud.besoeg || 0) + ', klik ' + (ud.klik || 0)
     + (profil.support ? ', supportsager ' + (ud.sager || 0) : '')
+    + (ud.dagtal && ud.dagtal.egen ? '. Opsummeret: ' + ud.dagtal.egen.dage + (ud.dagtal.egen.dage === 1 ? ' dag' : ' dage')
+      + (ud.dagtal.egen.mangler ? ' (flere mangler, næste nat fortsætter)' : '') : '')
+    + (ud.dagtalFejl ? '. Opsummeringen fejlede: ' + String(ud.dagtalFejl).slice(0, 80) : '')
     + (ud.samtalerFejl ? '. Samtaler fejlede: ' + String(ud.samtalerFejl).slice(0, 80) : '')
     + (ud.sagerFejl && !/does not exist/.test(ud.sagerFejl) ? '. Supportsager fejlede: ' + String(ud.sagerFejl).slice(0, 80) : ''), 'ryd');
   return { statusCode: 200, body: JSON.stringify(ud) };

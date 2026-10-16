@@ -380,6 +380,81 @@ to = "/konto-loeschen"
 status = 301
 force = true
 
+# .html-udgaverne af de tyske sider sendes til de rene adresser (fund S26, 16. okt. 2026).
+# Samme moenster som /kontakt.html: force, fordi filerne findes. De rene adresser vises stadig med 200
+# (reglerne laengere oppe, og /ratgeber/<artikel> serveres direkte fra filen), saa der er ingen loekke.
+[[redirects]]
+from = "/index.html"
+to = "/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/kalender.html"
+to = "/kalender"
+status = 301
+force = true
+
+[[redirects]]
+from = "/einstellungen.html"
+to = "/einstellungen"
+status = 301
+force = true
+
+[[redirects]]
+from = "/synchronisierung.html"
+to = "/synchronisierung"
+status = 301
+force = true
+
+[[redirects]]
+from = "/impressum.html"
+to = "/impressum"
+status = 301
+force = true
+
+[[redirects]]
+from = "/ratgeber/index.html"
+to = "/ratgeber"
+status = 301
+force = true
+
+[[redirects]]
+from = "/ratgeber/index"
+to = "/ratgeber"
+status = 301
+force = true
+
+[[redirects]]
+from = "/ratgeber/familienkalender-organisieren.html"
+to = "/ratgeber/familienkalender-organisieren"
+status = 301
+force = true
+
+[[redirects]]
+from = "/ratgeber/wochenplan-essen-familie.html"
+to = "/ratgeber/wochenplan-essen-familie"
+status = 301
+force = true
+
+[[redirects]]
+from = "/ratgeber/einkaufsliste-teilen.html"
+to = "/ratgeber/einkaufsliste-teilen"
+status = 301
+force = true
+
+[[redirects]]
+from = "/ratgeber/aufgaben-fuer-kinder-im-haushalt.html"
+to = "/ratgeber/aufgaben-fuer-kinder-im-haushalt"
+status = 301
+force = true
+
+[[redirects]]
+from = "/ratgeber/mental-load-familie.html"
+to = "/ratgeber/mental-load-familie"
+status = 301
+force = true
+
 # Gamle Wix-adresser fra foer omdoebningen (Wix sendte dem selv videre indtil flytningen 6. okt. 2026).
 # /blank var den oprindelige adresse til "Konto loeschen", som Google Play linker til.
 [[redirects]]

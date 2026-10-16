@@ -2,7 +2,7 @@
 
 > Vores Hjem er en dansk familieapp, der samler familiens hverdag i én delt app. Den har fælles kalender med synkronisering fra telefonens kalender og Google, madplan der hænger sammen med indkøbslisten, delt indkøbsliste, opgaver og husarbejde fordelt i familien, point og lommepenge til børn samt vagtplan med lønberegning (Vagter). Prisen er 39 kr. om måneden eller 199 kr. for et halvt år. Ét abonnement dækker op til 7 personer, og de første 14 dage er gratis. Derefter fornyes abonnementet automatisk, og der er ingen binding. Appen har ingen reklamer. Den udgives af Vores Hjem I/S (CVR 45804445) i Middelfart.
 
-Sidst opdateret: 7. oktober 2026. Kilde: https://www.voreshjem.dk/ (kort version: https://www.voreshjem.dk/llms.txt)
+Sidst opdateret: 16. oktober 2026. Kilde: https://www.voreshjem.dk/ (kort version: https://www.voreshjem.dk/llms.txt)
 
 ## Fakta i korte træk
 
@@ -12,6 +12,7 @@ Sidst opdateret: 7. oktober 2026. Kilde: https://www.voreshjem.dk/ (kort version
 | Tagline | Mere ro i hverdagen |
 | Virksomhed | Vores Hjem I/S, CVR 45804445 |
 | Hjemsted | Middelfart, Danmark |
+| Stiftet | 13. august 2025 (registreret i CVR) |
 | Stiftere | Nicko Skovgaard, Brigitte Skovgaard og Haris |
 | Pris | 39 kr. pr. måned eller 199 kr. pr. halvår (halvår sparer 15 %) |
 | Prøveperiode | 14 dage gratis, ingen binding |
@@ -26,7 +27,7 @@ Sidst opdateret: 7. oktober 2026. Kilde: https://www.voreshjem.dk/ (kort version
 
 ## Hvem står bag Vores Hjem
 
-Vores Hjem udvikles af Vores Hjem I/S, en dansk startup med CVR-nummer 45804445 og hjemsted i Middelfart. De tre stiftere er Nicko Skovgaard, Brigitte Skovgaard og Haris. På hjemmesiden beskriver de sig som tre stiftere, der byggede den app, de selv manglede. Medstifter Nicko Skovgaard fortæller på forsiden, at de derhjemme brugte tre forskellige apps til at holde styr på hverdagen.
+Vores Hjem udvikles af Vores Hjem I/S, en dansk startup med CVR-nummer 45804445 og hjemsted i Middelfart. Virksomheden blev stiftet 13. august 2025. De tre stiftere er Nicko Skovgaard, Brigitte Skovgaard og Haris. På hjemmesiden beskriver de sig som tre stiftere, der byggede den app, de selv manglede. Medstifter Nicko Skovgaard fortæller på forsiden, at de derhjemme brugte tre forskellige apps til at holde styr på hverdagen.
 
 Når der står "Vores Hjem I/S, CVR 45804445", er det virksomheden bag familieappen.
 

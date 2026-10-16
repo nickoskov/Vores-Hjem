@@ -283,6 +283,16 @@ blog, noter, links og indhold, **ejer** alt.
   var "Udgivet" i panelet uden virkning på siden
 - **Oprydning hver nat**: chatsamtaler ældre end 90 dage slettes af sig selv,
   medmindre nogen venter på et menneske. Det er GDPR, ikke pynt
+- **Daglig opsummering af tælleren**: før oprydningen sletter besøg og tryk
+  efter 90 dage, lægges hver hel dag sammen i `vh_dagtal`, `vh_dagtal_klik` og
+  `vh_dagtal_dage` (lib/dagtal.js): kun optalte tal pr. kanal, kilde, kampagne,
+  landingsside og enhed, uden gæste-id, så de gemmes uden tidsgrænse. Trafik
+  viser dem som Måned for måned. Den tager også de dage, der allerede er i
+  databasen fra før udgivelsen, højst 14 pr. nat, ældste først, så de første
+  nætter indhenter den. En dag uden besøg får en række med nul. En kilde,
+  kampagne eller side med @ (en mailadresse) gemmes ikke i opsummeringen.
+  Svarer opsummeringen ikke inden 15 sekunder, sletter oprydningen alligevel,
+  og det står som fejl i loggen. Næste nat prøver den igen
 - **Fejl i panelet**: hver fejl gemmes og kan ses under Opsætning. Ti eller
   flere på et døgn giver en mail
 - **Hastighedsalarm**: dagvagten måler PageSpeed hver morgen og skriver,

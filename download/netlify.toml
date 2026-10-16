@@ -40,6 +40,13 @@ for = "/*"
   X-Frame-Options = "DENY"
   Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
 
+# Skriften gemmes et år, som på www.voreshjem.dk og den tyske download-side (fund S54, 16. okt. 2026)
+[[headers]]
+for = "/fonts/*"
+
+  [headers.values]
+  Cache-Control = "public, max-age=31536000, immutable"
+
 # Billeder og video gemmes en uge (fund L79)
 [[headers]]
 for = "/*.mp4"

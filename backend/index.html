@@ -425,7 +425,7 @@ const KANAL = {'Organic Search':'Organisk søgning','Direct':'Direkte','Paid Soc
   'Email':'E-mail','Unassigned':'Ukendt','Cross-network':'På tværs af netværk','Display':'Display',
   'Organic Video':'Organisk video','Affiliates':'Partnere','Paid Video':'Betalt video',
   'Paid Other':'Betalt, andet','Organic Shopping':'Organisk shopping','Paid Shopping':'Betalt shopping',
-  'SMS':'SMS','Mobile Push Notifications':'Push-beskeder','Audio':'Lyd','Intern':'Inde fra siden'};
+  'SMS':'SMS','Mobile Push Notifications':'Push-beskeder','Audio':'Lyd','Intern':'Inde fra siden','AI':'AI-assistenter'};
 const ENHED = {mobile:'Mobil',desktop:'Computer',tablet:'Tablet',smarttv:'Smart-tv',
   MOBILE:'Mobil',DESKTOP:'Computer',TABLET:'Tablet'};
 // Googles egne ord for "ved det ikke" bliver til Ukendt i alle lister
@@ -517,7 +517,8 @@ const TT = (n, form) => mangler(n) ? '–' : (form || T)(n);
    kildeLinje giver den lille grå linje under en overskrift, fx "Egen tæller, alle besøgende, 17. sep. til 5. okt." */
 const KILDEKORT = { egen:'Egen tæller, alle besøgende', ga4:'Google Analytics, kun cookie-ja', gsc:'Search Console', play:'Google Play',
   appstore:'App Store', meta:'Meta', googleads:'Google Ads', bot:'Chatbotten', oppetid:'Oppetidsvagten', psi:'Google PageSpeed',
-  seo:'Egen gennemgang af siden', db:'Databasen', support:'Support-mailen', blokvagt:'Blokeringsvagten' };
+  seo:'Egen gennemgang af siden', db:'Databasen', support:'Support-mailen', blokvagt:'Blokeringsvagten',
+  dagtal:'Daglig opsummering af jeres egen tæller, alle besøgende' };
 function kildeTekst(k, daek, ekstra) {
   const navn = Array.isArray(k) ? k.map(x => KILDEKORT[x] || x).join(' og ') : (KILDEKORT[k] || k || '');
   let t = navn;
@@ -912,7 +913,7 @@ async function opfriskOgVis() { try { await kald('opfrisk'); sidsteTabel = {}; v
    ['tekst'], [{ kilde, tekst, raa }] og { kilde: 'tekst' }. navne oversætter kildenøgler, der kun bruges på én side. */
 const KILDENAVN = { ga4:'Google Analytics', analytics:'Google Analytics', ai:'Google Analytics', gsc:'Search Console', muligheder:'Search Console',
   meta:'Meta', googleads:'Google Ads', play:'Google Play', googleplay:'Google Play', apple:'App Store', appstore:'App Store',
-  egen:'Egen tæller', db:'Databasen', bot:'Chatbotten', psi:'Google PageSpeed', support:'Support-mail' };
+  egen:'Egen tæller', dagtal:'Den daglige opsummering', db:'Databasen', bot:'Chatbotten', psi:'Google PageSpeed', support:'Support-mail' };
 function fejlene(f, navne) {
   if (!f) return [];
   const navn = k => (navne && navne[k]) || KILDENAVN[k] || k || 'En kilde';
@@ -928,7 +929,8 @@ const FELTNAVNE = { brugere:'Besøgende', besoeg:'Besøg', visninger:'Sidevisnin
   lande:'Lande', enheder:'Enhed', klikButik:'Klik til butik', maal:'Nøglehændelser', nye:'Nye besøgende', engagement:'Engagement', laengde:'Tid pr. besøg',
   ga4Besoegende:'Besøgende i Google Analytics', haendelser:'Hvad folk gør', landing:'Hvor de lander først', browser:'Browser', os:'Styresystem', byer:'Byer',
   time:'Hvornår på døgnet', ugedag:'Hvilke ugedage', doede:'Døde links', kampagner:'Kampagner', indhold:'Hvilken annonce', konverteringer:'Konverteringer fra kampagner',
-  forbrug:'Brugt på annoncer', gennemgang:'Gennemgangen', historik:'udviklingen', muligheder:'Muligheder', ai:'Besøg fra AI-motorer' };
+  forbrug:'Brugt på annoncer', gennemgang:'Gennemgangen', historik:'udviklingen', muligheder:'Muligheder', ai:'Besøg fra AI-motorer',
+  aiEgen:'Besøg fra AI-assistenter', kildeLanding:'Kilde, landingsside og tryk til butik', maaneder:'Måned for måned' };
 /* Om en boks' data faktisk mangler: en liste, der er null (rapporten fejlede), eller et nøgletal { nu } uden tal.
    Et nøgletal, der er – fordi noget ikke er sat op eller koblet på, tæller ikke som ramt af en fejl. */
 const boksMangler = x => x === null || (!!x && typeof x === 'object' && !Array.isArray(x) && 'nu' in x && mangler(x.nu) &&
@@ -1351,7 +1353,7 @@ const HJAELP = {
   'Nøglehændelser': 'Nøglehændelser i Google Analytics, fx klik til App Store eller Google Play, når de er markeret som nøglehændelser dér. Tæller kun dem, der har sagt ja til cookies. Klik til butik for alle besøgende står ved siden af.',
   'Besøgende time for time': 'Forskellige besøgende i hver time i dansk tid, fra jeres egen tæller. Den stiplede linje er samme time dagen før.',
   'Besøgende pr. dag': 'Forskellige besøgende hver dag, fra jeres egen tæller. Den stiplede linje er perioden før, dag for dag. Står der kun en del af perioden, har tælleren ikke tal for de første dage.',
-  'Hvor kommer de fra': 'Hvilken vej folk kom ind på siden, talt på hver besøgendes første side den dag, så klik inde på siden ikke tæller som Direkte. Summen er lig med Besøgende. Direkte er nogen, der skrev adressen selv, brugte et bogmærke eller kom fra en app, der ikke fortæller hvorfra. Organisk søgning er Google og andre søgemaskiner. Organisk social er Facebook, Instagram og lignende uden betaling. Betalt social er annoncer der. Betalt søgning er annoncer i søgemaskiner. Betalt, andet er betalt trafik fra en ukendt kilde. Henvisning er links fra andre sider. Inde fra siden er et klik mellem jeres egne sider, når tælleren ikke så den første side. Fra jeres egen tæller, som tæller alle uden cookies.',
+  'Hvor kommer de fra': 'Hvilken vej folk kom ind på siden, talt på hver besøgendes første side den dag, så klik inde på siden ikke tæller som Direkte. Summen er lig med Besøgende. Direkte er nogen, der skrev adressen selv, brugte et bogmærke eller kom fra en app, der ikke fortæller hvorfra. Organisk søgning er Google og andre søgemaskiner. Organisk social er Facebook, Instagram og lignende uden betaling. Betalt social er annoncer der. Betalt søgning er annoncer i søgemaskiner. Betalt, andet er betalt trafik fra en ukendt kilde. Henvisning er links fra andre sider. AI-assistenter er ChatGPT, Perplexity, Gemini, Claude, Copilot og lignende. Inde fra siden er et klik mellem jeres egne sider, når tælleren ikke så den første side. Fra jeres egen tæller, som tæller alle uden cookies.',
   'Mest læste sider': 'De sider, der er åbnet flest gange i perioden. Besøgende er forskellige mennesker på siden, over flere dage talt pr. dag og lagt sammen. Fra jeres egen tæller, som tæller alle uden cookies.',
   'Lande': 'Hvor i verden de besøgende sidder. Bruges til at se, om annoncer rammer de rigtige. Fra jeres egen tæller, som tæller alle uden cookies.',
   'Enhed': 'Om folk kommer fra telefon, computer eller tablet. De fleste familier bruger telefonen, så mobil bør være størst. Fra jeres egen tæller, som tæller alle uden cookies.',
@@ -1369,10 +1371,12 @@ const HJAELP = {
   'Klik til butik, fordelt': 'Hvor mange af trykkene der gik til App Store og hvor mange til Google Play. Fortæller, om jeres besøgende har iPhone eller Android. Alle stykker er tryk, talt hver gang. Ukendt butik er gamle tryk fra før rettelsen, hvor det ikke blev gemt, hvilken butik knappen sendte til. Tælles af hent-knapperne selv, uden cookies.',
   'Sådan læses tragten': 'En kort vejledning i, hvad tallene i tragten betyder, og hvor man skal sætte ind.',
   // Trafik
-  'Hvor de lander først': 'Den første side, folk ser, når de kommer ind. Afvisning er andelen af besøg, hvor folk gik igen uden at gøre noget. Konverteringer er nøglehændelser i Google Analytics og står som –, indtil der er sat nøglehændelser op dér. Ukendt betyder, at Google ikke fik den første side med, ofte fordi besøget startede, før der blev svaret på cookies. Fra Google Analytics, så kun dem der har sagt ja til cookies.',
-  'Hvornår på døgnet': 'Besøg pr. time i dansk tid, fra kl. 00 til 23. I dag stopper ved timen nu. Brug det til at vælge, hvornår I lægger opslag op. Fra Google Analytics, så kun dem der har sagt ja til cookies.',
-  'Hvilke ugedage': 'Besøg pr. ugedag, mandag først. Hold musen over en søjle for at se, hvor mange af den ugedag perioden har, for en periode kan have flere mandage end søndage. Fra Google Analytics, så kun dem der har sagt ja til cookies.',
-  'Kilder i detaljer': 'Præcis hvilke sider og apps folk kom fra, fx facebook.com eller google, og om det var et link, en annonce eller en søgning. Konverteringer står som –, indtil der er sat nøglehændelser op i Google Analytics. Fra Google Analytics, så kun dem der har sagt ja til cookies.',
+  'Hvor de lander først': 'Den første side, folk ser, når de kommer ind. Afvisning er andelen af besøg, hvor der kun blev set én side. Tryk til butik er besøg, hvor nogen trykkede på en hent-knap, der sendte dem til App Store eller Google Play. Åbnede hent-siden er besøg, der så hent-siden eller download-siden; på computer sker installationen via QR-koden, så det er computerbesøgenes tal. Under overskriften står, hvor tallene kommer fra: normalt jeres egen tæller, som tæller alle uden cookies. Kan den ikke svare, vises Google Analytics i stedet (kun cookie-ja), og så står der Konverteringer, som er nøglehændelser dér.',
+  'Hvornår på døgnet': 'Besøg pr. time i dansk tid, fra kl. 00 til 23. I dag stopper ved timen nu. Brug det til at vælge, hvornår I lægger opslag op. Under overskriften står, om tallene er fra jeres egen tæller (alle besøgende) eller fra Google Analytics (kun cookie-ja).',
+  'Hvilke ugedage': 'Besøg pr. ugedag, mandag først. Hold musen over en søjle for at se, hvor mange af den ugedag perioden har, for en periode kan have flere mandage end søndage. Under overskriften står, om tallene er fra jeres egen tæller (alle besøgende) eller fra Google Analytics (kun cookie-ja).',
+  'Kilder i detaljer': 'Præcis hvilke sider og apps folk kom fra, fx facebook.com eller google, og kampagnenavnet, når linket havde et (utm_campaign, fx fra en flyer). Tryk til butik er besøg, hvor nogen trykkede videre til App Store eller Google Play, og Åbnede hent-siden er besøg, der så hent-siden. Under overskriften står, hvor tallene kommer fra: normalt jeres egen tæller, som tæller alle uden cookies. Kan den ikke svare, vises Google Analytics i stedet (kun cookie-ja).',
+  'Kilde, landingsside og tryk til butik': 'Hvert besøg står ved den kilde og den side, det startede med, så I kan se, hvilke blogindlæg, søgninger og AI-svar der giver tryk til butik. Tryk til butik er besøg, hvor nogen trykkede på en hent-knap, der sendte dem til App Store eller Google Play. Åbnede hent-siden er besøg, der så hent-siden; på computer sker installationen via QR-koden fra en telefon, så computerbesøg viser sig dér og ikke som tryk til butik. Fra jeres egen tæller, som tæller alle uden cookies.',
+  'Måned for måned': 'Besøg og tryk for hver hel måned, også efter at de enkelte besøg er slettet efter 90 dage. Hver nat lægges gårsdagens tal sammen og gemmes uden gæste-id, kun som optalte tal, så de kan gemmes uden tidsgrænse. Står der delvis, mangler nogle af månedens dage, fx den igangværende måned, den første dag, hvor tælleren startede midt på dagen, eller de første nætter efter udgivelsen, mens de ældre dage indhentes. Tallene følger ikke den valgte periode.',
   'Byer': 'Hvilke byer de besøgende sidder i. Godt til at se, om flyers og lokale opslag virker. Fra Google Analytics, så kun dem der har sagt ja til cookies.',
   'Browser': 'Hvilken browser folk bruger, fx Safari eller Chrome. Mest til at fange tekniske fejl. Fra Google Analytics, så kun dem der har sagt ja til cookies.',
   'Styresystem': 'iOS er iPhone, Android er de fleste andre telefoner. Fortæller, hvilken butik der er vigtigst. Fra Google Analytics, så kun dem der har sagt ja til cookies.',
@@ -1408,9 +1412,11 @@ const HJAELP = {
   'Gennemgang af hele siden': 'Backenden læser alle jeres sider, som Google ville gøre, og finder det, der bør rettes: titler, beskrivelser, billeder uden tekst, døde links. Hvert forskelligt problem koster point, så ét fund giver altid under 100. Kører hver mandag, eller når I trykker Kør nu.',
   'Det der skal rettes, vigtigste først': 'Listen over fund fra gennemgangen. Klik på et punkt for at se, hvilke sider det gælder, og få Claude til at foreslå en rettelse.',
   'AI-motorerne, GEO': 'Om jeres side er indrettet, så ChatGPT, Perplexity og Google Gemini kan finde og citere den. GEO er det samme som SEO, bare for AI-svar i stedet for Google-søgning.',
-  'Besøg fra AI-motorer': 'Besøg, hvor folk kom fra en AI-tjeneste som ChatGPT eller Perplexity, i den periode I har valgt. Det er trafik, I ikke betaler for. Fra Google Analytics, så kun dem der har sagt ja til cookies.',
+  'Besøg fra AI-assistenter': 'Besøg, hvor folk kom fra en AI-assistent som ChatGPT, Perplexity, Gemini, Claude eller Copilot, i den periode I har valgt. Det er trafik, I ikke betaler for. Fra jeres egen tæller, som tæller alle uden cookies. Copilot inde på Bing kan ikke skelnes fra Bing-søgning og tæller som søgning. Er Google Analytics koblet på, står dens tal nederst som en lille sammenligning; den tæller kun dem, der har sagt ja til cookies.',
+  'Hvilke AI-assistenter': 'Hvilke AI-assistenter besøgene kom fra i den valgte periode. Tryk til butik er besøg, hvor nogen trykkede på en hent-knap, der sendte dem til App Store eller Google Play. Åbnede hent-siden er besøg, der så hent-siden, typisk fra en computer. Fra jeres egen tæller, som tæller alle uden cookies.',
+  'Besøg fra AI-motorer': 'Besøg, hvor folk kom fra en AI-tjeneste som ChatGPT eller Perplexity, i den periode I har valgt. Det er trafik, I ikke betaler for. Fra Google Analytics, så kun dem der har sagt ja til cookies. Vises kun, når jeres egen tæller ikke kunne svare.',
   'Hvilke AI-motorer': 'Hvilke AI-tjenester besøgene kom fra, fx ChatGPT eller Perplexity, i den valgte periode. Konv. står som –, indtil der er sat nøglehændelser op i Google Analytics. Fra Google Analytics, så kun dem der har sagt ja til cookies.',
-  'Hvor de lander': 'Hvilke sider folk fra AI-tjenesterne landede på i den valgte periode. Fra Google Analytics, kun cookie-ja.',
+  'Hvor de lander': 'Hvilke sider folk fra AI-assistenterne landede på i den valgte periode. Under overskriften står, om tallene er fra jeres egen tæller (alle besøgende) eller fra Google Analytics (kun cookie-ja).',
   // Chat
   'Samtaler i perioden': 'Chatsamtaler startet i perioden, også dem der siden er arkiveret. Sproget står under tallet.',
   'Gav deres mail': 'Chatsamtaler startet i perioden, hvor kunden skrev sin mail. Formularer tælles ikke med.',
@@ -1470,7 +1476,7 @@ const STED = { hero:'Toppen af forsiden', hent:'Hent-siden', side:'Hent-siden', 
   cta:'Bunden af siden', flydeknap:'Svævende knap', download:'Hent-siden', footer:'Footer', nav:'Menuen', header:'Menuen', 'main-nav':'Menuen',
   baand:'Bånd mellem afsnit', blog:'Blogindlæg', kalender:'Kalender-afsnittet', indkob:'Indkøbs-afsnittet', 'kom-i-gang':'Kom i gang-afsnittet', 'video-demo':'Videoen',
   'kal-demo-sektion':'Kalender-afsnittet', 'opg-demo-sektion':'Opgave-afsnittet', 'ind-demo-sektion':'Indkøbs-afsnittet', 'mad-demo-sektion':'Madplan-afsnittet',
-  lommepenge:'Lommepenge-afsnittet', vagter:'Vagt-afsnittet', features:'Funktioner', comparison:'Sammenligningen', faq:'Spørgsmål og svar', founder:'Om os', chat:'Chatten' };
+  lommepenge:'Lommepenge-afsnittet', vagter:'Vagt-afsnittet', features:'Funktioner', comparison:'Sammenligningen', faq:'Spørgsmål og svar', founder:'Om os', chat:'Chatten', qr:'QR-koden' };
 // ukendte id'er vises læsbart: "pris-boks" bliver "Pris boks", aldrig rå bindestreger
 const stedNavn = k => STED[k] || (k ? (String(k).charAt(0).toUpperCase() + String(k).slice(1)).replace(/[-_]+/g, ' ') : 'Ukendt');
 /* én saetning paa almindeligt dansk om, hvad tabellen siger.
@@ -1511,31 +1517,47 @@ function doegnTimer(raekker, felt) {
   // en time uden række er 0 (Google sender ikke tomme timer), undtagen i dag efter den sidste time med tal
   return sum.slice(0, sidste + 1).map((n, h) => ({ hour: String(h), [felt]: n !== undefined ? n : idag && h > sidstMedTal ? null : 0 }));
 }
-/* Trafik er Google Analytics, som kun tæller dem, der har sagt ja til cookies. Det står øverst og ved hver boks.
-   Uden Google Analytics (fx den tyske side, valgt med vilje) kommer tallene fra den egne tæller (d.kilde 'egen'), som tæller alle:
-   samme kasser, men lande og enheder i stedet for byer, browser og styresystem, som tælleren ikke gemmer.
-   Hver liste er null, når kilden ikke svarede ("Kunne ikke hentes"), og ialt er periodens rigtige totaler til "% af alle".
-   Konverteringer (keyEvents) er null, når der ingen nøglehændelser er sat op i Google Analytics, og står så som –. */
+/* Trafik. Med Google Analytics koblet på (den danske side) kommer landingssider, kilder, listen med kilde og landingsside,
+   tidspunkter og ugedage fra jeres egen tæller (d.kilde 'blandet'), og byer, browser og styresystem fra Google Analytics,
+   som kun tæller dem, der har sagt ja til cookies. kildeFor siger, hvilken kilde hver boks bruger, og daekningFor hver kildes dækning.
+   Uden Google Analytics (fx den tyske side, valgt med vilje) kommer alt fra den egne tæller (d.kilde 'egen'), og lande og
+   enheder står i stedet for byer, browser og styresystem, som tælleren ikke gemmer. Kan den egne tæller ikke svare, er listerne
+   fra Google Analytics som før (d.kilde 'ga4'), og Konverteringer (keyEvents) er null, når der ingen nøglehændelser er sat op dér.
+   Hver liste er null, når kilden ikke svarede ("Kunne ikke hentes"), og ialt er periodens rigtige totaler til "% af alle". */
+// "Organisk søgning, google.com, kampagne trifold" til tabellen og til udtrækket
+const kildeNavnTekst = r => kanal(r.kanal) + (r.kilde ? ', ' + r.kilde : '') + (r.kampagne ? ', kampagne ' + r.kampagne : '');
+const medKildeTekst = l => Array.isArray(l) ? l.map(r => ({ ...r, kildeTekst: kildeNavnTekst(r) })) : l;
+// '2026-10' som 'oktober 2026'
+const maanedNavn = m => { const [y, mm] = String(m || '').split('-').map(Number);
+  return y && mm ? new Date(Date.UTC(y, mm - 1, 1)).toLocaleDateString('da-DK', { month: 'long', year: 'numeric', timeZone: 'UTC' }) : String(m || ''); };
 async function visTrafik(m) {
   if (!opsat.analytics && opsat.database === false) { m.innerHTML = hoved('Trafik','Hvem besøger siden') + (dbBesked() || ingenTal); return; }
   const v = vaerktoej(periodevaelger());
   m.innerHTML = hoved('Trafik','Hvem besøger siden', v) + skeletKort(2);
   const d = await kald('trafik', { dage });
-  const ia = d.ialt || {}, kf = d.kildeFor || {}, daek = d.daekning;
+  const ia = d.ialt || {}, kf = d.kildeFor || {}, daek = d.daekning, df = d.daekningFor || {};
   // listen hed før "kilde"; nu er kilde kildens navn ('ga4') og listen hedder "kilder"
   const kilder = d.kilder !== undefined ? d.kilder : (Array.isArray(d.kilde) ? d.kilde : null);
   const kv = d.konverteringer || {};
   const konvNote = kv.maales === false && kv.grund ? '<p style="font-size:12px;color:var(--svag);margin-top:8px">Konverteringer: ' + sik(kv.grund) + '</p>' : '';
-  const kl = (felt, ekstra) => kildeLinje(kf[felt] || (typeof d.kilde === 'string' ? d.kilde : 'ga4'), daek, ekstra);
+  const egen = d.kilde === 'egen', blandet = d.kilde === 'blandet';
+  const standardKilde = typeof d.kilde === 'string' && !blandet ? d.kilde : 'ga4';
+  // hver boks med sin egen kildes dækning, når backenden sender den (daekningFor), ellers sidens
+  const kl = (felt, ekstra) => { const k = kf[felt] || standardKilde; return kildeLinje(k, df[k] || (k === 'dagtal' ? null : daek), ekstra); };
   const doedeEgen = d.doedeKilde === 'egen';
-  const egen = d.kilde === 'egen', lille = t => t ? '<p style="font-size:12px;color:var(--svag);margin-top:8px">' + sik(t) + '</p>' : '';
-  // den egne tæller: hvad konverteringer og afvisning betyder her, og hvis klik-tælleren startede senere
-  const egenNote = egen ? lille([d.noter && d.noter.afvisning, kv.tekst, kv.grund].filter(Boolean).join(' ')) : '';
-  const kildeKol = egen
-    ? [{navn:'Kanal og kilde', felt:'kanal', bar:'sessions', total: ia.kilder, form:(v, r) => sik(kanal(v)) + (r && r.kilde ? '<span style="color:var(--svag)">, ' + sik(r.kilde) + '</span>' : '')},
-       {navn:'Besøg', felt:'sessions', h:true}, {navn:'Konverteringer', felt:'keyEvents', h:true}]
+  const lille = t => t ? '<p style="font-size:12px;color:var(--svag);margin-top:8px">' + sik(t) + '</p>' : '';
+  const egenL = kf.landing === 'egen', egenK = kf.kilder === 'egen';
+  // den egne tæller: hvad tryk til butik og afvisning betyder her, og hvis klik-tælleren startede senere
+  const egenNote = egenL ? lille([d.noter && d.noter.afvisning, kv.tekst, kv.grund].filter(Boolean).join(' ')) : '';
+  const trykKol = {navn:'Tryk til butik', felt:'keyEvents', h:true}, hentKol = {navn:'Åbnede hent-siden', felt:'hent', h:true};
+  const kildeKol = egenK
+    ? [{navn:'Kanal og kilde', felt:'kildeTekst', bar:'sessions', total: ia.kilder, form:(v, r) => sik(kanal(r.kanal)) +
+          (r.kilde || r.kampagne ? '<span style="color:var(--svag)">' + sik((r.kilde ? ', ' + r.kilde : '') + (r.kampagne ? ', kampagne ' + r.kampagne : '')) + '</span>' : '')},
+       {navn:'Besøg', felt:'sessions', h:true, std:true}, trykKol, hentKol]
     : [{navn:'Kilde og medie', felt:'sessionSourceMedium', bar:'sessions', total: ia.kilder, form:v => sik(kilde(v))}, {navn:'Besøg', felt:'sessions', h:true},
        {navn:'Konverteringer', felt:'keyEvents', h:true}];
+  const landingKol = [{navn:'Landingsside', felt:'landingPage', bar:'sessions', total: ia.landing, form:v => sik(ukendt(v))}, {navn:'Besøg', felt:'sessions', h:true},
+    {navn:'Afvisning', felt:'bounceRate', h:true, form:v => pct(v)}].concat(egenL ? [trykKol, hentKol] : [{navn:'Konverteringer', felt:'keyEvents', h:true}]);
   const sidsteRaekke = egen
     ? '<div class="net n2">' +
         '<div class="kort"><h3>Lande</h3>' + kl('lande') + tabel('t-lande', samlVist(d.lande, 'countryId', land), [{navn:'Land', felt:'countryId', bar:'activeUsers', total: ia.lande, form:v => sik(land(v))}, {navn:'Besøgende', felt:'activeUsers', h:true}], 'Ingen data') + '</div>' +
@@ -1545,25 +1567,48 @@ async function visTrafik(m) {
       '<div class="kort"><h3>Byer</h3>' + kl('byer') + tabel('t-by', samlVist(d.byer, 'city', ukendt), [{navn:'By', felt:'city', bar:'activeUsers', total: ia.byer, form:v => sik(ukendt(v))}, {navn:'Besøgende', felt:'activeUsers', h:true}], 'Ingen data') + '</div>' +
       '<div class="kort"><h3>Browser</h3>' + kl('browser') + tabel('t-br', samlVist(d.browser, 'browser', ukendt), [{navn:'Browser', felt:'browser', bar:'activeUsers', total: ia.browser}, {navn:'Besøgende', felt:'activeUsers', h:true}], 'Ingen data') + '</div>' +
       '<div class="kort"><h3>Styresystem</h3>' + kl('os') + tabel('t-os', samlVist(d.os, 'operatingSystem', ukendt), [{navn:'System', felt:'operatingSystem', bar:'activeUsers', total: ia.os}, {navn:'Besøgende', felt:'activeUsers', h:true}], 'Ingen data') + '</div></div>';
+  // kilde, landingsside og tryk til butik (egen tæller). Findes ikke i et gammelt gemt svar, og så vises boksen ikke.
+  const kildeLanding = d.kildeLanding === undefined ? '' :
+    '<div class="kort" style="margin-bottom:14px"><h3>Kilde, landingsside og tryk til butik' + ((d.kildeLanding||[]).length ? udtrKnap('t-kl','kilde-landingsside') : '') + '</h3>' + kl('kildeLanding') +
+      tabel('t-kl', medKildeTekst(d.kildeLanding), [
+        {navn:'Kilde', felt:'kildeTekst', bar:'sessions', total: ia.kildeLanding, form:v => sik(v)},
+        {navn:'Landingsside', felt:'landingPage', daemp:true, form:v => sik(ukendt(v))},
+        {navn:'Besøg', felt:'sessions', h:true, std:true}, trykKol, hentKol], 'Ingen besøg i perioden') +
+      lille('Hvert besøg står ved den kilde og den side, det startede med. Listen har de 50 største.') + '</div>';
+  // måned for måned fra den daglige opsummering, uanset den valgte periode
+  const mdr = d.maaneder;
+  const maaneder = mdr === undefined ? '' :
+    '<div class="kort" style="margin-bottom:14px"><h3>Måned for måned' + (mdr && (mdr.raekker||[]).length ? udtrKnap('t-mdr','maaned-for-maaned') : '') + '</h3>' + kl('maaneder') +
+      tabel('t-mdr', mdr ? mdr.raekker : null, [
+        {navn:'Måned', felt:'maaned', std:true, form:(v, r) => sik(maanedNavn(v)) + (r && !r.hel ? ' <span style="color:var(--svag);cursor:help" data-tip="' + sik(sik(r.grund || '')) + '">(delvis)</span>' : '')},
+        {navn:'Besøg', felt:'besoeg', h:true}, {navn:'Fra søgning', felt:'soegning', h:true}, {navn:'Fra AI-assistenter', felt:'ai', h:true},
+        {navn:'Tryk til butik', felt:'tryk', h:true}, {navn:'Åbnede hent-siden', felt:'hent', h:true}],
+        sik((mdr && mdr.tomTekst) || 'Ingen opsummering endnu.')) +
+      lille(mdr && mdr.tekst) + '</div>';
+  // gul besked, når en kilde kun dækker en del af perioden. Blandet: den egne tæller først, Google kun hvis den siger noget andet.
+  const daekBeskeder = !blandet ? daekBesked(daek)
+    : daekBesked(df.egen, 'Det gælder tallene fra jeres egen tæller.') +
+      (df.ga4 && df.ga4.hel === false && (!df.egen || df.ga4.grund !== df.egen.grund) ? daekBesked(df.ga4, 'Det gælder byer, browser og styresystem fra Google Analytics.') : '');
   m.innerHTML = hoved('Trafik', 'Hvem besøger siden, og hvordan de kom ind. ' + periodeTekst(d), v) + hentetLinje(d) + delfejl(d) +
     (egen ? '<div class="besked info"><b>Fra jeres egen tæller.</b> ' + sik(d.kildeTekst || 'Uden cookies. Tæller alle besøgende.') +
         (d.note ? ' ' + sik(d.note) : '') + '</div>'
+      : blandet ? '<div class="besked info"><b>Fra jeres egen tæller og Google Analytics.</b> ' + sik(d.kildeTekst || '') +
+        (d.note ? ' ' + sik(d.note) : '') + '</div>'
       : '<div class="besked info"><b>Fra Google Analytics.</b> ' + sik((d.kildeTekst || '').replace(/^Google Analytics\.\s*/, '') || 'Tæller kun besøgende, der har sagt ja til cookies, så tallene er lavere end jeres egen tæller på Oversigt.') +
         (d.note ? ' ' + sik(d.note) : '') + '</div>') +
-    daekBesked(daek) +
+    daekBeskeder +
     '<div class="kort" style="margin-bottom:14px"><h3>Hvor de lander først' + udtrKnap('t-land','landingssider') + '</h3>' + kl('landing') +
-      tabel('t-land', samlVist(d.landing, 'landingPage', ukendt, 'sessions'), [
-        {navn:'Landingsside', felt:'landingPage', bar:'sessions', total: ia.landing, form:v => sik(ukendt(v))}, {navn:'Besøg', felt:'sessions', h:true},
-        {navn:'Afvisning', felt:'bounceRate', h:true, form:v => pct(v)}, {navn:'Konverteringer', felt:'keyEvents', h:true}], 'Ingen data') +
-      ((d.noter && d.noter.landing && (d.landing||[]).some(r => r.ukendt || erUkendt(r.landingPage))) ? '<p style="font-size:12px;color:var(--svag);margin-top:8px">' + sik(d.noter.landing) + '</p>' : '') + konvNote + egenNote + '</div>' +
+      tabel('t-land', samlVist(d.landing, 'landingPage', ukendt, 'sessions'), landingKol, 'Ingen data') +
+      ((d.noter && d.noter.landing && (d.landing||[]).some(r => r.ukendt || erUkendt(r.landingPage))) ? '<p style="font-size:12px;color:var(--svag);margin-top:8px">' + sik(d.noter.landing) + '</p>' : '') + (egenL ? '' : konvNote) + egenNote + '</div>' +
     '<div class="net n2"><div class="kort"><h3>Hvornår på døgnet</h3>' + kl('time', 'dansk tid') +
         soejler(doegnTimer(d.time, 'sessions'), 'hour', 'sessions', h => String(h).padStart(2,'0') + ':00', 3) +
         // I dag: backenden siger, hvilke timer Google endnu ikke har talt (de står som –, ikke 0)
         (d.noter && d.noter.time ? '<p style="font-size:12px;color:var(--svag);margin-top:8px">' + sik(d.noter.time) + '</p>' : '') + '</div>' +
       '<div class="kort"><h3>Hvilke ugedage</h3>' + kl('ugedag') + soejler(d.ugedag, 'dayOfWeek', 'sessions', dagnavn) + '</div></div>' +
     '<div class="kort" style="margin-bottom:14px"><h3>Kilder i detaljer' + udtrKnap('t-kilde','kilder') + '</h3>' + kl('kilder') +
-      tabel('t-kilde', egen ? kilder : samlVist(kilder, 'sessionSourceMedium', kilde), kildeKol, 'Ingen data') + konvNote +
-      (egen ? lille('Kanalen og siden, de kom fra, ved besøgets første side.') : '') + '</div>' +
+      tabel('t-kilde', egenK ? medKildeTekst(kilder) : samlVist(kilder, 'sessionSourceMedium', kilde), kildeKol, 'Ingen data') + (egenK ? '' : konvNote) +
+      (egenK ? lille('Kanalen, siden og kampagnen, de kom fra, ved besøgets første side.') : '') + '</div>' +
+    kildeLanding +
     // døde links står altid, også når der ingen er, så man kan se, at de bliver talt
     '<div class="kort" style="margin-bottom:14px;' + ((d.doede||[]).length ? 'border-color:#FECACA' : '') + '"><h3>Døde links' +
         ((d.doede||[]).length ? udtrKnap('t-doede','doede-links') : '') + '</h3>' +
@@ -1573,7 +1618,7 @@ async function visTrafik(m) {
         {navn:'Gange', felt:'screenPageViews', h:true, std:true}].concat(doedeEgen ? [{navn:'Besøgende', felt:'besoegende', h:true}] : []),
         sik(d.doedeTomTekst || 'Ingen døde adresser i perioden.')) +
       ((d.doede||[]).length ? '<p style="font-size:12.5px;color:var(--svag);margin-top:10px">"Kom fra" viser hvor linket sidder. Er det jeres egen side, retter I linket. Er det en anden side, kan I lave en omdirigering i _redirects, så folk lander rigtigt.</p>' : '') + '</div>' +
-    sidsteRaekke;
+    sidsteRaekke + maaneder;
 }
 
 /* ══ SØGEORD ══ */
@@ -1748,8 +1793,8 @@ async function visSeo(m) {
   // rettelser udgives under Indhold, som kun den danske side har
   if (!skjult('indhold')) { try { const rr = await kald('rettelser'); seoGemte = {}; (rr.rettelser||[]).forEach(x => seoGemte[x.felt + '|' + x.url] = x.vaerdi); } catch (e) {} }
   const farve = n => n >= 90 ? 'var(--groen)' : n >= 70 ? 'var(--gul)' : 'var(--roed)';
-  const ai = d.ai, mu = d.muligheder;
-  const fejlTekst = delfejl(d, { ai:'Besøg fra AI-motorer', muligheder:'Muligheder' });
+  const ai = d.ai, ae = d.aiEgen, mu = d.muligheder;
+  const fejlTekst = delfejl(d, { ai:'Besøg fra AI-motorer i Google Analytics', aiEgen:'Besøg fra AI-assistenter', muligheder:'Muligheder' });
   const kf = d.kildeFor || {};
   // AI-trafikken følger den valgte periode (ai.periode). Pilen bruger ai.sml, som kun findes, når perioden før er dækket helt.
   const aiPer = ai && ai.periode ? (ai.periode.fra === ai.periode.til ? datoDk(ai.periode.fra) : datoDk(ai.periode.fra) + ' til ' + datoDk(ai.periode.til)) : '';
@@ -1758,6 +1803,25 @@ async function visSeo(m) {
   const aiFejl = !ai && opsat.analytics && fejlene(d.fejl).length ? 'Google Analytics svarede ikke, så tallet er ukendt.' : '';
   const mup = mu && mu.periode ? datoDk(mu.periode.fra) + ' til ' + datoDk(mu.periode.til) : '';
   const lille = t => '<p style="font-size:12px;color:var(--svag);margin-top:8px;line-height:1.6">' + t + '</p>';
+  // AI-assistenter fra jeres egen tæller (aiEgen), som tæller alle. Google Analytics står nederst som en lille sammenligning.
+  // Et gammelt gemt svar uden aiEgen, eller en egen tæller der ikke svarede, mens Google gjorde, viser Googles boks som før.
+  const brugAiEgen = ae !== undefined && (!!ae || !ai);
+  const aePer = ae && ae.periode ? (ae.periode.fra === ae.periode.til ? datoDk(ae.periode.fra) : datoDk(ae.periode.fra) + ' til ' + datoDk(ae.periode.til)) : '';
+  const aePil = !ae || ae.smlGrund ? '' : pil(ae.ialt, ae.foer) + (ae.smlTekst ? ' <span class="aendring flad">mod ' + sik(ae.smlTekst) + '</span>' : '');
+  const gaSml = ai && !mangler(ai.ialt) ? 'Google Analytics, kun cookie-ja: ' + T(ai.ialt) + ' besøg' : '';
+  const aiEgenBoks = !brugAiEgen ? '' : '<div class="net n3">' +
+      kpi('Besøg fra AI-assistenter', ae ? TT(ae.ialt) : '–', aePil, '', ae ? (ae.smlGrund || '') : 'Den egne tæller svarede ikke, så tallet er ukendt.',
+        kildeTekst('egen', ae && ae.daekning, [ae && ae.periode ? (ae.periode.visning || '') + (aePer ? ', ' + aePer : '') : '',
+          ae && !mangler(ae.tryk) ? T(ae.tryk) + ' med tryk til butik' : '', gaSml].filter(Boolean)
+          // ingen dobbelt punktum efter en forkortelse som 'okt.'
+          .reduce((a, x) => a ? a + (/\.$/.test(a) ? ' ' : '. ') + x : x, ''))) +
+      '<div class="kort"><h3>Hvilke AI-assistenter</h3>' + kildeLinje('egen', ae && ae.daekning, aePer) +
+        tabel('seo-ai-e', ae ? ae.kilder : null, [{navn:'Assistent', felt:'kilde', bar:'sessions', total: ae && ae.ialt, form:v => erUkendt(v) ? 'Ukendt' : sik(String(v).replace(/^(www\.|chat\.)/,''))},
+          {navn:'Besøg', felt:'sessions', h:true}, {navn:'Tryk til butik', felt:'tryk', h:true}, {navn:'Åbnede hent-siden', felt:'hent', h:true}], 'Ingen besøg fra AI-assistenter i perioden') +
+        (ae && ae.tekst ? lille(sik(ae.tekst)) : '') + '</div>' +
+      '<div class="kort"><h3>Hvor de lander</h3>' + kildeLinje('egen', ae && ae.daekning, aePer) +
+        tabel('seo-ai-es', ae ? samlVist(ae.sider, 'landingPage', ukendt) : null, [{navn:'Side', felt:'landingPage', bar:'sessions', total: ae && ae.ialt, form:v => sik(ukendt(v))},
+          {navn:'Besøg', felt:'sessions', h:true}, {navn:'Tryk til butik', felt:'tryk', h:true}], 'Ingen data') + '</div></div>';
   // gennemgangens GEO-del; en gammel eller tom rapport har ikke alle felter
   const geo = (g && g.geo) || {}, rob = geo.robots || {};
   m.innerHTML = hoved('SEO og GEO','Hvordan siden står hos Google og hos AI-motorerne', v) + fejlTekst +
@@ -1783,8 +1847,9 @@ async function visSeo(m) {
         ['Strukturerede data', geo.ldSider === g.antalSider ? true : geo.ldSider > 0 ? 'delvis' : false, TT(geo.ldSider) + ' af ' + TT(g.antalSider) + ' sider'],
         ['Spørgsmål og svar', geo.faqSider > 0 ? (geo.faqSider > 3 ? true : 'delvis') : false, TT(geo.faqSider) + ' sider med FAQ-data. AI-motorer citerer helst korte svar på klare spørgsmål']
       ].map(([n, ok, f]) => '<div class="geo-rk"><span class="ok ' + (ok === true ? 'ja' : ok === 'delvis' ? 'delvis' : 'nej') + '">' + (ok === true ? '✓' : ok === 'delvis' ? '~' : '✕') + '</span><span>' + n + '<br><small>' + f + '</small></span></div>').join('') : '<div class="tom">Kør en gennemgang først</div>') + '</div></div>' +
-    // ── ai-trafik, den valgte periode ──
-    (ai || aiFejl ? '<div class="net n3">' + kpi('Besøg fra AI-motorer', ai ? TT(ai.ialt) : '–', aiPil, '', ai ? (ai.sml ? '' : ai.smlGrund) : aiFejl,
+    // ── ai-trafik, den valgte periode: egen tæller, eller Google Analytics som før ──
+    aiEgenBoks +
+    (!brugAiEgen && (ai || aiFejl) ? '<div class="net n3">' + kpi('Besøg fra AI-motorer', ai ? TT(ai.ialt) : '–', aiPil, '', ai ? (ai.sml ? '' : ai.smlGrund) : aiFejl,
         kildeTekst('ga4', ai && ai.daekning, ai && ai.periode ? (ai.periode.visning || '') + (aiPer ? ', ' + aiPer : '') : '')) +
       '<div class="kort"><h3>Hvilke AI-motorer</h3>' + kildeLinje('ga4', ai && ai.daekning, aiPer) + tabel('seo-ai', ai ? ai.kilder : null, [{navn:'Motor', felt:'sessionSource', bar:'sessions', total: ai && ai.ialt, form:v => erUkendt(v) ? 'Ukendt' : sik(String(v).replace(/^(www\.|chat\.)/,''))}, {navn:'Besøg', felt:'sessions', h:true}, {navn:'Konv.', felt:'keyEvents', h:true}], 'Ingen besøg fra AI-motorer i perioden') +
         (ai && ai.konverteringer && ai.konverteringer.maales === false && (ai.kilder||[]).length ? lille('Konv.: ' + sik(ai.konverteringer.grund || '')) : '') + '</div>' +

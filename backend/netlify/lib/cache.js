@@ -19,8 +19,10 @@ const FEJL_LEVETID = 20 * 1000;
    UDGAVE skiftes, naar et svar aendrer form, saa gamle gemte svar ikke vises.
    u4: 6. okt. 2026, oversigt, tragt, downloads, live og uge fik ny form.
    u5: 8. okt. 2026, App Store taeller kun profilens app (side.js), og uge og chat fik nye felter.
-   u6: 11. okt. 2026, trafik kommer fra den egne taeller, naar Google Analytics ikke er koblet paa (kilde 'egen'). */
-const UDGAVE = 'u6:';
+   u6: 11. okt. 2026, trafik kommer fra den egne taeller, naar Google Analytics ikke er koblet paa (kilde 'egen').
+   u7: 16. okt. 2026, trafik har kildeLanding, maaneder og daekningFor (kilde 'blandet'), seo har aiEgen, og
+       kilderne har kanalen 'AI' (fund S18, S19, G12, S62, S64). */
+const UDGAVE = 'u7:';
 
 /** Har svaret en fejl fra en kilde? Forstaar baade en liste ([...]) og et opslag ({ meta:'...' }). */
 function harFejl(v) {

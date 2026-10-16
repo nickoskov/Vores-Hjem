@@ -2,6 +2,8 @@
 <html lang="da">
 <head>
 <meta charset="UTF-8">
+<!-- Skriften hentes med det samme, så teksten ikke skifter skrift (fund S54, 16. okt. 2026) -->
+<link rel="preload" href="fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="format-detection" content="telephone=no">
 <title>Hent Vores Hjem: App Store og Google Play</title>
@@ -24,23 +26,47 @@
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="canonical" href="https://download.voreshjem.dk/">
 <!-- Structured data: fortæller Google/AI-søgning præcis hvad appen er -->
+<!-- Samme app som på www.voreshjem.dk (samme @id), installeres fra App Store og Google Play (fund S22, 16. okt. 2026) -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "MobileApplication",
-  "name": "Vores Hjem",
-  "url": "https://download.voreshjem.dk/",
-  "description": "Familieapp der samler hele husstandens hverdag ét sted: fælles kalender, madplan, indkøbsliste og opgaver. Op til 7 personer pr. konto.",
-  "operatingSystem": "iOS, Android",
-  "applicationCategory": "LifestyleApplication",
-  "inLanguage": "da",
-  "image": "https://download.voreshjem.dk/og-billede.png",
-  "installUrl": "https://download.voreshjem.dk/",
-  "offers": [
-    { "@type": "Offer", "price": "39", "priceCurrency": "DKK", "description": "39 kr. pr. måned for hele familien (op til 7 personer). 14 dages gratis prøveperiode, derefter fornyes abonnementet automatisk. Ingen binding." },
-    { "@type": "Offer", "price": "199", "priceCurrency": "DKK", "description": "199 kr. pr. halvår for hele familien (op til 7 personer). 14 dages gratis prøveperiode, derefter fornyes abonnementet automatisk. Ingen binding." }
-  ],
-  "publisher": { "@type": "Organization", "name": "Vores Hjem I/S", "url": "https://www.voreshjem.dk/" }
+  "@graph": [
+    {
+      "@type": ["MobileApplication", "SoftwareApplication"],
+      "@id": "https://www.voreshjem.dk/#app",
+      "name": "Vores Hjem",
+      "url": "https://www.voreshjem.dk/",
+      "description": "Dansk familieapp til iPhone og Android, der samler hele husstandens hverdag ét sted: fælles kalender, madplan, indkøbsliste og opgaver. Ét abonnement dækker op til 7 personer.",
+      "operatingSystem": "iOS, Android",
+      "applicationCategory": "LifestyleApplication",
+      "inLanguage": "da",
+      "image": "https://download.voreshjem.dk/og-billede.png",
+      "installUrl": ["https://apps.apple.com/dk/app/vores-hjem/id6758346281", "https://play.google.com/store/apps/details?id=com.voreshjem.app"],
+      "downloadUrl": ["https://apps.apple.com/dk/app/vores-hjem/id6758346281", "https://play.google.com/store/apps/details?id=com.voreshjem.app"],
+      "sameAs": ["https://apps.apple.com/dk/app/vores-hjem/id6758346281", "https://play.google.com/store/apps/details?id=com.voreshjem.app"],
+      "identifier": [
+        { "@type": "PropertyValue", "propertyID": "Apple App Store ID", "value": "6758346281" },
+        { "@type": "PropertyValue", "propertyID": "Google Play package name", "value": "com.voreshjem.app" }
+      ],
+      "offers": [
+        { "@type": "Offer", "price": "39.00", "priceCurrency": "DKK", "availability": "https://schema.org/InStock", "seller": { "@id": "https://www.voreshjem.dk/#org" }, "description": "39 kr. pr. måned for hele familien (op til 7 personer). 14 dages gratis prøveperiode, derefter fornyes abonnementet automatisk. Ingen binding." },
+        { "@type": "Offer", "price": "199.00", "priceCurrency": "DKK", "availability": "https://schema.org/InStock", "seller": { "@id": "https://www.voreshjem.dk/#org" }, "description": "199 kr. pr. halvår for hele familien (op til 7 personer). 14 dages gratis prøveperiode, derefter fornyes abonnementet automatisk. Ingen binding." }
+      ],
+      "publisher": { "@type": "Organization", "@id": "https://www.voreshjem.dk/#org", "name": "Vores Hjem", "legalName": "Vores Hjem I/S", "url": "https://www.voreshjem.dk/" },
+      "author": { "@id": "https://www.voreshjem.dk/#org" }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://download.voreshjem.dk/#webpage",
+      "url": "https://download.voreshjem.dk/",
+      "name": "Hent Vores Hjem: App Store og Google Play",
+      "inLanguage": "da",
+      "about": { "@id": "https://www.voreshjem.dk/#app" },
+      "mainEntity": { "@id": "https://www.voreshjem.dk/#app" },
+      "publisher": { "@id": "https://www.voreshjem.dk/#org" },
+      "primaryImageOfPage": { "@type": "ImageObject", "url": "https://download.voreshjem.dk/og-billede.png", "width": 1200, "height": 630 }
+    }
+  ]
 }
 </script>
 <style>@font-face{font-family:'Plus Jakarta Sans';font-style:normal;font-weight:200 800;font-display:swap;src:url(fonts/plus-jakarta-sans-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}</style>

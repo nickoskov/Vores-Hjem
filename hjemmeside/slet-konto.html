@@ -409,7 +409,7 @@ nav::before {
 }
 .contact-modal-close:hover { background: #E8E5FF; }
 .contact-modal-close svg { width: 16px; height: 16px; }
-.contact-modal h3 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
+.contact-modal .contact-modal-titel { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
 .contact-modal > p { font-size: 14px; color: #5E5A7A; margin-bottom: 24px; }
 .contact-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
 .contact-field label { font-size: 13px; font-weight: 700; color: #0F0E1A; }
@@ -435,7 +435,7 @@ nav::before {
 }
 .contact-success-icon { width: 56px; height: 56px; background: rgba(16,185,129,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 .contact-success-icon svg { width: 28px; height: 28px; color: #10B981; }
-.contact-success h4 { font-size: 18px; font-weight: 800; }
+.contact-success .contact-success-titel { font-size: 18px; font-weight: 800; }
 .contact-success p { font-size: 14px; color: #5E5A7A; margin: 0; }
 @media (max-width: 600px) { .contact-modal { padding: 32px 24px 28px; } }
 </style>
@@ -453,7 +453,7 @@ nav::before {
   <meta name="twitter:title" content="Slet din konto | Vores Hjem">
   <meta name="twitter:description" content="Sådan sletter du din Vores Hjem-konto og alle data, trin for trin. Det tager under et minut og gøres direkte i appen under Indstillinger.">
   <meta name="twitter:image" content="https://www.voreshjem.dk/images/og.jpg">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Slet din konto | Vores Hjem","description":"Sådan sletter du din Vores Hjem-konto og alle data, trin for trin. Det tager under et minut og gøres direkte i appen under Indstillinger.","url":"https://www.voreshjem.dk/hvordan-sletter-man-sin-konto","isPartOf":{"@id":"https://www.voreshjem.dk/#website"},"about":{"@id":"https://www.voreshjem.dk/#app"},"dateModified":"2026-10-07"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","@id":"https://www.voreshjem.dk/hvordan-sletter-man-sin-konto#webpage","name":"Slet din konto | Vores Hjem","description":"Sådan sletter du din Vores Hjem-konto og alle data, trin for trin. Det tager under et minut og gøres direkte i appen under Indstillinger.","url":"https://www.voreshjem.dk/hvordan-sletter-man-sin-konto","inLanguage":"da","isPartOf":{"@id":"https://www.voreshjem.dk/#website"},"about":{"@id":"https://www.voreshjem.dk/#app"},"dateModified":"2026-10-11"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Forside","item":"https://www.voreshjem.dk/"},{"@type":"ListItem","position":2,"name":"Slet konto","item":"https://www.voreshjem.dk/hvordan-sletter-man-sin-konto"}]}</script>
 <style>#contact-modal-overlay{visibility:hidden}#contact-modal-overlay.open{visibility:visible}</style>
 <style>@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto!important}}</style>
@@ -490,7 +490,7 @@ nav::before {
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       Hjælpecenter
     </div>
-    <h1>Hvordan sletter jeg<br>min konto?</h1>
+    <h1>Hvordan sletter jeg<br> min konto?</h1>
     <p>Følg de fire trin herunder for at slette din Vores Hjem-konto permanent.</p>
   </div>
 </section>
@@ -676,7 +676,7 @@ nav::before {
   <div class="contact-modal">
     <button class="contact-modal-close" onclick="closeContactModal()" aria-label="Luk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     <div id="contact-form-wrap">
-      <h3>Skriv til os</h3>
+      <div class="contact-modal-titel">Skriv til os</div>
       <p>Vi svarer inden for 24 timer på hverdage.</p>
       <div class="contact-field"><label for="c-name">Navn</label><input type="text" id="c-name" placeholder="Dit navn"></div>
       <div class="contact-field"><label for="c-email">E-mail</label><input type="email" id="c-email" placeholder="din@email.dk"></div>
@@ -693,7 +693,7 @@ nav::before {
     </div>
     <div class="contact-success" id="contact-success">
       <div class="contact-success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
-      <h4>Besked sendt!</h4>
+      <div class="contact-success-titel">Besked sendt!</div>
       <p>Vi vender tilbage til dig hurtigst muligt.</p>
     </div>
   </div>

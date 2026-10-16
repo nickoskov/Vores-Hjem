@@ -34,8 +34,13 @@ exports.handler = async (ev) => {
     try {
       await tabel();
       let sti = '/'; try { sti = decodeURIComponent(new URL(fra).pathname || '/'); } catch (e) {}
-      if (/^\/[^\s]*$/.test(String(q.sti || ''))) sti = String(q.sti);
-      sti = qr && !profil.tilladt.test(vaert(fra)) ? '/qr' : profil.sti(vaert(fra), sti).slice(0, 200);
+      // en sti med @ kan vaere en mailadresse, som nogen har skrevet i adressen. Den bruges ikke.
+      const stiParam = /^\/[^\s@]*$/.test(String(q.sti || ''));
+      if (stiParam) sti = String(q.sti);
+      // en scanning uden henvisning gemmes som '/qr', medmindre QR-koden selv har siden med i adressen
+      // (?sti=, siden folk kom fra til hent-siden, som taelleren gemmer den). Saa kan en installation via
+      // QR-koden kobles til fx et blogindlaeg (fund S62). Ingen id'er og ingen cookies.
+      sti = qr && !profil.tilladt.test(vaert(fra)) ? (stiParam ? sti.slice(0, 200) : '/qr') : profil.sti(vaert(fra), sti).slice(0, 200);
       const sted = String(q.sted || '').replace(/[^\wÀ-ſ .:-]/g, '').slice(0, 60);
       await sql`INSERT INTO vh_klik (sti, sted, butik, enhed, gaest) VALUES (${sti}, ${sted}, ${butik}, ${enhed}, ${gaest})`;
     } catch (e) { /* knappen maa aldrig fejle for den besoegende */ }

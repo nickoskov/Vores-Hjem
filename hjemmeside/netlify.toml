@@ -119,6 +119,152 @@ to = "/"
 status = 301
 force = false
 
+# De gamle info.voreshjem.dk-adresser med .html (Wix-tiden) sendes direkte til den pæne adresse på www,
+# i stedet for først til www.voreshjem.dk/kalender.html osv. Skal stå før den generelle info-regel (fund S25, 16. okt. 2026)
+[[redirects]]
+from = "https://info.voreshjem.dk/kalender.html"
+to = "https://www.voreshjem.dk/kalender"
+status = 301
+force = true
+
+[[redirects]]
+from = "https://info.voreshjem.dk/madplan.html"
+to = "https://www.voreshjem.dk/madplan"
+status = 301
+force = true
+
+[[redirects]]
+from = "https://info.voreshjem.dk/opgaver.html"
+to = "https://www.voreshjem.dk/opgaver"
+status = 301
+force = true
+
+[[redirects]]
+from = "https://info.voreshjem.dk/indkob.html"
+to = "https://www.voreshjem.dk/indkobsliste"
+status = 301
+force = true
+
+[[redirects]]
+from = "https://info.voreshjem.dk/indstillinger.html"
+to = "https://www.voreshjem.dk/indstillinger"
+status = 301
+force = true
+
+[[redirects]]
+from = "https://info.voreshjem.dk/synkronisering.html"
+to = "https://www.voreshjem.dk/synkronisering"
+status = 301
+force = true
+
+[[redirects]]
+from = "https://info.voreshjem.dk/kontakt.html"
+to = "https://www.voreshjem.dk/support"
+status = 301
+force = true
+
+[[redirects]]
+from = "https://info.voreshjem.dk/slet-konto.html"
+to = "https://www.voreshjem.dk/hvordan-sletter-man-sin-konto"
+status = 301
+force = true
+
+[[redirects]]
+from = "https://info.voreshjem.dk/hvordan-bruger-jeg-appen.html"
+to = "https://www.voreshjem.dk/hvordan-bruger-jeg-appen"
+status = 301
+force = true
+
+[[redirects]]
+from = "https://info.voreshjem.dk/om-vores-hjem.html"
+to = "https://www.voreshjem.dk/om-vores-hjem"
+status = 301
+force = true
+
+[[redirects]]
+from = "https://info.voreshjem.dk/blog.html"
+to = "https://www.voreshjem.dk/blog"
+status = 301
+force = true
+
+[[redirects]]
+from = "https://info.voreshjem.dk/index.html"
+to = "https://www.voreshjem.dk/"
+status = 301
+force = true
+
+[[redirects]]
+from = "http://info.voreshjem.dk/kalender.html"
+to = "https://www.voreshjem.dk/kalender"
+status = 301
+force = true
+
+[[redirects]]
+from = "http://info.voreshjem.dk/madplan.html"
+to = "https://www.voreshjem.dk/madplan"
+status = 301
+force = true
+
+[[redirects]]
+from = "http://info.voreshjem.dk/opgaver.html"
+to = "https://www.voreshjem.dk/opgaver"
+status = 301
+force = true
+
+[[redirects]]
+from = "http://info.voreshjem.dk/indkob.html"
+to = "https://www.voreshjem.dk/indkobsliste"
+status = 301
+force = true
+
+[[redirects]]
+from = "http://info.voreshjem.dk/indstillinger.html"
+to = "https://www.voreshjem.dk/indstillinger"
+status = 301
+force = true
+
+[[redirects]]
+from = "http://info.voreshjem.dk/synkronisering.html"
+to = "https://www.voreshjem.dk/synkronisering"
+status = 301
+force = true
+
+[[redirects]]
+from = "http://info.voreshjem.dk/kontakt.html"
+to = "https://www.voreshjem.dk/support"
+status = 301
+force = true
+
+[[redirects]]
+from = "http://info.voreshjem.dk/slet-konto.html"
+to = "https://www.voreshjem.dk/hvordan-sletter-man-sin-konto"
+status = 301
+force = true
+
+[[redirects]]
+from = "http://info.voreshjem.dk/hvordan-bruger-jeg-appen.html"
+to = "https://www.voreshjem.dk/hvordan-bruger-jeg-appen"
+status = 301
+force = true
+
+[[redirects]]
+from = "http://info.voreshjem.dk/om-vores-hjem.html"
+to = "https://www.voreshjem.dk/om-vores-hjem"
+status = 301
+force = true
+
+[[redirects]]
+from = "http://info.voreshjem.dk/blog.html"
+to = "https://www.voreshjem.dk/blog"
+status = 301
+force = true
+
+[[redirects]]
+from = "http://info.voreshjem.dk/index.html"
+to = "https://www.voreshjem.dk/"
+status = 301
+force = true
+
 # GEO, okt. 2026
 [[redirects]]
 from = "https://info.voreshjem.dk/*"

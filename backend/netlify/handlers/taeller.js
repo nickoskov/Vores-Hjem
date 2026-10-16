@@ -4,7 +4,8 @@
  * (lib/side.js). Hver backend taeller kun sin egen side og skriver i sin egen database.
  *
  * Siden sender ét lille signal pr. sidevisning. Her gemmes kun:
- *   hvilken side, hvor de kom fra (kun domænet), mobil eller computer, land,
+ *   hvilken side, hvor de kom fra (kun domænet, eller utm_source, hvis den ikke er en mailadresse),
+ *   mobil eller computer, land, kampagnenavnet fra adressen (utm_campaign, kun bogstaver, tal og bindestreg),
  *   og et gæste-id, der er et hash af IP og browser plus en hemmelighed, som
  *   skifter hvert døgn. IP-adressen gemmes aldrig, og id'et kan ikke føres
  *   tilbage til en person eller følges fra dag til dag.
@@ -17,6 +18,8 @@
 const crypto = require('crypto');
 const { sql } = require('../lib/db.js');
 const profil = require('../lib/side.js');
+// kanalerne (Organisk søgning, AI-assistenter, E-mail ...) bor i lib/kanal.js, så panelet kan regne gamle rækker om
+const { kanal } = require('../lib/kanal.js');
 
 // kun signaler fra sidens egne adresser. Den anden side har sin egen backend og sin egen database.
 const TILLADT = profil.tilladt;
@@ -38,46 +41,25 @@ async function tabel() {
     enhed TEXT NOT NULL DEFAULT 'desktop', gaest TEXT NOT NULL)`;
   await sql`CREATE INDEX IF NOT EXISTS vh_klik_ts ON vh_klik (ts)`;
   // 404-siden melder sig selv (nf), saa doede adresser kan findes for alle besoegende,
-  // ikke kun dem der siger ja til cookies. Kolonnen tilfoejes kun, hvis den mangler,
-  // saa tabellen ikke laases ved hver kold start.
-  const kol = await sql`SELECT 1 FROM information_schema.columns WHERE table_name = 'vh_besoeg' AND column_name = 'ikkefundet'`;
-  if (!kol.length) await sql`ALTER TABLE vh_besoeg ADD COLUMN IF NOT EXISTS ikkefundet BOOLEAN NOT NULL DEFAULT false`;
+  // ikke kun dem der siger ja til cookies. Kampagnenavnet (utm_campaign) gemmes ved besoeget (fund S64).
+  // Kolonnerne tilfoejes kun, hvis de mangler, saa tabellen ikke laases ved hver kold start.
+  const kol = (await sql`SELECT column_name AS k FROM information_schema.columns WHERE table_name = 'vh_besoeg' AND column_name IN ('ikkefundet', 'kampagne')`).map(r => r.k);
+  if (!kol.includes('ikkefundet')) await sql`ALTER TABLE vh_besoeg ADD COLUMN IF NOT EXISTS ikkefundet BOOLEAN NOT NULL DEFAULT false`;
+  if (!kol.includes('kampagne')) await sql`ALTER TABLE vh_besoeg ADD COLUMN IF NOT EXISTS kampagne TEXT NOT NULL DEFAULT ''`;
   klar = true;
 }
 
 function vaert(u) { try { return new URL(u).hostname.replace(/^www\./, '').toLowerCase(); } catch (e) { return ''; } }
 
-/* Samme kanalnavne som Google Analytics, så panelet oversætter dem ens. To undtagelser:
-   'Intern' er et klik fra én side på siden til en anden. Det er aldrig en indgang
-   til siden, så panelet tæller kilder på hver gæsts første visning på dagen.
-   'Paid Other' er betalt trafik, hvor vi ikke kan se, hvem der betalte for den. */
-const SOCIAL = /facebook|instagram|threads|messenger|tiktok|linkedin|pinterest|reddit|youtube|snapchat|(^|\.)x\.com$|twitter|(^|\.)t\.co$|lnkd/;
-// Metas egne korte kildekoder ({{site_source_name}}): fb, ig, an (Audience Network, reklamer i apps),
-// msg (Messenger) og th (Threads). De skal matches som hele ord, så fx 'digital' ikke bliver Instagram.
-const META_KODE = /(^|[^a-z])(fb|ig|an|msg|th)([^a-z]|$)/;
-const erSocial = s => !!s && (SOCIAL.test(s) || /meta/.test(s) || META_KODE.test(s));
-const erSoegemaskine = s => /google|bing|adwords|microsoft|yahoo|duckduckgo|ecosia/.test(s || '');
+/* Kanalen for et besoeg: lib/kanal.js. Samme navne som Google Analytics plus 'AI' (AI-assistenter, fund G12),
+   'Intern' (et klik fra én side paa siden til en anden, aldrig en indgang) og 'Paid Other'. */
 
-function kanal(kilde, utm, intern) {
-  if (intern) return 'Intern';
-  const src = (utm.source || '').toLowerCase(), med = (utm.medium || '').toLowerCase();
-  if (/cpc|cpm|ppc|paid|annonce|retargeting/.test(med)) {
-    // utm_source vinder. Mangler den, bruges den side, de kom fra.
-    const hvem = src || kilde;
-    if (erSocial(hvem)) return 'Paid Social';
-    if (erSoegemaskine(hvem)) return 'Paid Search';
-    return 'Paid Other';
-  }
-  if (/e-?mail|newsletter|nyhedsbrev/.test(med + ' ' + src)) return 'Email';
-  if (/^social|social-?media|^sm$/.test(med)) return 'Organic Social';
-  const k = kilde || src;
-  if (!k) return 'Direct';
-  if (/google\.|bing\.|duckduckgo|yahoo\.|ecosia|startpage|search\./.test(k)) return 'Organic Search';
-  // kilde er utm_source, naar der ingen henvisning var. En kode uden punktum (fb, ig, an) er Meta.
-  if (SOCIAL.test(k) || (!/\./.test(k) && META_KODE.test(k))) return 'Organic Social';
-  if (/chatgpt|openai|perplexity|claude\.ai|gemini|copilot/.test(k)) return 'Referral';
-  if (/mail\.|outlook|gmail/.test(k)) return 'Email';
-  return 'Referral';
+/* Kampagnenavnet fra adressen (utm_campaign), fx 'trifold' fra brochuren eller et kampagne-ID fra Meta.
+   Afkortet og kun bogstaver, tal og bindestreg. Ligner det en mailadresse, gemmes det ikke. */
+function kampagneNavn(v) {
+  const s = String(v || '').normalize('NFC').toLowerCase();
+  if (!s || /@/.test(s)) return '';
+  return s.replace(/[\s_+.]+/g, '-').replace(/[^\p{L}\p{N}-]/gu, '').replace(/-+/g, '-').replace(/^-+/, '').slice(0, 60).replace(/-+$/, '');
 }
 
 /* Dansk kalenderdato, 'YYYY-MM-DD'. Bruges til gæste-id'ets daglige hemmelighed. */
@@ -116,6 +98,7 @@ exports.handler = async (ev) => {
     if (!TILLADT.test(side.hostname)) return svar(204, oprindelse);
     const sti = profil.sti(side.hostname, decodeURIComponent(side.pathname || '/')).slice(0, 200);
     const utm = { source: side.searchParams.get('utm_source') || '', medium: side.searchParams.get('utm_medium') || '' };
+    const kampagne = kampagneNavn(side.searchParams.get('utm_campaign'));
     let kilde = vaert(String(k.r || ''));
     // kom de fra en anden side paa samme site, er det et klik inde paa siden og ikke en kilde.
     // Har adressen utm-felter, er det alligevel en ny indgang (som hos Google), fx en annonce,
@@ -123,7 +106,9 @@ exports.handler = async (ev) => {
     const egen = !!kilde && EGEN.test(kilde);
     const intern = egen && !utm.source && !utm.medium;
     if (egen) kilde = '';
-    if (!kilde && utm.source) kilde = utm.source.toLowerCase().slice(0, 60);
+    // utm_source gemmes kun, hvis den ikke ligner en mailadresse (samme regel som kampagnen). Kanalen
+    // regnes stadig ud fra den, men selve vaerdien gemmes ikke.
+    if (!kilde && utm.source && !/@/.test(utm.source)) kilde = utm.source.toLowerCase().slice(0, 60);
     const ikkefundet = k.nf === 1 || k.nf === true;
 
     const { enhed, gaest } = maerk(h);
@@ -140,11 +125,12 @@ exports.handler = async (ev) => {
       await sql`INSERT INTO vh_klik (sti, sted, butik, enhed, gaest) VALUES (${sti}, ${sted}, ${butik}, ${enhed}, ${gaest})`;
       return svar(204, oprindelse);
     }
-    await sql`INSERT INTO vh_besoeg (sti, kilde, kanal, enhed, land, gaest, ikkefundet)
-      VALUES (${sti}, ${kilde}, ${kanal(kilde, utm, intern)}, ${enhed}, ${land}, ${gaest}, ${ikkefundet})`;
+    await sql`INSERT INTO vh_besoeg (sti, kilde, kanal, enhed, land, gaest, ikkefundet, kampagne)
+      VALUES (${sti}, ${kilde}, ${kanal(kilde, utm, intern)}, ${enhed}, ${land}, ${gaest}, ${ikkefundet}, ${kampagne})`;
   } catch (e) { /* tælleren må aldrig give fejl på siden */ }
   return svar(204, oprindelse);
 };
 
 exports.maerk = maerk;
 exports.tabel = tabel;
+exports.kampagneNavn = kampagneNavn;
