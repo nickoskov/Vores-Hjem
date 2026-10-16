@@ -418,5 +418,45 @@
     "dato": "2026-09-09",
     "kategori": "opgaver",
     "billede700": "https://www.voreshjem.dk/images/blog/sea0cdbbdbb-700.webp"
+  },
+  {
+    "slug": "bedste-vaerktoejer-til-hverdagsplanlaegning",
+    "fil": "/blog/post/bedste-vaerktoejer-til-hverdagsplanlaegning.html",
+    "titel": "Bedste værktøjer til hverdagsplanlægning i familien",
+    "resume": "Find de bedste værktøjer til hverdagsplanlægning, og saml kalender, madplan, indkøb og opgaver, så familien lettere kan skabe fælles overblik sammen.",
+    "billede": "https://www.voreshjem.dk/images/blog/sd0005cf31b.webp",
+    "dato": "2026-10-15",
+    "kategori": "hverdag",
+    "billede700": "https://www.voreshjem.dk/images/blog/sd0005cf31b-700.webp"
+  },
+  {
+    "slug": "involver-boern-i-husarbejdet",
+    "fil": "/blog/post/involver-boern-i-husarbejdet.html",
+    "titel": "Involver børn i husarbejdet uden daglige konflikter",
+    "resume": "Få børn med i husarbejdet på en rolig måde. Se, hvordan klare opgaver, faste rutiner og små valg kan gøre hverdagen mere overskuelig sammen i hjemmet.",
+    "billede": "https://www.voreshjem.dk/images/blog/s4ff39047d2.webp",
+    "dato": "2026-10-13",
+    "kategori": "hverdag",
+    "billede700": "https://www.voreshjem.dk/images/blog/s4ff39047d2-700.webp"
+  },
+  {
+    "slug": "test-af-familieplanlaeggere",
+    "fil": "/blog/post/test-af-familieplanlaeggere.html",
+    "titel": "Test af familieplanlæggere: Hvad virker i hverdagen?",
+    "resume": "Se en test af familieplanlæggere og de funktioner, der skaber fælles overblik over kalender, madplan, indkøb, opgaver og vagter i familiens hverdag.",
+    "billede": "https://www.voreshjem.dk/images/blog/s76fe9f4370.webp",
+    "dato": "2026-10-11",
+    "kategori": "hverdag",
+    "billede700": "https://www.voreshjem.dk/images/blog/s76fe9f4370-700.webp"
+  },
+  {
+    "slug": "digitale-opgavetavler",
+    "fil": "/blog/post/digitale-opgavetavler.html",
+    "titel": "Digitale opgavetavler giver ro i hverdagen",
+    "resume": "Digitale opgavetavler samler familiens opgaver ét sted, så ansvar, små rutiner og fælles aftaler bliver lettere at følge i hverdagen for alle derhjemme.",
+    "billede": "https://www.voreshjem.dk/images/blog/s83b90df472.webp",
+    "dato": "2026-10-09",
+    "kategori": "opgaver",
+    "billede700": "https://www.voreshjem.dk/images/blog/s83b90df472-700.webp"
   }
 ]

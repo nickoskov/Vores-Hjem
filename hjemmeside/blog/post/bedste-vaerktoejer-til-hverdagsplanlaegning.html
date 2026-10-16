@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+
+<!-- Forbinder tidligt til de eksterne tjenester sporingen bruger, saa selve
+     handshaket (DNS+TLS) er overstaaet, naar scriptet faktisk skal hente dem. -->
+<link rel="preconnect" href="https://cdn.iubenda.com">
+<link rel="preconnect" href="https://embeds.iubenda.com">
+<link rel="preconnect" href="https://voreshjem-bot.netlify.app">
+
+<!-- ══ SPORING ══ Skal ligge oeverst i <head> paa alle sider.
+     Alt startes fra ét script, som foerst tjekker, om siden vises for sig selv.
+     Inde i en ramme starter INTET, saa der aldrig staar to cookiebannere oven paa
+     hinanden. Raekkefoelgen er ikke tilfaeldig: samtykketilstanden saettes,
+     FOER noget andet loader.
+     16. sept. 2026: Google Tag Manager fjernet (containeren var tom og kostede
+     115 KB). Meta og OpenAI starter foerst, naar den besoegende siger ja til
+     markedsfoering i cookiebanneret. -->
+<script>
+(function () {
+  var iRamme = false;
+  try { iRamme = window.self !== window.top; } catch (e) { iRamme = true; }
+  if (iRamme) return;
+
+  /* 1. Samtykketilstand. Alt er afvist, indtil brugeren siger ja. */
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function () { dataLayer.push(arguments); };
+  gtag('consent', 'default', {
+    'ad_storage': 'denied', 'ad_user_data': 'denied', 'ad_personalization': 'denied',
+    'analytics_storage': 'denied', 'functionality_storage': 'granted', 'security_storage': 'granted',
+    'wait_for_update': 500
+  });
+  gtag('set', 'ads_data_redaction', true);
+  gtag('set', 'url_passthrough', true);
+
+  /* scripts indsaettes i raekkefoelge, ét ad gangen */
+  function hent(src, valg) {
+    var s = document.createElement('script'); s.src = src; s.async = false;
+    if (valg && valg.charset) s.charset = valg.charset;
+    document.head.appendChild(s); return s;
+  }
+
+  /* 2. Cookiebanner, iubenda. siteId 4517758, cookiePolicyId 85951957. */
+  /* Banneret hentes, lige efter at siden er tegnet, saa det ikke konkurrerer med sidens
+     eget indhold om nettet. Samtykket staar stadig til 'denied', saa intet maales foer svaret. */
+  function startBanner() { hent('https://embeds.iubenda.com/widgets/c4881ab1-9037-47e2-b5ce-d1950889d637.js'); }
+  function senere() { if ('requestIdleCallback' in window) requestIdleCallback(startBanner, { timeout: 1500 }); else setTimeout(startBanner, 300); }
+  if (document.readyState === 'complete') senere(); else window.addEventListener('load', senere);
+
+  /* 3. Google Analytics 4. Hentes foerst, naar cookiebanneret melder ja til maaling
+        (analytics_storage granted). Foer det faar Google intet, heller ikke IP-adressen. */
+  var analyseStartet = false;
+  function startAnalyse() {
+    if (analyseStartet) return; analyseStartet = true;
+    hent('https://www.googletagmanager.com/gtag/js?id=G-ZFW1KE91LV');
+    gtag('js', new Date());
+    gtag('config', 'G-ZFW1KE91LV');
+  }
+
+  /* 3b. Google Ads. Der er ingen Ads-kode endnu. Naar I opretter en konvertering
+         i Google Ads, faar I et id som AW-123456789. Saet det ind og fjern //
+     gtag('config', 'AW-XXXXXXXXX'); */
+
+  /* 4. Markedsfoering: Meta-pixel og OpenAI. Hentes foerst, naar cookiebanneret
+        melder ja til markedsfoering (ad_storage granted). Siger den besoegende nej,
+        hentes de slet ikke. Har den besoegende sagt ja tidligere, melder banneret
+        det med det samme, og de starter straks. */
+  var reklameStartet = false;
+  function startReklame() {
+    if (reklameStartet) return; reklameStartet = true;
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '697476623339056');
+    fbq('track', 'PageView');
+
+    !function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};
+    q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;
+    var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}
+    (window,document,'script','https://bzrcdn.openai.com/sdk/oaiq.min.js');
+    oaiq('init', { pixelId: 'QZwgYr1hiBh3USt1vsSytt', debug: false });
+  }
+  /* Banneret skriver sit svar i dataLayer. Vi kigger kun paa nye linjer. */
+  var set = 0, vagt = setInterval(function () {
+    for (; set < dataLayer.length; set++) {
+      var a = dataLayer[set];
+      if (a && a[0] === 'consent' && a[2] && a[2].analytics_storage === 'granted') startAnalyse();
+      if (a && a[0] === 'consent' && a[2] && a[2].ad_storage === 'granted') startReklame();
+      if (analyseStartet && reklameStartet) { clearInterval(vagt); return; }
+    }
+  }, 400);
+
+  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>,
+     saa de venter til siden er laest faerdig. Hent-knappens script taeller ogsaa
+     besoeget til backenden, uden cookies. */
+  function naarKlar(fn) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
+  naarKlar(function () {
+    hent('https://voreshjem-bot.netlify.app/widget.js');
+    hent('https://voreshjem-bot.netlify.app/hentknap.js');
+  });
+})();
+</script>
+<!-- ══ SPORING SLUT ══ -->
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bedste værktøjer til hverdagsplanlægning i familien | Vores Hjem</title>
+<link rel="canonical" href="https://www.voreshjem.dk/post/bedste-vaerktoejer-til-hverdagsplanlaegning">
+<meta name="description" content="Find de bedste værktøjer til hverdagsplanlægning, og saml kalender, madplan, indkøb og opgaver, så familien lettere kan skabe fælles overblik sammen.">
+<link rel="preload" href="/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>@font-face{font-family:'Plus Jakarta Sans';font-style:normal;font-weight:200 800;font-display:swap;src:url(/fonts/plus-jakarta-sans-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}</style>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --purple: #6C47FF;
+  --purple-light: #8B6AFF;
+  --blue: #3B82F6;
+  --pink: #EC4899;
+  --success: #10B981;
+  --gradient: linear-gradient(135deg, #6C47FF 0%, #3B82F6 55%, #EC4899 100%);
+  --bg: #FFFFFF;
+  --bg-subtle: #F8F7FF;
+  --bg-muted: #F1F0FA;
+  --text: #0F0E1A;
+  --text-secondary: #5E5A7A;
+  --text-muted: #625E7E;
+  --border: #E8E5FF;
+  --font: 'Plus Jakarta Sans', sans-serif;
+  --radius: 16px;
+  --shadow: 0 8px 32px rgba(108,71,255,0.12);
+  --shadow-lg: 0 24px 80px rgba(108,71,255,0.18);
+}
+
+html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100%; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+/* ─── NAV ─── */
+nav {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(255,255,255,0.75);
+  border-bottom: 1px solid rgba(108,71,255,0.08);
+}
+/* Chrome-fix: blur på lag BAG indholdet (Chromium-bug: børn af backdrop-filter renderes tilfældigt ikke) */
+nav::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+}
+.nav-logo img { transform: translateZ(0); }
+
+.nav-inner { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+.nav-logo { display: flex; align-items: center; gap: 10px; }
+.logo-icon {
+  width: 36px; height: 36px;
+  background: var(--gradient);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+}
+.logo-icon svg { width: 18px; height: 18px; color: #fff; }
+.logo-text { font-size: 17px; font-weight: 800; color: var(--text); }
+.logo-text span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+/* ─── HERO ─── */
+.contact-hero {
+  background: linear-gradient(160deg, #F8F7FF 0%, #EEF0FF 50%, #F5F0FF 100%);
+  padding: 100px 0 80px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.contact-hero::before {
+  content: '';
+  position: absolute; top: -200px; right: -200px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(108,71,255,0.12), transparent 65%);
+  pointer-events: none;
+}
+.contact-hero::after {
+  content: '';
+  position: absolute; bottom: -150px; left: -150px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(236,72,153,0.1), transparent 65%);
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 16px;
+  background: rgba(108,71,255,0.08);
+  border: 1px solid rgba(108,71,255,0.18);
+  border-radius: 100px;
+  font-size: 13px; font-weight: 600; color: var(--purple);
+  margin-bottom: 24px;
+}
+.contact-hero h1 {
+  font-size: clamp(42px, 6vw, 72px);
+  font-weight: 800;
+  letter-spacing: -2.5px;
+  line-height: 1.08;
+  color: var(--text);
+  margin-bottom: 20px;
+  position: relative; z-index: 1;
+}
+.contact-hero h1 {
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.contact-hero p {
+  font-size: 19px;
+  color: var(--text-secondary);
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.65;
+  position: relative; z-index: 1;
+}
+
+/* ─── MAIN LAYOUT ─── */
+.contact-main {
+  padding: 80px 0 120px;
+}
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 60px;
+  align-items: start;
+}
+
+/* ─── LEFT: INFO ─── */
+.contact-info { display: flex; flex-direction: column; gap: 12px; }
+
+.info-card {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px 28px;
+  display: flex; align-items: flex-start; gap: 16px;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.info-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+.info-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.info-icon svg { width: 20px; height: 20px; }
+.info-card-text h3 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.info-card-text p { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
+.info-card-text a { color: var(--purple); font-weight: 600; }
+.info-card-text a:hover { text-decoration: underline; }
+
+.response-note {
+  margin-top: 8px;
+  background: rgba(16,185,129,0.07);
+  border: 1px solid rgba(16,185,129,0.2);
+  border-radius: 14px;
+  padding: 14px 18px;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: #065f46; font-weight: 600;
+}
+.response-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--success); flex-shrink: 0;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.7)} }
+
+/* ─── RIGHT: FORM BOX ─── */
+.form-box {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 48px 44px;
+  box-shadow: var(--shadow-lg);
+}
+.form-box-header { margin-bottom: 32px; }
+.form-box-header h2 { font-size: 26px; font-weight: 800; letter-spacing: -0.8px; margin-bottom: 8px; }
+.form-box-header p { font-size: 15px; color: var(--text-secondary); }
+
+/* ─── FORM FIELDS ─── */
+.field { margin-bottom: 18px; }
+.field label { display: block; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 7px; }
+.field input, .field textarea, .field select {
+  width: 100%; padding: 13px 16px;
+  background: var(--bg-subtle); border: 1.5px solid var(--border);
+  border-radius: 12px; font-family: var(--font); font-size: 15px; color: var(--text);
+  transition: border-color 0.2s, box-shadow 0.2s; outline: none; resize: none;
+}
+.field input:focus, .field textarea:focus, .field select:focus {
+  border-color: var(--purple); box-shadow: 0 0 0 3px rgba(108,71,255,0.1);
+  background: #fff;
+}
+.field textarea { min-height: 130px; line-height: 1.6; }
+.field input::placeholder, .field textarea::placeholder { color: var(--text-muted); }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+.submit-btn {
+  width: 100%; padding: 16px;
+  background: var(--gradient); color: #fff;
+  border: none; border-radius: 14px; cursor: pointer;
+  font-family: var(--font); font-size: 16px; font-weight: 700;
+  box-shadow: 0 4px 24px rgba(108,71,255,0.4);
+  transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 36px rgba(108,71,255,0.5); }
+.submit-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+.form-success {
+  display: none; text-align: center; padding: 40px 24px;
+  background: rgba(16,185,129,0.06); border: 1.5px solid rgba(16,185,129,0.2);
+  border-radius: 16px;
+}
+.form-success-icon {
+  width: 56px; height: 56px; border-radius: 16px;
+  background: rgba(16,185,129,0.12);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+}
+.form-success-icon svg { width: 26px; height: 26px; color: var(--success); }
+.form-success h3 { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.form-success p { font-size: 14px; color: var(--text-secondary); }
+
+.form-error {
+  display: none; padding: 12px 16px; margin-bottom: 16px;
+  background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 10px; font-size: 13px; color: #b91c1c; font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .field-row { grid-template-columns: 1fr; }
+}
+
+/* ─── FAQ ─── */
+.faq-section {
+  padding: 80px 0;
+  background: linear-gradient(160deg, #F8F7FF 0%, #EEF0FF 50%, #F5F0FF 100%);
+  border-top: 1px solid var(--border);
+}
+.faq-section h2 {
+  font-size: 36px; font-weight: 800; letter-spacing: -1px;
+  color: var(--text); margin-bottom: 8px;
+}
+.faq-section .section-sub {
+  font-size: 16px; color: var(--text-secondary); margin-bottom: 48px;
+}
+.faq-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start;
+}
+.faq-item {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 18px; padding: 24px 28px;
+  cursor: pointer; transition: box-shadow 0.2s, transform 0.2s;
+}
+.faq-item:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+.faq-q {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  font-size: 16px; font-weight: 700; color: var(--text);
+}
+.faq-q svg { width: 18px; height: 18px; color: var(--purple); flex-shrink: 0; transition: transform 0.2s; }
+.faq-item.open .faq-q svg { transform: rotate(45deg); }
+.faq-a {
+  display: none; margin-top: 14px; padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 14px; color: var(--text-secondary); line-height: 1.65;
+}
+.faq-a a { color: var(--purple); font-weight: 600; }
+.faq-item.open .faq-a { display: block; }
+
+/* ─── ABO HJÆLP ─── */
+.abo-section {
+  padding: 80px 0;
+  background: #fff;
+  border-top: 1px solid var(--border);
+}
+.abo-section h2 {
+  font-size: 36px; font-weight: 800; letter-spacing: -1px;
+  color: var(--text); margin-bottom: 8px;
+}
+.abo-section .section-sub {
+  font-size: 16px; color: var(--text-secondary); margin-bottom: 48px;
+}
+.abo-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+.abo-card {
+  background: var(--bg-subtle); border: 1px solid var(--border);
+  border-radius: 20px; padding: 28px 24px;
+}
+.abo-icon {
+  width: 48px; height: 48px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+}
+.abo-icon svg { width: 22px; height: 22px; }
+.abo-card h3 { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.abo-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+.abo-card a { color: var(--purple); font-weight: 600; }
+
+@media (max-width: 900px) {
+  .faq-grid { grid-template-columns: 1fr; }
+  .abo-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .faq-section, .abo-section { padding: 56px 0; }
+  .faq-section h2, .abo-section h2 { font-size: 28px; }
+}
+
+/* ─── BOTTOM STRIP ─── */
+.bottom-strip {
+  background: var(--bg-subtle);
+  border-top: 1px solid var(--border);
+  padding: 28px 0;
+}
+.bottom-strip-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.bottom-strip-left { font-size: 13px; color: var(--text-muted); }
+.bottom-strip-right { display: flex; gap: 24px; }
+.bottom-strip-right a { font-size: 13px; color: var(--text-muted); transition: color 0.2s; }
+.bottom-strip-right a:hover { color: var(--purple); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+  .form-box { padding: 36px 28px; }
+}
+@media (max-width: 600px) {
+  .contact-hero { padding: 72px 0 60px; }
+  .contact-hero h1 { letter-spacing: -1.5px; }
+  .contact-main { padding: 48px 0 80px; }
+  .container { padding: 0 20px; }
+  .form-box { padding: 28px 20px; }
+  .bottom-strip-right { gap: 16px; }
+}
+</style>
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Bedste værktøjer til hverdagsplanlægning i familien">
+  <meta property="og:description" content="Find de bedste værktøjer til hverdagsplanlægning, og saml kalender, madplan, indkøb og opgaver, så familien lettere kan skabe fælles overblik sammen.">
+  <meta property="og:url" content="https://www.voreshjem.dk/post/bedste-vaerktoejer-til-hverdagsplanlaegning">
+  <meta property="og:image" content="https://www.voreshjem.dk/images/blog/sd0005cf31b.webp">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Bedste værktøjer til hverdagsplanlægning i familien","description":"Find de bedste værktøjer til hverdagsplanlægning, og saml kalender, madplan, indkøb og opgaver, så familien lettere kan skabe fælles overblik sammen.","datePublished":"2026-10-15","dateModified":"2026-10-15","author":{"@type":"Organization","name":"Vores Hjem"},"publisher":{"@type":"Organization","name":"Vores Hjem"},"mainEntityOfPage":"https://www.voreshjem.dk/post/bedste-vaerktoejer-til-hverdagsplanlaegning"}</script>
+
+<style>
+  .indlaeg{ padding:64px 0 88px; background:#fff; }
+  .indlaeg .container{ max-width:760px; margin:0 auto; padding:0 24px; }
+  .indlaeg .tilbage{ display:inline-block; font-size:14px; font-weight:700;
+    color:#6C47FF; text-decoration:none; margin-bottom:22px; }
+  .indlaeg .tilbage:hover{ text-decoration:underline; }
+  .indlaeg h1{ font-size:clamp(30px,4.4vw,44px); line-height:1.14; letter-spacing:-.03em;
+    font-weight:800; color:#1B1633; margin:0 0 12px; }
+  .indlaeg .meta{ font-size:14px; font-weight:600; color:#625E7E; margin-bottom:34px;
+    padding-bottom:22px; border-bottom:1px solid #EFEDF8; }
+  .indlaeg h2{ font-size:26px; line-height:1.25; letter-spacing:-.02em; font-weight:800;
+    color:#1B1633; margin:44px 0 14px; }
+  .indlaeg h3{ font-size:20px; line-height:1.3; font-weight:800; color:#1B1633; margin:32px 0 10px; }
+  .indlaeg p{ font-size:17.5px; line-height:1.75; color:#3A3552; margin:0 0 20px; }
+  .indlaeg li{ font-size:17.5px; line-height:1.75; color:#3A3552; margin:0 0 10px 20px; }
+  .indlaeg .slutkort{ margin-top:52px; padding:28px; border-radius:20px;
+    background:#F6F4FF; border:1px solid #E6E3F2; text-align:center; }
+  .indlaeg .slutkort p{ font-size:16px; margin:0 0 18px; }
+  .indlaeg .slutknap{ display:inline-block; text-decoration:none; color:#fff; font-weight:800;
+    font-size:16px; padding:15px 30px; border-radius:99px;
+    background:linear-gradient(110deg,#6C47FF,#4F7BFF 58%,#EC4899); }
+  @media(max-width:600px){ .indlaeg{ padding:40px 0 64px; } .indlaeg p,.indlaeg li{ font-size:17px; } }
+</style>
+<style>
+.laes-ogsaa{margin:36px 0 8px;padding:24px 26px;border:1.5px solid #E6E4F2;border-radius:18px;background:#FAFAFF}
+.laes-ogsaa h2{font-size:15px;font-weight:800;margin:0 0 12px;letter-spacing:-.01em}
+.laes-ogsaa ul{list-style:none;margin:0;padding:0}
+.laes-ogsaa li{padding:9px 0;border-top:1px solid #EEECF7}
+.laes-ogsaa li:first-child{border-top:0;padding-top:0}
+.laes-ogsaa a{color:#4F32CC;font-weight:700;text-decoration:none}
+.laes-ogsaa a:hover{text-decoration:underline}
+.laes-ogsaa .funk{display:inline-block;margin-top:14px;font-weight:700;color:#12101F;text-decoration:none;border-bottom:2px solid #6C47FF}
+.meta a{color:inherit;text-decoration:none;border-bottom:1px solid #C9C4E8}
+</style>
+<style id="geo-bokse">
+.kort-fortalt{margin:0 0 34px;padding:20px 24px;border-radius:16px;background:#F6F4FF;border:1px solid #E6E3F2;border-left:4px solid #6C47FF}
+.hero-left .kort-fortalt{max-width:560px;margin:18px 0 24px}
+.kort-fortalt p,.indlaeg .kort-fortalt p{font-size:16.5px;line-height:1.65;color:#2A2540;margin:0}
+.kort-fortalt .kf-titel,.indlaeg .kort-fortalt .kf-titel{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#4F32CC;margin:0 0 6px}
+.fakta-vh{margin:40px 0 0;padding:22px 24px;border-radius:16px;background:#FAFAFF;border:1.5px solid #E6E4F2}
+.fakta-vh .fv-titel,.indlaeg .fakta-vh .fv-titel{font-size:15px;font-weight:800;color:#1B1633;margin:0 0 10px}
+.fakta-vh ul{margin:0;padding:0 0 0 18px}
+.fakta-vh li,.indlaeg .fakta-vh li{font-size:15.5px;line-height:1.6;margin:0 0 6px}
+.fakta-vh a{color:#4F32CC;font-weight:700}
+.forfatter{margin:40px 0 0;padding:18px 0 0;border-top:1px solid #EFEDF8}
+.forfatter p,.indlaeg .forfatter p{font-size:15.5px;line-height:1.6;color:#5E5A7A;margin:0}
+.brodkrumme{margin:0 0 22px}
+.brodkrumme ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.brodkrumme li,.indlaeg .brodkrumme li{font-size:14px;font-weight:700;line-height:1.4;margin:0;color:#5E5A7A}
+.brodkrumme li+li::before{content:"\203A";margin-right:6px;color:#C9C4E8}
+.brodkrumme a{color:#6C47FF;text-decoration:none}
+.brodkrumme a:hover{text-decoration:underline}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Forside","item":"https://www.voreshjem.dk/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://www.voreshjem.dk/blog"},{"@type":"ListItem","position":3,"name":"Bedste værktøjer til hverdagsplanlægning i familien","item":"https://www.voreshjem.dk/post/bedste-vaerktoejer-til-hverdagsplanlaegning"}]}</script>
+<style>@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto!important}}</style>
+<style>:root{--gradient-dyb:linear-gradient(135deg,#4F32CC 0%,#1D4ED8 55%,#BE185D 100%)}.btn-primary,.floating-badge,.contact-submit,#hent-flyd,.indlaeg .slutknap{background:var(--gradient-dyb)!important}</style>
+<style>html{scroll-padding-bottom:150px}</style>
+<style>@media (max-width:720px){footer{padding-bottom:110px!important}}</style>
+<style>.indlaeg h1,.indlaeg h2{overflow-wrap:break-word;hyphens:auto}</style>
+</head>
+<body>
+<nav>
+  <div class="container">
+    <div class="nav-inner">
+      <a href="https://www.voreshjem.dk" target="_top" class="nav-logo">
+        <img src="/images/logo-nav.webp?v=2" alt="Vores Hjem" style="height:58px;width:auto;display:block;">
+      </a>
+      <a href="https://www.voreshjem.dk" target="_top" style="display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:700;color:var(--text-secondary);transition:color 0.2s;" onmouseover="this.style.color='#6C47FF'" onmouseout="this.style.color='#5E5A7A'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:15px;height:15px;"><polyline points="15 18 9 12 15 6"/></svg>
+        Tilbage til forsiden
+      </a>
+    </div>
+  </div>
+</nav>
+  <article class="indlaeg">
+    <div class="container">
+      <a class="tilbage" href="/blog.html">&lsaquo; Alle indlæg</a>
+      <h1>Bedste værktøjer til hverdagsplanlægning i familien</h1>
+      <div class="meta">15.10.2026 · 7 min læsning · <a href="/blog">Hverdag og rutiner</a></div>
+      <p>Mandag klokken 16.20 er ikke tidspunktet, hvor nogen har lyst til at lede efter en besked om fodboldtræning, finde ud af, hvad der skal på bordet, og opdage, at der mangler mælk. Alligevel er det ofte sådan, familiens planlægning foregår: lidt i hovedet, lidt på en seddel og lidt i forskellige apps. De bedste værktøjer til hverdagsplanlægning er derfor ikke nødvendigvis dem med flest funktioner. Det er dem, der gør det lettere at se, hvad familien skal, og hvem der tager sig af hvad.</p>
+<p>For børnefamilier handler planlægning sjældent om at presse mere ind i kalenderen. Det handler om at få de praktiske ting til at hænge sammen, uden at én voksen bliver den, der skal huske det hele. Her får du en guide til at vælge værktøjer, der passer til en almindelig, travl hverdag.</p>
+<h2>Start med det, der skaber mest frem og tilbage</h2>
+<p>Et godt planlægningsværktøj skal løse et konkret problem. Måske bliver aftaler glemt, fordi de ligger i hver sin kalender. Måske ender indkøbslisten i en beskedtråd, som ingen kan finde i butikken. Eller måske er det uklart, hvem der henter, laver mad eller tømmer opvaskemaskinen.</p>
+<p>Det er fristende at hente en app til hvert enkelt behov. En kalender ét sted, en madapp et andet sted og en noteapp til indkøb. Det kan fungere fint, hvis familien faktisk bruger dem ens. Men for mange opstår det samme problem hurtigt igen: Informationerne er stadig spredt.</p>
+<p>Se derfor først på de situationer, hvor I oftest skal spørge hinanden: “Hvad er planen?”, “Har vi det hjemme?” eller “Hvem gør det?” Det er dér, et fælles værktøj kan gøre den tydeligste forskel.</p>
+<h2>En fælles kalender giver aftaler en fast plads</h2>
+<p>Kalenderen er ofte familiens naturlige udgangspunkt. Den kan samle arbejdstider, skolearrangementer, fritidsaktiviteter, fødselsdage og aftaler, der påvirker resten af ugen. Når begge voksne kan se de samme oplysninger, bliver det lettere at opdage, at onsdag allerede er fyldt, før der bliver lagt endnu en aftale ind.</p>
+<p>En delt kalender virker bedst, når den bruges til det, der angår familien - ikke som en komplet kopi af hver persons arbejdskalender. Det kan være nok at skrive “sen vagt”, “forældremøde” eller “arbejder hjemme”. Så kan resten af familien planlægge ud fra det uden at skulle kende alle detaljer.</p>
+<h3>Gør kalenderen let at aflæse</h3>
+<p>Navngiv aftaler enkelt og konkret. “SFO 15.30” er lettere at forstå end “hentning”, især når flere personer kan kigge med. Gentagende aktiviteter som svømning eller spejder bør oprettes som gentagelser, så de ikke skal tastes ind uge efter uge.</p>
+<p>Det er også en god vane at kigge på den kommende uge sammen. Det behøver ikke være et langt familiemøde. Ti minutter søndag aften eller mandag morgen kan være nok til at få øje på dage med mange skift og praktiske behov.</p>
+<h2>Madplanen skal kunne bruges, når dagen er travl</h2>
+<p>En madplan er ikke en test af, om familien kan være perfekt forberedt. Den er en hjælp til at svare på det spørgsmål, der ellers dukker op hver eftermiddag: Hvad skal vi spise?</p>
+<p>De fleste familier har glæde af en plan, der kun rækker nogle dage frem. På dage med fritidsaktiviteter passer en hurtig ret måske bedst. På en roligere dag kan der være overskud til noget, der giver rester til dagen efter. Når planen tager højde for kalenderen, bliver den mere realistisk og lettere at holde fast i.</p>
+<p>Et værktøj med både <a href="/madplan">madplan og opskrifter</a> gør det enklere at gemme familiens velkendte retter. Det betyder, at I ikke skal starte forfra hver uge eller lede efter den samme opskrift igen. Det er ofte de helt almindelige hverdagsretter, der gør mest gavn i en plan.</p>
+<p>Der skal også være plads til ændringer. En plan er et udgangspunkt, ikke en kontrakt. Hvis en aftale flytter sig, eller energien er lav, kan I bytte rundt på dagene. Pointen er stadig, at der findes et fælles overblik over mulighederne.</p>
+<h2>Indkøbslisten virker kun, hvis alle kan tilføje til den</h2>
+<p>Den <a href="/indkobsliste">fælles indkøbsliste</a> er et af de mest praktiske værktøjer i hjemmet. Den fjerner ikke alle ture i supermarkedet, men den kan mindske antallet af små beskeder som “kan du tage kaffe med?” og “vi mangler vist toiletpapir”.</p>
+<p>Når listen deles, kan den person, der opdager at noget er ved at slippe op, tilføje det med det samme. Den, der handler, kan se listen direkte på telefonen og markere varerne undervejs. Det lyder enkelt, og det er netop styrken. Små ting skal ikke kræve koordinering i flere led.</p>
+<p>Sammenhængen med madplanen er særlig nyttig. Hvis ugens retter kan sende ingredienser til indkøbslisten, bliver plan og indkøb to dele af samme arbejdsgang. I skal stadig lige tjekke køleskabet først, men færre ting bliver glemt mellem idéen om aftensmad og indkøbsturen.</p>
+<h2>Opgaver skal være synlige - også de små</h2>
+<p>Hverdagens opgaver fylder, selv når de ikke står i kalenderen. Madkasser, vasketøj, rydde bordet, fodre kæledyret og gøre klar til næste dag er ikke altid store opgaver, men de skal stadig gøres. Når de kun ligger i én persons hoved, er de svære for andre at tage ansvar for.</p>
+<p>Et <a href="/opgaver">fælles opgaveværktøj</a> kan gøre opgaverne konkrete og fordele dem mere tydeligt. Det er ikke et spørgsmål om at holde regnskab med hinanden. Det handler om at gøre det muligt at hjælpe, før nogen behøver spørge flere gange.</p>
+<p>For børn kan opgavepoint være en enkel måde at gøre deres bidrag synligt på. Point kan knyttes til opgaver som at rydde op på værelset eller sætte service i opvaskemaskinen. Nogle familier vælger at lade point indgå i lommepenge, mens andre blot bruger dem som en overskuelig markering af, at opgaven er løst. Det afhænger af barnets alder og af, hvad der passer til jeres måde at gøre tingene på.</p>
+<p>Det vigtigste er at begynde enkelt. Vælg nogle få, faste opgaver frem for at skrive alt ned. Hvis listen bliver for lang eller detaljeret, risikerer den at føles som endnu en ting, der skal administreres.</p>
+<h2>Vagter og arbejdstider påvirker hele planen</h2>
+<p>I familier, hvor én eller begge arbejder på skiftende tidspunkter, er vagter en central del af logistikken. En sen vagt betyder måske, at en anden skal stå for aftensmad eller putning. En weekendvagt kan ændre planen for både indkøb og aktiviteter.</p>
+<p>Derfor giver det mening at have arbejdstider med i familiens samlede overblik. Det behøver ikke fylde mere, end det gør i hverdagen. Men når vagterne er synlige, bliver det lettere at planlægge resten uden at skulle tjekke flere steder eller spørge hinanden igen.</p>
+<h2>Sådan vælger I blandt de bedste værktøjer til hverdagsplanlægning</h2>
+<p>Det rigtige valg afhænger af familiens behov. Hvis I kun mangler et fælles blik på aftaler, kan en delt kalender være tilstrækkelig. Hvis det især er aftensmad og indkøb, der skaber forvirring, kan en kombination af madplan og indkøbsliste være vigtigst.</p>
+<p>Men hvis jeres hverdag består af flere ting, der hænger sammen - kalender, måltider, indkøb, opgaver og vagter - er det ofte nemmere at samle dem i én fælles løsning. Vores Hjem er udviklet til netop den type familiehverdag, hvor praktiske oplysninger ellers let ender i mange forskellige kanaler.</p>
+<p>Når I vurderer et værktøj, kan I med fordel se efter, om alle i hjemmet kan forstå det uden en lang introduktion. Kan man hurtigt tilføje en aftale eller en vare? Kan begge voksne se det samme? Er der plads til børnene på en måde, der passer til deres alder? Og kan I bruge det uden at skulle opdatere flere systemer samtidig?</p>
+<h2>Indfør ét nyt værktøj ad gangen</h2>
+<p>Selv det mest gennemførte system hjælper kun, hvis det bliver en del af rutinen. Start derfor roligt. I kan begynde med at lægge ugens aftaler i den fælles kalender og tilføje indkøb, når noget mangler. Når det fungerer, kan madplanen eller opgaverne komme med.</p>
+<p>Aftal også, hvad værktøjet skal bruges til. Hvis en aftale kun gælder én person og ikke påvirker resten af familien, behøver den måske ikke stå der. Hvis en vare skal købes, så skriv den på listen i stedet for at sende en besked. Små fælles vaner gør løsningen mere brugbar end mange avancerede indstillinger.</p>
+<p>Hverdagsplanlægning skal ikke føles som et ekstra projekt. Det skal være et sted, hvor familien kan kigge, når spørgsmålet opstår, og hvor alle kan lægge deres del af hverdagen ind. Når overblikket er delt, bliver det også lettere at dele ansvaret.</p>
+      <div class="slutkort">
+        <p><strong>Vores Hjem</strong> samler kalender, madplan, indkøbsliste og opgaver
+           ét sted, så hele familien kan se det samme.</p>
+        <a class="slutknap" href="/hent/" data-sted="blog">Prøv 14 dage gratis</a>
+      </div>
+      <section class="laes-ogsaa">
+        <h2>Læs også</h2>
+        <ul>
+          <li><a href="/post/involver-boern-i-husarbejdet">Involver børn i husarbejdet uden daglige konflikter</a></li>
+          <li><a href="/post/test-af-familieplanlaeggere">Test af familieplanlæggere: Hvad virker i hverdagen?</a></li>
+          <li><a href="/post/faa-overblik-over-hverdagen">Sådan får familien overblik over hverdagen</a></li>
+        </ul>
+        <a class="funk" href="/">Se hvad Vores Hjem kan &rsaquo;</a>
+      </section>
+    </div>
+  </article>
+<style>@media (max-width:700px){.footer-grid{grid-template-columns:1fr 1fr !important;gap:32px !important}}@media (max-width:420px){.footer-grid{grid-template-columns:1fr !important;gap:28px !important}}</style>
+<footer style="background:#0F0E1A; color:#fff; padding: 64px 0 32px; font-family:'Plus Jakarta Sans',sans-serif;">
+  <div style="max-width:1200px; margin:0 auto; padding:0 32px;">
+    <div class="footer-grid" style="display:grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap:48px; margin-bottom:56px;">
+      <div>
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+          <img src="/images/logo-nav-hvid.webp?v=2" alt="Vores Hjem" style="height:56px; width:auto; display:block; ">
+        </div>
+        <p style="font-size:14px; color:rgba(255,255,255,0.6); line-height:1.6;">Mere ro i hverdagen, for hele familien.</p>
+      </div>
+      <div>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Informationssider</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <a href="https://www.voreshjem.dk" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Forside</a>
+          <a href="https://www.voreshjem.dk/hvordan-sletter-man-sin-konto" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Hvordan sletter man sin konto?</a>
+          <a href="https://www.voreshjem.dk/om-vores-hjem" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Om Vores Hjem</a>
+          <a href="https://www.voreshjem.dk/hvordan-bruger-jeg-appen" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Sådan bruger du appen</a>
+          <a href="https://www.voreshjem.dk/presse/" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Presse</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Sociale Medier</p>
+        <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:28px;">
+          <a href="https://www.facebook.com/share/1DAnAoAjhW/?mibextid=wwXIfr" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Facebook</a>
+          <a href="https://www.instagram.com/voreshjemdanmark?igsh=N211MjhjZXBxNjd3" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Instagram</a>
+          <a href="https://www.linkedin.com/company/vores-hjem/" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">LinkedIn</a>
+          <a href="https://www.tiktok.com/@voreshjem" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">TikTok</a>
+          <a href="https://www.voreshjem.dk/blog" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Blog</a>
+        </div>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Kontakt</p>
+        <a href="https://www.voreshjem.dk/support" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Support</a>
+      </div>
+      <div>
+        <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Politikker</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <a href="https://www.iubenda.com/privacy-policy/85951957" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Privatlivspolitik</a>
+          <a href="https://www.iubenda.com/privacy-policy/85951957/cookie-policy" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Cookiepolitik</a>
+          <a href="https://www.iubenda.com/vilkar-og-betingelser/85951957" target="_blank" rel="noopener" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Vilkår og betingelser</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+      <p style="font-size:12px; color:rgba(255,255,255,0.6); ">© 2026 Vores Hjem I/S · CVR 45804445 · Middelfart · Alle rettigheder forbeholdes.</p>
+      <a href="https://backend.voreshjem.dk" target="_blank" rel="nofollow noopener" style="font-size:12px; color:rgba(255,255,255,0.6); text-decoration:none; white-space:nowrap;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">Medarbejder</a>
+      <p style="font-size:12px; color:rgba(255,255,255,0.6); white-space:nowrap;">Bygget i Danmark 🇩🇰</p>
+    </div>
+  </div>
+</footer>
+
+<!-- SVÆVENDE HENT-KNAP -->
+<style>.hent-flyd{position:fixed;right:22px;bottom:22px;z-index:9000;display:inline-flex;align-items:center;gap:10px;padding:15px 22px;border-radius:99px;text-decoration:none;background:linear-gradient(110deg,#6C47FF,#4F7BFF 58%,#EC4899);color:#fff;font-weight:800;font-size:15.5px;letter-spacing:-.01em;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,sans-serif;box-shadow:0 14px 34px -10px rgba(108,71,255,.75);opacity:0;transform:translateY(16px);pointer-events:none;transition:opacity .3s ease,transform .3s ease,box-shadow .2s ease}.hent-flyd.vis{opacity:1;transform:none;pointer-events:auto}.hent-flyd:hover{box-shadow:0 18px 44px -10px rgba(108,71,255,.9)}.hent-flyd svg{flex:none}@media(min-width:721px){.hent-flyd{bottom:96px}}@media(max-width:720px){.hent-flyd{right:14px;bottom:84px;padding:13px 18px;font-size:14.5px}.hent-flyd .lang{display:none}}</style>
+
+<style>.hent-flyd.lille{width:52px!important;height:52px!important;padding:0!important;gap:0!important;justify-content:center}.hent-flyd.lille span{display:none}</style>
+<a class="hent-flyd" id="hent-flyd" href="/hent/" data-sted="flydeknap">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/>
+  </svg>
+  <span>Hent appen<span class="lang"> nu</span></span>
+</a>
+
+<script>
+(function(){
+  var k = document.getElementById('hent-flyd');
+  if (!k) return;
+  // Wix lægger siden i en iframe. Et element med position:fixed inde i en
+  // iframe hænger fast i iframens egen ramme, ikke i browservinduet, så
+  // knappen ville sidde et tilfældigt sted nede på siden. Inde i en iframe
+  // skjuler vi den, og så står den svævende knap i Wix' egen kode i stedet.
+  var iRamme = false;
+  try { iRamme = window.self !== window.top; } catch (e) { iRamme = true; }
+  if (iRamme) { k.remove(); return; }
+
+  // synlig hele tiden, ogsaa oeverst paa siden (Nicko 8. okt. 2026). Klassen saettes i naeste billede,
+  // saa knappen glider blidt ind i stedet for at springe frem.
+  requestAnimationFrame(function(){ k.classList.add('vis'); });
+
+  // Daekker knappen en App Store- eller Google Play-knap eller en hovedknap, bliver den til en
+  // lille rund knap ude ved kanten, indtil den er rullet forbi (som paa den tyske side).
+  var fuld = 0;
+  function undgaa(){ try {
+    if (window.matchMedia && matchMedia('(max-height:500px)').matches) { k.classList.remove('lille'); return; }
+    if (!k.classList.contains('lille')) fuld = k.offsetWidth;
+    var r = k.getBoundingClientRect(), hoejre = r.right, venstre = r.right - (fuld || r.width), ram = false;
+    var kn = document.querySelectorAll('a[href*="apps.apple.com"], a[href*="play.google.com"], a[href*="/hent/appstore"], a[href*="/hent/googleplay"], .btn-primary');
+    for (var i = 0; i < kn.length && !ram; i++) {
+      if (kn[i] === k) continue;
+      var b = kn[i].getBoundingClientRect(); if (b.width < 20 || b.height < 20) continue;
+      ram = b.right > venstre - 8 && b.left < hoejre + 8 && b.bottom > r.top - 8 && b.top < r.bottom + 8;
+    }
+    if (ram !== k.classList.contains('lille')) k.classList.toggle('lille', ram);
+  } catch (e) {} }
+  var venter = false;
+  window.addEventListener('scroll', function(){ if (venter) return; venter = true; requestAnimationFrame(function(){ venter = false; undgaa(); }); }, { passive: true });
+  window.addEventListener('resize', undgaa, { passive: true });
+  setInterval(undgaa, 1000); undgaa();
+})();
+</script>
+
+</body>
+</html>
