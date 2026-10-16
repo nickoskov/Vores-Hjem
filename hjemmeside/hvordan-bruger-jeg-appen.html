@@ -97,7 +97,8 @@
     }
   }, 400);
 
-  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>,
+  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>
+,
      saa de venter til siden er laest faerdig. Hent-knappens script taeller ogsaa
      besoeget til backenden, uden cookies. */
   function naarKlar(fn) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
@@ -486,8 +487,12 @@ nav::before {
 <style>:root{--gradient-dyb:linear-gradient(135deg,#4F32CC 0%,#1D4ED8 55%,#BE185D 100%)}.btn-primary,.floating-badge,.contact-submit,#hent-flyd,.indlaeg .slutknap{background:var(--gradient-dyb)!important}</style>
 <style>html{scroll-padding-bottom:150px}</style>
 <style>@media (max-width:720px){footer{padding-bottom:110px!important}}</style>
+<style>.step-shot,.phone-shot{height:auto}</style>
+<style>.skip-link{position:absolute;left:16px;top:-100px;z-index:3000;background:#fff;color:#1B1633;font-size:15px;font-weight:700;padding:12px 18px;border-radius:12px;box-shadow:0 8px 24px rgba(27,22,51,.18);text-decoration:none}.skip-link:focus{top:12px;outline:3px solid #6C47FF;outline-offset:2px}</style>
 </head>
 <body>
+<a class="skip-link" href="#indhold">Spring til indhold</a>
+
 
 <!-- NAV -->
 <nav>
@@ -503,6 +508,7 @@ nav::before {
     </div>
   </div>
 </nav>
+<main id="indhold">
 
 <!-- HERO -->
 <section class="hero">
@@ -540,7 +546,7 @@ nav::before {
     <div class="onboarding-steps">
       <div class="step">
         <div class="step-num">1</div>
-        <img src="screen-login.webp?v=3" alt="Opret konto" class="step-shot">
+        <img src="screen-login-400.webp?v=3" width="400" height="600" alt="Opret konto" class="step-shot" decoding="async">
         <div>
           <h3>Opret konto</h3>
           <p>Er du ny? Vælg <strong>Opret din konto</strong> og skriv din email og adgangskode. Du får 14 dages gratis prøveperiode automatisk, ingen binding.</p>
@@ -548,7 +554,7 @@ nav::before {
       </div>
       <div class="step">
         <div class="step-num">2</div>
-        <img src="screen-login.jpg?v=3" alt="Log ind" class="step-shot">
+        <img src="screen-login-400.webp?v=3" width="400" height="600" alt="Log ind" class="step-shot" loading="lazy" decoding="async">
         <div>
           <h3>Log ind</h3>
           <p>Har du allerede en konto? Skriv din email og adgangskode og tryk <strong>Log Ind</strong>. Glemt din adgangskode? Tryk på <em>Glemt adgangskode?</em></p>
@@ -556,7 +562,7 @@ nav::before {
       </div>
       <div class="step">
         <div class="step-num">3</div>
-        <img src="/images/indstil_1.webp" alt="Log ind med familiekode" class="step-shot">
+        <img src="/images/indstil_1.webp" width="680" height="1187" alt="Log ind med familiekode" class="step-shot" loading="lazy" decoding="async">
         <div>
           <h3>Log ind med familiekode</h3>
           <p>Er du inviteret af en i familien? Skriv dit navn og familiekoden, fx <em>AA-123456</em>. Koden finder du under Indstillinger hos den der oprettede kontoen.</p>
@@ -575,7 +581,7 @@ nav::before {
 
     <div class="feature-row">
       <div class="phone-col">
-        <img src="screen-kalender.jpg" alt="Tilføj begivenhed" class="phone-shot">
+        <img src="screen-kalender-400.webp" width="400" height="600" alt="Tilføj begivenhed" class="phone-shot" loading="lazy" decoding="async">
       </div>
       <div class="content-col">
         <div class="feature-label">Tilføj begivenhed</div>
@@ -633,7 +639,7 @@ nav::before {
 
     <div class="feature-row flip">
       <div class="phone-col">
-        <img src="screen-opgaver.jpg?v=3" alt="Tilføj opgave" class="phone-shot">
+        <img src="screen-opgaver-400.webp?v=3" width="400" height="600" alt="Tilføj opgave" class="phone-shot" loading="lazy" decoding="async">
       </div>
       <div class="content-col">
         <div class="feature-label">Tilføj opgave</div>
@@ -675,7 +681,7 @@ nav::before {
 
     <div class="feature-row">
       <div class="phone-col">
-        <img src="/images/mad_1.webp" alt="Tilføj måltid" class="phone-shot">
+        <img src="/images/mad_1.webp" width="680" height="1473" alt="Tilføj måltid" class="phone-shot" loading="lazy" decoding="async">
       </div>
       <div class="content-col">
         <div class="feature-label">Nyt måltid</div>
@@ -713,7 +719,7 @@ nav::before {
 
     <div class="feature-row flip">
       <div class="phone-col">
-        <img src="/images/indkob_1.webp" alt="Tilføj produkt" class="phone-shot">
+        <img src="/images/indkob_1.webp" width="680" height="1474" alt="Tilføj produkt" class="phone-shot" loading="lazy" decoding="async">
       </div>
       <div class="content-col">
         <div class="feature-label">Tilføj produkt</div>
@@ -959,6 +965,7 @@ nav::before {
 </section>
 
 <!-- FOOTER -->
+</main>
 <footer style="background:#0F0E1A; color:#fff; padding: 64px 0 32px; font-family:'Plus Jakarta Sans',sans-serif;">
   <div style="max-width:1100px; margin:0 auto; padding:0 40px;">
     <div class="footer-grid" style="display:grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap:48px; margin-bottom:56px;">

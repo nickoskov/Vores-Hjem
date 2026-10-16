@@ -98,7 +98,8 @@
     }
   }, 400);
 
-  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>,
+  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>
+,
      saa de venter til siden er laest faerdig. Hent-knappens script taeller ogsaa
      besoeget til backenden, uden cookies. */
   function naarKlar(fn) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
@@ -466,8 +467,11 @@ nav::before {
 <style>:root{--gradient-dyb:linear-gradient(135deg,#4F32CC 0%,#1D4ED8 55%,#BE185D 100%)}.btn-primary,.floating-badge,.contact-submit,#hent-flyd,.indlaeg .slutknap{background:var(--gradient-dyb)!important}</style>
 <style>html{scroll-padding-bottom:150px}</style>
 <style>@media (max-width:720px){footer{padding-bottom:110px!important}}</style>
+<style>.skip-link{position:absolute;left:16px;top:-100px;z-index:3000;background:#fff;color:#1B1633;font-size:15px;font-weight:700;padding:12px 18px;border-radius:12px;box-shadow:0 8px 24px rgba(27,22,51,.18);text-decoration:none}.skip-link:focus{top:12px;outline:3px solid #6C47FF;outline-offset:2px}</style>
 </head>
 <body>
+<a class="skip-link" href="#indhold">Spring til indhold</a>
+
 
 <!-- NAV -->
 <nav>
@@ -497,7 +501,7 @@ nav::before {
 </section>
 
 <!-- MAIN -->
-<main class="contact-main">
+<main id="indhold" class="contact-main">
   <div class="container">
     <div class="contact-grid">
 
@@ -596,6 +600,7 @@ nav::before {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:18px;height:18px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             Send besked
           </button>
+          <p class="form-note" style="margin-top:12px;font-size:13px;line-height:1.5;color:#5E5A7A;text-align:center;">Vi bruger kun dine oplysninger til at svare dig. Læs mere i vores <a href="https://www.iubenda.com/privacy-policy/85951957" target="_blank" rel="noopener" style="color:#4F32CC;text-decoration:underline;">privatlivspolitik</a>.</p>
         </form>
 
         <script>

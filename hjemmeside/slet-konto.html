@@ -97,7 +97,8 @@
     }
   }, 400);
 
-  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>,
+  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>
+,
      saa de venter til siden er laest faerdig. Hent-knappens script taeller ogsaa
      besoeget til backenden, uden cookies. */
   function naarKlar(fn) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
@@ -458,8 +459,12 @@ nav::before {
 <style>:root{--gradient-dyb:linear-gradient(135deg,#4F32CC 0%,#1D4ED8 55%,#BE185D 100%)}.btn-primary,.floating-badge,.contact-submit,#hent-flyd,.indlaeg .slutknap{background:var(--gradient-dyb)!important}</style>
 <style>html{scroll-padding-bottom:150px}</style>
 <style>@media (max-width:720px){footer{padding-bottom:110px!important}}</style>
+<style>.phone-frame img{height:auto}</style>
+<style>.skip-link{position:absolute;left:16px;top:-100px;z-index:3000;background:#fff;color:#1B1633;font-size:15px;font-weight:700;padding:12px 18px;border-radius:12px;box-shadow:0 8px 24px rgba(27,22,51,.18);text-decoration:none}.skip-link:focus{top:12px;outline:3px solid #6C47FF;outline-offset:2px}</style>
 </head>
 <body>
+<a class="skip-link" href="#indhold">Spring til indhold</a>
+
 
 <!-- NAV -->
 <nav>
@@ -475,6 +480,7 @@ nav::before {
     </a>
   </div>
 </nav>
+<main id="indhold">
 
 <!-- HERO -->
 <section class="hero">
@@ -509,7 +515,7 @@ nav::before {
       </div>
       <div class="phone-wrap">
         <div class="phone-frame">
-          <img src="https://www.voreshjem.dk/images/blog/w4dc9690306.jpg" alt="Log ind på Vores Hjem" loading="lazy">
+          <img src="/images/blog/w4dc9690306-400.webp" width="400" height="868" alt="Log ind på Vores Hjem" decoding="async">
         </div>
       </div>
     </div>
@@ -526,11 +532,11 @@ nav::before {
       <div class="step-content">
         <div class="step-number">2</div>
         <h2>Gå til indstillinger</h2>
-        <p>Tryk på <strong>indstillinger</strong> i appen, følg pilen som vist på billedet.</p>
+        <p>Tryk på <strong>Indstillinger</strong> i appen, følg pilen som vist på billedet.</p>
       </div>
       <div class="phone-wrap">
         <div class="phone-frame">
-          <img src="https://www.voreshjem.dk/images/blog/w5975320697.jpg" alt="Gå til indstillinger" loading="lazy">
+          <img src="/images/blog/w5975320697-400.webp" width="400" height="868" alt="Gå til indstillinger" loading="lazy" decoding="async">
         </div>
       </div>
     </div>
@@ -547,11 +553,11 @@ nav::before {
       <div class="step-content">
         <div class="step-number">3</div>
         <h2>Tryk på "Slet konto"</h2>
-        <p>Rul helt ned i bunden af indstillinger og tryk på <strong>Slet konto</strong>, følg pilen som vist på billedet.</p>
+        <p>Rul helt ned i bunden af Indstillinger, og tryk på <strong>Slet konto</strong>, følg pilen som vist på billedet.</p>
       </div>
       <div class="phone-wrap">
         <div class="phone-frame">
-          <img src="/images/blog/slet-konto-trin3-2026-10.jpg" alt="Tryk på Slet konto" loading="lazy">
+          <img src="/images/blog/slet-konto-trin3-2026-10-400.webp" width="400" height="868" alt="Tryk på Slet konto" loading="lazy" decoding="async">
         </div>
       </div>
     </div>
@@ -581,7 +587,7 @@ nav::before {
       </div>
       <div class="phone-wrap">
         <div class="phone-frame">
-          <img src="/images/blog/slet-konto-trin4-2026-10.jpg" alt="Tryk Slet alt" loading="lazy">
+          <img src="/images/blog/slet-konto-trin4-2026-10-400.webp" width="400" height="868" alt="Tryk Slet alt" loading="lazy" decoding="async">
         </div>
       </div>
     </div>
@@ -610,6 +616,7 @@ nav::before {
 @media (max-width: 700px) { .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 32px !important; } }
 @media (max-width: 420px) { .footer-grid { grid-template-columns: 1fr !important; gap: 28px !important; } }
 </style>
+</main>
 <footer style="background:#0F0E1A; color:#fff; padding: 64px 0 32px; font-family:'Plus Jakarta Sans',sans-serif;">
   <div style="max-width:1200px; margin:0 auto; padding:0 32px;">
     <div class="footer-grid" style="display:grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap:48px; margin-bottom:56px;">
@@ -623,7 +630,12 @@ nav::before {
         <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Informationssider</p>
         <div style="display:flex; flex-direction:column; gap:10px;">
           <a href="https://www.voreshjem.dk" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Forside</a>
-          <a href="https://www.voreshjem.dk/hvordan-sletter-man-sin-konto" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Hvordan sletter man sin konto?</a>
+          <a href="https://www.voreshjem.dk/kalender" target="_top" onclick="window.top.location.href='https://www.voreshjem.dk/kalender';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Kalender</a>
+          <a href="https://www.voreshjem.dk/synkronisering" target="_top" onclick="window.top.location.href='https://www.voreshjem.dk/synkronisering';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Synkronisering</a>
+          <a href="https://www.voreshjem.dk/madplan" target="_top" onclick="window.top.location.href='https://www.voreshjem.dk/madplan';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Madplan</a>
+          <a href="https://www.voreshjem.dk/indkobsliste" target="_top" onclick="window.top.location.href='https://www.voreshjem.dk/indkobsliste';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Indkøbsliste</a>
+          <a href="https://www.voreshjem.dk/opgaver" target="_top" onclick="window.top.location.href='https://www.voreshjem.dk/opgaver';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Opgaver</a>
+          <a href="https://www.voreshjem.dk/hvordan-sletter-man-sin-konto" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Slet konto</a>
           <a href="https://www.voreshjem.dk/om-vores-hjem" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Om Vores Hjem</a>
           <a href="https://www.voreshjem.dk/hvordan-bruger-jeg-appen" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Sådan bruger du appen</a>
           <a href="https://www.voreshjem.dk/presse/" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Presse</a>

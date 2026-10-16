@@ -91,7 +91,8 @@
     }
   }, 400);
 
-  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>,
+  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>
+,
      saa de venter til siden er laest faerdig. Hent-knappens script taeller ogsaa
      besoeget til backenden, uden cookies. */
   function naarKlar(fn) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
@@ -477,8 +478,11 @@ nav::before {
 <style>:root{--gradient-dyb:linear-gradient(135deg,#4F32CC 0%,#1D4ED8 55%,#BE185D 100%)}.btn-primary,.floating-badge,.contact-submit,#hent-flyd,.indlaeg .slutknap{background:var(--gradient-dyb)!important}</style>
 <style>html{scroll-padding-bottom:150px}</style>
 <style>@media (max-width:720px){footer{padding-bottom:110px!important}}</style>
+<style>.skip-link{position:absolute;left:16px;top:-100px;z-index:3000;background:#fff;color:#1B1633;font-size:15px;font-weight:700;padding:12px 18px;border-radius:12px;box-shadow:0 8px 24px rgba(27,22,51,.18);text-decoration:none}.skip-link:focus{top:12px;outline:3px solid #6C47FF;outline-offset:2px}</style>
 </head>
 <body>
+<a class="skip-link" href="#indhold">Spring til indhold</a>
+
 
 <!-- NAV -->
 <nav>
@@ -494,6 +498,7 @@ nav::before {
     </div>
   </div>
 </nav>
+<main id="indhold">
 
 <!-- HERO -->
 <section class="hero">
@@ -529,6 +534,7 @@ nav::before {
   </div>
 </section>
 
+</main>
 <footer style="background:#0F0E1A; color:#fff; padding: 64px 0 32px; font-family:'Plus Jakarta Sans',sans-serif;">
   <div style="max-width:1100px; margin:0 auto; padding:0 40px;">
     <div class="footer-grid" style="display:grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap:48px; margin-bottom:56px;">
@@ -542,7 +548,11 @@ nav::before {
         <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Informationssider</p>
         <div style="display:flex; flex-direction:column; gap:10px;">
           <a href="https://www.voreshjem.dk" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Forside</a>
-          <a href="https://www.voreshjem.dk/support" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Support</a>
+          <a href="https://www.voreshjem.dk/kalender" target="_top" onclick="window.top.location.href='https://www.voreshjem.dk/kalender';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Kalender</a>
+          <a href="https://www.voreshjem.dk/synkronisering" target="_top" onclick="window.top.location.href='https://www.voreshjem.dk/synkronisering';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Synkronisering</a>
+          <a href="https://www.voreshjem.dk/madplan" target="_top" onclick="window.top.location.href='https://www.voreshjem.dk/madplan';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Madplan</a>
+          <a href="https://www.voreshjem.dk/indkobsliste" target="_top" onclick="window.top.location.href='https://www.voreshjem.dk/indkobsliste';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Indkøbsliste</a>
+          <a href="https://www.voreshjem.dk/opgaver" target="_top" onclick="window.top.location.href='https://www.voreshjem.dk/opgaver';return false;" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Opgaver</a>
           <a href="https://www.voreshjem.dk/hvordan-sletter-man-sin-konto" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Slet konto</a>
           <a href="https://www.voreshjem.dk/om-vores-hjem" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Om Vores Hjem</a>
           <a href="https://www.voreshjem.dk/hvordan-bruger-jeg-appen" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Sådan bruger du appen</a>

@@ -98,7 +98,8 @@
     }
   }, 400);
 
-  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>,
+  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>
+,
      saa de venter til siden er laest faerdig. Hent-knappens script taeller ogsaa
      besoeget til backenden, uden cookies. */
   function naarKlar(fn) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
@@ -515,8 +516,11 @@ nav::before {
 <style>html{scroll-padding-bottom:150px}</style>
 <style>@media (max-width:720px){footer{padding-bottom:110px!important}}</style>
 <style>.indlaeg h1,.indlaeg h2{overflow-wrap:break-word;hyphens:auto}</style>
+<style>.skip-link{position:absolute;left:16px;top:-100px;z-index:3000;background:#fff;color:#1B1633;font-size:15px;font-weight:700;padding:12px 18px;border-radius:12px;box-shadow:0 8px 24px rgba(27,22,51,.18);text-decoration:none}.skip-link:focus{top:12px;outline:3px solid #6C47FF;outline-offset:2px}</style>
 </head>
 <body>
+<a class="skip-link" href="#indhold">Spring til indhold</a>
+
 <nav>
   <div class="container">
     <div class="nav-inner">
@@ -530,6 +534,7 @@ nav::before {
     </div>
   </div>
 </nav>
+<main id="indhold">
   <article class="indlaeg">
     <div class="container">
       <a class="tilbage" href="/blog.html">&lsaquo; Alle indlæg</a>
@@ -587,6 +592,7 @@ nav::before {
     </div>
   </article>
 <style>@media (max-width:700px){.footer-grid{grid-template-columns:1fr 1fr !important;gap:32px !important}}@media (max-width:420px){.footer-grid{grid-template-columns:1fr !important;gap:28px !important}}</style>
+</main>
 <footer style="background:#0F0E1A; color:#fff; padding: 64px 0 32px; font-family:'Plus Jakarta Sans',sans-serif;">
   <div style="max-width:1200px; margin:0 auto; padding:0 32px;">
     <div class="footer-grid" style="display:grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap:48px; margin-bottom:56px;">

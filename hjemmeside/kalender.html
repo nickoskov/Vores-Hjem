@@ -97,7 +97,8 @@
     }
   }, 400);
 
-  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>,
+  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>
+,
      saa de venter til siden er laest faerdig. Hent-knappens script taeller ogsaa
      besoeget til backenden, uden cookies. */
   function naarKlar(fn) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
@@ -542,8 +543,11 @@ nav::before {
 <style>:root{--gradient-dyb:linear-gradient(135deg,#4F32CC 0%,#1D4ED8 55%,#BE185D 100%)}.btn-primary,.floating-badge,.contact-submit,#hent-flyd,.indlaeg .slutknap{background:var(--gradient-dyb)!important}</style>
 <style>html{scroll-padding-bottom:150px}</style>
 <style>@media (max-width:720px){footer{padding-bottom:110px!important}}</style>
+<style>.skip-link{position:absolute;left:16px;top:-100px;z-index:3000;background:#fff;color:#1B1633;font-size:15px;font-weight:700;padding:12px 18px;border-radius:12px;box-shadow:0 8px 24px rgba(27,22,51,.18);text-decoration:none}.skip-link:focus{top:12px;outline:3px solid #6C47FF;outline-offset:2px}</style>
 </head>
 <body>
+<a class="skip-link" href="#indhold">Spring til indhold</a>
+
 
 <!-- NAV -->
 <nav>
@@ -559,6 +563,7 @@ nav::before {
     </div>
   </div>
 </nav>
+<main id="indhold">
 
 <!-- HERO -->
 <section id="hero">
@@ -599,7 +604,7 @@ nav::before {
         <div class="float-card float-card-2">
           <div class="fc-dot fc-dot-blue"></div>
           <div class="fc-info">
-            <div class="fc-title">Møde med Arbejdet</div>
+            <div class="fc-title">Møde på arbejdet</div>
             <div class="fc-time">27. maj · 14:00</div>
           </div>
         </div>
@@ -607,7 +612,7 @@ nav::before {
           <div style="font-size:16px;">⭐</div>
           <div class="fc-info">
             <div class="fc-title">Sygehus</div>
-            <div class="fc-time">Kun synlig for admins</div>
+            <div class="fc-time">Titel kun for admins</div>
           </div>
         </div>
 
@@ -902,7 +907,7 @@ nav::before {
         Alt du behøver
       </span>
       <h2 class="section-h2">Kalenderen der<br>samler familien</h2>
-      <p class="section-sub">Designet til at alle, også børn og bedsteforældre , kan bruge den uden at tænke over det.</p>
+      <p class="section-sub">Designet til at alle, også børn og bedsteforældre, kan bruge den uden at tænke over det.</p>
     </div>
     <div class="features-grid">
       <div class="feature-card reveal reveal-delay-1">
@@ -945,7 +950,7 @@ nav::before {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         </div>
         <div class="f-title">Stjerne-markering</div>
-        <div class="f-desc">Marker en begivenhed med stjernen, og den er kun synlig for familiens administratorer. Perfekt til aftaler børnene ikke behøver vide om.</div>
+        <div class="f-desc">Marker en begivenhed med stjernen, så ser familiemedlemmer uden admin kun "🔒 Privat" i stedet for titlen. Perfekt til aftaler, børnene ikke behøver kende detaljerne i.</div>
       </div>
     </div>
   </div>
@@ -1555,6 +1560,7 @@ nav::before {
 @media (max-width: 700px) { .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 32px !important; } }
 @media (max-width: 420px) { .footer-grid { grid-template-columns: 1fr !important; gap: 28px !important; } }
 </style>
+</main>
 <footer style="background:#0F0E1A; color:#fff; padding: 64px 0 32px; font-family:'Plus Jakarta Sans',sans-serif;">
   <div style="max-width:1200px; margin:0 auto; padding:0 32px;">
     <div class="footer-grid" style="display:grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap:48px; margin-bottom:56px;">

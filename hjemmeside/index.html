@@ -98,7 +98,8 @@
     }
   }, 400);
 
-  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>,
+  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>
+,
      saa de venter til siden er laest faerdig. Hent-knappens script taeller ogsaa
      besoeget til backenden, uden cookies. */
   function naarKlar(fn) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
@@ -145,8 +146,20 @@
 <style>:root{--gradient-dyb:linear-gradient(135deg,#4F32CC 0%,#1D4ED8 55%,#BE185D 100%)}.btn-primary,.floating-badge,.contact-submit,#hent-flyd,.indlaeg .slutknap{background:var(--gradient-dyb)!important}</style>
 <style>html{scroll-padding-bottom:150px}</style>
 <style>@media (max-width:720px){footer{padding-bottom:110px!important}}</style>
+<style>/* MOBIL-FIX til de mindste skærme (320 px), som på den tyske side (fund L73, 16. okt. 2026) */
+@media (max-width: 600px) {
+  .cta-h2, .section-h2 { white-space: normal !important; overflow-wrap: break-word; }
+  .price-compare { white-space: normal !important; width: auto !important; max-width: 100% !important; flex-wrap: wrap !important; justify-content: center; }
+  .price-band-inner, .trust-line { flex-wrap: wrap !important; }
+  .fk-inner, .lp-inner, .vg-inner, .compare-grid { grid-template-columns: minmax(0, 1fr) !important; }
+  .fk-inner > *, .lp-inner > *, .vg-inner > *, .compare-grid > * { min-width: 0; }
+}
+</style>
+<style>.skip-link{position:absolute;left:16px;top:-100px;z-index:3000;background:#fff;color:#1B1633;font-size:15px;font-weight:700;padding:12px 18px;border-radius:12px;box-shadow:0 8px 24px rgba(27,22,51,.18);text-decoration:none}.skip-link:focus{top:12px;outline:3px solid #6C47FF;outline-offset:2px}</style>
 </head>
 <body>
+<a class="skip-link" href="#indhold">Spring til indhold</a>
+
 
 <!-- NAV -->
 <nav id="main-nav">
@@ -168,6 +181,7 @@
     </div>
   </div>
 </nav>
+<main id="indhold">
 
 
 <!-- HERO -->
@@ -236,7 +250,7 @@
         </div>
         <div style="text-align:center; margin-bottom: 28px;">
           <a href="/hent/" data-sted="hero" class="btn btn-primary hent-stor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg> Hent appen gratis</a>
-          <div class="hent-eller">Eller tryk på din butik, så åbner appen der:</div>
+          <div class="hent-eller">Eller hent den direkte i din butik:</div>
           <div style="display:flex; justify-content:center; gap:14px; flex-wrap:wrap;">
             <a href="https://apps.apple.com/dk/app/vores-hjem/id6758346281" target="_blank" rel="noopener" style="display:flex; align-items:center; gap:11px; background:#12101F; color:#fff; text-decoration:none; padding:12px 22px; border-radius:14px; transition:transform .15s ease, box-shadow .15s ease;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 28px rgba(18,16,31,.28)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
               <svg viewBox="0 0 24 24" fill="currentColor" style="width:24px;height:24px;flex-shrink:0;"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
@@ -348,7 +362,7 @@
 <section id="familiekode">
   <div class="container">
     <div class="fk-header reveal">
-        <span class="badge" style="margin-bottom:20px;">Kun i Vores Hjem</span>
+        <span class="badge" style="margin-bottom:20px;">Sådan kommer alle med</span>
         <h2 class="fk-h2" data-vh="forside.h2_familiekode">Inviter hele familien med én kode</h2>
         <p class="fk-text">Én kode. Send den i en SMS, og hele familien er inde.</p>
       </div>
@@ -823,18 +837,18 @@
           <div class="over">Din lønseddel</div>
           <div class="ls" id="ls">
             <div class="ls-top"><b>Lønspecifikation</b>
-              <span>Nordkyst Service ApS · Lønperiode 01.08 &ndash; 31.08<br>Dispositionsdag 31.08</span></div>
+              <span>Nordkyst Service ApS · Lønperiode 01.08 til 31.08<br>Dispositionsdag 31.08</span></div>
             <div class="ls-hd"><span>Tekst</span><i>Grundlag</i><i>Sats</i><i>Beløb</i></div>
             <div class="ls-r" data-fund="1"><em>Timeløn</em><i>160,00</i><i class="sats">164,35</i><i class="bel">26.296,00</i></div>
             <div class="ls-r" data-fund="2"><em>Aftentillæg</em><i>24,00</i><i class="sats">56,33</i><i class="bel">1.351,92</i></div>
             <div class="ls-r" data-fund="3"><em>Nattillæg</em><i>28,00</i><i class="sats">55,54</i><i class="bel">1.555,12</i></div>
             <div class="ls-r" data-fund="4"><em>Søndagstillæg</em><i>10,00</i><i class="sats">79,34</i><i class="bel">793,40</i></div>
             <div class="ls-sum">
-              <div class="ls-s"><span>AM-indkomst</span><b>29.996,44</b></div>
-              <div class="ls-s"><span>AM-bidrag 8 %</span><b>2.399,72</b></div>
-              <div class="ls-s"><span>A-skat</span><b>8.234,00</b></div>
               <div class="ls-s"><span>ATP-bidrag</span><b>99,00</b></div>
-              <div class="ls-s fed"><span>Til udbetaling</span><b>19.263,72</b></div>
+              <div class="ls-s"><span>AM-indkomst</span><b>29.897,44</b></div>
+              <div class="ls-s"><span>AM-bidrag 8 %</span><b>2.391,80</b></div>
+              <div class="ls-s"><span>A-skat</span><b>8.234,00</b></div>
+              <div class="ls-s fed"><span>Til udbetaling</span><b>19.271,64</b></div>
             </div>
             <div class="scan" id="scan"></div>
           </div>
@@ -1244,7 +1258,7 @@
       <div class="feature-card reveal reveal-delay-1">
 <div class="f-icon fi-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
         <h3 class="f-title">Opgaver der fordeles</h3>
-        <p class="f-desc">Tildel opgaver til navne med deadline. Slut med at den samme bærer det hele. Slettes automatisk efter 1 uge.</p>
+        <p class="f-desc">Tildel opgaver til navne med deadline. Slut med at den samme bærer det hele. Færdige opgaver slettes automatisk efter en uge.</p>
         <a href="https://www.voreshjem.dk/opgaver" target="_top" onclick="window.top.location.href='https://www.voreshjem.dk/opgaver';return false;" style="display:inline-flex; align-items:center; gap:5px; margin-top:16px; font-size:13px; font-weight:700; color:var(--purple); text-decoration:none; transition:gap 0.2s; position:relative; z-index:10;" onmouseover="this.style.gap='8px'" onmouseout="this.style.gap='5px'">Se opgavernes funktioner <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><polyline points="9 18 15 12 9 6"/></svg></a>
       </div>
       <div class="feature-card reveal reveal-delay-3">
@@ -1283,8 +1297,6 @@
           <li class="hasnt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Nej: </span>Delt indkøbsliste</li>
           <li class="hasnt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Nej: </span>Opgaver med navne</li>
           <li class="hasnt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Nej: </span>Familiekode (ingen email)</li>
-          <li class="hasnt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Nej: </span>Dansk & privat</li>
-          <li class="hasnt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Nej: </span>14 dages gratis prøveperiode</li>
         </ul>
       </div>
       <div class="compare-card compare-card-featured">
@@ -1293,10 +1305,10 @@
           <div class="compare-card-title">Vores Hjem</div>
           <div class="compare-card-sub">Dansk familieapp</div>
           <div class="price-toggle" role="group" aria-label="Vælg betaling">
-            <button type="button" class="pt-btn active" data-plan="md">Månedligt</button>
-            <button type="button" class="pt-btn" data-plan="halvaar">Halvårligt · spar 15%</button>
+            <button type="button" class="pt-btn active" data-plan="md" aria-pressed="true">Månedligt</button>
+            <button type="button" class="pt-btn" data-plan="halvaar" aria-pressed="false">Halvårligt · spar 15%</button>
           </div>
-          <div class="compare-price-row"><span class="compare-price" id="cmpPrice">39 kr</span><span class="compare-period" id="cmpPeriod">/md</span></div>
+          <div class="compare-price-row" aria-live="polite"><span class="compare-price" id="cmpPrice">39 kr</span><span class="compare-period" id="cmpPeriod">/md</span></div>
           <div style="font-size:14px;font-weight:700;color:var(--text);margin-top:6px;">For hele familien, ikke pr. person</div>
           <div style="font-size:13px;color:var(--text-secondary);margin-top:2px;">Én pris dækker op til 7 personer</div>
           <div id="cmpSub" style="color:#3B9C4A;font-weight:700;font-size:14px;margin-top:8px;">Skift til halvår og spar 15%</div>
@@ -1307,8 +1319,6 @@
           <li class="has"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Ja: </span>Delt indkøbsliste</li>
           <li class="has"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Ja: </span>Opgaver med navne</li>
           <li class="has"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Ja: </span>Familiekode (ingen email)</li>
-          <li class="has"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Ja: </span>Dansk & privat</li>
-          <li class="has"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Ja: </span>14 dages gratis prøveperiode</li>
         </ul>
       </div>
     </div>
@@ -1440,6 +1450,7 @@
       <script>document.getElementById('c-t').value = Date.now();</script>
       <p id="contact-error" style="display:none;color:#E84040;font-size:13px;font-weight:600;margin-top:4px;"></p>
       <button class="contact-submit" id="contact-submit-btn" onclick="submitContact()">Send besked</button>
+      <p class="form-note" style="margin-top:12px;font-size:13px;line-height:1.5;color:#5E5A7A;text-align:center;">Vi bruger kun dine oplysninger til at svare dig. Læs mere i vores <a href="https://www.iubenda.com/privacy-policy/85951957" target="_blank" rel="noopener" style="color:#4F32CC;text-decoration:underline;">privatlivspolitik</a>.</p>
     </div>
     <div class="contact-success" id="contact-success">
       <div class="contact-success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
@@ -1764,6 +1775,7 @@ window.addEventListener('scroll', () => {
 <!-- ─── FOOTER ─── -->
 <style>@media (max-width:700px){.footer-grid{grid-template-columns:1fr 1fr !important;gap:32px !important}}@media (max-width:420px){.footer-grid{grid-template-columns:1fr !important;gap:28px !important}}#testimonials .testimonial-card{width:226px;flex:none;padding:15px 14px;margin-right:-26px;border-radius:15px;opacity:1 !important;overflow:visible;transform-origin:50% -18px}#testimonials .testimonial-grid{padding-top:34px;background-image:linear-gradient(#C6BDEA,#C6BDEA);background-size:100% 2px;background-position:0 15px;background-repeat:repeat-x}#testimonials .testimonial-card::after{content:'';position:absolute;left:50%;top:-20px;width:11px;height:20px;transform:translateX(-50%);background:radial-gradient(circle 5px at 50% 5px,#B3A8E2 0 99%,transparent 100%),linear-gradient(#C6BDEA,#C6BDEA) 50% 100% / 2px 16px no-repeat;pointer-events:none}#testimonials .testimonial-card{transform-origin:50% 0%;transition:none;will-change:transform,opacity}#testimonials .testimonial-card p{font-size:13.5px;line-height:1.55}#testimonials .star-icon{width:12px;height:12px}#testimonials .t-avatar{width:34px;height:34px;font-size:13px}#testimonials .t-name{font-size:13px}#testimonials .t-loc{font-size:11.5px}#testimonials .t-footer{padding-top:12px}}@keyframes tScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}@media (prefers-reduced-motion:reduce){#testimonials .testimonial-grid{animation:none}}@media (max-width:640px){#features{padding:44px 0 48px !important}#features .features-header{margin-bottom:22px !important}#features .features-grid{gap:8px;margin-top:0 !important}#features .feature-card{display:grid;grid-template-columns:40px 1fr auto;grid-template-areas:"ikon titel pil" "ikon tekst pil";column-gap:13px;row-gap:2px;padding:13px 14px;border-radius:14px;align-items:start}#features .f-icon{grid-area:ikon;width:40px;height:40px;border-radius:11px;margin-bottom:0;align-self:center}#features .f-icon svg{width:19px;height:19px}#features .f-title{grid-area:titel;font-size:15.5px;margin-bottom:0}#features .f-desc{grid-area:tekst;font-size:13px;line-height:1.45}#features .feature-card>a{grid-area:pil;align-self:center;margin-top:0 !important;font-size:0 !important;gap:0 !important;padding-left:6px}#features .feature-card>a svg{width:15px !important;height:15px !important}#features .feature-card{position:relative}#features .feature-card::before{pointer-events:none}#features .feature-card>a{position:static !important}#features .feature-card>a::after{content:'';position:absolute;inset:0;z-index:6}#features .feature-card:active{background:#FAF9FF}}@media (min-width:901px){#kal-demo-sektion .kd-visual{order:2}#kal-demo-sektion .kd-content{order:1}#lommepenge .lp-visual{order:2}#lommepenge .lp-content{order:1}#mad-demo-sektion .md-visual{order:2}#mad-demo-sektion .md-content{order:1}#kal-demo-sektion .kd-inner,#lommepenge .lp-inner,#mad-demo-sektion .md-inner{grid-auto-flow:row}#kal-demo-sektion .kd-content,#lommepenge .lp-content,#mad-demo-sektion .md-content{padding-left:64px}#familiekode .fk-visual,#opg-demo-sektion .og-visual,#ind-demo-sektion .id-visual,#founder .founder-visual{justify-content:flex-end}#kal-demo-sektion .kd-visual,#lommepenge .lp-visual,#mad-demo-sektion .md-visual{justify-content:flex-start}#lommepenge .lp-content,#mad-demo-sektion .md-content{max-width:470px;margin-left:auto;padding-left:0}#kal-demo-sektion .kd-content{max-width:400px;margin-left:auto;padding-left:0}#familiekode .fk-content,#opg-demo-sektion .og-content,#ind-demo-sektion .id-content,#founder .founder-content{max-width:470px;margin-right:auto}}#founder .founder-visual{position:relative;width:300px;height:220px;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer}#founder .fv-tre{display:flex;gap:14px;position:absolute}#founder .fv-app{width:78px;height:92px;border-radius:18px;background:#fff;border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;color:#A9A3C0;box-shadow:0 6px 18px rgba(108,71,255,0.07);transition:transform 1s cubic-bezier(0.7,0,0.3,1),opacity 0.8s ease}#founder .fv-app svg{width:26px;height:26px}#founder .fv-app span{font-size:10.5px;font-weight:700;letter-spacing:-0.01em}#founder .fv-en{position:absolute;display:flex;flex-direction:column;align-items:center;gap:14px;opacity:0;transform:scale(0.82);transition:opacity 0.7s ease 0.55s,transform 0.9s cubic-bezier(0.34,1.4,0.64,1) 0.55s}#founder .fv-logo{width:132px;height:132px;border-radius:30px;background:var(--gradient);display:flex;align-items:center;justify-content:center;box-shadow:0 20px 48px rgba(108,71,255,0.28)}#founder .fv-logo img{width:88px;height:auto;filter:brightness(0) invert(1)}#founder .fv-badge{background:#fff;border-radius:20px;padding:7px 16px;font-size:11.5px;font-weight:800;color:var(--text);box-shadow:0 6px 18px rgba(0,0,0,0.09);white-space:nowrap}#founder .founder-visual.samlet .fv-a1{transform:translateX(92px) scale(0.5);opacity:0}#founder .founder-visual.samlet .fv-a2{transform:scale(0.5);opacity:0}#founder .founder-visual.samlet .fv-a3{transform:translateX(-92px) scale(0.5);opacity:0}#founder .founder-visual.samlet .fv-en{opacity:1;transform:scale(1)}@media (max-width:900px){#founder .founder-visual{margin:0 auto;width:260px;height:190px}#founder .fv-app{width:68px;height:82px}#founder .fv-logo{width:112px;height:112px;border-radius:26px}#founder .fv-logo img{width:74px}#founder .founder-visual.samlet .fv-a1{transform:translateX(80px) scale(0.5)}#founder .founder-visual.samlet .fv-a3{transform:translateX(-80px) scale(0.5)}}</style>
 
+</main>
 <footer style="background:#0F0E1A; color:#fff; padding: 64px 0 32px; font-family:'Plus Jakarta Sans',sans-serif;">
   <div style="max-width:1200px; margin:0 auto; padding:0 32px;">
 
@@ -1846,8 +1858,8 @@ window.addEventListener('scroll', () => {
   };
   btns.forEach(function(b){
     b.addEventListener('click',function(){
-      btns.forEach(function(x){x.classList.remove('active');});
-      b.classList.add('active');
+      btns.forEach(function(x){x.classList.remove('active');x.setAttribute('aria-pressed','false');});
+      b.classList.add('active');b.setAttribute('aria-pressed','true');
       var p=plans[b.getAttribute('data-plan')];
       price.textContent=p.price; period.textContent=p.period; sub.textContent=p.sub;
     });

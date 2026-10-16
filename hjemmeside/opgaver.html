@@ -97,7 +97,8 @@
     }
   }, 400);
 
-  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>,
+  /* 5 og 6. Jeres egen chat og den svaevende hent-knap. Begge skal bruge <body>
+,
      saa de venter til siden er laest faerdig. Hent-knappens script taeller ogsaa
      besoeget til backenden, uden cookies. */
   function naarKlar(fn) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
@@ -489,8 +490,20 @@ nav::before {
 <style>html{scroll-padding-bottom:150px}</style>
 <style>#trin1.trin-demo,#trin1 .trin-demo{min-height:344px}#trin2.trin-demo,#trin2 .trin-demo{min-height:373px}#trin3.trin-demo,#trin3 .trin-demo{min-height:331px}</style>
 <style>@media (max-width:720px){footer{padding-bottom:110px!important}}</style>
+<style>/* MOBIL-FIX til de mindste skærme (320 px), som på den tyske side (fund L73, 16. okt. 2026) */
+@media (max-width: 600px) {
+  .cta-h2, .section-h2 { white-space: normal !important; overflow-wrap: break-word; }
+  .price-compare { white-space: normal !important; width: auto !important; max-width: 100% !important; flex-wrap: wrap !important; justify-content: center; }
+  .price-band-inner, .trust-line { flex-wrap: wrap !important; }
+  .fk-inner, .lp-inner, .vg-inner, .compare-grid { grid-template-columns: minmax(0, 1fr) !important; }
+  .fk-inner > *, .lp-inner > *, .vg-inner > *, .compare-grid > * { min-width: 0; }
+}
+</style>
+<style>.skip-link{position:absolute;left:16px;top:-100px;z-index:3000;background:#fff;color:#1B1633;font-size:15px;font-weight:700;padding:12px 18px;border-radius:12px;box-shadow:0 8px 24px rgba(27,22,51,.18);text-decoration:none}.skip-link:focus{top:12px;outline:3px solid #6C47FF;outline-offset:2px}</style>
 </head>
 <body>
+<a class="skip-link" href="#indhold">Spring til indhold</a>
+
 
 <!-- NAV -->
 <nav>
@@ -506,6 +519,7 @@ nav::before {
     </div>
   </div>
 </nav>
+<main id="indhold">
 
 <!-- HERO -->
 <section id="hero">
@@ -1587,18 +1601,18 @@ nav::before {
           <div class="over">Din lønseddel</div>
           <div class="ls" id="ls">
             <div class="ls-top"><b>Lønspecifikation</b>
-              <span>Nordkyst Service ApS · Lønperiode 01.08 &ndash; 31.08<br>Dispositionsdag 31.08</span></div>
+              <span>Nordkyst Service ApS · Lønperiode 01.08 til 31.08<br>Dispositionsdag 31.08</span></div>
             <div class="ls-hd"><span>Tekst</span><i>Grundlag</i><i>Sats</i><i>Beløb</i></div>
             <div class="ls-r" data-fund="1"><em>Timeløn</em><i>160,00</i><i class="sats">164,35</i><i class="bel">26.296,00</i></div>
             <div class="ls-r" data-fund="2"><em>Aftentillæg</em><i>24,00</i><i class="sats">56,33</i><i class="bel">1.351,92</i></div>
             <div class="ls-r" data-fund="3"><em>Nattillæg</em><i>28,00</i><i class="sats">55,54</i><i class="bel">1.555,12</i></div>
             <div class="ls-r" data-fund="4"><em>Søndagstillæg</em><i>10,00</i><i class="sats">79,34</i><i class="bel">793,40</i></div>
             <div class="ls-sum">
-              <div class="ls-s"><span>AM-indkomst</span><b>29.996,44</b></div>
-              <div class="ls-s"><span>AM-bidrag 8 %</span><b>2.399,72</b></div>
-              <div class="ls-s"><span>A-skat</span><b>8.234,00</b></div>
               <div class="ls-s"><span>ATP-bidrag</span><b>99,00</b></div>
-              <div class="ls-s fed"><span>Til udbetaling</span><b>19.263,72</b></div>
+              <div class="ls-s"><span>AM-indkomst</span><b>29.897,44</b></div>
+              <div class="ls-s"><span>AM-bidrag 8 %</span><b>2.391,80</b></div>
+              <div class="ls-s"><span>A-skat</span><b>8.234,00</b></div>
+              <div class="ls-s fed"><span>Til udbetaling</span><b>19.271,64</b></div>
             </div>
             <div class="scan" id="scan"></div>
           </div>
@@ -1759,6 +1773,7 @@ nav::before {
 </section>
 
 <!-- FOOTER -->
+</main>
 <footer style="background:#0F0E1A; color:#fff; padding: 64px 0 32px; font-family:'Plus Jakarta Sans',sans-serif;">
   <div style="max-width:1200px; margin:0 auto; padding:0 32px;">
     <div class="footer-grid" style="display:grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap:48px; margin-bottom:56px;">
