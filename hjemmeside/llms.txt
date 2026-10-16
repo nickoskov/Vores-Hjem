@@ -22,6 +22,7 @@ Nøglefakta (opdateret 7. oktober 2026):
 - [Om Vores Hjem: fakta om familieappen](https://www.voreshjem.dk/om-vores-hjem): Samlet faktaside med funktioner, priser, prøveperiode, antal personer, virksomhed, stiftere, omtale og kontakt.
 - [Fuld faktatekst til sprogmodeller](https://www.voreshjem.dk/llms-full.txt): Alle fakta, funktioner og svar på ofte stillede spørgsmål om Vores Hjem samlet i én tekstfil.
 - [Vores Hjem i medierne](https://www.voreshjem.dk/presse/): Fakta om appen og de tre stiftere fra Middelfart, presseomtale og kontakt til journalister.
+- [TechSavvy, 16. oktober 2026: "Han er både studerende og har et startup: “Man skal ikke altid tage den nemme vej”"](https://techsavvy.media/han-er-baade-studerende-og-har-et-startup-man-skal-ikke-altid-tage-den-nemme-vej/): Interview med medstifter Nicko Skovgaard om at bygge Vores Hjem ved siden af studiet og om planerne for Skandinavien og Tyskland.
 - [recordere.dk, 17. september 2026: "Ny dansk familie-app vil samle kalender, madplan og opgaver i ét sted"](https://www.recordere.dk/2026/09/ny-dansk-familie-app-vil-samle-kalender-madplan-og-opgaver-i-et-sted/): Artikel om de tre stiftere fra Middelfart og appens kalender, madplan, indkøbsliste, opgaver og vagter.
 - [Unser Zuhause](https://www.unserzuhauseapp.de/): Den tyske udgave af appen fra Vores Hjem I/S.
 

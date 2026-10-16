@@ -148,6 +148,7 @@ Vejledning til sletning: https://www.voreshjem.dk/hvordan-sletter-man-sin-konto
 
 ## Omtale
 
+- TechSavvy, 16. oktober 2026: "Han er både studerende og har et startup: “Man skal ikke altid tage den nemme vej”". Interview med medstifter Nicko Skovgaard om at bygge Vores Hjem ved siden af studiet, om fejlene undervejs og om planen om at gå videre til resten af Skandinavien og Tyskland. https://techsavvy.media/han-er-baade-studerende-og-har-et-startup-man-skal-ikke-altid-tage-den-nemme-vej/
 - recordere.dk, 17. september 2026: "Ny dansk familie-app vil samle kalender, madplan og opgaver i ét sted". Artiklen fortæller om de tre stiftere fra Middelfart og gennemgår appens funktioner, herunder Vagter. https://www.recordere.dk/2026/09/ny-dansk-familie-app-vil-samle-kalender-madplan-og-opgaver-i-et-sted/
 - Presseside: https://www.voreshjem.dk/presse/
 
