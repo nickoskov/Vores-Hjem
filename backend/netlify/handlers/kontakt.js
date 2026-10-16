@@ -40,6 +40,15 @@ const gyldigEmail = s => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s||''));
 const rens = (s, maks) => String(s||'').trim().slice(0, maks);
 const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
+/** En linje under "Fejl i panelet" (vh_log, hvad='FEJL'), hoejst én pr. noegle pr. time. Fejler aldrig. */
+async function logKontakt(tekst, noegle) {
+  if (!sql) return;
+  try {
+    await sql`INSERT INTO vh_log (hvad, detalje, hvem) SELECT 'FEJL', ${('[kontakt] ' + tekst).slice(0, 300)}::text, 'kontakt'
+      WHERE NOT EXISTS (SELECT 1 FROM vh_log WHERE hvad = 'FEJL' AND detalje LIKE ${'[kontakt]%' + String(noegle || '').slice(0, 80) + '%'}::text AND hvornaar > now() - interval '1 hour')`;
+  } catch (e) {}
+}
+
 exports.handler = async (ev) => {
   const oprindelse = (ev.headers || {}).origin || '';
   if (ev.httpMethod === 'OPTIONS') return svar(204, oprindelse);
@@ -73,6 +82,8 @@ exports.handler = async (ev) => {
       ]);
       if (time[0].n >= 3 || dogn[0].n >= 8) {
         await sql`INSERT INTO vh_kontakt (ip, navn, email, emne, besked, afvist) VALUES (${adr}, ${navn}, ${email}, ${emne}, ${besked}, ${'loft nået'})`;
+        // vises under "Fejl i panelet", hoejst én pr. afsender pr. time, saa en rigtig kunde ikke forsvinder i stilhed
+        await logKontakt('Besked fra ' + email + (emne ? ' (' + emne + ')' : '') + ' blev ikke sendt videre: for mange beskeder fra samme net. Se vh_kontakt.', email);
         return svar(200, oprindelse, { modtaget: true });
       }
     }
@@ -93,6 +104,13 @@ exports.handler = async (ev) => {
     <p><b>Navn:</b> ${esc(navn)}<br><b>Email:</b> ${esc(email)}<br><b>Emne:</b> ${esc(emne) || '(ingen)'}</p>
     <p><b>Besked:</b><br>${esc(besked).replace(/\n/g,'<br>')}</p>
     <p style="color:#888;font-size:12px">Sendt via ${kilde}${adr ? ', fra ' + esc(adr) : ''}</p>`;
-  try { await mail.send('Ny henvendelse / ' + emneStart + (emne ? ' / ' + emne : ''), html); } catch (e) {}
+  // svar gaar til kunden. Kommer mailen ikke afsted, logges det, og kunden faar en fejl, saa de kan skrive direkte.
+  let r = null, fejl = null;
+  try { r = await mail.send('Ny henvendelse / ' + emneStart + (emne ? ' / ' + emne : ''), html, undefined, { svarTil: email }); }
+  catch (e) { fejl = String(e && e.message || e).slice(0, 120); }
+  if (fejl || !r || !r.sendt) {
+    await logKontakt('Mailen med en henvendelse fra ' + email + ' kunne ikke sendes' + (fejl ? ': ' + fejl : (r && r.grund ? ': ' + r.grund : '')) + '. Beskeden ligger i vh_kontakt.', email);
+    return svar(502, oprindelse, { fejl: 'Beskeden kunne ikke sendes. Skriv direkte til os.' });
+  }
   return svar(200, oprindelse, { modtaget: true });
 };

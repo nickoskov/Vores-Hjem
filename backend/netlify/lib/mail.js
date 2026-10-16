@@ -9,11 +9,13 @@ const FRA = process.env.ALERT_FROM || SMTP_USER || 'backend@' + profil.navn;
 const TIL = process.env.ALERT_TO || '';
 const opsat = () => !!(SMTP_HOST && SMTP_USER && SMTP_PASS && TIL);
 
-async function send(emne, html, tekst) {
+async function send(emne, html, tekst, ekstra) {
   if (!opsat()) return { sendt: false, grund: 'SMTP eller ALERT_TO mangler' };
   const t = nodemailer.createTransport({ host: SMTP_HOST, port: Number(SMTP_PORT || 587),
     secure: Number(SMTP_PORT) === 465, auth: { user: SMTP_USER, pass: SMTP_PASS } });
+  // ekstra.svarTil: kundens adresse, saa et tryk paa Svar gaar til kunden og ikke til backenden
   await t.sendMail({ from: profil.brand + ' backend <' + FRA + '>', to: TIL, subject: emne, html,
+    replyTo: ekstra && ekstra.svarTil ? ekstra.svarTil : undefined,
     text: tekst || html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() });
   return { sendt: true, til: TIL };
 }
