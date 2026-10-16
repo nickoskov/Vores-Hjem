@@ -144,6 +144,7 @@
 <style>@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto!important}}</style>
 <style>:root{--gradient-dyb:linear-gradient(135deg,#4F32CC 0%,#1D4ED8 55%,#BE185D 100%)}.btn-primary,.floating-badge,.contact-submit,#hent-flyd,.indlaeg .slutknap{background:var(--gradient-dyb)!important}</style>
 <style>html{scroll-padding-bottom:150px}</style>
+<style>@media (max-width:720px){footer{padding-bottom:110px!important}}</style>
 </head>
 <body>
 
@@ -560,7 +561,7 @@
       <div class="og-content reveal reveal-delay-2">
         <ul class="og-list2">
           <li><span class="og-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Tildel til en person eller til hele familien</strong><span class="mob-kort"><br>så er der ikke tvivl om hvem der gør hvad</span></span></li>
-                    <li><span class="og-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Opgaver der går igen, kommer af sig selv</strong><span class="mob-kort"><br>opvasken skal ikke skrives ind hver dag</span></span></li>
+                    <li><span class="og-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Opgaver, der går igen, kommer af sig selv</strong><span class="mob-kort"><br>opvasken skal ikke skrives ind hver dag</span></span></li>
           <li><span class="og-c"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Færdige opgaver rydder op efter sig</strong><span class="mob-kort"><br>de bliver liggende en uge og forsvinder så automatisk</span></span></li>
         </ul>
       </div>
@@ -854,20 +855,20 @@
             <div class="mk-tal">
               <div><div class="st" id="mk-timer">0 t</div><div class="li">Timer</div></div>
               <div class="sk"></div>
-              <div><div class="st" id="mk-loen">0,00 Kr.</div><div class="li">Løn</div></div>
+              <div><div class="st" id="mk-loen">0,00 kr.</div><div class="li">Løn</div></div>
             </div>
             <div class="mk-note">Løn før pension, AM-bidrag, ATP og skat</div>
-            <div class="mk-netto"><span>Skønnet udbetalt</span><b id="mk-netto">~ 0,00 Kr.</b></div>
+            <div class="mk-netto"><span>Skønnet udbetalt</span><b id="mk-netto">~ 0,00 kr.</b></div>
           </div>
           <div class="vr" data-i="0"><span class="t"><b>Handicaphjælper</b>
             <span>fre. 11. sep. · 19.00&ndash;09.00</span></span>
-            <span class="h"><span>14 t</span><b>2.915,00 Kr.</b></span></div>
+            <span class="h"><span>14 t</span><b>2.915,00 kr.</b></span></div>
           <div class="vr" data-i="1"><span class="t"><b>Handicaphjælper</b>
             <span>lør. 12. sep. · 20.00&ndash;09.00</span></span>
-            <span class="h"><span>13 t</span><b>2.850,61 Kr.</b></span></div>
+            <span class="h"><span>13 t</span><b>2.850,61 kr.</b></span></div>
           <div class="vr" data-i="2"><span class="t"><b>Handicaphjælper Søndag</b>
             <span>søn. 13. sep. · 20.00&ndash;06.00</span></span>
-            <span class="h"><span>10 t</span><b>1.960,86 Kr.</b></span></div>
+            <span class="h"><span>10 t</span><b>1.960,86 kr.</b></span></div>
         </div>
 
       </div>
@@ -906,8 +907,8 @@
     document.getElementById('ls-status').classList.remove('vis');
     kort.querySelectorAll('.vr').forEach(function(v){ v.classList.remove('ind'); });
     document.getElementById('mk-timer').textContent = '0 t';
-    document.getElementById('mk-loen').textContent = '0,00 Kr.';
-    document.getElementById('mk-netto').textContent = '~ 0,00 Kr.';
+    document.getElementById('mk-loen').textContent = '0,00 kr.';
+    document.getElementById('mk-netto').textContent = '~ 0,00 kr.';
   }
 
   function spil(){
@@ -933,8 +934,8 @@
     });
     vent(4600, function(){
       taelOp(document.getElementById('mk-timer'), 37, 900, 0, ' t');
-      taelOp(document.getElementById('mk-loen'), 7726.47, 1300, 2, ' Kr.');
-      taelOp(document.getElementById('mk-netto'), 4410.47, 1300, 2, ' Kr.', '~ ');
+      taelOp(document.getElementById('mk-loen'), 7726.47, 1300, 2, ' kr.');
+      taelOp(document.getElementById('mk-netto'), 4410.47, 1300, 2, ' kr.', '~ ');
       kort.querySelectorAll('.vr').forEach(function(v,i){
         setTimeout(function(){ v.classList.add('ind'); }, 500 + i*240);
       });
@@ -1219,7 +1220,7 @@
     <div class="features-header reveal">
       <span class="badge" style="margin-bottom:14px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:13px;height:13px;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Alt i én app</span>
       <h2 class="section-h2" data-vh="forside.h2_alt">Alt hvad familien har brug for</h2>
-      <p class="section-sub" style="max-width:520px;margin:14px auto 0;">Aldrig mere "hvem henter hvem?"<br>: alle har samme overblik, altid.</p>
+      <p class="section-sub" style="max-width:520px;margin:14px auto 0;">Aldrig mere "hvem henter hvem?"<br>Alle har samme overblik, altid.</p>
     </div>
     <div class="features-grid">
       <div class="feature-card reveal reveal-delay-1">
@@ -1805,8 +1806,8 @@ window.addEventListener('scroll', () => {
           <a href="https://www.voreshjem.dk/blog" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Blog</a>
         </div>
         <p style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Kontakt</p>
-        <a href="https://www.voreshjem.dk/support" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Support</a>
-          <a href="https://www.voreshjem.dk/presse/" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Presse</a>
+        <div style="display:flex; flex-direction:column; gap:10px;"><a href="https://www.voreshjem.dk/support" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Support</a>
+          <a href="https://www.voreshjem.dk/presse/" target="_top" style="font-size:14px; color:rgba(255,255,255,0.65); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Presse</a></div>
       </div>
 
       <!-- Politikker -->
@@ -1823,7 +1824,7 @@ window.addEventListener('scroll', () => {
 
     <!-- Bottom: copyright -->
     <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
-      <p style="font-size:12px; color:rgba(255,255,255,0.6); white-space:nowrap;">© 2026 Vores Hjem I/S · CVR 45804445 · Middelfart · Alle rettigheder forbeholdes.</p>
+      <p style="font-size:12px; color:rgba(255,255,255,0.6); ">© 2026 Vores Hjem I/S · CVR 45804445 · Middelfart · Alle rettigheder forbeholdes.</p>
       <a href="https://backend.voreshjem.dk" target="_blank" rel="nofollow noopener" style="font-size:12px; color:rgba(255,255,255,0.6); text-decoration:none; white-space:nowrap;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">Medarbejder</a>
       <p style="font-size:12px; color:rgba(255,255,255,0.6); white-space:nowrap;">Bygget i Danmark 🇩🇰</p>
     </div>
