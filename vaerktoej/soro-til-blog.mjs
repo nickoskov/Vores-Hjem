@@ -144,7 +144,7 @@ const skabelon = fs.readFileSync(path.join(H, indlaeg.find((d) => !d.samlet).fil
 for (const p of nye) {
   const url = `${BASE}/post/${p.slug}`, min = Math.max(2, Math.round(tekstAf(p.brod).split(' ').length / 200));
   const [side, sideTekst] = SIDE[p.kategori];
-  const ld = { '@context': 'https://schema.org', '@type': 'BlogPosting', headline: p.titel, description: p.resume, datePublished: p.dato, dateModified: p.dato,
+  const ld = { '@context': 'https://schema.org', '@type': 'BlogPosting', headline: p.titel, description: p.resume, image: p.billede || BASE + '/images/og.jpg', datePublished: p.dato, dateModified: p.dato,
     author: { '@type': 'Organization', name: 'Vores Hjem' }, publisher: { '@type': 'Organization', name: 'Vores Hjem' }, mainEntityOfPage: url };
   const sti = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Forside', item: `${BASE}/` }, { '@type': 'ListItem', position: 2, name: 'Blog', item: `${BASE}/blog` },
@@ -157,6 +157,7 @@ for (const p of nye) {
     .replace(/(<meta property="og:description" content=")[^"]*(")/i, `$1${esc(p.resume)}$2`)
     .replace(/(<meta property="og:url" content=")[^"]*(")/i, `$1${url}$2`)
     .replace(/(<meta property="og:image" content=")[^"]*(")/i, `$1${esc(p.billede || BASE + '/images/og.jpg')}$2`)
+    .replace(/(<meta name="twitter:image" content=")[^"]*(")/i, `$1${esc(p.billede || BASE + '/images/og.jpg')}$2`)
     .replace(/<script type="application\/ld\+json">\{"@context":"https:\/\/schema\.org","@type":"BlogPosting"[\s\S]*?<\/script>/i, `<script type="application/ld+json">${JSON.stringify(ld)}</script>`)
     .replace(/<script type="application\/ld\+json">\{"@context":"https:\/\/schema\.org","@type":"BreadcrumbList"[\s\S]*?<\/script>/i, `<script type="application/ld+json">${JSON.stringify(sti)}</script>`);
   const krop = '<article class="indlaeg">\n    <div class="container">\n      <a class="tilbage" href="/blog.html">&lsaquo; Alle indlæg</a>\n' +
