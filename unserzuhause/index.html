@@ -2461,13 +2461,13 @@ footer { background: var(--text); color: rgba(255,255,255,0.45); padding: 56px 0
     <h2 class="section-h2 reveal" style="margin-bottom:36px;">Seht euch die App an</h2>
     <div class="demo-fan" style="display:flex; justify-content:center; align-items:flex-start; gap:34px;">
       <div class="demo-phone demo-side">
-        <video aria-hidden="true" muted loop playsinline preload="metadata" width="540" height="960" poster="/video/poster.webp"><source src="/video/app-demo.mp4" type="video/mp4"></video>
+        <video aria-hidden="true" muted loop playsinline preload="metadata" width="540" height="960" poster="/video/poster.webp"><source data-src="/video/app-demo.mp4" type="video/mp4"></video>
       </div>
       <div class="demo-phone demo-main">
-        <video aria-label="Kurzes Video: So funktioniert die App Unser Zuhause" muted loop playsinline preload="metadata" width="540" height="960" poster="/video/poster.webp"><source src="/video/app-demo.mp4" type="video/mp4"></video>
+        <video aria-label="Kurzes Video: So funktioniert die App Unser Zuhause" muted loop playsinline preload="metadata" width="540" height="960" poster="/video/poster.webp"><source data-src="/video/app-demo.mp4" type="video/mp4"></video>
       </div>
       <div class="demo-phone demo-side">
-        <video aria-hidden="true" muted loop playsinline preload="metadata" width="540" height="960" poster="/video/poster.webp"><source src="/video/app-demo.mp4" type="video/mp4"></video>
+        <video aria-hidden="true" muted loop playsinline preload="metadata" width="540" height="960" poster="/video/poster.webp"><source data-src="/video/app-demo.mp4" type="video/mp4"></video>
       </div>
     </div>
     <script>
@@ -3076,5 +3076,35 @@ window.addEventListener('scroll', () => {
 <script src="https://backend.unserzuhauseapp.de/widget.js" data-site="de" defer></script>
 <script src="/hentknap.js" defer></script>
 <script src="/butik.js" defer></script>
+<script id="video-doven">
+/* Videoen hentes foerst, naar den naermer sig skaermen, og kun én gang: de tre telefoner deler samme
+   hentede fil (blob), i stedet for at hver video henter hele filen for sig. Uden JavaScript sker der ingenting. */
+(function(){
+  var v = document.querySelectorAll('video');
+  if (!v.length) return;
+  var hentet = {};
+  function fil(src){
+    if (!hentet[src]) hentet[src] = (window.fetch && window.URL && URL.createObjectURL
+      ? fetch(src).then(function(r){ if (!r.ok) throw new Error(); return r.blob(); }).then(function(b){ return URL.createObjectURL(b); })
+      : Promise.reject()).catch(function(){ return src; });
+    return hentet[src];
+  }
+  function hent(el){
+    var s = el.querySelector('source[data-src]');
+    if (!s) return;
+    var src = s.dataset.src; s.removeAttribute('data-src');
+    fil(src).then(function(u){
+      s.src = u; el.load();
+      if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var p = el.play(); if (p && p.catch) p.catch(function(){});
+    });
+  }
+  if (!('IntersectionObserver' in window)) { v.forEach(hent); return; }
+  var o = new IntersectionObserver(function(e){
+    e.forEach(function(x){ if (x.isIntersecting){ hent(x.target); o.unobserve(x.target); } });
+  }, { rootMargin: '400px' });
+  v.forEach(function(x){ o.observe(x); });
+})();
+</script>
 </body>
 </html>
