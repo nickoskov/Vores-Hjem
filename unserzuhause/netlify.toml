@@ -309,6 +309,43 @@ to = "/support"
 status = 301
 force = false
 
+# Danske filnavne (opgaver, madplan, indkob) sendes til de tyske adresser (16. okt. 2026)
+[[redirects]]
+from = "/opgaver"
+to = "/aufgaben"
+status = 301
+force = true
+
+[[redirects]]
+from = "/opgaver.html"
+to = "/aufgaben"
+status = 301
+force = true
+
+[[redirects]]
+from = "/madplan"
+to = "/essenpl%C3%A4ne"
+status = 301
+force = true
+
+[[redirects]]
+from = "/madplan.html"
+to = "/essenpl%C3%A4ne"
+status = 301
+force = true
+
+[[redirects]]
+from = "/indkob"
+to = "/einkaufsliste"
+status = 301
+force = true
+
+[[redirects]]
+from = "/indkob.html"
+to = "/einkaufsliste"
+status = 301
+force = true
+
 # Filnavnene og de danske dubletter (kontakt.html, slet-konto.html) skal ende paa de tyske adresser.
 # force, fordi filerne findes og Netlify ellers viser filen i stedet for at sende videre.
 # /support og /konto-loeschen viser stadig filerne med 200 (reglerne laengere oppe).

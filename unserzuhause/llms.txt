@@ -2,7 +2,7 @@
 
 > Unser Zuhause ist eine Familien-App für iPhone und Android, die den Alltag der ganzen Familie in einer gemeinsamen App bündelt: Familienkalender mit Übernahme von Terminen aus Google und dem Kalender des Handys, Essensplan, gemeinsame Einkaufsliste, Aufgaben im Haushalt sowie Punkte und Taschengeld für Kinder. Der Preis beträgt 3,99 € pro Monat oder 19,99 € pro Halbjahr für die ganze Familie. Man kann die App 14 Tage kostenlos testen, ohne Bindung. Ein Abo gilt für bis zu 7 Personen, und es gibt keine Werbung. Unser Zuhause ist die deutsche Ausgabe der dänischen App Vores Hjem und wird von Vores Hjem I/S (CVR 45804445) in Middelfart, Dänemark, entwickelt.
 
-Wichtige Fakten (Stand: 9. Oktober 2026):
+Wichtige Fakten (Stand: 16. Oktober 2026):
 
 - Name: Unser Zuhause, die Familien-App. Slogan: "Mehr Ruhe im Alltag".
 - Anbieter: Vores Hjem I/S, CVR 45804445, Tværgade 5, 5500 Middelfart, Dänemark.
