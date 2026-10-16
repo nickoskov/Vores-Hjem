@@ -145,7 +145,7 @@ for (const p of nye) {
   const url = `${BASE}/post/${p.slug}`, min = Math.max(2, Math.round(tekstAf(p.brod).split(' ').length / 200));
   const [side, sideTekst] = SIDE[p.kategori];
   const ld = { '@context': 'https://schema.org', '@type': 'BlogPosting', headline: p.titel, description: p.resume, image: p.billede || BASE + '/images/og.jpg', datePublished: p.dato, dateModified: p.dato,
-    author: { '@type': 'Organization', name: 'Vores Hjem' }, publisher: { '@type': 'Organization', name: 'Vores Hjem' }, mainEntityOfPage: url };
+    author: { '@type': 'Organization', name: 'Vores Hjem' }, publisher: { '@type': 'Organization', name: 'Vores Hjem', logo: { '@type': 'ImageObject', url: `${BASE}/images/logo-nav.webp` } }, mainEntityOfPage: url };
   const sti = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Forside', item: `${BASE}/` }, { '@type': 'ListItem', position: 2, name: 'Blog', item: `${BASE}/blog` },
     { '@type': 'ListItem', position: 3, name: p.titel, item: url }] };
