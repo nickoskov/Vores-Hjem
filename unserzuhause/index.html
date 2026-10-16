@@ -1156,6 +1156,7 @@ footer { background: var(--text); color: rgba(255,255,255,0.45); padding: 56px 0
 <style>html{scroll-padding-bottom:150px}</style>
 <style>.cta-trust span{white-space:nowrap}</style>
 <style>.trust-line{flex-wrap:wrap!important;row-gap:6px}.trust-item{white-space:nowrap;flex-shrink:0}</style>
+<style>/* Pauseknap til videoerne (WCAG 2.2.2, fund L126, 16. okt. 2026) */#video-demo .vid-pause{position:absolute;right:18px;bottom:18px;z-index:3;width:38px;height:38px;display:flex;align-items:center;justify-content:center;border:0;border-radius:50%;background:rgba(18,16,31,.62);color:#fff;cursor:pointer}#video-demo .vid-pause:hover{background:rgba(18,16,31,.8)}#video-demo .vid-pause:focus-visible{outline:3px solid #5B3DF5;outline-offset:2px}#video-demo .vid-pause svg{width:16px;height:16px}#video-demo .vid-pause .ikon-pause,#video-demo .vid-pause.spiller .ikon-play{display:none}#video-demo .vid-pause.spiller .ikon-pause{display:block}</style>
 </head>
 <body>
 <a class="skip-link" href="#inhalt">Zum Inhalt springen</a>
@@ -2469,6 +2470,7 @@ footer { background: var(--text); color: rgba(255,255,255,0.45); padding: 56px 0
       </div>
       <div class="demo-phone demo-main">
         <video aria-label="Kurzes Video: So funktioniert die App Unser Zuhause" muted loop playsinline preload="metadata" width="540" height="960" poster="/video/poster.webp"><source data-src="/video/app-demo.mp4" type="video/mp4"></video>
+        <button type="button" class="vid-pause spiller" aria-label="Video pausieren"><svg class="ikon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg><svg class="ikon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 8 4.5z"/></svg></button>
       </div>
       <div class="demo-phone demo-side">
         <video aria-hidden="true" muted loop playsinline preload="metadata" width="540" height="960" poster="/video/poster.webp"><source data-src="/video/app-demo.mp4" type="video/mp4"></video>
@@ -2482,6 +2484,7 @@ footer { background: var(--text); color: rgba(255,255,255,0.45); padding: 56px 0
       var stille=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       function visible(v){ return v.offsetParent!==null; }
       function go(){
+        if(window.__vhVidStop) return;
         if(stille) return;
         vids.forEach(function(v){
           if(!visible(v)) return;
@@ -3100,6 +3103,7 @@ window.addEventListener('scroll', () => {
     fil(src).then(function(u){
       s.src = u; el.load();
       if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (window.__vhVidStop) return;
       var p = el.play(); if (p && p.catch) p.catch(function(){});
     });
   }
@@ -3108,6 +3112,17 @@ window.addEventListener('scroll', () => {
     e.forEach(function(x){ if (x.isIntersecting){ hent(x.target); o.unobserve(x.target); } });
   }, { rootMargin: '400px' });
   v.forEach(function(x){ o.observe(x); });
+})();
+</script>
+<script>
+/* Pauseknap: stopper alle tre videoer og holder dem stoppet (fund L126) */
+(function(){
+  var b=document.querySelector('#video-demo .vid-pause'); if(!b) return;
+  var vids=document.querySelectorAll('#video-demo video');
+  function vis(stop){ b.classList.toggle('spiller',!stop); b.setAttribute('aria-label', stop?'Video abspielen':'Video pausieren'); }
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches){ window.__vhVidStop=true; vis(true); }
+  b.addEventListener('click',function(){ var stop=!window.__vhVidStop; window.__vhVidStop=stop;
+    vids.forEach(function(v){ if(stop) v.pause(); else { var p=v.play(); if(p&&p.catch) p.catch(function(){}); } }); vis(stop); });
 })();
 </script>
 </body>
