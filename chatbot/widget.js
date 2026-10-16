@@ -47,7 +47,7 @@
       mailFejl: 'Skriv venligst en gyldig email.',
       mailGem: 'Gem email',
       mailSpring: 'Nej tak, jeg fortsætter bare',
-      mailSmaat: 'Vi bruger kun din email til at svare dig. Se privatlivspolitik på voreshjem.dk.',
+      mailSmaat: 'Vi bruger kun din email til at svare dig. Læs mere i vores <a href="https://www.iubenda.com/privacy-policy/85951957" target="_blank" rel="noopener">privatlivspolitik</a>.',
       feltNavn: 'Din besked', mailNavn: 'Din email',
       netfejl: 'Beklager, der er forbindelsesproblemer lige nu. Skriv gerne til kontakt@vores-hjem.dk.'
     },
@@ -120,6 +120,16 @@
   host.id = 'vh-chat-host';
   document.body.appendChild(host);
   var root = host.attachShadow({ mode: 'open' });
+  // Mens cookiebanneret er fremme, gemmes chatboblen, så den aldrig ligger oven på bannerets knapper (fund L75, 16. okt. 2026)
+  function tjekBanner() {
+    var b = document.getElementById('iubenda-cs-banner');
+    var synlig = false;
+    if (b) { var cs = getComputedStyle(b); synlig = cs.display !== 'none' && cs.visibility !== 'hidden' && b.offsetHeight > 0; }
+    host.style.visibility = synlig ? 'hidden' : '';
+  }
+  try { new MutationObserver(tjekBanner).observe(document.body, { childList: true }); } catch (e) {}
+  tjekBanner(); setTimeout(tjekBanner, 1500); setTimeout(tjekBanner, 4000);
+  document.addEventListener('click', function () { setTimeout(tjekBanner, 400); }, true);
 
   root.innerHTML = [
     '<style>',

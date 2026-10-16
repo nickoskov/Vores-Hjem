@@ -141,10 +141,10 @@
       'color:#fff; font-weight:800; font-size:15.5px; letter-spacing:-.01em;',
       "font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;",
       'box-shadow:0 14px 34px -10px rgba(108,71,255,.75);',
-      'opacity:0; transform:translateY(16px); pointer-events:none;',
-      'transition:opacity .3s ease, transform .3s ease, box-shadow .2s ease;',
+      'opacity:0; visibility:hidden; transform:translateY(16px); pointer-events:none;',
+      'transition:opacity .3s ease, transform .3s ease, box-shadow .2s ease, visibility 0s linear .3s;',
     '}',
-    '#vh-hent.vh-vis{ opacity:1; transform:none; pointer-events:auto; }',
+    '#vh-hent.vh-vis{ opacity:1; visibility:visible; transform:none; pointer-events:auto; transition:opacity .3s ease, transform .3s ease, box-shadow .2s ease, visibility 0s; }',
     '#vh-hent:hover{ box-shadow:0 18px 44px -10px rgba(108,71,255,.92); }',
     '#vh-hent svg{ flex:none; }',
     /* Chatboblen er 62 px høj og sidder 24 px oppe, så knappen lægger sig over den */
@@ -159,7 +159,6 @@
   a.id = 'vh-hent';
   a.href = '/hent/';
   a.setAttribute('data-sted', 'flydeknap');
-  a.setAttribute('aria-label', 'Hent Vores Hjem-appen');
   a.innerHTML =
     '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
     'stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
