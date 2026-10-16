@@ -1,5 +1,4 @@
 plugins = []
-headers = []
 
 [functions]
 
@@ -29,4 +28,34 @@ to = "https://download.voreshjem.dk/:splat"
 status = 301
 force = true
 
+
+
+# Sikkerhedsheadere som på den tyske side (fund L64, 16. okt. 2026)
+[[headers]]
+for = "/*"
+
+  [headers.values]
+  X-Content-Type-Options = "nosniff"
+  Referrer-Policy = "strict-origin-when-cross-origin"
+  X-Frame-Options = "DENY"
+  Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
+
+# Billeder og video gemmes en uge (fund L79)
+[[headers]]
+for = "/*.mp4"
+
+  [headers.values]
+  Cache-Control = "public, max-age=604800"
+
+[[headers]]
+for = "/*.webp"
+
+  [headers.values]
+  Cache-Control = "public, max-age=604800"
+
+[[headers]]
+for = "/*.png"
+
+  [headers.values]
+  Cache-Control = "public, max-age=604800"
 
