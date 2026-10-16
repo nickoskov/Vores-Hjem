@@ -58,7 +58,7 @@ const KENDT_LIVE = { deploy: '6ac50c1fd252f300becee5a8', kilde: '9bbd2613593aef6
 const TITEL = 'Udgivet fra repoet (chatbot) ';
 
 // De filer, der ligger live, og dem der kun er kode og opsætning. Alt andet i chatbot/ stopper scriptet.
-const STATISK = ['admin.html', 'avatar.png', 'avatar-de.png', 'hentknap.js', 'index.html', 'manifest.json', 'sw.js', 'widget.js'];
+const STATISK = ['admin.html', 'avatar.png', 'avatar-112.png', 'avatar-de.png', 'hentknap.js', 'index.html', 'manifest.json', 'sw.js', 'widget.js'];
 const KODE = ['netlify', 'netlify.toml', 'netlify.toml.fra-mac', 'package.json', 'package-lock.json'];
 const NO_CACHE = ['admin.html', 'sw.js', 'widget.js']; // fra netlify.toml.fra-mac
 // Klik-tælleren. "bot" i navnet gør, at botten ikke tæller testens kald som rigtige klik.
