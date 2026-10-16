@@ -138,8 +138,9 @@ for (const p of nye) {
 }
 
 // --- sider ---
-const alle = [...indlaeg.filter((d) => !SAML[d.slug]).map((d) => ({ slug: d.slug, titel: d.titel, dato: d.dato, kategori: d.kategori || kategori(d.slug, d.titel) })), ...nye];
-const skabelon = fs.readFileSync(path.join(H, indlaeg[0].fil.replace(/^\//, '')), 'utf8');
+const alle = [...indlaeg.filter((d) => !SAML[d.slug] && !d.samlet).map((d) => ({ slug: d.slug, titel: d.titel, dato: d.dato, kategori: d.kategori || kategori(d.slug, d.titel) })), ...nye];
+// Indlæg mærket "samlet" er lagt sammen med et andet og har ingen fil mere; de står kun i listen, så Soros udgave genkendes.
+const skabelon = fs.readFileSync(path.join(H, indlaeg.find((d) => !d.samlet).fil.replace(/^\//, '')), 'utf8');
 for (const p of nye) {
   const url = `${BASE}/post/${p.slug}`, min = Math.max(2, Math.round(tekstAf(p.brod).split(' ').length / 200));
   const [side, sideTekst] = SIDE[p.kategori];
@@ -191,7 +192,7 @@ blog = blog.slice(0, efterStart) + '\n' + kort + resten;
 const antal = (blog.match(/<a class="bk" href=/g) || []).length;
 blog = blog.replace(/<div class="bo-antal">\d+ indlæg<\/div>/, `<div class="bo-antal">${antal} indlæg</div>`);
 // Blog-blokken i den strukturerede data skal liste alle indlæg på siden, ikke kun dem fra Wix.
-const poster = [...indlaeg, ...nye].sort((a, b) => b.dato.localeCompare(a.dato))
+const poster = [...indlaeg, ...nye].filter((d) => !d.samlet).sort((a, b) => b.dato.localeCompare(a.dato))
   .map((d) => ({ '@type': 'BlogPosting', headline: d.titel, datePublished: d.dato, url: `${BASE}/post/${d.slug}` }));
 blog = blog.replace(/(<script type="application\/ld\+json">)(\{"@context": ?"https:\/\/schema\.org", ?"@type": ?"Blog"[\s\S]*?)(<\/script>)/,
   (_, a, json, c) => a + JSON.stringify({ ...JSON.parse(json), blogPost: poster }) + c);

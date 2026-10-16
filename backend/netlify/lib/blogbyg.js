@@ -92,13 +92,15 @@ async function byg() {
   await opret();
   const db = await sql`SELECT slug, titel, resume, brod, billede, udgivet, opdateret FROM vh_blog WHERE status = 'udgivet' ORDER BY udgivet DESC`;
   const faste = JSON.parse(await hent('/blog/indlaeg.json'));
-  const skabelonSide = await hent(faste[0].fil);
+  // indlaeg mærket "samlet" er lagt sammen med et andet og har ingen side mere (16. okt. 2026)
+  const levende = faste.filter(f => !f.samlet);
+  const skabelonSide = await hent(levende[0].fil);
   const skabelonForside = await hent('/blog.html');
   const gammeltSitemap = await hent('/sitemap.xml');
   const filer = {}, redirects = [];
   const nye = db.filter(p => !faste.some(f => f.slug === p.slug)).map(p => ({ ...p, dato: (p.udgivet || new Date().toISOString()).slice(0,10), resume: p.resume || tekstAf(p.brod).slice(0,155) }));
   nye.forEach(p => { p.kategori = kategori(p.slug, p.titel); });
-  const alle = [...faste.map(f => ({ slug:f.slug, titel:f.titel, resume:f.resume, billede:f.billede, dato:f.dato, kategori:f.kategori || kategori(f.slug, f.titel) })), ...nye.map(p => ({ slug:p.slug, titel:p.titel, resume:p.resume, billede:p.billede, dato:p.dato, kategori:p.kategori }))]
+  const alle = [...levende.map(f => ({ slug:f.slug, titel:f.titel, resume:f.resume, billede:f.billede, dato:f.dato, kategori:f.kategori || kategori(f.slug, f.titel) })), ...nye.map(p => ({ slug:p.slug, titel:p.titel, resume:p.resume, billede:p.billede, dato:p.dato, kategori:p.kategori }))]
     .sort((a,b) => (b.dato||'') < (a.dato||'') ? -1 : 1);
   for (const p of nye) filer['/blog/post/' + p.slug + '.html'] = lavSide(skabelonSide, p, alle);
   filer['/blog.html'] = lavForside(skabelonForside, alle);
