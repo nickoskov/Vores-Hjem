@@ -1,6 +1,6 @@
 # Vores Hjem
 
-> Vores Hjem er en dansk familieapp til iPhone og Android, der samler familiens hverdag i én delt app: fælles kalender med synkronisering fra telefonens kalender og Google, madplan der hænger sammen med indkøbslisten, delt indkøbsliste, opgaver og husarbejde, point og lommepenge til børn samt vagtplan med lønberegning. Prisen er 39 kr. pr. måned eller 199 kr. pr. halvår for hele familien. Der er 14 dages gratis prøveperiode uden binding. Ét abonnement dækker op til 7 personer, og der er ingen reklamer. Appen er lavet af Vores Hjem I/S (CVR 45804445) i Middelfart.
+> Vores Hjem er en dansk familieapp til iPhone og Android, der samler familiens hverdag i én delt app: fælles kalender med synkronisering fra telefonens kalender og Google, madplan der hænger sammen med indkøbslisten, delt indkøbsliste, opgaver og husarbejde, point og lommepenge til børn samt vagtplan med lønberegning. Prisen er 39 kr. pr. måned eller 199 kr. pr. halvår for hele familien. Der er 14 dages gratis prøveperiode. Derefter fornyes abonnementet automatisk, og der er ingen binding. Ét abonnement dækker op til 7 personer, og der er ingen reklamer. Appen er lavet af Vores Hjem I/S (CVR 45804445) i Middelfart.
 
 Nøglefakta (opdateret 7. oktober 2026):
 
@@ -37,7 +37,7 @@ Nøglefakta (opdateret 7. oktober 2026):
 
 ## Priser og prøveperiode
 
-- [Forside med pris og FAQ](https://www.voreshjem.dk/): 39 kr./md. eller 199 kr./halvår for hele familien, op til 7 personer, 14 dages gratis prøveperiode uden binding, ingen reklamer. Overblik over alle funktioner.
+- [Forside med pris og FAQ](https://www.voreshjem.dk/): 39 kr./md. eller 199 kr./halvår for hele familien, op til 7 personer, 14 dages gratis prøveperiode, derefter fornyes abonnementet automatisk, ingen binding og ingen reklamer. Overblik over alle funktioner.
 
 ## Hent appen
 

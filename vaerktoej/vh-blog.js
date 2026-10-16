@@ -228,7 +228,7 @@ const FAKTA = `<div class="fakta-vh">
           <li>Dansk familieapp fra Vores Hjem I/S (CVR 45804445) i Middelfart.</li>
           <li>Fælles kalender med synkronisering fra telefonens kalender og Google, madplan der hænger sammen med indkøbslisten, delt indkøbsliste, opgaver, point og lommepenge til børn samt vagtplan med lønberegning.</li>
           <li>39 kr. pr. måned eller 199 kr. pr. halvår. Ét abonnement dækker op til 7 personer.</li>
-          <li>14 dages gratis prøveperiode uden binding. Ingen reklamer.</li>
+          <li>14 dages gratis prøveperiode. Derefter fornyes abonnementet automatisk, og der er ingen binding. Ingen reklamer.</li>
           <li>Børn kan logge ind med en familiekode uden e-mail.</li>
           <li>Til <a href="https://apps.apple.com/dk/app/vores-hjem/id6758346281">iPhone</a> og <a href="https://play.google.com/store/apps/details?id=com.voreshjem.app">Android</a>.</li>
         </ul>

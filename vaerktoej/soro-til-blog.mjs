@@ -199,7 +199,7 @@ for (const p of nye) {
     `      <h1>${esc(p.titel)}</h1>\n      <div class="meta">${p.dato.split('-').reverse().join('.')} · ${min} min læsning · <a href="/blog">${NAVN[p.kategori]}</a></div>\n` +
     '      ' + p.brod + '\n' +
     '      <div class="slutkort">\n        <p><strong>Vores Hjem</strong> samler kalender, madplan, indkøbsliste og opgaver\n           ét sted, så hele familien kan se det samme.</p>\n' +
-    '        <a class="slutknap" href="/hent/" data-sted="blog">Prøv 14 dage gratis</a>\n      </div>\n' +
+    '        <a class="slutknap" href="/hent/" data-sted="blog">Prøv 14 dage gratis</a>\n        <p style="font-size:13px; margin:14px 0 0; opacity:.75;">Derefter 39 kr./md. eller 199 kr./halvår. Fornyes automatisk, ingen binding.</p>\n      </div>\n' +
     '      <section class="laes-ogsaa">\n        <h2>Læs også</h2>\n        <ul>\n' +
     beslaegtede(p, alle).map((q) => `          <li><a href="/post/${esc(q.slug)}">${esc(q.titel)}</a></li>\n`).join('') +
     `        </ul>\n        <a class="funk" href="${side}">${sideTekst} &rsaquo;</a>\n      </section>\n    </div>\n  </article>`;

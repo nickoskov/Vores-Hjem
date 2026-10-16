@@ -54,7 +54,7 @@ function lavSide(skabelon, p, alle) {
   const krop = '<article class="indlaeg">\n    <div class="container">\n      <a class="tilbage" href="/blog">&lsaquo; Alle indlæg</a>\n      <h1>' + esc(p.titel) + '</h1>\n      <div class="meta">' + dato.split('-').reverse().join('.') + ' · ' + min + ' min læsning · <a href="/blog">' + NAVN[p.kategori || kategori(p.slug, p.titel)] + '</a></div>\n' +
     (p.billede ? '      <img src="' + esc(p.billede) + '" alt="' + esc(p.titel) + '" style="width:100%;border-radius:16px;margin:8px 0 22px">\n' : '') +
     '      ' + p.brod.trim() + '\n' +
-    '      <div class="slutkort">\n        <p><strong>Vores Hjem</strong> samler kalender, madplan, indkøbsliste og opgaver\n           ét sted, så hele familien kan se det samme.</p>\n        <a class="slutknap" href="/hent/" data-sted="blog">Prøv 14 dage gratis</a>\n      </div>\n' + (alle ? laesOgsaa(p, alle) : '') + '    </div>\n  </article>';
+    '      <div class="slutkort">\n        <p><strong>Vores Hjem</strong> samler kalender, madplan, indkøbsliste og opgaver\n           ét sted, så hele familien kan se det samme.</p>\n        <a class="slutknap" href="/hent/" data-sted="blog">Prøv 14 dage gratis</a>\n        <p style="font-size:13px; margin:14px 0 0; opacity:.75;">Derefter 39 kr./md. eller 199 kr./halvår. Fornyes automatisk, ingen binding.</p>\n      </div>\n' + (alle ? laesOgsaa(p, alle) : '') + '    </div>\n  </article>';
   s = s.replace(/<article class="indlaeg">[\s\S]*?<\/article>/i, krop);
   return s;
 }
