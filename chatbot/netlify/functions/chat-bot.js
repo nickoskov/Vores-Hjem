@@ -87,7 +87,7 @@ VAGTER (fanen virker):
 - Bundmenuen har nu seks faner: Kalender, Opgaver, Madplaner, Indkøb, Vagter og Indstillinger.
 
 ANDRE INDSTILLINGER (findes under Indstillinger):
-- Nulstil adgangskode: har HOVEDBRUGEREN glemt sin adgangskode, nulstilles den under Indstillinger → "Nulstil adgangskode". (Kode-brugere har ingen adgangskode, de bruger navn + familiekode.)
+- Adgangskode: har HOVEDBRUGEREN glemt sin adgangskode, nulstilles den med "Glemt adgangskode" på login-skærmen; logget ind skiftes den under Indstillinger → "Skift adgangskode". (Kode-brugere har ingen adgangskode, de bruger navn + familiekode.)
 - Skift sprog, samt slå "Hellig- og mærkedage" og "Påmindelser for opgaver" til/fra.
 - Vilkår, privatlivspolitik og cookiepolitik ligger under Indstillinger → "Vilkår for brug (EULA)" og på voreshjem.dk. Der er også en FAQ i appen.
 - Slet konto: man kan slette sin konto og data under Indstillinger → "Slet konto".
@@ -104,14 +104,14 @@ DOWNLOAD (brug ALTID præcis disse links, de må ikke ændres):
 - Google Play: https://voreshjem-bot.netlify.app/hent/googleplay
 
 OFTE STILLEDE SPØRGSMÅL (officielle svar fra appens FAQ, brug dem):
-- Glemt adgangskode: på login-skærmen tryk "Glemt adgangskode", indtast e-mail, få et nulstillings-link på mail. Logget ind kan man også ændre den under Indstillinger → "Nulstil adgangskode". (Kun hovedbrugeren; kode-brugere har ingen adgangskode.)
+- Glemt adgangskode: på login-skærmen tryk "Glemt adgangskode", indtast e-mail, få et nulstillings-link på mail. Logget ind kan man også ændre den under Indstillinger → "Skift adgangskode". (Kun hovedbrugeren; kode-brugere har ingen adgangskode.)
 - "Kan ikke oprette opgaver" / kode-bruger kan ikke logge ind: hovedbrugeren skal FØRST oprette familiemedlemmerne under Indstillinger. Derefter kan man oprette opgaver / kode-brugeren logge ind med navn + kode.
 - Vælg "dig": under Indstillinger trykker man person-ikonet ud for sit eget navn for at markere sig som den bruger, så vises ens egne opgaver under "Egne". Kun ét medlem ad gangen, og valget gælder kun på den enhed man sidder ved.
 - Privat begivenhed: markér en begivenhed som privat (stjerne-ikonet) → kode-brugere UDEN admin kan ikke se titlen, kun "🔒 Privat". Hovedbrugeren og admin-kode-brugere ser altid alt. Godt til lægeaftaler eller overraskelser.
 - Grænser: maks. 6 ekstra familiemedlemmer pr. konto (7 i alt), og maks. 200 varer på indkøbslisten.
 - Begivenheds-påmindelser virker kun hvis notifikationer er slået TIL i telefonens indstillinger OG begivenheden har et starttidspunkt. Man får påmindelse ca. 3 timer før.
 - Opgave-påmindelser (deadline) sættes separat under Indstillinger → "Påmindelser for opgaver" (pr. enhed): vælg "Om morgenen kl. 09:00" (på dagen for deadline), "Aftenen før kl. 20:00" (dagen før), eller "Slå fra".
-- Skift adgangskode når man ER logget ind: Indstillinger → "Nulstil adgangskode" → indtast nuværende + ny + bekræft. Har man HELT glemt den: brug "Glemt adgangskode" på login-skærmen (mail-link).
+- Skift adgangskode når man ER logget ind: Indstillinger → "Skift adgangskode" → indtast nuværende + ny + bekræft. Har man HELT glemt den: brug "Glemt adgangskode" på login-skærmen (mail-link).
 - Hellig- og mærkedage: slås til/fra under Indstillinger → "Hellig- og mærkedage" (helligdage og mærkedage hver for sig; man kan vælge land, ellers tages det fra telefonen).
 - Billeder på indkøbsvarer: gør det nemmere at genkende varen (mærke/variant), tryk "Tilføj billede" når man opretter/redigerer en vare.
 - Afkrydsede indkøbsvarer flyttes efter 24 timer til "Afsluttede indkøb"; der kan man fjerne fluebenet for at flytte varen tilbage (smart til varer der går igen).
