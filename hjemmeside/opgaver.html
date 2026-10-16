@@ -117,7 +117,13 @@
 <link rel="alternate" hreflang="x-default" href="https://www.voreshjem.dk/opgaver">
 <meta name="description" content="Fordel husarbejdet i familien: opret opgaver med deadline, tildel til et familiemedlem og lad dem gentage automatisk. Prøv Vores Hjem gratis i 14 dage.">
 <link rel="preload" href="/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-<style>@font-face{font-family:'Plus Jakarta Sans';font-style:normal;font-weight:200 800;font-display:swap;src:url(/fonts/plus-jakarta-sans-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}</style>
+<style>@font-face{font-family:'Plus Jakarta Sans';font-style:normal;font-weight:200 800;font-display:swap;src:url(/fonts/plus-jakarta-sans-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}.blog-tip { padding: 30px 0; text-align: center; background: #fff; border-top: 1px solid var(--border-light); }
+.blog-tip p { font-size: 15px; color: var(--text-secondary); line-height: 1.6; margin: 0; }
+.blog-tip a { color: #4F32CC; font-weight: 700; }
+.blog-tip a:hover { text-decoration: underline; }
+.blog-tip .tip-sep { color: var(--text-muted); margin: 0 6px; }
+@media (max-width: 600px) { .blog-tip .tip-sep { display: none; } .blog-tip a { display: block; margin-top: 6px; } }
+</style>
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -1722,6 +1728,13 @@ nav::before {
 </script>
 </section>
 
+
+<!-- BLOG -->
+<div class="blog-tip">
+  <div class="container">
+    <p>Gode råd fra bloggen: <a href="/post/hvordan-fungerer-familiepoint-i-hverdagen">Sådan fungerer familiepoint i hverdagen →</a><span class="tip-sep" aria-hidden="true">·</span><a href="/post/saadan-kan-familien-mindske-mental-load-hjemme">Fordel familiens mental load →</a></p>
+  </div>
+</div>
 
 <!-- CTA -->
 <section id="cta">
