@@ -40,22 +40,29 @@
 
   /* Knappen er altid synlig (Nicko 10. okt. 2026), men daekker den en App Store- eller Google Play-knap,
      bliver den til en lille rund knap ude ved kanten, indtil butiksknappen er rullet forbi. */
-  var fuldBredde = 0;
+  var fuldBredde = 0, loeft = 0;
   function undgaa() {
     try {
       if (!a) return;
-      if (window.matchMedia && window.matchMedia('(max-height:500px)').matches) { a.classList.remove('vh-lille'); return; }
+      if (window.matchMedia && window.matchMedia('(max-height:500px)').matches) { a.classList.remove('vh-lille'); loeft = 0; a.style.transform = ''; return; }
       if (!a.classList.contains('vh-lille')) fuldBredde = a.offsetWidth;
-      var r = a.getBoundingClientRect();
-      var hoejre = r.right, venstre = r.right - (fuldBredde || r.width);
-      var knapper = document.querySelectorAll('a[href*="apps.apple.com"], a[href*="play.google.com"]');
-      var ram = false;
+      /* stedet, knappen ville have uden loeft, saa den ikke hopper frem og tilbage */
+      var r0 = a.getBoundingClientRect();
+      var top = r0.top + loeft, bund = r0.bottom + loeft;
+      var hoejre = r0.right, venstre = r0.right - (fuldBredde || r0.width);
+      /* butiksknapperne og sidens egen knap til forsiden (fx paa 404-siden) */
+      var knapper = document.querySelectorAll('a[href*="apps.apple.com"], a[href*="play.google.com"], a[href="/"]');
+      var ram = null;
       for (var i = 0; i < knapper.length && !ram; i++) {
         var k = knapper[i].getBoundingClientRect();
-        if (k.width < 20 || k.height < 20) continue;
-        ram = k.right > venstre - 8 && k.left < hoejre + 8 && k.bottom > r.top - 8 && k.top < r.bottom + 8;
+        if (k.width < 20 || k.height < 20 || knapper[i] === a) continue;
+        if (k.right > venstre - 8 && k.left < hoejre + 8 && k.bottom > top - 8 && k.top < bund + 8) ram = k;
       }
-      if (ram !== a.classList.contains('vh-lille')) a.classList.toggle('vh-lille', ram);
+      if (!!ram !== a.classList.contains('vh-lille')) a.classList.toggle('vh-lille', !!ram);
+      /* den lille runde knap rykker op over den knap, den ellers ville daekke (fund L112/L113, 16. okt. 2026) */
+      var nyt = ram ? Math.max(0, Math.round(bund - ram.top + 12)) : 0;
+      if (nyt > top - 80) nyt = 0;
+      if (nyt !== loeft) { loeft = nyt; a.style.transform = loeft ? 'translateY(-' + loeft + 'px)' : ''; }
     } catch (e) {}
   }
 

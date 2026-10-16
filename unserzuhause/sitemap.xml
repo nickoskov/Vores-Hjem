@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://www.unserzuhauseapp.de/</loc><changefreq>monthly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://www.unserzuhauseapp.de/kalender</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.unserzuhauseapp.de/aufgaben</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.unserzuhauseapp.de/essenpl%C3%A4ne</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.unserzuhauseapp.de/einkaufsliste</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.unserzuhauseapp.de/einstellungen</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.unserzuhauseapp.de/synchronisierung</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.unserzuhauseapp.de/support</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.unserzuhauseapp.de/konto-loeschen</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://www.unserzuhauseapp.de/impressum</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://www.unserzuhauseapp.de/ratgeber</loc><lastmod>2026-10-09</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://www.unserzuhauseapp.de/ratgeber/familienkalender-organisieren</loc><lastmod>2026-10-09</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://www.unserzuhauseapp.de/ratgeber/wochenplan-essen-familie</loc><lastmod>2026-10-09</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://www.unserzuhauseapp.de/ratgeber/einkaufsliste-teilen</loc><lastmod>2026-10-09</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://www.unserzuhauseapp.de/ratgeber/aufgaben-fuer-kinder-im-haushalt</loc><lastmod>2026-10-09</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://www.unserzuhauseapp.de/ratgeber/mental-load-familie</loc><lastmod>2026-10-09</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/kalender</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/aufgaben</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/essenpl%C3%A4ne</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/einkaufsliste</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/einstellungen</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/synchronisierung</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/support</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/konto-loeschen</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/impressum</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/ratgeber</loc><lastmod>2026-10-16</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/ratgeber/familienkalender-organisieren</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/ratgeber/wochenplan-essen-familie</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/ratgeber/einkaufsliste-teilen</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/ratgeber/aufgaben-fuer-kinder-im-haushalt</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.unserzuhauseapp.de/ratgeber/mental-load-familie</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
 </urlset>

@@ -6,8 +6,8 @@
 <link rel="preload" href="/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <style>@font-face{font-family:'Plus Jakarta Sans';font-style:normal;font-weight:200 800;font-display:swap;src:url(/fonts/plus-jakarta-sans-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}</style>
 <link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" href="/favicon.png">
-<link rel="apple-touch-icon" href="/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <script>window.__uzT = Date.now();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="only light">
@@ -359,6 +359,7 @@ nav {
 }
 </style>
 <style>html{scroll-padding-top:120px;scroll-padding-bottom:150px}</style>
+<style>.cta-trust span{white-space:nowrap}</style>
 </head>
 <body>
 <a href="#inhalt" class="skip-link">Zum Inhalt springen</a>
@@ -368,7 +369,7 @@ nav {
   <div class="container">
     <div class="nav-inner">
       <a href="https://www.unserzuhauseapp.de" target="_top" class="nav-logo">
-        <img src="/images/logo.webp" alt="Unser Zuhause" style="height:58px;width:auto;display:block;">
+        <img src="/images/logo-150.webp" alt="Unser Zuhause" style="height:58px;width:auto;display:block;">
       </a>
       <div class="nav-links">
         <a href="/#features">Funktionen</a>
@@ -376,7 +377,7 @@ nav {
         <a href="/ratgeber">Ratgeber</a>
         <a href="/support">Support</a>
       </div>
-      <a href="./index.html" class="back-link">
+      <a href="/" class="back-link">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         Zurück zur Startseite
       </a>
@@ -438,7 +439,7 @@ nav {
         </div>
 
         <div class="phone-main">
-          <img src="images/mad_1.webp" alt="Essensplan in Unser Zuhause" fetchpriority="high">
+          <img src="/images/mad_1.webp" srcset="/images/mad_1-400.webp 400w, /images/mad_1.webp 680w" sizes="190px" alt="Essensplan in Unser Zuhause" fetchpriority="high">
         </div>
       </div>
     </div>
@@ -954,16 +955,16 @@ nav {
       <div>
         <div class="step-num">2</div>
         <h3 class="step-h3">Füge eine Mahlzeit in unter 30 Sekunden hinzu</h3>
-        <p class="step-p">Tippe auf <strong>+ Mahlzeit hinzufügen</strong> und wähle Tag, Mahlzeit-Typ und den Namen des Gerichts. Füge eine optionale Beschreibung mit Notizen oder Vorbereitung hinzu, tippe auf Speichern und du bist fertig.</p>
+        <p class="step-p">Tippe auf <strong>+ Mahlzeit hinzufügen</strong> und wähle Tag, Mahlzeittyp und den Namen des Gerichts. Füge eine optionale Beschreibung mit Notizen oder Vorbereitung hinzu, tippe auf Speichern und du bist fertig.</p>
         <div class="step-tags">
           <span class="step-tag tag-green"><span class="tag-dot" style="background:var(--success);"></span>Tag wählen</span>
-          <span class="step-tag tag-pink"><span class="tag-dot" style="background:var(--pink);"></span>Mahlzeit-Typ wählen</span>
+          <span class="step-tag tag-pink"><span class="tag-dot" style="background:var(--pink);"></span>Mahlzeittyp wählen</span>
           <span class="step-tag tag-orange"><span class="tag-dot" style="background:#F97316;"></span>Optionale Notiz</span>
         </div>
       </div>
       <div class="step-phone">
         <div class="trin-demo" id="trin2">
-          <div class="td-top"><span class="td-titel">Mahlzeit hinzufügen</span></div>
+          <div class="td-top"><span class="td-titel">Neue Mahlzeit</span></div>
           <div class="td-boks" style="min-height:200px;">
             <div class="td-felt" data-f="1"><div class="td-felt-navn">Tag</div>
               <div class="td-chips">
@@ -1042,7 +1043,7 @@ nav {
         <a href="/support" target="_top" class="btn btn-outline-white btn-lg">Kontakt aufnehmen</a>
       </div>
       <p class="cta-trust">Nach 14 Tagen: <span>3,99 €/Monat</span> oder <span>19,99 €/Halbjahr</span> · Jederzeit kündbar</p>
-      <a href="./index.html" class="cta-back" style="display:inline-flex; align-items:center; gap:6px; margin-top:24px; font-size:14px; font-weight:600; text-decoration:none; transition:color 0.2s;">
+      <a href="/" class="cta-back" style="display:inline-flex; align-items:center; gap:6px; margin-top:24px; font-size:14px; font-weight:600; text-decoration:none; transition:color 0.2s;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="15 18 9 12 15 6"/></svg>
         Zurück zur Startseite
       </a>
@@ -1070,7 +1071,7 @@ nav {
       <!-- Logo + tagline -->
       <div>
         <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
-          <img src="/images/logo.webp" alt="Unser Zuhause" style="height:56px; width:auto; display:block; filter:brightness(0) invert(1);">
+          <img src="/images/logo-150.webp" alt="Unser Zuhause" style="height:56px; width:auto; display:block; filter:brightness(0) invert(1);">
         </div>
         <p style="font-size:14px; color:rgba(255,255,255,0.45); line-height:1.6;">Mehr Ruhe im Alltag, für die ganze Familie.</p>
       </div>

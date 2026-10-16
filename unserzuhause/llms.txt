@@ -19,7 +19,6 @@ Wichtige Fakten (Stand: 16. Oktober 2026):
 - Einkaufsliste: bis zu 200 Artikel.
 - Datenschutz: Die Familiendaten aus der App werden in der EU gespeichert, hauptsächlich in Frankfurt. Keine Werbung, kein Verkauf von Daten.
 - Support: support@unserzuhauseapp.de, Antwort an Werktagen innerhalb von 24 Stunden.
-- Dänische Ausgabe: Vores Hjem (https://www.voreshjem.dk/) vom selben Anbieter.
 
 ## Funktionen
 
