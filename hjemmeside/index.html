@@ -1924,19 +1924,27 @@ window.addEventListener('scroll', () => {
 
 
 <script id="video-doven">
-/* Videoen fylder 1,5 MB og blev hentet, saa snart siden aabnede, ogsaa for
-   dem der aldrig rullede ned til den. Nu hentes den foerst, naar den naermer
-   sig skaermen. Uden JavaScript sker der ingenting, og siden virker stadig. */
+/* Videoen hentes foerst, naar den naermer sig skaermen, og kun én gang: de tre telefoner deler samme
+   hentede fil (blob), i stedet for at hver video henter hele filen for sig. Uden JavaScript sker der ingenting. */
 (function(){
   var v = document.querySelectorAll('video');
   if (!v.length) return;
+  var hentet = {};
+  function fil(src){
+    if (!hentet[src]) hentet[src] = (window.fetch && window.URL && URL.createObjectURL
+      ? fetch(src).then(function(r){ if (!r.ok) throw new Error(); return r.blob(); }).then(function(b){ return URL.createObjectURL(b); })
+      : Promise.reject()).catch(function(){ return src; });
+    return hentet[src];
+  }
   function hent(el){
     var s = el.querySelector('source[data-src]');
     if (!s) return;
-    s.src = s.dataset.src; s.removeAttribute('data-src');
-    el.load();
-    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    var p = el.play(); if (p && p.catch) p.catch(function(){});
+    var src = s.dataset.src; s.removeAttribute('data-src');
+    fil(src).then(function(u){
+      s.src = u; el.load();
+      if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var p = el.play(); if (p && p.catch) p.catch(function(){});
+    });
   }
   if (!('IntersectionObserver' in window)) { v.forEach(hent); return; }
   var o = new IntersectionObserver(function(e){
