@@ -43,10 +43,36 @@ async function tabel() {
   // 404-siden melder sig selv (nf), saa doede adresser kan findes for alle besoegende,
   // ikke kun dem der siger ja til cookies. Kampagnenavnet (utm_campaign) gemmes ved besoeget (fund S64).
   // Kolonnerne tilfoejes kun, hvis de mangler, saa tabellen ikke laases ved hver kold start.
-  const kol = (await sql`SELECT column_name AS k FROM information_schema.columns WHERE table_name = 'vh_besoeg' AND column_name IN ('ikkefundet', 'kampagne')`).map(r => r.k);
+  const kol = (await sql`SELECT column_name AS k FROM information_schema.columns WHERE table_name = 'vh_besoeg' AND column_name IN ('ikkefundet', 'kampagne', 'browser')`).map(r => r.k);
   if (!kol.includes('ikkefundet')) await sql`ALTER TABLE vh_besoeg ADD COLUMN IF NOT EXISTS ikkefundet BOOLEAN NOT NULL DEFAULT false`;
   if (!kol.includes('kampagne')) await sql`ALTER TABLE vh_besoeg ADD COLUMN IF NOT EXISTS kampagne TEXT NOT NULL DEFAULT ''`;
+  // browserfamilien (fx "Facebook-app · iOS"), saa man kan se, om besoeg fra en annonce opfoerer sig anderledes (20. okt.)
+  if (!kol.includes('browser')) await sql`ALTER TABLE vh_besoeg ADD COLUMN IF NOT EXISTS browser TEXT NOT NULL DEFAULT ''`;
+  // Hvor laenge de besoegende bliver, om de ruller, og fejl paa rigtige telefoner (20. okt. 2026).
+  // Kun haendelser og browserfamilie, intet om personen. Slettes efter 90 dage som resten (ryd.js).
+  await sql`CREATE TABLE IF NOT EXISTS vh_adfaerd (
+    id BIGSERIAL PRIMARY KEY, ts TIMESTAMPTZ NOT NULL DEFAULT now(),
+    sti TEXT NOT NULL, haendelse TEXT NOT NULL, detalje TEXT NOT NULL DEFAULT '',
+    browser TEXT NOT NULL DEFAULT '', enhed TEXT NOT NULL DEFAULT 'desktop', gaest TEXT NOT NULL)`;
+  await sql`CREATE INDEX IF NOT EXISTS vh_adfaerd_ts ON vh_adfaerd (ts)`;
   klar = true;
+}
+
+/* Browserfamilie og styresystem, fx "Facebook-app · iOS". Kun familien gemmes, aldrig hele browserteksten. */
+function browserNavn(ua) {
+  const u = String(ua || '');
+  const os = /iPhone|iPad|iPod/.test(u) ? 'iOS' : /Android/.test(u) ? 'Android' : /Macintosh|Mac OS X/.test(u) ? 'Mac' : /Windows/.test(u) ? 'Windows' : /Linux/.test(u) ? 'Linux' : 'andet';
+  const b = /FBAN|FBAV|FB_IAB|FBIOS/.test(u) ? 'Facebook-app' : /Instagram/.test(u) ? 'Instagram-app' : /musical_ly|BytedanceWebview|TikTok/i.test(u) ? 'TikTok-app'
+    : /Snapchat/i.test(u) ? 'Snapchat-app' : /LinkedInApp/i.test(u) ? 'LinkedIn-app' : /Pinterest/i.test(u) ? 'Pinterest-app'
+    : /SamsungBrowser/.test(u) ? 'Samsung Internet' : /EdgA?\/|Edg\//.test(u) ? 'Edge' : /OPR\/|Opera/.test(u) ? 'Opera' : /Firefox|FxiOS/.test(u) ? 'Firefox'
+    : /CriOS|Chrome\//.test(u) ? 'Chrome' : /Safari\//.test(u) ? 'Safari' : 'anden browser';
+  return b + ' · ' + os;
+}
+
+/* En fejltekst fra en besoegendes browser: kun selve beskeden og filen, uden adressefelter (?...) og uden noget, der ligner en mailadresse. */
+function rensFejl(t) {
+  return String(t || '').replace(/https?:\/\/[^\s'")]+/g, m => m.replace(/[?#].*$/, '')).replace(/\S+@\S+/g, '[mail]')
+    .replace(/[\u0000-\u001f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 220);
 }
 
 function vaert(u) { try { return new URL(u).hostname.replace(/^www\./, '').toLowerCase(); } catch (e) { return ''; } }
@@ -115,6 +141,15 @@ exports.handler = async (ev) => {
     const land = String(h['x-country'] || '').toUpperCase().slice(0, 2);
 
     await tabel();
+    if (k.k === 'adf') {
+      // hvor laenge de blev, om de rullede, eller en fejl paa deres telefon (sendes af siden selv, hoejst én gang pr. side og haendelse)
+      const h2 = String(k.h || '');
+      if (!['10s', '30s', '60s', 'rul25', 'rul50', 'rul90', 'fejl'].includes(h2)) return svar(204, oprindelse);
+      const detalje = h2 === 'fejl' ? rensFejl(k.d) : '';
+      if (h2 === 'fejl' && !detalje) return svar(204, oprindelse);
+      await sql`INSERT INTO vh_adfaerd (sti, haendelse, detalje, browser, enhed, gaest) VALUES (${sti}, ${h2}, ${detalje}, ${browserNavn(ua)}, ${enhed}, ${gaest})`;
+      return svar(204, oprindelse);
+    }
     if (k.k === 'klik') {
       // et klik paa en hent-knap: hvor paa siden, og hvilken butik
       const sted = String(k.sted || '').replace(/[^\w\u00C0-\u017F .:-]/g, '').slice(0, 60);
@@ -125,8 +160,8 @@ exports.handler = async (ev) => {
       await sql`INSERT INTO vh_klik (sti, sted, butik, enhed, gaest) VALUES (${sti}, ${sted}, ${butik}, ${enhed}, ${gaest})`;
       return svar(204, oprindelse);
     }
-    await sql`INSERT INTO vh_besoeg (sti, kilde, kanal, enhed, land, gaest, ikkefundet, kampagne)
-      VALUES (${sti}, ${kilde}, ${kanal(kilde, utm, intern)}, ${enhed}, ${land}, ${gaest}, ${ikkefundet}, ${kampagne})`;
+    await sql`INSERT INTO vh_besoeg (sti, kilde, kanal, enhed, land, gaest, ikkefundet, kampagne, browser)
+      VALUES (${sti}, ${kilde}, ${kanal(kilde, utm, intern)}, ${enhed}, ${land}, ${gaest}, ${ikkefundet}, ${kampagne}, ${browserNavn(ua)})`;
   } catch (e) { /* tælleren må aldrig give fejl på siden */ }
   return svar(204, oprindelse);
 };
@@ -134,3 +169,5 @@ exports.handler = async (ev) => {
 exports.maerk = maerk;
 exports.tabel = tabel;
 exports.kampagneNavn = kampagneNavn;
+exports.browserNavn = browserNavn;
+exports.rensFejl = rensFejl;

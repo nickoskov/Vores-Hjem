@@ -64,6 +64,8 @@ exports.handler = async () => {
   try { const r = await sql`DELETE FROM vh_login WHERE hvornaar < now() - interval '1 day' RETURNING id`; ud.login = r.length; } catch (e) {}
   try { const r = await sql`DELETE FROM vh_klik WHERE ts < now() - make_interval(days => ${DAGE}::int) RETURNING id`; ud.klik = r.length; } catch (e) {}
   try { const r = await sql`DELETE FROM vh_besoeg WHERE ts < now() - make_interval(days => ${DAGE}::int) RETURNING id`; ud.besoeg = r.length; } catch (e) {}
+  // hvor laenge de blev, og fejl paa telefonerne (taeller.js, 20. okt.): samme 90 dage
+  try { const r = await sql`DELETE FROM vh_adfaerd WHERE ts < now() - make_interval(days => ${DAGE}::int) RETURNING id`; ud.adfaerd = r.length; } catch (e) {}
   // tyske besoeg fra den 8. okt. 2026, foer den tyske side fik sin egen backend, ligger stadig i den
   // danske database og skal udloebe som alt andet. Efter januar 2027 er de vaek, og linjerne kan fjernes.
   if (profil.kode === 'dk') {

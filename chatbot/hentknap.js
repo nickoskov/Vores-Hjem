@@ -87,6 +87,59 @@
       var maal = 'https://backend.voreshjem.dk/t';
       if (navigator.sendBeacon) navigator.sendBeacon(maal, new Blob([data], { type: 'text/plain' }));
       else fetch(maal, { method: 'POST', body: data, keepalive: true, mode: 'no-cors' });
+      var tSend = function (d) {
+        try {
+          var b = JSON.stringify(d), mal = 'https://backend.voreshjem.dk/t';
+          if (navigator.sendBeacon) navigator.sendBeacon(mal, new Blob([b], { type: 'text/plain' }));
+          else fetch(mal, { method: 'POST', body: b, keepalive: true, mode: 'no-cors' });
+        } catch (e3) {}
+      };
+
+      /* Hvor laenge de bliver, om de ruller, og fejl paa rigtige telefoner (20. okt. 2026).
+         Ét lille signal, naar siden har vaeret synlig i 10, 30 og 60 sekunder, naar de har rullet en fjerdedel,
+         halvdelen og det meste af siden, og hvis browseren faar en fejl (hoejst fem pr. side). Ingen cookies,
+         intet gemt paa enheden, og kun selve fejlbeskeden og filen sendes, aldrig adressefelter. */
+      (function () {
+        var sendt = {}, fejl = 0, synlig = 0;
+        function adf(h, d) {
+          if (h !== 'fejl') { if (sendt[h]) return; sendt[h] = 1; }
+          tSend({ k: 'adf', h: h, u: location.href, d: d || '' });
+        }
+        var ur = setInterval(function () {
+          if (document.visibilityState && document.visibilityState !== 'visible') return;
+          synlig++;
+          if (synlig === 10) adf('10s'); else if (synlig === 30) adf('30s'); else if (synlig === 60) { adf('60s'); clearInterval(ur); }
+        }, 1000);
+        window.addEventListener('scroll', function () {
+          var de = document.documentElement, hoej = Math.max(de.scrollHeight, document.body ? document.body.scrollHeight : 0);
+          var y = window.pageYOffset || de.scrollTop || 0;
+          if (y <= 0 || hoej <= window.innerHeight + 50) return;
+          var p = (y + window.innerHeight) / hoej;
+          if (p >= 0.25) adf('rul25');
+          if (p >= 0.5) adf('rul50');
+          if (p >= 0.9) adf('rul90');
+        }, { passive: true });
+        function tekst(m, f, l) {
+          return String(m || '').slice(0, 160) + (f ? ' @ ' + String(f).replace(/[?#].*$/, '').slice(-90) + (l ? ':' + l : '') : '');
+        }
+        window.addEventListener('error', function (e) {
+          if (!e || fejl >= 5) return;
+          var t = e.target, kilde = t && t !== window && (t.currentSrc || t.src || t.href);
+      // filer fra andre (cookiebanner, Google, Meta), som en reklameblokker stopper, er ikke en fejl paa siden
+      if (kilde && !/(^|\.)(voreshjem\.dk|unserzuhauseapp\.de|voreshjem-bot\.netlify\.app)$/.test((function () { try { return new URL(kilde, location.href).hostname; } catch (e4) { return ''; } })())) return;
+      // en fejl i et script fra en anden side kan browseren ikke vise, saa der staar kun "Script error."
+      if (!kilde && /^Script error\.?$/.test(e.message || '') && !e.filename) return;
+          // et billede, en video eller et script, der ikke kunne hentes, er ogsaa en fejl, de besoegende maerker
+          var besked = e.message || (kilde ? 'kunne ikke hente ' + String(t.tagName || '').toLowerCase() + ' ' + String(kilde).replace(/[?#].*$/, '') : '');
+          if (!besked) return;
+          fejl++; adf('fejl', tekst(besked, e.filename, e.lineno));
+        }, true);
+        window.addEventListener('unhandledrejection', function (e) {
+          if (fejl >= 5) return;
+          var r = e && e.reason; fejl++;
+          adf('fejl', tekst('promise: ' + (r && (r.message || r)) || 'ukendt'));
+        });
+      })();
     }
   } catch (e) {}
 

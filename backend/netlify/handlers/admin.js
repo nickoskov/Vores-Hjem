@@ -1044,6 +1044,49 @@ const qSteder = v => sql`SELECT sti, sted,
         WHERE ts >= (${v.a}::timestamp AT TIME ZONE 'Europe/Copenhagen') AND ts < (${v.b}::timestamp AT TIME ZONE 'Europe/Copenhagen')) x
   GROUP BY sti, sted`;
 
+/* Hvor laenge de besoegende bliver, om de ruller, og fejl paa deres telefoner (vh_adfaerd, taeller.js, 20. okt. 2026).
+   Kun besoeg fra efter maalingen startede taeller med, ellers ville gamle besoeg se ud, som om de gik med det samme. */
+const qAdfStart = () => sql`SELECT min(ts) AS fra FROM vh_adfaerd`;
+const qAdfaerd = (v, fra, gruppe) => sql`
+  WITH b AS (
+    SELECT (ts AT TIME ZONE 'Europe/Copenhagen')::date::text || gaest AS dg,
+      min(CASE WHEN ${gruppe} = 'browser' THEN coalesce(nullif(browser, ''), 'ukendt (før målingen)')
+               ELSE coalesce(nullif(kampagne, ''), nullif(kilde, ''), CASE kanal WHEN 'Direct' THEN 'direkte' ELSE kanal END) END) AS hvad
+    FROM vh_besoeg
+    WHERE ts >= greatest((${v.a}::timestamp AT TIME ZONE 'Europe/Copenhagen'), ${fra}::timestamptz) AND ts < (${v.b}::timestamp AT TIME ZONE 'Europe/Copenhagen')
+      AND kanal <> 'Intern'
+    GROUP BY 1),
+  a AS (
+    SELECT (ts AT TIME ZONE 'Europe/Copenhagen')::date::text || gaest AS dg, haendelse
+    FROM vh_adfaerd
+    WHERE ts >= greatest((${v.a}::timestamp AT TIME ZONE 'Europe/Copenhagen'), ${fra}::timestamptz) AND ts < (${v.b}::timestamp AT TIME ZONE 'Europe/Copenhagen'))
+  SELECT b.hvad, count(DISTINCT b.dg)::int AS besoegende,
+    count(DISTINCT b.dg) FILTER (WHERE a.haendelse = '10s')::int AS s10,
+    count(DISTINCT b.dg) FILTER (WHERE a.haendelse = '30s')::int AS s30,
+    count(DISTINCT b.dg) FILTER (WHERE a.haendelse IN ('rul25', 'rul50', 'rul90'))::int AS rullede,
+    count(DISTINCT b.dg) FILTER (WHERE a.haendelse = 'rul50')::int AS halvvejs,
+    count(DISTINCT b.dg) FILTER (WHERE a.haendelse = 'fejl')::int AS fejl
+  FROM b LEFT JOIN a ON a.dg = b.dg GROUP BY b.hvad ORDER BY besoegende DESC LIMIT 15`;
+const qFejl = v => sql`SELECT detalje, browser, sti, count(*)::int AS antal, count(DISTINCT gaest)::int AS personer, max(ts) AS seneste
+  FROM vh_adfaerd WHERE haendelse = 'fejl'
+    AND ts >= (${v.a}::timestamp AT TIME ZONE 'Europe/Copenhagen') AND ts < (${v.b}::timestamp AT TIME ZONE 'Europe/Copenhagen')
+  GROUP BY detalje, browser, sti ORDER BY antal DESC LIMIT 20`;
+
+async function adfaerd(v) {
+  try {
+    const st = (await qAdfStart())[0];
+    if (!st || !st.fra) return { fra: null, grund: 'Målingen er lige sat i gang. Der kommer tal, når de næste besøgende har været på siden.' };
+    const fra = new Date(st.fra).toISOString();
+    const [br, ki, fe] = await Promise.all([qAdfaerd(v, fra, 'browser'), qAdfaerd(v, fra, 'kilde'), qFejl(v)]);
+    const sum = r => r.reduce((a, x) => ({ besoegende: a.besoegende + x.besoegende, s10: a.s10 + x.s10, s30: a.s30 + x.s30,
+      rullede: a.rullede + x.rullede, halvvejs: a.halvvejs + x.halvvejs, fejl: a.fejl + x.fejl }), { besoegende: 0, s10: 0, s30: 0, rullede: 0, halvvejs: 0, fejl: 0 });
+    return { fra, i_alt: sum(br), browser: br, kilde: ki, fejl: fe.map(x => ({ ...x, seneste: x.seneste ? new Date(x.seneste).toISOString() : null })) };
+  } catch (e) {
+    if (/vh_adfaerd/.test(String(e && e.message))) return { fra: null, grund: 'Målingen er lige sat i gang. Der kommer tal, når de næste besøgende har været på siden.' };
+    throw e;
+  }
+}
+
 async function tragt(dage, valg) {
   const p = omfang(dage), fejl = [];
   const ud = { fra: p.fra, til: p.til, type: p.type, timer: p.timer, visning: p.visning,
@@ -1054,7 +1097,7 @@ async function tragt(dage, valg) {
       { navn: 'Kom videre til en butik', tal: null, kilde: 'egen', note: 'sendt til App Store eller Google Play. Computere lander først på hent-siden.' }
     ],
     faellesFra: null, faellesTil: null, daekning: null, konvertering: null,
-    tryk: null, klikPersoner: null, forside: null, hentSide: null, butik: null, steder: null, klikFra: null,
+    tryk: null, klikPersoner: null, forside: null, hentSide: null, butik: null, steder: null, klikFra: null, adfaerd: null,
     harInstalls: false, installationer: null, fejl };
   if (!sql) ud.daekning = { fra: null, til: null, dage: 0, af: dageMellem(p.fra, p.til), hel: false, grund: 'Databasen er ikke sat op.' };
   else try {
@@ -1083,6 +1126,7 @@ async function tragt(dage, valg) {
         appstore: x.appstore, googleplay: x.googleplay, hentside: x.hentside, ukendt: x.ukendt })).sort((a, z) => z.klik - a.klik);
       ud.butik = ud.steder.reduce((a, x) => ({ appstore: a.appstore + x.appstore, googleplay: a.googleplay + x.googleplay,
         hentside: a.hentside + x.hentside, ukendt: a.ukendt + x.ukendt }), { appstore: 0, googleplay: 0, hentside: 0, ukendt: 0 });
+      try { ud.adfaerd = await adfaerd(v); } catch (e) { fejl.push(fejlObj('egen', e)); ud.adfaerd = null; }
     } else ud.trin.forEach(t => { t.grund = d.grund; });
   } catch (e) { fejl.push(fejlObj('egen', e)); ud.trin.forEach(t => { t.grund = 'Den egne tæller svarede ikke.'; }); }
   // installationer for sig, med butikkens egen daekning

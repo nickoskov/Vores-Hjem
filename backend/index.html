@@ -1256,6 +1256,39 @@ async function sletNote(id) { try { await kald('noter-slet', { id }); vis(); } c
    Hent-siden er et sidetal (kun computere ser den), og installationer fra Google Play står for sig med deres
    egen dækning, fordi de også kommer fra søgning i butikken og annoncer. Fald og "% af alle" regnes kun mellem
    trin fra samme kilde. */
+/* Hvor længe de besøgende bliver, om de ruller, og fejl på deres telefoner (vh_adfaerd, 20. okt. 2026). */
+function adfaerdKort(d) {
+  const a = d && d.adfaerd;
+  if (a === undefined) return '';
+  const hoved = '<div class="kort" style="margin-bottom:14px"><h3>Hvor længe bliver de, og går noget galt?</h3>';
+  if (!a) return hoved + '<div class="tom">Kunne ikke hentes</div></div>';
+  if (!a.fra) return hoved + '<div class="tom">' + sik(a.grund || 'Ingen tal endnu.') + '</div></div>';
+  const i = a.i_alt || {}, n = i.besoegende || 0;
+  const pr = x => n ? P(x / n * 100, 0) + ' %' : '–';
+  const andel = (raa, v) => T(raa) + (v && v.besoegende ? ' <small style="color:var(--daemp)">(' + P(raa / v.besoegende * 100, 0) + ' %)</small>' : '');
+  const kol = navn => [{navn, felt:'hvad', bar:'besoegende'}, {navn:'Besøgende', felt:'besoegende', h:true, std:true},
+    {navn:'Blev 10 sek', felt:'s10', h:true, form: andel}, {navn:'Blev 30 sek', felt:'s30', h:true, form: andel},
+    {navn:'Rullede ned', felt:'rullede', h:true, form: andel}, {navn:'Fik en fejl', felt:'fejl', h:true, form: andel}];
+  return hoved +
+    '<p style="font-size:13px;color:var(--daemp);line-height:1.6;margin:0 0 12px">Målt siden ' + sik(datoTidDk(a.fra)) +
+      ' på begge sider, uden cookies. "Blev 10 sek" betyder, at siden var åben og synlig i mindst 10 sekunder. "Rullede ned" betyder, at de rullede mindst en fjerdedel ned ad siden. ' +
+      'Går de fleste før 10 sekunder, er det klikkene eller noget på siden. Bliver de, men trykker ikke, er det budskabet.</p>' +
+    '<div class="net n4" style="margin-bottom:12px">' +
+      kpi('Blev mindst 10 sek', pr(i.s10), '', '', '', T(i.s10) + ' af ' + T(n) + ' besøgende') +
+      kpi('Blev mindst 30 sek', pr(i.s30), '', '', '', T(i.s30) + ' af ' + T(n)) +
+      kpi('Rullede ned', pr(i.rullede), '', '', '', T(i.rullede) + ' af ' + T(n)) +
+      kpi('Fik en fejl', pr(i.fejl), '', '', '', T(i.fejl) + ' af ' + T(n)) + '</div>' +
+    '<h4 style="margin:14px 0 6px;font-size:14px">Efter browser og app</h4>' +
+    tabel('tr-adf-browser', a.browser, kol('Browser'), 'Ingen besøg endnu') +
+    '<h4 style="margin:14px 0 6px;font-size:14px">Efter kampagne eller kilde</h4>' +
+    tabel('tr-adf-kilde', a.kilde, kol('Kampagne eller kilde'), 'Ingen besøg endnu') +
+    '<h4 style="margin:14px 0 6px;font-size:14px">Fejl på de besøgendes telefoner</h4>' +
+    tabel('tr-adf-fejl', (a.fejl || []).map(x => ({ ...x, hvornaar: x.seneste })), [
+      {navn:'Fejl', felt:'detalje'}, {navn:'Browser', felt:'browser'}, {navn:'Side', felt:'sti'},
+      {navn:'Antal', felt:'antal', h:true, std:true}, {navn:'Personer', felt:'personer', h:true},
+      {navn:'Seneste', felt:'hvornaar', h:true, form: x => sik(datoTidDk(x))}], 'Ingen fejl fundet. Godt.') +
+    '</div>';
+}
 async function visTragt(m) {
   if (opsat.database === false) { m.innerHTML = hoved('Tragt','Hvor falder folk fra') +
     (dbBesked() || '<div class="besked advar">Databasen er ikke sat op, så jeres egen tæller kan ikke bruges. Se <b>Opsætning</b>.</div>'); return; }
@@ -1320,6 +1353,7 @@ async function visTragt(m) {
       'Det største fald viser, hvor der er mest at hente. Falder mange fra mellem besøg og hent-knap, er det forsiden og knapperne, der skal arbejdes med. ' +
       'Falder mange fra mellem hent-knap og butik, er det mest folk på computer, som lander på hent-siden og ikke går videre. ' +
       'Hvad der sker inde i App Store og Google Play, kan siden ikke se. Installationerne fra Google Play står derfor for sig, med deres egne datoer.</p></div></div>' : '') +
+    adfaerdKort(d) +
     '<div class="kort" style="margin-bottom:14px"><h3>Hvor trykker de på hent-knapperne' + hjaelp('steder') + ((d.steder||[]).length ? udtrKnap('tr-steder','hent-knapper') : '') + '</h3>' +
       hjaelpBoks('steder', '<b>Hvad viser tabellen?</b> Hver gang nogen trykker på en hent-knap på voreshjem.dk, skriver vi ned, hvilken knap det var, og hvor personen blev sendt hen.<ul>' +
         '<li><b>Sted</b> er knappen. "Toppen af forsiden" er den store knap øverst, "Efter madplanen" er boksen under madplan-afsnittet, og så videre.</li>' +
