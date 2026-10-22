@@ -1284,7 +1284,8 @@ function adfaerdKort(d) {
     tabel('tr-adf-kilde', a.kilde, kol('Kampagne eller kilde'), 'Ingen besøg endnu') +
     '<h4 style="margin:14px 0 6px;font-size:14px">Fejl på de besøgendes telefoner</h4>' +
     tabel('tr-adf-fejl', (a.fejl || []).map(x => ({ ...x, hvornaar: x.seneste })), [
-      {navn:'Fejl', felt:'detalje'}, {navn:'Browser', felt:'browser'}, {navn:'Side', felt:'sti'},
+      // hele fejlteksten skal kunne læses (adressen på det billede eller script, der fejlede), så den brydes i stedet for at blive skåret af
+      {navn:'Fejl', felt:'detalje', form: x => '<span style="white-space:normal;word-break:break-all;display:block">' + sik(x) + '</span>'}, {navn:'Browser', felt:'browser'}, {navn:'Side', felt:'sti'},
       {navn:'Antal', felt:'antal', h:true, std:true}, {navn:'Personer', felt:'personer', h:true},
       {navn:'Seneste', felt:'hvornaar', h:true, form: x => sik(datoTidDk(x))}], 'Ingen fejl fundet. Godt.') +
     '</div>';
