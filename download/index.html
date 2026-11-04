@@ -109,25 +109,6 @@
     box-shadow:0 8px 22px rgba(108,71,255,.35);
   }
   .free-badge svg { width:16px; height:16px; flex-shrink:0; }
-  /* Telefonramme med app-video (samme stil som voreshjem.dk) */
-  .phone-frame {
-    position:relative;
-    width:200px;
-    max-width:64%;
-    margin:0 auto 26px;
-    background:#12101F;
-    border-radius:32px;
-    padding:8px;
-    box-shadow:0 24px 55px rgba(76,71,180,.30), inset 0 0 0 2px rgba(255,255,255,.06);
-  }
-  .phone-frame video {
-    display:block;
-    width:100%;
-    height:auto;
-    aspect-ratio:540/960;   /* holder pladsen, saa siden ikke hopper, naar videoen indlaeses */
-    border-radius:25px;
-    background:#EEF0FF;
-  }
   h1 {
     font-size:26px;
     font-weight:800;
@@ -195,14 +176,6 @@
   .recht { margin-top:18px; font-size:12px; line-height:1.5; color:#6E6880; }
   .recht a { display:inline-block; padding:4px 0; color:#6E6880; text-decoration:none; }
   .recht a:hover, .recht a:focus-visible { text-decoration:underline; }
-  /* Pauseknap til videoen (WCAG 2.2.2), nederst til hoejre i telefonrammen */
-  .vid-pause { position:absolute; right:16px; bottom:16px; width:36px; height:36px; display:flex; align-items:center; justify-content:center; border:0; border-radius:50%; background:rgba(18,16,31,.62); color:#fff; cursor:pointer; }
-  .vid-pause[hidden] { display:none; }
-  .vid-pause:hover { background:rgba(18,16,31,.8); }
-  .vid-pause:focus-visible { outline:3px solid #5B3DF5; outline-offset:2px; }
-  .vid-pause svg { width:16px; height:16px; }
-  .vid-pause .ikon-pause, .vid-pause.spiller .ikon-play { display:none; }
-  .vid-pause.spiller .ikon-pause { display:block; }
   /* QR-kode, kun paa en computer med mus (fund L84, 16. okt. 2026), som paa voreshjem.dk/hent/ */
   .qr { display:none; }
   @media (min-width:820px) and (hover:hover) and (pointer:fine) {
@@ -222,15 +195,6 @@
   <div class="card">
     <img src="logo-88.webp" alt="Vores Hjem" class="logo">
     <div class="free-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.3L19 9l-5.2 1.7L12 16l-1.8-5.3L5 9l5.2-1.7L12 2z"/></svg>PRØV GRATIS I 14 DAGE</div>
-    <div class="phone-frame">
-      <video muted loop playsinline preload="metadata" poster="video-poster.webp" width="540" height="960" aria-label="Demo af Vores Hjem-appen">
-        <source src="app-demo.mp4" type="video/mp4">
-      </video>
-      <button type="button" class="vid-pause" aria-label="Afspil video" hidden>
-        <svg class="ikon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
-        <svg class="ikon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 8 4.5z"/></svg>
-      </button>
-    </div>
     <h1>Hent <span class="grad">Vores Hjem</span></h1>
     <p class="sub">Hele familiens hverdag samlet i én app: kalender, madplan, indkøb og opgaver.</p>
     <div class="qr">
@@ -254,19 +218,6 @@
     <div class="trial">14 dage gratis, ingen binding<span>Derefter 39 kr/md, fornyes automatisk · op til 7 personer</span></div>
     <p class="recht">Vores Hjem I/S · CVR 45804445 · <a href="https://www.iubenda.com/privacy-policy/85951957">Privatlivspolitik</a> · <a href="https://www.iubenda.com/privacy-policy/85951957/cookie-policy">Cookiepolitik</a> · <a href="https://www.iubenda.com/vilkar-og-betingelser/85951957">Vilkår</a></p>
   </div>
-  <!-- Videoen starter kun af sig selv, naar "Reducer bevaegelse" ikke er slaaet til. Knappen stopper og starter den. -->
-  <script>
-    (function () {
-      var v = document.querySelector('.phone-frame video'); var b = document.querySelector('.vid-pause');
-      if (!v) return;
-      function vis(spiller) { if (!b) return; b.classList.toggle('spiller', spiller); b.setAttribute('aria-label', spiller ? 'Sæt video på pause' : 'Afspil video'); }
-      function spil() { v.muted = true; var p = v.play(); if (p && p.catch) p.catch(function () { vis(false); }); }
-      v.addEventListener('play', function () { vis(true); }); v.addEventListener('pause', function () { vis(false); });
-      if (b) { b.hidden = false; b.addEventListener('click', function () { if (v.paused) spil(); else v.pause(); }); }
-      if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      spil();
-    })();
-  </script>
   <script>
   // Besøgs-statistik: registrér besøget + hvor det kom fra (utm_source i bio-links)
   (function(){
