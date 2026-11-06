@@ -84,9 +84,9 @@
   .logo-link { display:block; line-height:0; }
   .logo { display:block; height:36px; width:auto; }
   /* Alles in einer Spalte, mittig */
-  .hero { text-align:center; padding:26px 0 30px; }
+  .hero { text-align:center; padding:26px 20px 30px; }
   h1 { font-size:25px; font-weight:800; line-height:1.15; letter-spacing:-.02em; margin:0 auto 8px; max-width:640px; }
-  p.sub { font-size:14.5px; line-height:1.5; color:#4A4563; margin:0 auto 20px; max-width:560px; }
+  p.sub { font-size:14.5px; line-height:1.5; color:#4A4563; margin:0 auto 20px; max-width:480px; }
   .store-btns { display:flex; flex-direction:column; gap:10px; align-items:stretch; max-width:320px; margin:0 auto; }
   .store-btn { display:flex; align-items:center; justify-content:center; gap:10px; text-decoration:none; background:#12101F; color:#fff; padding:11px 18px; border-radius:12px; transition:transform .15s ease, box-shadow .15s ease; }
   .store-btn:hover { transform:translateY(-2px); box-shadow:0 12px 28px rgba(18,16,31,.22); }
@@ -94,7 +94,7 @@
   .store-btn-text { text-align:left; line-height:1.15; }
   .store-btn-sub { font-size:10.5px; font-weight:500; opacity:.8; }
   .store-btn-name { font-size:16px; font-weight:700; letter-spacing:-.01em; }
-  .trial { margin:14px auto 0; max-width:520px; font-size:12.5px; line-height:1.5; color:#4A4563; }
+  .trial { margin:14px auto 0; max-width:460px; font-size:12.5px; line-height:1.5; color:#4A4563; }
   .trial b { color:#1B1633; font-weight:700; }
   /* QR-Code, nur am Computer (hover/pointer: nur mit Maus, also nicht auf dem iPad) */
   .qr { display:none; }
@@ -129,10 +129,11 @@
   .recht a:hover, .recht a:focus-visible { text-decoration:underline; }
   @media (min-width:820px) {
     .kopf { padding-top:26px; }
-    .hero { padding:52px 0 56px; }
+    .hero { padding:52px 20px 56px; }
     h1 { font-size:46px; }
     p.sub { font-size:19px; }
-    .trial { font-size:14px; }
+    .trial { font-size:14px; max-width:520px; }
+    p.sub { max-width:560px; }
     .fakta div { font-size:15px; }
     .screen b { font-size:14.5px; }
     .logo { height:40px; }
