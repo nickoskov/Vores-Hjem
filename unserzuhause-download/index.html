@@ -78,23 +78,23 @@
   .wrap { width:100%; max-width:1040px; margin:0 auto; padding:0 20px; }
   /* Kopfzeile */
   .kopf { display:flex; align-items:center; justify-content:space-between; padding:18px 0 0; }
-  .tilbage { display:inline-flex; align-items:center; gap:3px; padding:8px 14px 8px 9px; border-radius:99px; background:#F3F0FF; color:#4F32CC; font-size:13.5px; font-weight:700; text-decoration:none; line-height:1.1; }
+  .tilbage { display:inline-flex; align-items:center; gap:3px; padding:7px 13px 7px 8px; border-radius:99px; background:#F3F0FF; color:#4F32CC; font-size:13px; font-weight:700; text-decoration:none; line-height:1.1; }
   .tilbage:hover, .tilbage:focus-visible { background:#E9E4FF; }
   .tilbage svg { width:17px; height:17px; flex-shrink:0; }
   .logo-link { display:block; line-height:0; }
-  .logo { display:block; height:40px; width:auto; }
+  .logo { display:block; height:36px; width:auto; }
   /* Alles in einer Spalte, mittig */
-  .hero { text-align:center; padding:34px 0 36px; }
-  h1 { font-size:30px; font-weight:800; line-height:1.15; letter-spacing:-.02em; margin:0 auto 10px; max-width:640px; }
-  p.sub { font-size:16.5px; line-height:1.5; color:#4A4563; margin:0 auto 24px; max-width:560px; }
-  .store-btns { display:flex; flex-direction:column; gap:12px; align-items:stretch; max-width:420px; margin:0 auto; }
-  .store-btn { display:flex; align-items:center; justify-content:center; gap:12px; text-decoration:none; background:#12101F; color:#fff; padding:14px 22px; border-radius:14px; transition:transform .15s ease, box-shadow .15s ease; }
+  .hero { text-align:center; padding:26px 0 30px; }
+  h1 { font-size:25px; font-weight:800; line-height:1.15; letter-spacing:-.02em; margin:0 auto 8px; max-width:640px; }
+  p.sub { font-size:14.5px; line-height:1.5; color:#4A4563; margin:0 auto 20px; max-width:560px; }
+  .store-btns { display:flex; flex-direction:column; gap:10px; align-items:stretch; max-width:320px; margin:0 auto; }
+  .store-btn { display:flex; align-items:center; justify-content:center; gap:10px; text-decoration:none; background:#12101F; color:#fff; padding:11px 18px; border-radius:12px; transition:transform .15s ease, box-shadow .15s ease; }
   .store-btn:hover { transform:translateY(-2px); box-shadow:0 12px 28px rgba(18,16,31,.22); }
-  .store-btn svg { width:26px; height:26px; flex-shrink:0; }
+  .store-btn svg { width:22px; height:22px; flex-shrink:0; }
   .store-btn-text { text-align:left; line-height:1.15; }
-  .store-btn-sub { font-size:11px; font-weight:500; opacity:.8; }
-  .store-btn-name { font-size:18px; font-weight:700; letter-spacing:-.01em; }
-  .trial { margin:16px auto 0; max-width:520px; font-size:14px; line-height:1.5; color:#4A4563; }
+  .store-btn-sub { font-size:10.5px; font-weight:500; opacity:.8; }
+  .store-btn-name { font-size:16px; font-weight:700; letter-spacing:-.01em; }
+  .trial { margin:14px auto 0; max-width:520px; font-size:12.5px; line-height:1.5; color:#4A4563; }
   .trial b { color:#1B1633; font-weight:700; }
   /* QR-Code, nur am Computer (hover/pointer: nur mit Maus, also nicht auf dem iPad) */
   .qr { display:none; }
@@ -110,21 +110,21 @@
   @keyframes qrpuls { 0%,100% { box-shadow:0 0 0 0 rgba(108,71,255,0); } 50% { box-shadow:0 0 0 7px rgba(108,71,255,.28); } }
   /* Band mit echten Bildschirmen, über die ganze Breite */
   .band { background:#F6F4FC; padding:34px 0 38px; }
-  .band h2 { text-align:center; font-size:20px; font-weight:800; letter-spacing:-.01em; margin-bottom:20px; }
+  .band h2 { text-align:center; font-size:18px; font-weight:800; letter-spacing:-.01em; margin-bottom:18px; }
   .screens { display:grid; grid-template-columns:1fr 1fr; gap:18px 12px; max-width:420px; margin:0 auto; }
   .screen { text-align:center; }
-  .screen-ramme { border-radius:18px; overflow:hidden; border:1px solid #E6E3F2; background:#fff; aspect-ratio:480/600; box-shadow:0 10px 26px rgba(60,40,140,.08); }
-  .screen-ramme img { display:block; width:100%; height:100%; object-fit:cover; object-position:top; }
-  .screen b { display:block; font-size:14.5px; font-weight:700; margin-top:9px; }
+  .screen-ramme { border-radius:18px; overflow:hidden; border:1px solid #E6E3F2; background:#fff; aspect-ratio:480/980; box-shadow:0 10px 26px rgba(60,40,140,.08); }
+  .screen-ramme img { display:block; width:100%; height:100%; object-fit:cover; }
+  .screen b { display:block; font-size:13.5px; font-weight:700; margin-top:8px; }
   /* Drei Fakten in einer Reihe */
   .fakta { display:flex; flex-direction:column; gap:14px; align-items:center; text-align:center; padding:34px 0 10px; }
-  .fakta div { display:flex; align-items:center; gap:10px; font-size:15px; color:#4A4563; }
+  .fakta div { display:flex; align-items:center; gap:9px; font-size:13.5px; color:#4A4563; }
   .fakta b { color:#1B1633; font-weight:700; }
-  .fakta svg { width:22px; height:22px; flex-shrink:0; color:#4F32CC; }
-  .mere { text-align:center; margin-top:18px; font-size:15px; }
+  .fakta svg { width:20px; height:20px; flex-shrink:0; color:#4F32CC; }
+  .mere { text-align:center; margin-top:16px; font-size:14px; }
   .mere a { font-weight:700; text-decoration:none; }
   .mere a:hover, .mere a:focus-visible { text-decoration:underline; }
-  .recht { padding:26px 0 36px; font-size:12.5px; line-height:1.6; color:#6E6880; text-align:center; }
+  .recht { padding:24px 0 34px; font-size:12px; line-height:1.6; color:#6E6880; text-align:center; }
   .recht a { display:inline-block; padding:4px 0; color:#6E6880; text-decoration:none; }
   .recht a:hover, .recht a:focus-visible { text-decoration:underline; }
   @media (min-width:820px) {
@@ -132,12 +132,16 @@
     .hero { padding:52px 0 56px; }
     h1 { font-size:46px; }
     p.sub { font-size:19px; }
+    .trial { font-size:14px; }
+    .fakta div { font-size:15px; }
+    .screen b { font-size:14.5px; }
+    .logo { height:40px; }
     .store-btns { flex-direction:row; max-width:none; justify-content:center; }
-    .store-btn { min-width:230px; }
+    .store-btn { min-width:210px; padding:12px 22px; }
     .band { padding:48px 0 52px; }
     .band h2 { font-size:24px; margin-bottom:28px; }
     .screens { grid-template-columns:repeat(4, 1fr); gap:28px; max-width:980px; }
-    .screen-ramme { aspect-ratio:480/980; border-radius:26px; }
+    .screen-ramme { border-radius:26px; }
     .fakta { flex-direction:row; justify-content:center; gap:40px; padding:44px 0 6px; }
   }
 </style>
